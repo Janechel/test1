@@ -2,7 +2,7 @@
 #define C_SERVO_H
 
 #define MAX_SERVERS 20              //最大同步写舵机数量
-#define PRINTF_ENABLE 1             //打印输出使能
+#define PRINTF_ENABLE 0             //打印输出使能
 
 #if PRINTF_ENABLE
 #define PRINTF printf

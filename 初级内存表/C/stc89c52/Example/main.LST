@@ -1,186 +1,1400 @@
-C51 COMPILER V9.01   MAIN                                                                  07/23/2024 16:23:55 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 1   
 
 
-C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN main.OBJ
-COMPILER INVOKED BY: D:\keil4\C51\BIN\C51.EXE main.c OBJECTADVANCED OPTIMIZE(9,SIZE) BROWSE INCDIR(D:\STC89C52_SDK;.\.id
-                    -ea;D:\STC89C52_SDK;..\..\src) DEBUG
+COMPILER INVOKED BY: D:\KeilSTM32\C51\BIN\C51.EXE main.c LARGE OBJECTADVANCED OPTIMIZE(9,SIZE) BROWSE INCDIR(D:\STC89C52
+                    -_SDK;.\.idea;D:\STC89C52_SDK;..\..\src;..\..\src;..\..\..\C) DEBUG TABS(2)
 
 line level    source
 
    1          #include "reg52.h"
    2          #include "servo.c"
-   3          #include <stdlib.h>
-   4          
-   5          u16 ms_count;
-*** ERROR C129 IN LINE 5 OF MAIN.C: missing ';' before 'ms_count'
-   6          
-   7          xdata u8 receive_data[20] = {0};
-   8          xdata u8 receive_len = 0;          // ½ÓÊÕÓ¦´ð°ü³¤¶È
-   9          
-  10          // time0³õÊ¼»¯×öÑÓÊ±
-  11          void timer0_init()
-  12          {
-  13              TMOD |= 0x01;
-  14              TH0 = 0xFC;
-  15              TL0 = 0x67;
-  16              ET0 = 1;
-  17              EA = 1;
-  18              TR0 = 1;
-  19          }
-  20          
-  21          // ÑÓÊ±º¯Êý
-  22          void delay_ms(u16 ms)
-  23          {
-  24              ms_count =  2 * ms;   // ÒòÎª¿ªÁËË«±¶ËÙ6T£¬ËùÒÔÕâÀïÑÓÊ±Ê±¼äÐèÒª³ËÒÔ2
-  25              while (ms_count);
-  26          }
-  27          
-  28          // ¶¨Ê±Æ÷ÖÐ¶Ïº¯Êý
-  29          void timer0_isr() interrupt 1 using 1
-  30          {
-  31              TH0 = 0xFC;
-  32              TL0 = 0x67;
-  33              if (ms_count)
-  34                  ms_count--;
-  35          }
-  36          
-  37          // ´®¿Ú³õÊ¼»¯
-  38          void uart_init()
-  39          {
-  40                  TMOD|=0X20;        // 8Î»×Ô¶¯ÖØ×°ÔØ¶¨Ê±Æ÷
-  41                  SCON=0X40;         // 8Î»UART£¬²¨ÌØÂÊ¿É±ä
-  42                  PCON=0X80;         // ²¨ÌØÂÊ¼Ó±¶
-  43                  TH1=0xff;          // ÉèÖÃ²¨ÌØÂÊÎª115200
-  44                  TL1=0xff;
-  45              ES=0;                  // ¹Ø±Õ½ÓÊÕÖÐ¶Ï
-  46              EA=1;                  // CPU×ÜÖÐ¶Ï
-  47              TR1=1;                 // ¿ªÆô¶¨Ê±Æ÷T1¿ªÊ¼¼ÆÊý
-  48          }
-  49          
-  50          void uart_init_recv()
-  51          {
-  52              TMOD |= 0x20;  // 8Î»×Ô¶¯ÖØ×°ÔØ¶¨Ê±Æ÷
-  53              SCON = 0x50;   // 8Î»UART£¬²¨ÌØÂÊ¿É±ä£¬²¢¿ªÆô´®ÐÐ½ÓÊÕ
-C51 COMPILER V9.01   MAIN                                                                  07/23/2024 16:23:55 PAGE 2   
+*** WARNING C275 IN LINE 107 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 115 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 119 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 123 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 127 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 131 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 135 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 139 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1696 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1716 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1736 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1756 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1776 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1796 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1816 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1836 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1856 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1876 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1896 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1916 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1936 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1956 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1976 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 1996 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2016 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2036 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2056 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2076 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2096 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2116 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2136 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2156 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2176 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2196 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2216 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2236 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2256 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2276 OF ..\..\src\servo.c: expression with possibly no effect
+*** WARNING C275 IN LINE 2296 OF ..\..\src\servo.c: expression with possibly no effect
+   3          
+   4          #define READ_TEST 0                 // ¶ÁÈ¡¶æ»úÊý¾Ý²âÊÔ
+   5          #define WRITE_TEST 1                // Ð´Èë¶æ»úÊý¾Ý²âÊÔ
+   6          #define SYNC_WRITE_TEST 0           // Í¬²½Ð´²âÊÔ
+   7          #define PING_TEST 0                 // PINGÃüÁî²âÊÔ
+   8          #define FACTORY_RESET_TEST 0        // »Ö¸´³ö³§ÉèÖÃ²âÊÔ
+   9          #define PARAMETER_RESET_TEST 0      // ²ÎÊýÖØÖÃ²âÊÔ
+  10          #define REBOOT_TEST 0               // ÖØÆô²âÊÔ
+  11          #define CALIBRATION_TEST 0          // Ð£ÕýÆ«ÒÆÖµ²âÊÔ
+  12          #define MODIFY_ID_TEST 0            // ÐÞ¸Ä¶æ»úID²âÊÔ
+  13          #define MODIFY_UNKNOWN_ID_TEST 0    // ÐÞ¸ÄÎ´ÖªID¶æ»úID²âÊÔ
+  14          
+  15          uint16_t ms_count;
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 2   
 
-  54              PCON = 0x80;   // ²¨ÌØÂÊ¼Ó±¶
-  55              TH1 = 0xff;    // ÉèÖÃ²¨ÌØÂÊÎª115200
-  56              TL1 = 0xff;
-  57              ES = 1;        // ¿ªÆô½ÓÊÕÖÐ¶Ï
-  58              EA = 1;        // CPU×ÜÖÐ¶Ï
-  59              TR1 = 1;       // ¿ªÆô¶¨Ê±Æ÷T1¿ªÊ¼¼ÆÊý
-  60          }
-  61          
-  62          // ´®¿Ú·¢ËÍº¯Êý
-  63          void uart_send(u8 order_data)
-  64          {
-  65              SBUF = order_data;      // ½«Êý¾ÝÐ´Èë´®¿Ú»º³å¼Ä´æÆ÷¿ªÊ¼´«Êä
-  66              while(!TI);                         // µÈ´ý´«ÊäÍê³É
-  67              TI = 0;                             // Çå³ý´«ÊäÍê³É±êÖ¾
-  68          }
-  69          
-  70          
-  71          void uart_send_buffer(u8 *buffer, u16 length)
-  72          {
-  73              u16 i;
-  74              for (i = 0; i < length; i++) {
-  75                  uart_send(buffer[i]);
-  76              }
-  77          }
-  78          
+  16          
+  17          xdata uint8_t receive_data[20] = {0};
+  18          xdata uint8_t receive_len = 0;          // ½ÓÊÕÓ¦´ð°ü³¤¶È
+  19          
+  20          // time0³õÊ¼»¯×öÑÓÊ±
+  21          void timer0_init()
+  22          {
+  23   1          TMOD |= 0x01;
+  24   1          TH0 = 0xFC;
+  25   1          TL0 = 0x67;
+  26   1          ET0 = 1;
+  27   1          EA = 1;
+  28   1          TR0 = 1;
+  29   1      }
+  30          
+  31          // ÑÓÊ±º¯Êý
+  32          void delay_ms(uint16_t ms)
+  33          {
+  34   1          ms_count =  2 * ms;   // ÒòÎª¿ªÁËË«±¶ËÙ6T£¬ËùÒÔÕâÀïÑÓÊ±Ê±¼äÐèÒª³ËÒÔ2
+  35   1          while (ms_count);
+  36   1      }
+  37          
+  38          // ¶¨Ê±Æ÷ÖÐ¶Ïº¯Êý
+  39          void timer0_isr() interrupt 1 using 1
+  40          {
+  41   1          TH0 = 0xFC;
+  42   1          TL0 = 0x67;
+  43   1          if (ms_count)
+  44   1              ms_count--;
+  45   1      }
+  46          
+  47          // ´®¿Ú³õÊ¼»¯
+  48          void uart_init()
+  49          {
+  50   1        TMOD|=0X20;    // 8Î»×Ô¶¯ÖØ×°ÔØ¶¨Ê±Æ÷
+  51   1        SCON=0X40;     // 8Î»UART£¬²¨ÌØÂÊ¿É±ä
+  52   1        PCON=0X80;     // ²¨ÌØÂÊ¼Ó±¶
+  53   1        TH1=0xff;    // ÉèÖÃ²¨ÌØÂÊÎª115200
+  54   1        TL1=0xff;
+  55   1          ES=0;      // ¹Ø±Õ½ÓÊÕÖÐ¶Ï
+  56   1          EA=1;      // CPU×ÜÖÐ¶Ï
+  57   1          TR1=1;       // ¿ªÆô¶¨Ê±Æ÷T1¿ªÊ¼¼ÆÊý
+  58   1      }
+  59          
+  60          void uart_init_recv()
+  61          {
+  62   1          TMOD |= 0x20;  // 8Î»×Ô¶¯ÖØ×°ÔØ¶¨Ê±Æ÷
+  63   1          SCON = 0x50;   // 8Î»UART£¬²¨ÌØÂÊ¿É±ä£¬²¢¿ªÆô´®ÐÐ½ÓÊÕ
+  64   1          PCON = 0x80;   // ²¨ÌØÂÊ¼Ó±¶
+  65   1          TH1 = 0xff;    // ÉèÖÃ²¨ÌØÂÊÎª115200
+  66   1          TL1 = 0xff;
+  67   1          ES = 1;        // ¿ªÆô½ÓÊÕÖÐ¶Ï
+  68   1          EA = 1;        // CPU×ÜÖÐ¶Ï
+  69   1          TR1 = 1;       // ¿ªÆô¶¨Ê±Æ÷T1¿ªÊ¼¼ÆÊý
+  70   1      }
+  71          
+  72          // ´®¿Ú·¢ËÍº¯Êý
+  73          void uart_send(uint8_t order_data)
+  74          {
+  75   1          SBUF = order_data;      // ½«Êý¾ÝÐ´Èë´®¿Ú»º³å¼Ä´æÆ÷¿ªÊ¼´«Êä
+  76   1          while(!TI);         // µÈ´ý´«ÊäÍê³É
+  77   1          TI = 0;           // Çå³ý´«ÊäÍê³É±êÖ¾
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 3   
+
+  78   1      }
   79          
-  80          void main()
-  81          {
-  82                  xdata u8 order_buffer[20];                                                                                                                  // ´æ·ÅÉú³ÉµÄÖ¸Áî
-  83                  xdata u8 order_buffer_len = 0;                                                                                                  // Ö¸Áî³¤¶È
-  84                  xdata u16 analysis_data = 0;                                                                                                        // Ó¦´ð°ü½âÎö³öÀ´µÄÊý¾Ý
-  85          
-  86                  timer0_init();
-  87          
-  88                  while(1)
-  89                  {
-  90                          // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-  91                          uart_init();
-  92                          servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
-  93          
-  94                          uart_send_buffer(order_buffer, order_buffer_len);
-  95          
-  96                          uart_init_recv();
-  97                          delay_ms(10);
-  98                          servo_set_torque_switch_analysis(receive_data);   
-  99                          delay_ms(1000);
- 100          
- 101                          // ÉèÖÃ¶æ»úµÄ¿ØÖÆÄ£Ê½
- 102                          uart_init();
- 103                          servo_set_control_mode(1, 1, order_buffer,&order_buffer_len);
- 104          
- 105                          uart_send_buffer(order_buffer, order_buffer_len);
- 106          
- 107                          uart_init_recv();
- 108                          delay_ms(10);
- 109                          servo_set_control_mode_analysis(receive_data);  
- 110                          delay_ms(1000);
- 111          
- 112                          // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
- 113                          uart_init();
- 114                          servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
- 115          
-C51 COMPILER V9.01   MAIN                                                                  07/23/2024 16:23:55 PAGE 3   
+  80          
+  81          void uart_send_buffer(uint8_t *buffer, uint16_t length)
+  82          {
+  83   1          uint16_t i;
+  84   1          for (i = 0; i < length; i++) {
+  85   2              uart_send(buffer[i]);
+  86   2          }
+  87   1      }
+  88          
+  89          
+  90          void main()
+  91          {
+  92   1        xdata uint8_t order_buffer[20];                                           // ´æ·ÅÉú³ÉµÄÖ¸Áî
+  93   1        xdata uint8_t order_buffer_len = 0;                                           // Ö¸Áî³¤¶È
+  94   1        xdata uint16_t analysis_data = 0;                                         // Ó¦´ð°ü½âÎö³öÀ´µÄÊý¾Ý
+  95   1        xdata uint16_t sync_write_velocity_base_target_position[4] = {1, 0, 2, 0};                       // Í¬²½Ð
+             -´¶à¸ö¶æ»ú¿ØËÙÄ¿±êÎ»ÖÃ
+  96   1        xdata uint16_t sync_write_velocity_base_target_velocity[5] = {1, 3600, 2, 3600};                 // Í¬²½Ð
+             -´¶à¸ö¶æ»ú¿ØËÙÄ¿±êËÙ¶È
+  97   1        xdata uint16_t sync_write_velocity_base_target_acc[5] = {1, 150, 2, 150};                        // Í¬²½Ð
+             -´¶à¸ö¶æ»ú¿ØËÙÄ¿±ê¼ÓËÙ¶È
+  98   1        xdata uint16_t sync_write_velocity_base_target_dec[5] = {1, 150, 2, 150};                        // Í¬²½Ð
+             -´¶à¸ö¶æ»ú¿ØËÙÄ¿±ê¼õËÙ¶È
+  99   1        xdata uint16_t sync_write_time_base_target_acc[5] = {1, 0, 2, 0};                                // Í¬²½Ð
+             -´¶à¸ö¶æ»ú¿ØÊ±Ä¿±ê¼ÓËÙ¶È
+ 100   1        xdata uint16_t sync_write_time_base_target_position_and_moving_time[10] = {1, 3000, 500, 2, 3000, 500};  
+             -         // Í¬²½Ð´¶à¸ö¶æ»ú¿ØÊ±Ä¿±êÔË¶¯Î»ÖÃºÍÔË¶¯Ê±¼ä
+ 101   1      
+ 102   1        timer0_init();
+ 103   1      
+ 104   1        while(1)
+ 105   1        {
+ 106   2      #if FACTORY_RESET_TEST
+                  // »Ö¸´³ö³§ÉèÖÃ
+                  uart_init();
+                  servo_factory_reset(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+                  
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_factory_reset_analysis(receive_data);
+                  delay_ms(1000);
+              #endif      
+ 117   2          
+ 118   2      #if PARAMETER_RESET_TEST
+                      // ²ÎÊýÖØÖÃ
+                  uart_init();
+                  servo_parameter_reset(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_parameter_reset_analysis(receive_data);
+                  delay_ms(1000);
+              #endif      
+ 129   2      
+ 130   2      #if CALIBRATION_TEST
+                      // Ð£ÕýÆ«ÒÆÖµ
+                  uart_init();
+                  servo_calibration(1, order_buffer,&order_buffer_len);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 4   
 
- 116                          uart_send_buffer(order_buffer, order_buffer_len);
- 117          
- 118                          uart_init_recv();
- 119                          delay_ms(10);
- 120                          servo_set_torque_switch_analysis(receive_data);   
- 121                          delay_ms(1000);
- 122          
- 123                          // ÉèÖÃ¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃºÍÄ¿±êÔËÐÐÊ±¼ä
- 124                          uart_init();
- 125                          servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_buffer_len);
- 126          
- 127                          uart_send_buffer(order_buffer, order_buffer_len);
- 128          
- 129                          uart_init_recv();
- 130                          delay_ms(10);
- 131          
- 132                          servo_set_time_base_target_position_and_moving_time_analysis(receive_data);              
- 133                          delay_ms(1000);
- 134          
- 135                          // ÉèÖÃ¶æ»úµÄ¿ØÊ±Ä¿±ê¼ÓËÙ¶ÈµÈ¼¶
- 136                          uart_init();
- 137                          servo_set_time_base_target_acc(1, 0, order_buffer,&order_buffer_len);
- 138                          uart_send_buffer(order_buffer, order_buffer_len);
- 139          
- 140                          uart_init_recv();
- 141                          delay_ms(10);
- 142          
- 143                          servo_set_time_base_target_acc_analysis(receive_data);   
- 144                          delay_ms(1000);
- 145          
- 146                          // ÉèÖÃ¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃºÍÄ¿±êÔËÐÐÊ±¼ä
- 147                          uart_init();
- 148                          servo_set_time_base_target_position_and_moving_time(1, 0, 1000, order_buffer,&order_buffer_len);
- 149          
- 150                          uart_send_buffer(order_buffer, order_buffer_len);
- 151          
- 152                          uart_init_recv();
- 153                          delay_ms(10);
- 154          
- 155                          servo_set_time_base_target_position_and_moving_time_analysis(receive_data);              
- 156                          delay_ms(1000);
- 157                          
- 158                  }               
- 159          }
- 160          
- 161          void uart() interrupt 4
- 162          {
- 163                  if(RI)                                          // ¼ì²é½ÓÊÕÖÐ¶Ï±êÖ¾
- 164                  {
- 165                          RI = 0;                                     // Çå³ý½ÓÊÕÖÐ¶Ï±êÖ¾
- 166                          receive_data[receive_len++] = SBUF;         // ½«½ÓÊÕµ½µÄÊý¾Ý´æ´¢µ½»º³åÇø
- 167                  }                               
- 168          }
- 169          
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_calibration_analysis(receive_data);
+                  delay_ms(1000);
+              #endif        
+ 141   2          
+ 142   2      #if REBOOT_TEST
+                      // ¶æ»úÖØÆô
+                  uart_init();
+                  servo_reboot(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  delay_ms(1000);
+              #endif    
+ 150   2      
+ 151   2      #if PING_TEST
+                  // ÏòIDÎª1µÄ¶æ»ú·¢ËÍPINGÖ¸Áî
+                  uart_init();
+                  servo_ping(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_ping_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              #endif  
+ 162   2      
+ 163   2      #if MODIFY_ID_TEST
+                      // ÐÞ¸Ä¶æ»úID²âÊÔ
+                  uart_init();
+                  servo_modify_known_id(1, 2, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_present_current_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              #endif
+ 174   2      
+ 175   2      #if MODIFY_UNKNOWN_ID_TEST
+                      // ÐÞ¸ÄÎ´ÖªID¶æ»úID²âÊÔ
+                  uart_init();
+                  servo_modify_unknown_id(2, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_present_current_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              #endif
+ 186   2      
+ 187   2      #if READ_TEST
+                      // ¶ÁÈ¡¶æ»úµÄµ±Ç°µçÁ÷
+                  uart_init();
+                  servo_read_present_current(1, order_buffer, &order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_present_current_analysis(receive_data, &analysis_data);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 5   
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄµ±Ç°Î»ÖÃ
+                  uart_init();
+                  servo_read_present_position(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_present_position_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄµ±Ç°ËÙ¶È
+                  uart_init();
+                  servo_read_present_velocity(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_present_velocity_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+                  
+                  // ¶ÁÈ¡¶æ»úµÄµ±Ç°µÄ¹æ»®Î»ÖÃ
+                  uart_init();
+                  servo_read_present_profile_position(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+              
+                  servo_read_present_profile_position_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄµ±Ç°¹æ»®ËÙ¶È
+                  uart_init();
+                  servo_read_present_profile_velocity(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+                  uart_init_recv();
+                  delay_ms(10);
+              
+                  servo_read_present_profile_velocity_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄµ±Ç°PWM
+                  uart_init();
+                  servo_read_present_pwm(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_present_pwm_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄµ±Ç°ÎÂ¶È
+                  uart_init();
+                  servo_read_present_temperature(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_present_temperature_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 6   
+
+              
+                  // ¶ÁÈ¡¶æ»úµÄµ±Ç°ÊäÈëµçÑ¹
+                  uart_init();
+                  servo_read_present_voltage(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_present_voltage_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ¿ØÊ±Ä¿±êÔËÐÐÊ±¼ä
+                  uart_init();
+                  servo_read_time_base_target_moving_time(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_time_base_target_moving_time_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃ
+                  uart_init();
+                  servo_read_time_base_target_position(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_time_base_target_position_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ¿ØÊ±¼ÓËÙ¶ÈµÈ¼¶
+                  uart_init();
+                  servo_read_time_base_target_acc(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_time_base_target_acc_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ¿ØËÙÄ¿±ê¼õËÙ¶È
+                  uart_init();
+                  servo_read_velocity_base_target_dec(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_velocity_base_target_dec_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ¿ØËÙÄ¿±ê¼ÓËÙ¶È
+                  uart_init();
+                  servo_read_velocity_base_target_acc(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_velocity_base_target_acc_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ¿ØËÙÄ¿±êËÙ¶È
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 7   
+
+                  uart_init();
+                  servo_read_velocity_base_target_velocity(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_velocity_base_target_velocity_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃ
+                  uart_init();
+                  servo_read_velocity_base_target_position(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_velocity_base_target_position_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÄ¿±êµçÁ÷
+                  uart_init();
+                  servo_read_target_current(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_target_current_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÄ¿±êPWM
+                  uart_init();
+                  servo_read_target_pwm(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_target_pwm_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+                  uart_init();
+                  servo_read_torque_switch(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_torque_switch_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄLED¿ª¹Ø
+                  uart_init();
+                  servo_read_led_switch(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_led_switch_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄFlash¿ª¹Ø
+                  uart_init();
+                  servo_read_flash_switch(1, order_buffer,&order_buffer_len);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 8   
+
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_flash_switch_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄµçÁ÷Ð£ÕýÖµ
+                  uart_init();
+                  servo_read_current_offset(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_current_offset_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÖÐÎ»Ð£ÕýÖµ
+                  uart_init();
+                  servo_read_calibration(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_calibration_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ¿ØÖÆÄ£Ê½
+                  uart_init();
+                  servo_read_control_mode(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_control_mode_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÐ¶ÔØ±£»¤Ìõ¼þ
+                  uart_init();
+                  servo_read_shutdown_condition(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_shutdown_condition_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄLED±¨¾¯Ìõ¼þ
+                  uart_init();
+                  servo_read_led_condition(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_led_condition_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÎ»ÖÃ¿ØÖÆDÔöÒæ
+                  uart_init();
+                  servo_read_position_control_d_gain(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 9   
+
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_position_control_d_gain_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÎ»ÖÃ¿ØÖÆIÔöÒæ
+                  uart_init();
+                  servo_read_position_control_i_gain(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_position_control_i_gain_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÎ»ÖÃ¿ØÖÆPÔöÒæ
+                  uart_init();
+                  servo_read_position_control_p_gain(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_position_control_p_gain_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄPWMµþ¼ÓÖµ
+                  uart_init();
+                  servo_read_pwm_punch(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_pwm_punch_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ·´×ªËÀÇø
+                  uart_init();
+                  servo_read_ccw_deadband(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_ccw_deadband_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÕý×ªËÀÇø
+                  uart_init();
+                  servo_read_cw_deadband(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_cw_deadband_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄµçÁ÷±£»¤Ê±¼ä
+                  uart_init();
+                  servo_read_current_shutdown_time(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 10  
+
+                  servo_read_current_shutdown_time_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄµçÁ÷ÉÏÏÞ
+                  uart_init();
+                  servo_read_max_current_limit(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_max_current_limit_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄPWMÉÏÏÞ
+                  uart_init();
+                  servo_read_max_pwm_limit(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_max_pwm_limit_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄµçÑ¹ÉÏÏÞ
+                  uart_init();
+                  servo_read_max_voltage_limit(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_max_voltage_limit_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄµçÑ¹ÏÂÏÞ
+                  uart_init();
+                  servo_read_min_voltage_limit(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_min_voltage_limit_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÎÂ¶ÈÉÏÏÞ
+                  uart_init();
+                  servo_read_max_temperature_limit(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_max_temperature_limit_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ×î´óÎ»ÖÃÏÞÖÆ
+                  uart_init();
+                  servo_read_max_angle_limit(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_max_angle_limit_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 11  
+
+              
+                  // ¶ÁÈ¡¶æ»úµÄ×îÐ¡Î»ÖÃÏÞÖÆ
+                  uart_init();
+                  servo_read_min_angle_limit(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_min_angle_limit_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ×´Ì¬·µ»Ø¼¶±ð
+                  uart_init();
+                  servo_read_return_level(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_return_level_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄÓ¦´ðÑÓÊ±Ê±¼ä
+                  uart_init();
+                  servo_read_return_delay_time(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_return_delay_time_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ²¨ÌØÂÊ
+                  uart_init();
+                  servo_read_baud_rate(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_baud_rate_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ³ö³§±àºÅ
+                  uart_init();
+                  servo_read_model_information(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_model_information_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              
+                  // ¶ÁÈ¡¶æ»úµÄ¹Ì¼þ°æ±¾ºÅ
+                  uart_init();
+                  servo_read_firmware_version(1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_read_firmware_version_analysis(receive_data, &analysis_data);
+                  delay_ms(1000);
+              #endif
+ 629   2      
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 12  
+
+ 630   2      #if WRITE_TEST
+ 631   2              // ÉèÖÃ¶æ»úµÄFlash¿ª¹Ø
+ 632   2          uart_init();
+ 633   2          servo_set_flash_switch(1, 1, order_buffer,&order_buffer_len);
+ 634   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 635   2      
+ 636   2          uart_init_recv();
+ 637   2          delay_ms(10);
+ 638   2      
+ 639   2          servo_set_flash_switch_analysis(receive_data);
+ 640   2          delay_ms(1000);
+ 641   2      
+ 642   2          // ÉèÖÃ¶æ»úµÄÓ¦´ðÑÓÊ±Ê±¼ä
+ 643   2          uart_init();
+ 644   2          servo_set_return_delay_time(1, 250,order_buffer,&order_buffer_len);
+ 645   2      
+ 646   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 647   2      
+ 648   2          uart_init_recv();
+ 649   2          delay_ms(10);
+ 650   2      
+ 651   2          servo_set_return_delay_time_analysis(receive_data);  
+ 652   2          delay_ms(1000);
+ 653   2      
+ 654   2          // ÉèÖÃ¶æ»úµÄ×´Ì¬·µ»Ø¼¶±ð
+ 655   2          uart_init();
+ 656   2          servo_set_return_level(1, 2, order_buffer,&order_buffer_len);
+ 657   2      
+ 658   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 659   2      
+ 660   2          uart_init_recv();
+ 661   2          delay_ms(10);
+ 662   2      
+ 663   2          servo_set_return_level_analysis(receive_data);     
+ 664   2          delay_ms(1000);
+ 665   2      
+ 666   2          // ÉèÖÃ¶æ»úµÄ²¨ÌØÂÊ
+ 667   2          uart_init();
+ 668   2          servo_set_baud_rate(1, 3, order_buffer,&order_buffer_len);
+ 669   2      
+ 670   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 671   2      
+ 672   2          uart_init_recv();
+ 673   2          delay_ms(10);
+ 674   2      
+ 675   2          servo_set_baud_rate_analysis(receive_data);    
+ 676   2          delay_ms(1000);
+ 677   2      
+ 678   2          // ÉèÖÃ¶æ»úµÄ×îÐ¡Î»ÖÃÏÞÖÆ
+ 679   2          uart_init();
+ 680   2          servo_set_min_angle_limit(1, 0, order_buffer,&order_buffer_len);
+ 681   2      
+ 682   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 683   2      
+ 684   2          uart_init_recv();
+ 685   2          delay_ms(10);
+ 686   2      
+ 687   2          servo_set_min_angle_limit_analysis(receive_data);  
+ 688   2          delay_ms(1000);
+ 689   2      
+ 690   2          // ÉèÖÃ¶æ»úµÄ×î´óÎ»ÖÃÏÞÖÆ
+ 691   2          uart_init();
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 13  
+
+ 692   2          servo_set_max_angle_limit(1, 3000, order_buffer,&order_buffer_len);
+ 693   2      
+ 694   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 695   2      
+ 696   2          uart_init_recv();
+ 697   2          delay_ms(10);
+ 698   2      
+ 699   2          servo_set_max_angle_limit_analysis(receive_data);  
+ 700   2          delay_ms(1000);
+ 701   2      
+ 702   2          // ÉèÖÃ¶æ»úµÄÎÂ¶ÈÉÏÏÞ
+ 703   2          uart_init();
+ 704   2          servo_set_max_temperature_limit(1, 100, order_buffer,&order_buffer_len);
+ 705   2      
+ 706   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 707   2      
+ 708   2          uart_init_recv();
+ 709   2          delay_ms(10);
+ 710   2      
+ 711   2          servo_set_max_temperature_limit_analysis(receive_data);   
+ 712   2          delay_ms(1000);
+ 713   2      
+ 714   2          // ÉèÖÃ¶æ»úµÄµçÑ¹ÉÏÏÞ
+ 715   2          uart_init();
+ 716   2          servo_set_max_voltage_limit(1,90, order_buffer,&order_buffer_len);
+ 717   2      
+ 718   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 719   2      
+ 720   2          uart_init_recv();
+ 721   2          delay_ms(10);
+ 722   2      
+ 723   2          servo_set_max_voltage_limit_analysis(receive_data);   
+ 724   2          delay_ms(1000);
+ 725   2      
+ 726   2          // ÉèÖÃ¶æ»úµÄµçÑ¹ÏÂÏÞ
+ 727   2          uart_init();
+ 728   2          servo_set_min_voltage_limit(1, 33, order_buffer,&order_buffer_len);
+ 729   2      
+ 730   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 731   2      
+ 732   2          uart_init_recv();
+ 733   2          delay_ms(10);
+ 734   2      
+ 735   2          servo_set_min_voltage_limit_analysis(receive_data);   
+ 736   2          delay_ms(1000);
+ 737   2      
+ 738   2          // ÉèÖÃ¶æ»úµÄPWMÉÏÏÞ
+ 739   2          uart_init();
+ 740   2          servo_set_max_pwm_limit(1, 1000, order_buffer,&order_buffer_len);
+ 741   2      
+ 742   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 743   2      
+ 744   2          uart_init_recv();
+ 745   2          delay_ms(10);
+ 746   2      
+ 747   2          servo_set_max_pwm_limit_analysis(receive_data);   
+ 748   2          delay_ms(1000);
+ 749   2      
+ 750   2          // ÉèÖÃ¶æ»úµÄµçÁ÷ÉÏÏÞ
+ 751   2          uart_init();
+ 752   2          servo_set_max_current_limit(1, 400, order_buffer,&order_buffer_len);
+ 753   2      
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 14  
+
+ 754   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 755   2      
+ 756   2          uart_init_recv();
+ 757   2          delay_ms(10);
+ 758   2      
+ 759   2          servo_set_max_current_limit_analysis(receive_data);   
+ 760   2          delay_ms(1000);
+ 761   2      
+ 762   2          // ÉèÖÃ¶æ»úµÄµçÁ÷±£»¤Ê±¼ä
+ 763   2          uart_init();
+ 764   2          servo_set_current_shutdown_time(1, 1000, order_buffer,&order_buffer_len);
+ 765   2      
+ 766   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 767   2      
+ 768   2          uart_init_recv();
+ 769   2          delay_ms(10);
+ 770   2      
+ 771   2          servo_set_current_shutdown_time_analysis(receive_data); 
+ 772   2          delay_ms(1000);
+ 773   2      
+ 774   2          // ÉèÖÃ¶æ»úµÄÕý×ªËÀÇø
+ 775   2          uart_init();
+ 776   2          servo_set_cw_deadband(1, 1, order_buffer,&order_buffer_len);
+ 777   2      
+ 778   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 779   2      
+ 780   2          uart_init_recv();
+ 781   2          delay_ms(10);
+ 782   2      
+ 783   2          servo_set_cw_deadband_analysis(receive_data);   
+ 784   2          delay_ms(1000);
+ 785   2      
+ 786   2          // ÉèÖÃ¶æ»úµÄ·´×ªËÀÇø
+ 787   2          uart_init();
+ 788   2          servo_set_ccw_deadband(1, 1, order_buffer,&order_buffer_len);
+ 789   2      
+ 790   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 791   2      
+ 792   2          uart_init_recv();
+ 793   2          delay_ms(10);
+ 794   2      
+ 795   2          servo_set_ccw_deadband_analysis(receive_data); 
+ 796   2          delay_ms(1000);
+ 797   2      
+ 798   2          // ÉèÖÃ¶æ»úµÄPWMµþ¼ÓÖµ
+ 799   2          uart_init();
+ 800   2          servo_set_pwm_punch(1, 1, order_buffer,&order_buffer_len);
+ 801   2      
+ 802   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 803   2      
+ 804   2          uart_init_recv();
+ 805   2          delay_ms(10);
+ 806   2      
+ 807   2          servo_set_pwm_punch_analysis(receive_data);    
+ 808   2          delay_ms(1000);
+ 809   2      
+ 810   2          // ÉèÖÃ¶æ»úµÄÎ»ÖÃ¿ØÖÆPÔöÒæ
+ 811   2          uart_init();
+ 812   2          servo_set_position_control_p_gain(1, 6000, order_buffer,&order_buffer_len);
+ 813   2      
+ 814   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 815   2      
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 15  
+
+ 816   2          uart_init_recv();
+ 817   2          delay_ms(10);
+ 818   2      
+ 819   2          servo_set_position_control_p_gain_analysis(receive_data); 
+ 820   2          delay_ms(1000);
+ 821   2      
+ 822   2          // ÉèÖÃ¶æ»úµÄÎ»ÖÃ¿ØÖÆIÔöÒæ
+ 823   2          uart_init();
+ 824   2          servo_set_position_control_i_gain(1, 1, order_buffer,&order_buffer_len);
+ 825   2      
+ 826   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 827   2      
+ 828   2          uart_init_recv();
+ 829   2          delay_ms(10);
+ 830   2      
+ 831   2          servo_set_position_control_i_gain_analysis(receive_data);  
+ 832   2          delay_ms(1000);
+ 833   2      
+ 834   2          // ÉèÖÃ¶æ»úµÄÎ»ÖÃ¿ØÖÆDÔöÒæ
+ 835   2          uart_init();
+ 836   2          servo_set_position_control_d_gain(1, 151, order_buffer,&order_buffer_len);
+ 837   2      
+ 838   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 839   2      
+ 840   2          uart_init_recv();
+ 841   2          delay_ms(10);
+ 842   2      
+ 843   2          servo_set_position_control_d_gain_analysis(receive_data); 
+ 844   2          delay_ms(1000);
+ 845   2      
+ 846   2          // ÉèÖÃ¶æ»úµÄLED±¨¾¯Ìõ¼þ
+ 847   2          uart_init();
+ 848   2          servo_set_led_condition(1, 36, order_buffer,&order_buffer_len);
+ 849   2      
+ 850   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 851   2      
+ 852   2          uart_init_recv();
+ 853   2          delay_ms(10);
+ 854   2      
+ 855   2          servo_set_led_condition_analysis(receive_data);      
+ 856   2          delay_ms(1000);
+ 857   2      
+ 858   2          // ÉèÖÃ¶æ»úµÄÐ¶ÔØ±£»¤Ìõ¼þ
+ 859   2          uart_init();
+ 860   2          servo_set_shutdown_conditions(1, 36, order_buffer,&order_buffer_len);
+ 861   2      
+ 862   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 863   2      
+ 864   2          uart_init_recv();
+ 865   2          delay_ms(10);
+ 866   2      
+ 867   2          servo_set_shutdown_conditions_analysis(receive_data); 
+ 868   2          delay_ms(1000);
+ 869   2      
+ 870   2          // ÉèÖÃ¶æ»úµÄLED¿ª¹Ø
+ 871   2          uart_init();
+ 872   2          servo_set_led_switch(1, 1, order_buffer,&order_buffer_len);
+ 873   2      
+ 874   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 875   2      
+ 876   2          uart_init_recv();
+ 877   2          delay_ms(10);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 16  
+
+ 878   2      
+ 879   2          servo_set_led_switch_analysis(receive_data);   
+ 880   2          delay_ms(1000);
+ 881   2      
+ 882   2          // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+ 883   2          uart_init();
+ 884   2          servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
+ 885   2      
+ 886   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 887   2      
+ 888   2          uart_init_recv();
+ 889   2          delay_ms(10);
+ 890   2          servo_set_torque_switch_analysis(receive_data);   
+ 891   2          delay_ms(1000);
+ 892   2      
+ 893   2          // ÉèÖÃ¶æ»úµÄ¿ØÖÆÄ£Ê½
+ 894   2          uart_init();
+ 895   2          servo_set_control_mode(1, 3, order_buffer,&order_buffer_len);
+ 896   2      
+ 897   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 898   2      
+ 899   2          uart_init_recv();
+ 900   2          delay_ms(10);
+ 901   2          servo_set_control_mode_analysis(receive_data);  
+ 902   2          delay_ms(1000);
+ 903   2      
+ 904   2          // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+ 905   2          uart_init();
+ 906   2          servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
+ 907   2      
+ 908   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 909   2      
+ 910   2          uart_init_recv();
+ 911   2          delay_ms(10);
+ 912   2          servo_set_torque_switch_analysis(receive_data);   
+ 913   2          delay_ms(1000);
+ 914   2      
+ 915   2          // ÉèÖÃ¶æ»úµÄÄ¿±êPWM
+ 916   2          uart_init();
+ 917   2          servo_set_target_pwm(1, 1000, order_buffer,&order_buffer_len);
+ 918   2      
+ 919   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 920   2      
+ 921   2          uart_init_recv();
+ 922   2          delay_ms(10);
+ 923   2      
+ 924   2          servo_set_target_pwm_analysis(receive_data);  
+ 925   2          delay_ms(3000);
+ 926   2      
+ 927   2          // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+ 928   2          uart_init();
+ 929   2          servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
+ 930   2      
+ 931   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 932   2      
+ 933   2          uart_init_recv();
+ 934   2          delay_ms(10);
+ 935   2          servo_set_torque_switch_analysis(receive_data);   
+ 936   2          delay_ms(1000);
+ 937   2      
+ 938   2          // ÉèÖÃ¶æ»úµÄ¿ØÖÆÄ£Ê½
+ 939   2          uart_init();
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 17  
+
+ 940   2          servo_set_control_mode(1, 2, order_buffer,&order_buffer_len);
+ 941   2      
+ 942   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 943   2      
+ 944   2          uart_init_recv();
+ 945   2          delay_ms(10);
+ 946   2          servo_set_control_mode_analysis(receive_data);  
+ 947   2          delay_ms(1000);
+ 948   2      
+ 949   2          // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+ 950   2          uart_init();
+ 951   2          servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
+ 952   2      
+ 953   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 954   2      
+ 955   2          uart_init_recv();
+ 956   2          delay_ms(10);
+ 957   2          servo_set_torque_switch_analysis(receive_data);   
+ 958   2          delay_ms(1000);
+ 959   2      
+ 960   2          // ÉèÖÃ¶æ»úµÄÄ¿±êµçÁ÷
+ 961   2          uart_init();
+ 962   2          servo_set_target_current(1, -1000, order_buffer,&order_buffer_len);
+ 963   2      
+ 964   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 965   2      
+ 966   2          uart_init_recv();
+ 967   2          delay_ms(10);
+ 968   2      
+ 969   2          servo_set_target_current_analysis(receive_data);   
+ 970   2          delay_ms(3000);
+ 971   2      
+ 972   2          // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+ 973   2          uart_init();
+ 974   2          servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
+ 975   2      
+ 976   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 977   2      
+ 978   2          uart_init_recv();
+ 979   2          delay_ms(10);
+ 980   2          servo_set_torque_switch_analysis(receive_data);   
+ 981   2          delay_ms(1000);
+ 982   2      
+ 983   2          // ÉèÖÃ¶æ»úµÄ¿ØÖÆÄ£Ê½
+ 984   2          uart_init();
+ 985   2          servo_set_control_mode(1, 1, order_buffer,&order_buffer_len);
+ 986   2      
+ 987   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 988   2      
+ 989   2          uart_init_recv();
+ 990   2          delay_ms(10);
+ 991   2          servo_set_control_mode_analysis(receive_data);  
+ 992   2          delay_ms(1000);
+ 993   2      
+ 994   2          // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+ 995   2          uart_init();
+ 996   2          servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
+ 997   2      
+ 998   2          uart_send_buffer(order_buffer, order_buffer_len);
+ 999   2      
+1000   2          uart_init_recv();
+1001   2          delay_ms(10);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 18  
+
+1002   2          servo_set_torque_switch_analysis(receive_data);   
+1003   2          delay_ms(1000);
+1004   2      
+1005   2          // ÉèÖÃ¶æ»úµÄ¿ØËÙÄ¿±êËÙ¶È
+1006   2          uart_init();
+1007   2          servo_set_velocity_base_target_velocity(1, 3600, order_buffer,&order_buffer_len);
+1008   2      
+1009   2          uart_send_buffer(order_buffer, order_buffer_len);
+1010   2      
+1011   2          uart_init_recv();
+1012   2          delay_ms(10);
+1013   2      
+1014   2          servo_set_velocity_base_target_velocity_analysis(receive_data); 
+1015   2          delay_ms(1000);
+1016   2      
+1017   2          // ÉèÖÃ¶æ»úµÄ¿ØËÙÄ¿±ê¼ÓËÙ¶È
+1018   2          uart_init();
+1019   2          servo_set_velocity_base_target_acc(1, 150, order_buffer,&order_buffer_len);
+1020   2      
+1021   2          uart_send_buffer(order_buffer, order_buffer_len);
+1022   2      
+1023   2          uart_init_recv();
+1024   2          delay_ms(10);
+1025   2      
+1026   2          servo_set_velocity_base_target_acc_analysis(receive_data);  
+1027   2          delay_ms(1000);
+1028   2      
+1029   2          // ÉèÖÃ¶æ»úµÄ¿ØËÙÄ¿±ê¼õËÙ¶È
+1030   2          uart_init();
+1031   2          servo_set_velocity_base_target_dec(1, 150, order_buffer,&order_buffer_len);
+1032   2      
+1033   2          uart_send_buffer(order_buffer, order_buffer_len);
+1034   2      
+1035   2          uart_init_recv();
+1036   2          delay_ms(10);
+1037   2      
+1038   2          servo_set_velocity_base_target_dec_analysis(receive_data);  
+1039   2          delay_ms(1000);
+1040   2      
+1041   2          // ÉèÖÃ¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃ
+1042   2          uart_init();
+1043   2          servo_set_velocity_base_target_position(1, 0, order_buffer,&order_buffer_len);
+1044   2      
+1045   2          uart_send_buffer(order_buffer, order_buffer_len);
+1046   2      
+1047   2          uart_init_recv();
+1048   2          delay_ms(10);
+1049   2          servo_set_velocity_base_target_position_analysis(receive_data);   
+1050   2          delay_ms(1000);
+1051   2      
+1052   2          // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+1053   2          uart_init();
+1054   2          servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
+1055   2      
+1056   2          uart_send_buffer(order_buffer, order_buffer_len);
+1057   2      
+1058   2          uart_init_recv();
+1059   2          delay_ms(10);
+1060   2          servo_set_torque_switch_analysis(receive_data);   
+1061   2          delay_ms(1000);
+1062   2      
+1063   2          // ÉèÖÃ¶æ»úµÄ¿ØÖÆÄ£Ê½
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 19  
+
+1064   2          uart_init();
+1065   2          servo_set_control_mode(1, 0, order_buffer,&order_buffer_len);
+1066   2      
+1067   2          uart_send_buffer(order_buffer, order_buffer_len);
+1068   2      
+1069   2          uart_init_recv();
+1070   2          delay_ms(10);
+1071   2          servo_set_control_mode_analysis(receive_data);  
+1072   2          delay_ms(1000);
+1073   2      
+1074   2          // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+1075   2          uart_init();
+1076   2          servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
+1077   2      
+1078   2          uart_send_buffer(order_buffer, order_buffer_len);
+1079   2      
+1080   2          uart_init_recv();
+1081   2          delay_ms(10);
+1082   2          servo_set_torque_switch_analysis(receive_data);    
+1083   2          delay_ms(1000);
+1084   2      
+1085   2          // ÉèÖÃ¶æ»úµÄ¿ØÊ±Ä¿±ê¼ÓËÙ¶ÈµÈ¼¶
+1086   2          uart_init();
+1087   2          servo_set_time_base_target_acc(1, 0, order_buffer,&order_buffer_len);
+1088   2          uart_send_buffer(order_buffer, order_buffer_len);
+1089   2      
+1090   2          uart_init_recv();
+1091   2          delay_ms(10);
+1092   2      
+1093   2          servo_set_time_base_target_acc_analysis(receive_data);   
+1094   2          delay_ms(1000);
+1095   2      
+1096   2          // ÉèÖÃ¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃºÍÄ¿±êÔËÐÐÊ±¼ä
+1097   2          uart_init();
+1098   2          servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_buffer_len);
+1099   2      
+1100   2          uart_send_buffer(order_buffer, order_buffer_len);
+1101   2      
+1102   2          uart_init_recv();
+1103   2          delay_ms(10);
+1104   2      
+1105   2          servo_set_time_base_target_position_and_moving_time_analysis(receive_data);    
+1106   2          delay_ms(1000);
+1107   2      #endif
+1108   2      
+1109   2      #if SYNC_WRITE_TEST
+                      // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+                  uart_init();
+                  servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_torque_switch_analysis(receive_data);   
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄ¿ØÖÆÄ£Ê½
+                  uart_init();
+                  servo_set_control_mode(1, 1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 20  
+
+                  delay_ms(10);
+                  servo_set_control_mode_analysis(receive_data);    
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+                  uart_init();
+                  servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_torque_switch_analysis(receive_data);    
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+                  uart_init();
+                  servo_set_torque_switch(2, 0, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_torque_switch_analysis(receive_data);   
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄ¿ØÖÆÄ£Ê½
+                  uart_init();
+                  servo_set_control_mode(2, 1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_control_mode_analysis(receive_data);     
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+                  uart_init();
+                  servo_set_torque_switch(2, 1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_torque_switch_analysis(receive_data);   
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±ê¼ÓËÙ¶È
+                  uart_init();
+                  servo_sync_write_velocity_base_target_acc(2, sync_write_velocity_base_target_acc, order_buffer,&order_bu
+             -ffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±ê¼õËÙ¶È
+                  uart_init();
+                  servo_sync_write_velocity_base_target_dec(2, sync_write_velocity_base_target_dec, order_buffer,&order_bu
+             -ffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±êËÙ¶È
+                  uart_init();
+                  servo_sync_write_velocity_base_target_velocity(2, sync_write_velocity_base_target_velocity, order_buffer
+             -,&order_buffer_len);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 21  
+
+                  uart_send_buffer(order_buffer, order_buffer_len);
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃ
+                  uart_init();
+                  servo_sync_write_velocity_base_target_position(2, sync_write_velocity_base_target_position, order_buffer
+             -,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+                  uart_init();
+                  servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_torque_switch_analysis(receive_data);    
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄ¿ØÖÆÄ£Ê½
+                  uart_init();
+                  servo_set_control_mode(1, 0, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_control_mode_analysis(receive_data);    
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+                  uart_init();
+                  servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_torque_switch_analysis(receive_data);   
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+                  uart_init();
+                  servo_set_torque_switch(2, 0, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_torque_switch_analysis(receive_data);    
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄ¿ØÖÆÄ£Ê½
+                  uart_init();
+                  servo_set_control_mode(2, 0, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_control_mode_analysis(receive_data);  
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+                  uart_init();
+C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 22  
+
+                  servo_set_torque_switch(2, 1, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+              
+                  uart_init_recv();
+                  delay_ms(10);
+                  servo_set_torque_switch_analysis(receive_data); 
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØÊ±Ä¿±ê¼ÓËÙ¶ÈµÈ¼¶
+                  uart_init();
+                  servo_sync_write_time_base_target_acc(1,sync_write_time_base_target_acc, order_buffer,&order_buffer_len)
+             -;
+                  uart_send_buffer(order_buffer, order_buffer_len);
+                  delay_ms(1000);
+              
+                  // ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃºÍÔË¶¯Ê±¼ä
+                  uart_init();
+                  servo_sync_write_time_base_target_position_and_moving_time(2, sync_write_time_base_target_position_and_m
+             -oving_time, order_buffer,&order_buffer_len);
+                  uart_send_buffer(order_buffer, order_buffer_len);
+                  delay_ms(1000);
+              #endif
+1266   2      
+1267   2      
+1268   2        }   
+1269   1      }
+1270          
+1271          void uart() interrupt 4
+1272          {
+1273   1        if(RI)                                          // ¼ì²é½ÓÊÕÖÐ¶Ï±êÖ¾
+1274   1        {
+1275   2          RI = 0;                                     // Çå³ý½ÓÊÕÖÐ¶Ï±êÖ¾
+1276   2          receive_data[receive_len++] = SBUF;         // ½«½ÓÊÕµ½µÄÊý¾Ý´æ´¢µ½»º³åÇø
+1277   2        }       
+1278   1      }
+1279          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =  16052    ----
+   CONSTANT SIZE    =    262    ----
+   XDATA SIZE       =     23    1835
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  39 WARNING(S),  0 ERROR(S)

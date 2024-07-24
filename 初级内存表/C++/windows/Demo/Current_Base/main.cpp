@@ -102,7 +102,7 @@ int main()
     Sleep(20);
 
     //设置舵机的目标电流
-    servo.servo_set_target_current(1, -1000, order_buffer,&order_len);
+    servo.servo_set_target_current(1, 100, order_buffer,&order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {

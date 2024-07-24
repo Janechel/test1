@@ -102,7 +102,7 @@ int main()
     Sleep(20);
 
     //设置舵机的目标PWM
-    servo.servo_set_target_pwm(1, 1000, order_buffer,&order_len);
+    servo.servo_set_target_pwm(1, 500, order_buffer,&order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) 
     { 

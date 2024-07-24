@@ -1,9 +1,8 @@
 #include "reg52.h"
 #include "servo.c"
-#include <stdlib.h>
 
 #define READ_TEST 0                 // 读取舵机数据测试
-#define WRITE_TEST 0                // 写入舵机数据测试
+#define WRITE_TEST 1                // 写入舵机数据测试
 #define SYNC_WRITE_TEST 0           // 同步写测试
 #define PING_TEST 0                 // PING命令测试
 #define FACTORY_RESET_TEST 0        // 恢复出厂设置测试
@@ -13,11 +12,10 @@
 #define MODIFY_ID_TEST 0            // 修改舵机ID测试
 #define MODIFY_UNKNOWN_ID_TEST 0    // 修改未知ID舵机ID测试
 
+uint16_t ms_count;
 
-u16 ms_count;
-
-xdata u8 receive_data[20] = {0};
-xdata u8 receive_len = 0;          // 接收应答包长度
+xdata uint8_t receive_data[20] = {0};
+xdata uint8_t receive_len = 0;          // 接收应答包长度
 
 // time0初始化做延时
 void timer0_init()
@@ -31,7 +29,7 @@ void timer0_init()
 }
 
 // 延时函数
-void delay_ms(u16 ms)
+void delay_ms(uint16_t ms)
 {
     ms_count =  2 * ms;   // 因为开了双倍速6T，所以这里延时时间需要乘以2
     while (ms_count);
@@ -72,7 +70,7 @@ void uart_init_recv()
 }
 
 // 串口发送函数
-void uart_send(u8 order_data)
+void uart_send(uint8_t order_data)
 {
     SBUF = order_data;      // 将数据写入串口缓冲寄存器开始传输
     while(!TI);    			// 等待传输完成
@@ -80,9 +78,9 @@ void uart_send(u8 order_data)
 }
 
 
-void uart_send_buffer(u8 *buffer, u16 length)
+void uart_send_buffer(uint8_t *buffer, uint16_t length)
 {
-    u16 i;
+    uint16_t i;
     for (i = 0; i < length; i++) {
         uart_send(buffer[i]);
     }
@@ -91,15 +89,15 @@ void uart_send_buffer(u8 *buffer, u16 length)
 
 void main()
 {
-	xdata u8 order_buffer[20];												                    // 存放生成的指令
-	xdata u8 order_buffer_len = 0;										                        // 指令长度
-	xdata u16 analysis_data = 0;											                    // 应答包解析出来的数据
-	xdata u16 sync_write_velocity_base_target_position[4] = {1, 0, 2, 0};                       // 同步写多个舵机控速目标位置
-	xdata u16 sync_write_velocity_base_target_velocity[5] = {1, 3600, 2, 3600};                 // 同步写多个舵机控速目标速度
-	xdata u16 sync_write_velocity_base_target_acc[5] = {1, 150, 2, 150};                        // 同步写多个舵机控速目标加速度
-	xdata u16 sync_write_velocity_base_target_dec[5] = {1, 150, 2, 150};                        // 同步写多个舵机控速目标减速度
-	xdata u16 sync_write_time_base_target_acc[5] = {1, 0, 2, 0};                                // 同步写多个舵机控时目标加速度
-	xdata u16 sync_write_time_base_target_position_and_moving_time[10] = {1, 3000, 500, 2, 3000, 500};           // 同步写多个舵机控时目标运动位置和运动时间
+	xdata uint8_t order_buffer[20];												                    // 存放生成的指令
+	xdata uint8_t order_buffer_len = 0;										                        // 指令长度
+	xdata uint16_t analysis_data = 0;											                    // 应答包解析出来的数据
+	xdata uint16_t sync_write_velocity_base_target_position[4] = {1, 0, 2, 0};                       // 同步写多个舵机控速目标位置
+	xdata uint16_t sync_write_velocity_base_target_velocity[5] = {1, 3600, 2, 3600};                 // 同步写多个舵机控速目标速度
+	xdata uint16_t sync_write_velocity_base_target_acc[5] = {1, 150, 2, 150};                        // 同步写多个舵机控速目标加速度
+	xdata uint16_t sync_write_velocity_base_target_dec[5] = {1, 150, 2, 150};                        // 同步写多个舵机控速目标减速度
+	xdata uint16_t sync_write_time_base_target_acc[5] = {1, 0, 2, 0};                                // 同步写多个舵机控时目标加速度
+	xdata uint16_t sync_write_time_base_target_position_and_moving_time[10] = {1, 3000, 500, 2, 3000, 500};           // 同步写多个舵机控时目标运动位置和运动时间
 
 	timer0_init();
 
