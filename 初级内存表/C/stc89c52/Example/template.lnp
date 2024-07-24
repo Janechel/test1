@@ -1,0 +1,5 @@
+"main.obj" 
+TO "template" 
+
+DISABLEWARNING (16) 
+REMOVEUNUSED 

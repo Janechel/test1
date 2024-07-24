@@ -1,0 +1,186 @@
+C51 COMPILER V9.01   MAIN                                                                  07/23/2024 16:23:55 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: D:\keil4\C51\BIN\C51.EXE main.c OBJECTADVANCED OPTIMIZE(9,SIZE) BROWSE INCDIR(D:\STC89C52_SDK;.\.id
+                    -ea;D:\STC89C52_SDK;..\..\src) DEBUG
+
+line level    source
+
+   1          #include "reg52.h"
+   2          #include "servo.c"
+   3          #include <stdlib.h>
+   4          
+   5          u16 ms_count;
+*** ERROR C129 IN LINE 5 OF MAIN.C: missing ';' before 'ms_count'
+   6          
+   7          xdata u8 receive_data[20] = {0};
+   8          xdata u8 receive_len = 0;          // 接收应答包长度
+   9          
+  10          // time0初始化做延时
+  11          void timer0_init()
+  12          {
+  13              TMOD |= 0x01;
+  14              TH0 = 0xFC;
+  15              TL0 = 0x67;
+  16              ET0 = 1;
+  17              EA = 1;
+  18              TR0 = 1;
+  19          }
+  20          
+  21          // 延时函数
+  22          void delay_ms(u16 ms)
+  23          {
+  24              ms_count =  2 * ms;   // 因为开了双倍速6T，所以这里延时时间需要乘以2
+  25              while (ms_count);
+  26          }
+  27          
+  28          // 定时器中断函数
+  29          void timer0_isr() interrupt 1 using 1
+  30          {
+  31              TH0 = 0xFC;
+  32              TL0 = 0x67;
+  33              if (ms_count)
+  34                  ms_count--;
+  35          }
+  36          
+  37          // 串口初始化
+  38          void uart_init()
+  39          {
+  40                  TMOD|=0X20;        // 8位自动重装载定时器
+  41                  SCON=0X40;         // 8位UART，波特率可变
+  42                  PCON=0X80;         // 波特率加倍
+  43                  TH1=0xff;          // 设置波特率为115200
+  44                  TL1=0xff;
+  45              ES=0;                  // 关闭接收中断
+  46              EA=1;                  // CPU总中断
+  47              TR1=1;                 // 开启定时器T1开始计数
+  48          }
+  49          
+  50          void uart_init_recv()
+  51          {
+  52              TMOD |= 0x20;  // 8位自动重装载定时器
+  53              SCON = 0x50;   // 8位UART，波特率可变，并开启串行接收
+C51 COMPILER V9.01   MAIN                                                                  07/23/2024 16:23:55 PAGE 2   
+
+  54              PCON = 0x80;   // 波特率加倍
+  55              TH1 = 0xff;    // 设置波特率为115200
+  56              TL1 = 0xff;
+  57              ES = 1;        // 开启接收中断
+  58              EA = 1;        // CPU总中断
+  59              TR1 = 1;       // 开启定时器T1开始计数
+  60          }
+  61          
+  62          // 串口发送函数
+  63          void uart_send(u8 order_data)
+  64          {
+  65              SBUF = order_data;      // 将数据写入串口缓冲寄存器开始传输
+  66              while(!TI);                         // 等待传输完成
+  67              TI = 0;                             // 清除传输完成标志
+  68          }
+  69          
+  70          
+  71          void uart_send_buffer(u8 *buffer, u16 length)
+  72          {
+  73              u16 i;
+  74              for (i = 0; i < length; i++) {
+  75                  uart_send(buffer[i]);
+  76              }
+  77          }
+  78          
+  79          
+  80          void main()
+  81          {
+  82                  xdata u8 order_buffer[20];                                                                                                                  // 存放生成的指令
+  83                  xdata u8 order_buffer_len = 0;                                                                                                  // 指令长度
+  84                  xdata u16 analysis_data = 0;                                                                                                        // 应答包解析出来的数据
+  85          
+  86                  timer0_init();
+  87          
+  88                  while(1)
+  89                  {
+  90                          // 设置舵机的扭矩开关
+  91                          uart_init();
+  92                          servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
+  93          
+  94                          uart_send_buffer(order_buffer, order_buffer_len);
+  95          
+  96                          uart_init_recv();
+  97                          delay_ms(10);
+  98                          servo_set_torque_switch_analysis(receive_data);   
+  99                          delay_ms(1000);
+ 100          
+ 101                          // 设置舵机的控制模式
+ 102                          uart_init();
+ 103                          servo_set_control_mode(1, 1, order_buffer,&order_buffer_len);
+ 104          
+ 105                          uart_send_buffer(order_buffer, order_buffer_len);
+ 106          
+ 107                          uart_init_recv();
+ 108                          delay_ms(10);
+ 109                          servo_set_control_mode_analysis(receive_data);  
+ 110                          delay_ms(1000);
+ 111          
+ 112                          // 设置舵机的扭矩开关
+ 113                          uart_init();
+ 114                          servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
+ 115          
+C51 COMPILER V9.01   MAIN                                                                  07/23/2024 16:23:55 PAGE 3   
+
+ 116                          uart_send_buffer(order_buffer, order_buffer_len);
+ 117          
+ 118                          uart_init_recv();
+ 119                          delay_ms(10);
+ 120                          servo_set_torque_switch_analysis(receive_data);   
+ 121                          delay_ms(1000);
+ 122          
+ 123                          // 设置舵机的控时目标位置和目标运行时间
+ 124                          uart_init();
+ 125                          servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_buffer_len);
+ 126          
+ 127                          uart_send_buffer(order_buffer, order_buffer_len);
+ 128          
+ 129                          uart_init_recv();
+ 130                          delay_ms(10);
+ 131          
+ 132                          servo_set_time_base_target_position_and_moving_time_analysis(receive_data);              
+ 133                          delay_ms(1000);
+ 134          
+ 135                          // 设置舵机的控时目标加速度等级
+ 136                          uart_init();
+ 137                          servo_set_time_base_target_acc(1, 0, order_buffer,&order_buffer_len);
+ 138                          uart_send_buffer(order_buffer, order_buffer_len);
+ 139          
+ 140                          uart_init_recv();
+ 141                          delay_ms(10);
+ 142          
+ 143                          servo_set_time_base_target_acc_analysis(receive_data);   
+ 144                          delay_ms(1000);
+ 145          
+ 146                          // 设置舵机的控时目标位置和目标运行时间
+ 147                          uart_init();
+ 148                          servo_set_time_base_target_position_and_moving_time(1, 0, 1000, order_buffer,&order_buffer_len);
+ 149          
+ 150                          uart_send_buffer(order_buffer, order_buffer_len);
+ 151          
+ 152                          uart_init_recv();
+ 153                          delay_ms(10);
+ 154          
+ 155                          servo_set_time_base_target_position_and_moving_time_analysis(receive_data);              
+ 156                          delay_ms(1000);
+ 157                          
+ 158                  }               
+ 159          }
+ 160          
+ 161          void uart() interrupt 4
+ 162          {
+ 163                  if(RI)                                          // 检查接收中断标志
+ 164                  {
+ 165                          RI = 0;                                     // 清除接收中断标志
+ 166                          receive_data[receive_len++] = SBUF;         // 将接收到的数据存储到缓冲区
+ 167                  }                               
+ 168          }
+ 169          
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)
