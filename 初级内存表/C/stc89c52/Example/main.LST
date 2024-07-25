@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   13          #define MODIFY_UNKNOWN_ID_TEST 0    // 修改未知ID舵机ID测试
   14          
   15          uint16_t ms_count;
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 2   
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 2   
 
   16          
   17          xdata uint8_t receive_data[20] = {0};
@@ -126,7 +126,7 @@ line level    source
   75   1          SBUF = order_data;      // 将数据写入串口缓冲寄存器开始传输
   76   1          while(!TI);         // 等待传输完成
   77   1          TI = 0;           // 清除传输完成标志
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 3   
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 3   
 
   78   1      }
   79          
@@ -190,7 +190,7 @@ line level    source
                       // 校正偏移值
                   uart_init();
                   servo_calibration(1, order_buffer,&order_buffer_len);
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 4   
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 4   
 
                   uart_send_buffer(order_buffer, order_buffer_len);
               
@@ -254,7 +254,7 @@ line level    source
                   uart_init_recv();
                   delay_ms(10);
                   servo_read_present_current_analysis(receive_data, &analysis_data);
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 5   
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 5   
 
                   delay_ms(1000);
               
@@ -318,7 +318,7 @@ line level    source
                   delay_ms(10);
                   servo_read_present_temperature_analysis(receive_data, &analysis_data);
                   delay_ms(1000);
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 6   
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 6   
 
               
                   // 读取舵机的当前输入电压
@@ -382,7 +382,7 @@ line level    source
                   delay_ms(1000);
               
                   // 读取舵机的控速目标速度
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 7   
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 7   
 
                   uart_init();
                   servo_read_velocity_base_target_velocity(1, order_buffer,&order_buffer_len);
@@ -446,7 +446,7 @@ line level    source
                   // 读取舵机的Flash开关
                   uart_init();
                   servo_read_flash_switch(1, order_buffer,&order_buffer_len);
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 8   
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 8   
 
                   uart_send_buffer(order_buffer, order_buffer_len);
               
@@ -510,7 +510,7 @@ line level    source
                   servo_read_position_control_d_gain(1, order_buffer,&order_buffer_len);
                   uart_send_buffer(order_buffer, order_buffer_len);
               
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 9   
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 9   
 
                   uart_init_recv();
                   delay_ms(10);
@@ -574,7 +574,7 @@ line level    source
               
                   uart_init_recv();
                   delay_ms(10);
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 10  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 10  
 
                   servo_read_current_shutdown_time_analysis(receive_data, &analysis_data);
                   delay_ms(1000);
@@ -638,7 +638,7 @@ line level    source
                   delay_ms(10);
                   servo_read_max_angle_limit_analysis(receive_data, &analysis_data);
                   delay_ms(1000);
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 11  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 11  
 
               
                   // 读取舵机的最小位置限制
@@ -702,7 +702,7 @@ line level    source
                   delay_ms(1000);
               #endif
  629   2      
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 12  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 12  
 
  630   2      #if WRITE_TEST
  631   2              // 设置舵机的Flash开关
@@ -766,7 +766,7 @@ line level    source
  689   2      
  690   2          // 设置舵机的最大位置限制
  691   2          uart_init();
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 13  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 13  
 
  692   2          servo_set_max_angle_limit(1, 3000, order_buffer,&order_buffer_len);
  693   2      
@@ -830,7 +830,7 @@ line level    source
  751   2          uart_init();
  752   2          servo_set_max_current_limit(1, 400, order_buffer,&order_buffer_len);
  753   2      
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 14  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 14  
 
  754   2          uart_send_buffer(order_buffer, order_buffer_len);
  755   2      
@@ -894,7 +894,7 @@ line level    source
  813   2      
  814   2          uart_send_buffer(order_buffer, order_buffer_len);
  815   2      
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 15  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 15  
 
  816   2          uart_init_recv();
  817   2          delay_ms(10);
@@ -958,7 +958,7 @@ line level    source
  875   2      
  876   2          uart_init_recv();
  877   2          delay_ms(10);
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 16  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 16  
 
  878   2      
  879   2          servo_set_led_switch_analysis(receive_data);   
@@ -1022,7 +1022,7 @@ line level    source
  937   2      
  938   2          // 设置舵机的控制模式
  939   2          uart_init();
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 17  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 17  
 
  940   2          servo_set_control_mode(1, 2, order_buffer,&order_buffer_len);
  941   2      
@@ -1086,7 +1086,7 @@ line level    source
  999   2      
 1000   2          uart_init_recv();
 1001   2          delay_ms(10);
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 18  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 18  
 
 1002   2          servo_set_torque_switch_analysis(receive_data);   
 1003   2          delay_ms(1000);
@@ -1150,7 +1150,7 @@ line level    source
 1061   2          delay_ms(1000);
 1062   2      
 1063   2          // 设置舵机的控制模式
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 19  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 19  
 
 1064   2          uart_init();
 1065   2          servo_set_control_mode(1, 0, order_buffer,&order_buffer_len);
@@ -1214,7 +1214,7 @@ line level    source
                   uart_send_buffer(order_buffer, order_buffer_len);
               
                   uart_init_recv();
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 20  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 20  
 
                   delay_ms(10);
                   servo_set_control_mode_analysis(receive_data);    
@@ -1278,7 +1278,7 @@ line level    source
                   uart_init();
                   servo_sync_write_velocity_base_target_velocity(2, sync_write_velocity_base_target_velocity, order_buffer
              -,&order_buffer_len);
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 21  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 21  
 
                   uart_send_buffer(order_buffer, order_buffer_len);
                   delay_ms(1000);
@@ -1342,7 +1342,7 @@ line level    source
               
                   // 设置舵机的扭矩开关
                   uart_init();
-C51 COMPILER V9.60.7.0   MAIN                                                              07/24/2024 16:38:11 PAGE 22  
+C51 COMPILER V9.60.7.0   MAIN                                                              07/25/2024 17:05:33 PAGE 22  
 
                   servo_set_torque_switch(2, 1, order_buffer,&order_buffer_len);
                   uart_send_buffer(order_buffer, order_buffer_len);

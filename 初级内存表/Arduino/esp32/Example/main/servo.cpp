@@ -1,7 +1,6 @@
-
-#include <cstdlib>
-#include <iostream>
+#include <stdlib.h>
 #include "servo.h"
+#include <Arduino.h>
 
 /**
  * @brief 计算指令包的校验和
@@ -105,39 +104,39 @@ uint8_t Servo::servo_unpack(uint8_t *response_packet, uint8_t **data_buffer)
 
     if(response_packet[0] != 0xff || response_packet[1] != 0xff || checksum != response_packet[length + 3])
     {
-        std::cout << "This is not a complete response package!" << std::endl;
+        PRINTF("This is not a complete response package!");
         return UNPACK_ERROR;
     }
 
     if(status != 0x00)
     {
-        if((status & VOLTAGE_ERROR) == VOLTAGE_ERROR)
+      if((status & VOLTAGE_ERROR) == VOLTAGE_ERROR)
         {
-            std::cout << "电压报错1" << std::endl;
+          PRINTF("电压报错");
         }
         if((status & ANGLE_ERROR) == ANGLE_ERROR)
         {
-            std::cout << "角度报错2" << std::endl;
+          PRINTF("角度报错");
         }
         if((status & OVERHEATING_ERROR) == OVERHEATING_ERROR)
         {
-            std::cout << "过热报错4" << std::endl;
+          PRINTF("过热报错");
         }
         if((status & RANGE_ERROR) == RANGE_ERROR)
         {
-            std::cout << "范围报错8" << std::endl;
+          PRINTF("范围报错");
         }
         if((status & CHECKSUM_ERROR) == CHECKSUM_ERROR)
         {
-            std::cout << "校验报错10" << std::endl; 
+          PRINTF("校验报错"); 
         }
         if((status & STALL_ERROR) == STALL_ERROR)
         {
-            std::cout << "堵转报错20" << std::endl; 
+          PRINTF("堵转报错"); 
         }
         if((status & PARSING_ERROR) == PARSING_ERROR)
         {
-            std::cout << "解析报错40" << std::endl; 
+          PRINTF("解析报错"); 
         }
         return status;
     }

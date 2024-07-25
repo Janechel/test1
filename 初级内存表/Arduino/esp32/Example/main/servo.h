@@ -1,7 +1,7 @@
 #ifndef SERVO_SDK_C_SERVO_H
 #define SERVO_SDK_C_SERVO_H
 
-#include <cstdint>
+#include <stdint.h>
 
 #define PRINTF_ENABLE 1
 

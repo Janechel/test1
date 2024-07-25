@@ -1,4 +1,4 @@
-LX51 LINKER/LOCATER V4.66.100.0                                                         07/24/2024  16:38:14  PAGE 1
+LX51 LINKER/LOCATER V4.66.100.0                                                         07/25/2024  17:05:36  PAGE 1
 
 
 LX51 LINKER/LOCATER V4.66.100.0, INVOKED BY:
@@ -52,7 +52,7 @@ ACTIVE MEMORY CLASSES OF MODULE:  template (MAIN)
 
 BASE        START       END         USED      MEMORY CLASS
 ==========================================================
-C:000000H   C:000000H   C:00FFFFH   000E25H   CODE
+C:000000H   C:000000H   C:00FFFFH   000DDCH   CODE
 X:000000H   X:000000H   X:00FFFFH   00009FH   XDATA
 C:000000H   C:000000H   C:00FFFFH   000106H   CONST
 I:000000H   I:000000H   I:0000FFH   000001H   IDATA
@@ -67,7 +67,7 @@ START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
 
 * * * * * * * * * * *   D A T A   M E M O R Y   * * * * * * * * * * * * *
 000000H   000007H   000008H   ---    AT..     DATA           "REG BANK 0"
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 2
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 2
 
 
 000008H   00000FH   000008H   ---    AT..     DATA           "REG BANK 1"
@@ -75,116 +75,116 @@ START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
 
 * * * * * * * * * * *   C O D E   M E M O R Y   * * * * * * * * * * * * *
 000000H   000002H   000003H   ---    OFFS..   CODE           ?CO??C_STARTUP?0
-000003H   000008H   000006H   BYTE   UNIT     CODE           ?L?COM0025
-000009H   00000AH   000002H   ---    ---      **GAP**
+000003H   000007H   000005H   BYTE   UNIT     CODE           ?L?COM0025
+000008H   00000AH   000003H   ---    ---      **GAP**
 00000BH   00000DH   000003H   BYTE   OFFS..   CODE           ?MAIN?0000B
-00000EH   000020H   000013H   BYTE   UNIT     CODE           ?L?COM0019
-000021H   000022H   000002H   ---    ---      **GAP**
+00000EH   00001FH   000012H   BYTE   UNIT     CODE           ?L?COM0019
+000020H   000022H   000003H   ---    ---      **GAP**
 000023H   000025H   000003H   BYTE   OFFS..   CODE           ?MAIN?00023
-000026H   000041H   00001CH   BYTE   UNIT     CODE           ?C_INITSEG
-000042H   000147H   000106H   BYTE   UNIT     CONST          ?CO?MAIN
-000148H   00016CH   000025H   BYTE   UNIT     CODE           ?PR?_GET_CHECK?MAIN
-00016DH   0002B7H   00014BH   BYTE   UNIT     CODE           ?PR?_SERVO_PACK?MAIN
-0002B8H   0002D4H   00001DH   BYTE   UNIT     CODE           ?L?COM0015
-0002D5H   0002E3H   00000FH   BYTE   UNIT     CODE           ?L?COM0020
-0002E4H   0002F5H   000012H   BYTE   UNIT     CODE           ?L?COM001E
-0002F6H   000321H   00002CH   BYTE   UNIT     CODE           ?PR?_SERVO_WRITE?MAIN
-000322H   00032CH   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TORQUE_SWITCH?MAIN
-00032DH   000337H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CONTROL_MODE?MAIN
-000338H   000342H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_RETURN_DELAY_TIME?MAIN
-000343H   00036FH   00002DH   BYTE   UNIT     CODE           ?L?COM0005
-000370H   000382H   000013H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MIN_ANGLE_LIMIT?MAIN
-000383H   00038DH   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_RETURN_LEVEL?MAIN
-00038EH   000398H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_BAUD_RATE?MAIN
-000399H   0003A3H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_TEMPERATURE_LIMIT?MAIN
-0003A4H   0003AEH   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_VOLTAGE_LIMIT?MAIN
-0003AFH   0003B9H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MIN_VOLTAGE_LIMIT?MAIN
-0003BAH   0003C4H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CW_DEADBAND?MAIN
-0003C5H   0003CFH   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CCW_DEADBAND?MAIN
-0003D0H   0003DAH   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_PWM_PUNCH?MAIN
-0003DBH   0003E5H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_LED_CONDITION?MAIN
-0003E6H   0003F0H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_SHUTDOWN_CONDITIONS?MAIN
-0003F1H   0003FBH   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_FLASH_SWITCH?MAIN
-0003FCH   000406H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_LED_SWITCH?MAIN
-000407H   000411H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_ACC?MAIN
-000412H   00041CH   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_DEC?MAIN
-00041DH   000427H   00000BH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TIME_BASE_TARGET_ACC?MAIN
-000428H   00043AH   000013H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_ANGLE_LIMIT?MAIN
-00043BH   00044DH   000013H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_PWM_LIMIT?MAIN
-00044EH   000465H   000018H   BYTE   UNIT     CODE           ?L?COM000E
-000466H   000478H   000013H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_CURRENT_LIMIT?MAIN
-000479H   0004AEH   000036H   BYTE   UNIT     CODE           ?L?COM000C
-0004AFH   0004C1H   000013H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CURRENT_SHUTDOWN_TIME?MAIN
-0004C2H   0004D4H   000013H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_P_GAIN?MAIN
-0004D5H   0004E7H   000013H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_I_GAIN?MAIN
-0004E8H   0004FAH   000013H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_D_GAIN?MAIN
-0004FBH   000564H   00006AH   BYTE   UNIT     CODE           ?PR?_SERVO_UNPACK?MAIN
-000565H   00056AH   000006H   BYTE   UNIT     CODE           ?L?COM0012
-00056BH   000572H   000008H   BYTE   UNIT     CODE           ?L?COM0027
-000573H   00057BH   000009H   BYTE   UNIT     CODE           ?L?COM0013
-00057CH   000591H   000016H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TARGET_PWM?MAIN
-000592H   0005ADH   00001CH   BYTE   UNIT     CODE           ?PR?_DELAY_MS?MAIN
-0005AEH   0005E3H   000036H   BYTE   UNIT     CODE           ?PR?_UART_SEND_BUFFER?MAIN
-0005E4H   0005F9H   000016H   BYTE   UNIT     CODE           ?PR?UART_INIT?MAIN
-0005FAH   000658H   00005FH   BYTE   UNIT     CODE           ?L?COM0001
-000659H   00066EH   000016H   BYTE   UNIT     CODE           ?PR?UART_INIT_RECV?MAIN
-00066FH   000689H   00001BH   BYTE   UNIT     CODE           ?L?COM0007
-00068AH   00069DH   000014H   BYTE   UNIT     CODE           ?L?COM000F
-00069EH   0006A5H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TORQUE_SWITCH_ANALYSIS?MAIN
-0006A6H   0006ADH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CONTROL_MODE_ANALYSIS?MAIN
-0006AEH   0006B4H   000007H   BYTE   UNIT     CODE           ?L?COM0023
-0006B5H   0006BCH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_RETURN_DELAY_TIME_ANALYSIS?MAIN
-0006BDH   0006E3H   000027H   BYTE   UNIT     CODE           ?L?COM0004
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 3
-
-
-0006E4H   0006EBH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_RETURN_LEVEL_ANALYSIS?MAIN
-0006ECH   0006F3H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_BAUD_RATE_ANALYSIS?MAIN
-0006F4H   0006FBH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MIN_ANGLE_LIMIT_ANALYSIS?MAIN
-0006FCH   000703H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_ANGLE_LIMIT_ANALYSIS?MAIN
-000704H   00070BH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_TEMPERATURE_LIMIT_ANALYSIS?MAIN
-00070CH   000713H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_VOLTAGE_LIMIT_ANALYSIS?MAIN
-000714H   00071BH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MIN_VOLTAGE_LIMIT_ANALYSIS?MAIN
-00071CH   000723H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_PWM_LIMIT_ANALYSIS?MAIN
-000724H   00072BH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_CURRENT_LIMIT_ANALYSIS?MAIN
-00072CH   000733H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CURRENT_SHUTDOWN_TIME_ANALYSIS?MAIN
-000734H   00073BH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CW_DEADBAND_ANALYSIS?MAIN
-00073CH   000743H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CCW_DEADBAND_ANALYSIS?MAIN
-000744H   00074BH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_PWM_PUNCH_ANALYSIS?MAIN
-00074CH   000753H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_P_GAIN_ANALYSIS?MAIN
-000754H   00075BH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_I_GAIN_ANALYSIS?MAIN
-00075CH   000763H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_D_GAIN_ANALYSIS?MAIN
-000764H   00076BH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_LED_CONDITION_ANALYSIS?MAIN
-00076CH   000773H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_SHUTDOWN_CONDITIONS_ANALYSIS?MAIN
-000774H   00077BH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_FLASH_SWITCH_ANALYSIS?MAIN
-00077CH   000783H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_LED_SWITCH_ANALYSIS?MAIN
-000784H   00078BH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TARGET_PWM_ANALYSIS?MAIN
-00078CH   000793H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TARGET_CURRENT_ANALYSIS?MAIN
-000794H   00079BH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_POSITION_ANALYSIS?MAIN
-00079CH   0007A3H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_VELOCITY_ANALYSIS?MAIN
-0007A4H   0007ABH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_ACC_ANALYSIS?MAIN
-0007ACH   0007B3H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_DEC_ANALYSIS?MAIN
-0007B4H   0007BBH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TIME_BASE_TARGET_ACC_ANALYSIS?MAIN
-0007BCH   0007C3H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TIME_BASE_TARGET_POSITION_AND_MOVING_TIME_A
+000026H   0002C6H   0002A1H   BYTE   UNIT     CODE           ?C?LIB_CODE
+0002C7H   000352H   00008CH   BYTE   UNIT     CODE           ?C_C51STARTUP
+000353H   00036EH   00001CH   BYTE   UNIT     CODE           ?C_INITSEG
+00036FH   000474H   000106H   BYTE   UNIT     CONST          ?CO?MAIN
+000475H   000496H   000022H   BYTE   UNIT     CODE           ?PR?_GET_CHECK?MAIN
+000497H   0005D4H   00013EH   BYTE   UNIT     CODE           ?PR?_SERVO_PACK?MAIN
+0005D5H   0005EEH   00001AH   BYTE   UNIT     CODE           ?L?COM0015
+0005EFH   000651H   000063H   BYTE   UNIT     CODE           ?PR?_SERVO_UNPACK?MAIN
+000652H   000659H   000008H   BYTE   UNIT     CODE           ?L?COM0027
+00065AH   000661H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TORQUE_SWITCH_ANALYSIS?MAIN
+000662H   00067CH   00001BH   BYTE   UNIT     CODE           ?L?COM0007
+00067DH   00068BH   00000FH   BYTE   UNIT     CODE           ?L?COM0020
+00068CH   00069CH   000011H   BYTE   UNIT     CODE           ?L?COM001E
+00069DH   0006A3H   000007H   BYTE   UNIT     CODE           ?L?COM0013
+0006A4H   0006C6H   000023H   BYTE   UNIT     CODE           ?L?COM0004
+0006C7H   0006CEH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_RETURN_DELAY_TIME_ANALYSIS?MAIN
+0006CFH   0006D6H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_RETURN_LEVEL_ANALYSIS?MAIN
+0006D7H   0006DEH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_BAUD_RATE_ANALYSIS?MAIN
+0006DFH   0006E6H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MIN_ANGLE_LIMIT_ANALYSIS?MAIN
+0006E7H   0006EEH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_ANGLE_LIMIT_ANALYSIS?MAIN
+0006EFH   0006F6H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_TEMPERATURE_LIMIT_ANALYSIS?MAIN
+0006F7H   0006FEH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_VOLTAGE_LIMIT_ANALYSIS?MAIN
+0006FFH   000706H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MIN_VOLTAGE_LIMIT_ANALYSIS?MAIN
+000707H   00070EH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_PWM_LIMIT_ANALYSIS?MAIN
+00070FH   000716H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_CURRENT_LIMIT_ANALYSIS?MAIN
+000717H   00071EH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CURRENT_SHUTDOWN_TIME_ANALYSIS?MAIN
+00071FH   000726H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CW_DEADBAND_ANALYSIS?MAIN
+000727H   00072EH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CCW_DEADBAND_ANALYSIS?MAIN
+00072FH   000736H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_PWM_PUNCH_ANALYSIS?MAIN
+000737H   00073EH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_P_GAIN_ANALYSIS?MAIN
+00073FH   000746H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_I_GAIN_ANALYSIS?MAIN
+000747H   00074EH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_D_GAIN_ANALYSIS?MAIN
+00074FH   000756H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_LED_CONDITION_ANALYSIS?MAIN
+000757H   00075EH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_SHUTDOWN_CONDITIONS_ANALYSIS?MAIN
+00075FH   000766H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CONTROL_MODE_ANALYSIS?MAIN
+000767H   00076EH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_FLASH_SWITCH_ANALYSIS?MAIN
+00076FH   000776H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_LED_SWITCH_ANALYSIS?MAIN
+000777H   00077EH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TARGET_PWM_ANALYSIS?MAIN
+00077FH   000786H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TARGET_CURRENT_ANALYSIS?MAIN
+000787H   00078EH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_POSITION_ANALYSIS?MAIN
+00078FH   000796H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_VELOCITY_ANALYSIS?MAIN
+000797H   00079EH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_ACC_ANALYSIS?MAIN
+00079FH   0007A6H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_DEC_ANALYSIS?MAIN
+0007A7H   0007AEH   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TIME_BASE_TARGET_ACC_ANALYSIS?MAIN
+0007AFH   0007B6H   000008H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TIME_BASE_TARGET_POSITION_AND_MOVING_TIME_A
                                                              -NALYSIS?MAIN
-0007C4H   0007CBH   000008H   BYTE   UNIT     CODE           ?PR?_UART_SEND?MAIN
-0007CCH   000A6CH   0002A1H   BYTE   UNIT     CODE           ?C?LIB_CODE
-000A6DH   000AF8H   00008CH   BYTE   UNIT     CODE           ?C_C51STARTUP
-000AF9H   000B11H   000019H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TARGET_CURRENT?MAIN
-000B12H   000B29H   000018H   BYTE   UNIT     CODE           ?L?COM001D
-000B2AH   000B8DH   000064H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TIME_BASE_TARGET_POSITION_AND_MOVING_TIME?M
+0007B7H   0007BAH   000004H   BYTE   UNIT     CODE           ?L?COM0012
+0007BBH   0007C3H   000009H   BYTE   UNIT     CODE           ?L?COM0024
+0007C4H   0007CCH   000009H   BYTE   UNIT     CODE           ?L?COM0011
+0007CDH   0007E2H   000016H   BYTE   UNIT     CODE           ?PR?UART_INIT?MAIN
+0007E3H   0007F7H   000015H   BYTE   UNIT     CODE           ?L?COM000F
+0007F8H   000822H   00002BH   BYTE   UNIT     CODE           ?PR?_SERVO_WRITE?MAIN
+000823H   00082BH   000009H   BYTE   UNIT     CODE           ?L?COM001B
+00082CH   000834H   000009H   BYTE   UNIT     CODE           ?L?COM001C
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 3
+
+
+000835H   000840H   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_RETURN_DELAY_TIME?MAIN
+000841H   000ADAH   00029AH   BYTE   UNIT     CODE           ?PR?MAIN?MAIN
+000ADBH   000AF6H   00001CH   BYTE   UNIT     CODE           ?PR?_DELAY_MS?MAIN
+000AF7H   000B2CH   000036H   BYTE   UNIT     CODE           ?PR?_UART_SEND_BUFFER?MAIN
+000B2DH   000B42H   000016H   BYTE   UNIT     CODE           ?PR?UART_INIT_RECV?MAIN
+000B43H   000BA3H   000061H   BYTE   UNIT     CODE           ?L?COM0001
+000BA4H   000BAFH   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TORQUE_SWITCH?MAIN
+000BB0H   000BBBH   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CONTROL_MODE?MAIN
+000BBCH   000BC2H   000007H   BYTE   UNIT     CODE           ?L?COM0023
+000BC3H   000BEFH   00002DH   BYTE   UNIT     CODE           ?L?COM0005
+000BF0H   000C03H   000014H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MIN_ANGLE_LIMIT?MAIN
+000C04H   000C17H   000014H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_ANGLE_LIMIT?MAIN
+000C18H   000C2BH   000014H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_PWM_LIMIT?MAIN
+000C2CH   000C3FH   000014H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_CURRENT_LIMIT?MAIN
+000C40H   000C57H   000018H   BYTE   UNIT     CODE           ?L?COM000E
+000C58H   000C6BH   000014H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CURRENT_SHUTDOWN_TIME?MAIN
+000C6CH   000CA1H   000036H   BYTE   UNIT     CODE           ?L?COM000C
+000CA2H   000CB7H   000016H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TARGET_PWM?MAIN
+000CB8H   000CCDH   000016H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TARGET_CURRENT?MAIN
+000CCEH   000CE1H   000014H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_P_GAIN?MAIN
+000CE2H   000CF5H   000014H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_I_GAIN?MAIN
+000CF6H   000D09H   000014H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_POSITION_CONTROL_D_GAIN?MAIN
+000D0AH   000D1DH   000014H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_POSITION?MAIN
+000D1EH   000D31H   000014H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_VELOCITY?MAIN
+000D32H   000D96H   000065H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TIME_BASE_TARGET_POSITION_AND_MOVING_TIME?M
                                                              -AIN
-000B8EH   000B94H   000007H   BYTE   UNIT     CODE           ?L?COM0022
-000B95H   000BA4H   000010H   BYTE   UNIT     CODE           ?PR?TIMER0_INIT?MAIN
-000BA5H   000BBBH   000017H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_POSITION?MAIN
-000BBCH   000BD2H   000017H   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_VELOCITY?MAIN
-000BD3H   000C03H   000031H   BYTE   UNIT     CODE           ?PR?TIMER0_ISR?MAIN
-000C04H   000C34H   000031H   BYTE   UNIT     CODE           ?PR?UART?MAIN
-000C35H   000C3DH   000009H   BYTE   UNIT     CODE           ?L?COM0011
-000C3EH   000C44H   000007H   BYTE   UNIT     CODE           ?L?COM001B
-000C45H   000C4BH   000007H   BYTE   UNIT     CODE           ?L?COM001C
-000C4CH   000C54H   000009H   BYTE   UNIT     CODE           ?L?COM0024
-000C55H   000F2EH   0002DAH   BYTE   UNIT     CODE           ?PR?MAIN?MAIN
+000D97H   000DA2H   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_RETURN_LEVEL?MAIN
+000DA3H   000DAEH   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_BAUD_RATE?MAIN
+000DAFH   000DBAH   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_TEMPERATURE_LIMIT?MAIN
+000DBBH   000DC6H   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MAX_VOLTAGE_LIMIT?MAIN
+000DC7H   000DD2H   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_MIN_VOLTAGE_LIMIT?MAIN
+000DD3H   000DDEH   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CW_DEADBAND?MAIN
+000DDFH   000DEAH   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_CCW_DEADBAND?MAIN
+000DEBH   000DF6H   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_PWM_PUNCH?MAIN
+000DF7H   000E02H   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_LED_CONDITION?MAIN
+000E03H   000E0EH   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_SHUTDOWN_CONDITIONS?MAIN
+000E0FH   000E1AH   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_FLASH_SWITCH?MAIN
+000E1BH   000E26H   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_LED_SWITCH?MAIN
+000E27H   000E32H   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_ACC?MAIN
+000E33H   000E3EH   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_VELOCITY_BASE_TARGET_DEC?MAIN
+000E3FH   000E4AH   00000CH   BYTE   UNIT     CODE           ?PR?_SERVO_SET_TIME_BASE_TARGET_ACC?MAIN
+000E4BH   000E63H   000019H   BYTE   UNIT     CODE           ?L?COM001D
+000E64H   000E6BH   000008H   BYTE   UNIT     CODE           ?PR?_UART_SEND?MAIN
+000E6CH   000E74H   000009H   BYTE   UNIT     CODE           ?L?COM0022
+000E75H   000E84H   000010H   BYTE   UNIT     CODE           ?PR?TIMER0_INIT?MAIN
+000E85H   000EB6H   000032H   BYTE   UNIT     CODE           ?PR?TIMER0_ISR?MAIN
+000EB7H   000EE7H   000031H   BYTE   UNIT     CODE           ?PR?UART?MAIN
 
 * * * * * * * * * * *  X D A T A   M E M O R Y  * * * * * * * * * * * * *
 000000H   000087H   000088H   BYTE   UNIT     XDATA          _XDATA_GROUP_
@@ -203,7 +203,7 @@ START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
    *DEL*:           000007H   BYTE   UNIT     XDATA          ?XD?_SERVO_PARAMETER_RESET?MAIN
    *DEL*:           000034H   BYTE   UNIT     CODE           ?PR?_SERVO_CALIBRATION?MAIN
    *DEL*:           000007H   BYTE   UNIT     XDATA          ?XD?_SERVO_CALIBRATION?MAIN
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 4
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 4
 
 
    *DEL*:           000034H   BYTE   UNIT     CODE           ?PR?_SERVO_REBOOT?MAIN
@@ -271,7 +271,7 @@ START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
    *DEL*:           000028H   BYTE   UNIT     CODE           ?PR?_SERVO_READ_PWM_PUNCH?MAIN
    *DEL*:           000007H   BYTE   UNIT     XDATA          ?XD?_SERVO_READ_PWM_PUNCH?MAIN
    *DEL*:           000028H   BYTE   UNIT     CODE           ?PR?_SERVO_READ_CCW_DEADBAND?MAIN
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 5
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 5
 
 
    *DEL*:           000007H   BYTE   UNIT     XDATA          ?XD?_SERVO_READ_CCW_DEADBAND?MAIN
@@ -339,7 +339,7 @@ START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
    *DEL*:           000009H   BYTE   UNIT     XDATA          ?XD?_SERVO_READ_PRESENT_PROFILE_VELOCITY_ANALYSIS?MAIN
    *DEL*:           000075H   BYTE   UNIT     CODE           ?PR?_SERVO_READ_PRESENT_PWM_ANALYSIS?MAIN
    *DEL*:           000009H   BYTE   UNIT     XDATA          ?XD?_SERVO_READ_PRESENT_PWM_ANALYSIS?MAIN
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 6
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 6
 
 
    *DEL*:           000043H   BYTE   UNIT     CODE           ?PR?_SERVO_READ_PRESENT_TEMPERATURE_ANALYSIS?MAIN
@@ -407,7 +407,7 @@ START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
    *DEL*:           000043H   BYTE   UNIT     CODE           ?PR?_SERVO_READ_MIN_VOLTAGE_LIMIT_ANALYSIS?MAIN
    *DEL*:           000009H   BYTE   UNIT     XDATA          ?XD?_SERVO_READ_MIN_VOLTAGE_LIMIT_ANALYSIS?MAIN
    *DEL*:           000043H   BYTE   UNIT     CODE           ?PR?_SERVO_READ_MAX_TEMPERATURE_LIMIT_ANALYSIS?MAIN
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 7
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 7
 
 
    *DEL*:           000009H   BYTE   UNIT     XDATA          ?XD?_SERVO_READ_MAX_TEMPERATURE_LIMIT_ANALYSIS?MAIN
@@ -475,7 +475,7 @@ MAIN/MAIN                                     0000H 005AH
   +--> _SERVO_SET_MAX_CURRENT_LIMIT/MAIN
   +--> _SERVO_SET_MAX_CURRENT_LIMIT_ANALYSIS/MAIN
   +--> _SERVO_SET_CURRENT_SHUTDOWN_TIME/MAIN
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 8
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 8
 
 
   +--> _SERVO_SET_CURRENT_SHUTDOWN_TIME_ANALYSIS/MAIN
@@ -543,7 +543,7 @@ UART_INIT_RECV/MAIN                           ----- -----
 _DELAY_MS/MAIN                                ----- -----
 
 _SERVO_SET_FLASH_SWITCH_ANALYSIS/MAIN         005BH 0060H
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 9
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 9
 
 
   +--> _SERVO_UNPACK/MAIN
@@ -611,7 +611,7 @@ _SERVO_SET_MAX_PWM_LIMIT_ANALYSIS/MAIN        005BH 0060H
 
 _SERVO_SET_MAX_CURRENT_LIMIT/MAIN             005BH 0065H
   +--> _SERVO_WRITE/MAIN
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 10
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 10
 
 
 
@@ -679,7 +679,7 @@ _SERVO_SET_SHUTDOWN_CONDITIONS_ANALYSIS/+     005BH 0060H
   +--> _SERVO_UNPACK/MAIN
 
 _SERVO_SET_LED_SWITCH/MAIN                    005BH 0062H
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 11
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 11
 
 
   +--> _SERVO_WRITE/MAIN
@@ -747,7 +747,7 @@ _SERVO_SET_TIME_BASE_TARGET_ACC/MAIN          005BH 0062H
 _SERVO_SET_TIME_BASE_TARGET_ACC_ANALYSIS+     005BH 0060H
 ... /MAIN
   +--> _SERVO_UNPACK/MAIN
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 12
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 12
 
 
 
@@ -815,7 +815,7 @@ PUBLIC SYMBOLS OF MODULE:  template (MAIN)
 *DEL*:00000000H   XDATA    BYTE      ?_servo_read_min_voltage_limit_analysis?BYTE
 *DEL*:00000000H   XDATA    BYTE      ?_servo_read_model_information?BYTE
 *DEL*:00000000H   XDATA    BYTE      ?_servo_read_model_information_analysis?BYTE
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 13
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 13
 
 
 *DEL*:00000000H   XDATA    BYTE      ?_servo_read_position_control_d_gain?BYTE
@@ -883,7 +883,7 @@ PUBLIC SYMBOLS OF MODULE:  template (MAIN)
       0200005BH   XDATA    BYTE      ?_servo_set_max_temperature_limit?BYTE
       0200005BH   XDATA    BYTE      ?_servo_set_max_voltage_limit?BYTE
       0200005BH   XDATA    BYTE      ?_servo_set_min_angle_limit?BYTE
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 14
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 14
 
 
       0200005BH   XDATA    BYTE      ?_servo_set_min_voltage_limit?BYTE
@@ -912,34 +912,34 @@ PUBLIC SYMBOLS OF MODULE:  template (MAIN)
       02000061H   XDATA    BYTE      ?_servo_unpack?BYTE
       0200006AH   XDATA    BYTE      ?_servo_write?BYTE
 *DEL*:00000000H   XDATA    BYTE      ?_sync_write_data?BYTE
-      01000A35H   CODE     ---       ?C?CCASE
-      010008DBH   CODE     ---       ?C?CLDOPTR
-      010008C2H   CODE     ---       ?C?CLDPTR
+      0100028FH   CODE     ---       ?C?CCASE
+      01000135H   CODE     ---       ?C?CLDOPTR
+      0100011CH   CODE     ---       ?C?CLDPTR
       00000000H   NUMBER   ---       ?C?CODESEG
-      0100089CH   CODE     ---       ?C?COPY
-      0100091AH   CODE     ---       ?C?CSTOPTR
-      01000908H   CODE     ---       ?C?CSTPTR
-      0100093CH   CODE     ---       ?C?IILDX
-      0100097DH   CODE     ---       ?C?ILDOPTR
-      01000952H   CODE     ---       ?C?ILDPTR
-      010009B5H   CODE     ---       ?C?ISTPTR
-      010009D4H   CODE     ---       ?C?PLDXDATA
-      01000A5BH   CODE     ---       ?C?PSTIDATA
-      01000A64H   CODE     ---       ?C?PSTPDATA
-      010009E6H   CODE     ---       ?C?PSTPTR
-      010009DDH   CODE     ---       ?C?PSTXDATA
+      010000F6H   CODE     ---       ?C?COPY
+      01000174H   CODE     ---       ?C?CSTOPTR
+      01000162H   CODE     ---       ?C?CSTPTR
+      01000196H   CODE     ---       ?C?IILDX
+      010001D7H   CODE     ---       ?C?ILDOPTR
+      010001ACH   CODE     ---       ?C?ILDPTR
+      0100020FH   CODE     ---       ?C?ISTPTR
+      0100022EH   CODE     ---       ?C?PLDXDATA
+      010002B5H   CODE     ---       ?C?PSTIDATA
+      010002BEH   CODE     ---       ?C?PSTPDATA
+      01000240H   CODE     ---       ?C?PSTPTR
+      01000237H   CODE     ---       ?C?PSTXDATA
       00000000H   NUMBER   ---       ?C?XDATASEG
-      01000AB4H   CODE     ---       ?C_START
+      0100030EH   CODE     ---       ?C_START
       01000000H   CODE     ---       ?C_STARTUP
-      01000596H   CODE     ---       _delay_ms
-      01000148H   CODE     ---       _get_check
+      01000ADFH   CODE     ---       _delay_ms
+      01000475H   CODE     ---       _get_check
 *DEL*:00000000H   CODE     ---       _servo_calibration
 *DEL*:00000000H   CODE     ---       _servo_calibration_analysis
 *DEL*:00000000H   CODE     ---       _servo_factory_reset
 *DEL*:00000000H   CODE     ---       _servo_factory_reset_analysis
 *DEL*:00000000H   CODE     ---       _servo_modify_known_id
 *DEL*:00000000H   CODE     ---       _servo_modify_unknown_id
-      0100016DH   CODE     ---       _servo_pack
+      01000497H   CODE     ---       _servo_pack
 *DEL*:00000000H   CODE     ---       _servo_parameter_reset
 *DEL*:00000000H   CODE     ---       _servo_parameter_reset_analysis
 *DEL*:00000000H   CODE     ---       _servo_ping
@@ -951,7 +951,7 @@ PUBLIC SYMBOLS OF MODULE:  template (MAIN)
 *DEL*:00000000H   CODE     ---       _servo_read_calibration_analysis
 *DEL*:00000000H   CODE     ---       _servo_read_ccw_deadband
 *DEL*:00000000H   CODE     ---       _servo_read_ccw_deadband_analysis
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 15
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 15
 
 
 *DEL*:00000000H   CODE     ---       _servo_read_control_mode
@@ -1019,7 +1019,7 @@ PUBLIC SYMBOLS OF MODULE:  template (MAIN)
 *DEL*:00000000H   CODE     ---       _servo_read_target_current
 *DEL*:00000000H   CODE     ---       _servo_read_target_current_analysis
 *DEL*:00000000H   CODE     ---       _servo_read_target_pwm
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 16
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 16
 
 
 *DEL*:00000000H   CODE     ---       _servo_read_target_pwm_analysis
@@ -1041,82 +1041,82 @@ PUBLIC SYMBOLS OF MODULE:  template (MAIN)
 *DEL*:00000000H   CODE     ---       _servo_read_velocity_base_target_velocity_analysis
 *DEL*:00000000H   CODE     ---       _servo_reboot
 *DEL*:00000000H   CODE     ---       _servo_reboot_analysis
-      0100038EH   CODE     ---       _servo_set_baud_rate
-      010006ECH   CODE     ---       _servo_set_baud_rate_analysis
-      010003C5H   CODE     ---       _servo_set_ccw_deadband
-      0100073CH   CODE     ---       _servo_set_ccw_deadband_analysis
-      0100032DH   CODE     ---       _servo_set_control_mode
-      010006A6H   CODE     ---       _servo_set_control_mode_analysis
-      010004AFH   CODE     ---       _servo_set_current_shutdown_time
-      0100072CH   CODE     ---       _servo_set_current_shutdown_time_analysis
-      010003BAH   CODE     ---       _servo_set_cw_deadband
-      01000734H   CODE     ---       _servo_set_cw_deadband_analysis
-      010003F1H   CODE     ---       _servo_set_flash_switch
-      01000774H   CODE     ---       _servo_set_flash_switch_analysis
-      010003DBH   CODE     ---       _servo_set_led_condition
-      01000764H   CODE     ---       _servo_set_led_condition_analysis
-      010003FCH   CODE     ---       _servo_set_led_switch
-      0100077CH   CODE     ---       _servo_set_led_switch_analysis
-      01000428H   CODE     ---       _servo_set_max_angle_limit
-      010006FCH   CODE     ---       _servo_set_max_angle_limit_analysis
-      01000466H   CODE     ---       _servo_set_max_current_limit
-      01000724H   CODE     ---       _servo_set_max_current_limit_analysis
-      0100043BH   CODE     ---       _servo_set_max_pwm_limit
-      0100071CH   CODE     ---       _servo_set_max_pwm_limit_analysis
-      01000399H   CODE     ---       _servo_set_max_temperature_limit
-      01000704H   CODE     ---       _servo_set_max_temperature_limit_analysis
-      010003A4H   CODE     ---       _servo_set_max_voltage_limit
-      0100070CH   CODE     ---       _servo_set_max_voltage_limit_analysis
-      01000370H   CODE     ---       _servo_set_min_angle_limit
-      010006F4H   CODE     ---       _servo_set_min_angle_limit_analysis
-      010003AFH   CODE     ---       _servo_set_min_voltage_limit
-      01000714H   CODE     ---       _servo_set_min_voltage_limit_analysis
-      010004E8H   CODE     ---       _servo_set_position_control_d_gain
-      0100075CH   CODE     ---       _servo_set_position_control_d_gain_analysis
-      010004D5H   CODE     ---       _servo_set_position_control_i_gain
-      01000754H   CODE     ---       _servo_set_position_control_i_gain_analysis
-      010004C2H   CODE     ---       _servo_set_position_control_p_gain
-      0100074CH   CODE     ---       _servo_set_position_control_p_gain_analysis
-      010003D0H   CODE     ---       _servo_set_pwm_punch
-      01000744H   CODE     ---       _servo_set_pwm_punch_analysis
-      01000338H   CODE     ---       _servo_set_return_delay_time
-      010006B5H   CODE     ---       _servo_set_return_delay_time_analysis
-      01000383H   CODE     ---       _servo_set_return_level
-      010006E4H   CODE     ---       _servo_set_return_level_analysis
-      010003E6H   CODE     ---       _servo_set_shutdown_conditions
-      0100076CH   CODE     ---       _servo_set_shutdown_conditions_analysis
-      01000AF9H   CODE     ---       _servo_set_target_current
-      0100078CH   CODE     ---       _servo_set_target_current_analysis
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 17
+      01000DA3H   CODE     ---       _servo_set_baud_rate
+      010006D7H   CODE     ---       _servo_set_baud_rate_analysis
+      01000DDFH   CODE     ---       _servo_set_ccw_deadband
+      01000727H   CODE     ---       _servo_set_ccw_deadband_analysis
+      01000BB0H   CODE     ---       _servo_set_control_mode
+      0100075FH   CODE     ---       _servo_set_control_mode_analysis
+      01000C58H   CODE     ---       _servo_set_current_shutdown_time
+      01000717H   CODE     ---       _servo_set_current_shutdown_time_analysis
+      01000DD3H   CODE     ---       _servo_set_cw_deadband
+      0100071FH   CODE     ---       _servo_set_cw_deadband_analysis
+      01000E0FH   CODE     ---       _servo_set_flash_switch
+      01000767H   CODE     ---       _servo_set_flash_switch_analysis
+      01000DF7H   CODE     ---       _servo_set_led_condition
+      0100074FH   CODE     ---       _servo_set_led_condition_analysis
+      01000E1BH   CODE     ---       _servo_set_led_switch
+      0100076FH   CODE     ---       _servo_set_led_switch_analysis
+      01000C04H   CODE     ---       _servo_set_max_angle_limit
+      010006E7H   CODE     ---       _servo_set_max_angle_limit_analysis
+      01000C2CH   CODE     ---       _servo_set_max_current_limit
+      0100070FH   CODE     ---       _servo_set_max_current_limit_analysis
+      01000C18H   CODE     ---       _servo_set_max_pwm_limit
+      01000707H   CODE     ---       _servo_set_max_pwm_limit_analysis
+      01000DAFH   CODE     ---       _servo_set_max_temperature_limit
+      010006EFH   CODE     ---       _servo_set_max_temperature_limit_analysis
+      01000DBBH   CODE     ---       _servo_set_max_voltage_limit
+      010006F7H   CODE     ---       _servo_set_max_voltage_limit_analysis
+      01000BF0H   CODE     ---       _servo_set_min_angle_limit
+      010006DFH   CODE     ---       _servo_set_min_angle_limit_analysis
+      01000DC7H   CODE     ---       _servo_set_min_voltage_limit
+      010006FFH   CODE     ---       _servo_set_min_voltage_limit_analysis
+      01000CF6H   CODE     ---       _servo_set_position_control_d_gain
+      01000747H   CODE     ---       _servo_set_position_control_d_gain_analysis
+      01000CE2H   CODE     ---       _servo_set_position_control_i_gain
+      0100073FH   CODE     ---       _servo_set_position_control_i_gain_analysis
+      01000CCEH   CODE     ---       _servo_set_position_control_p_gain
+      01000737H   CODE     ---       _servo_set_position_control_p_gain_analysis
+      01000DEBH   CODE     ---       _servo_set_pwm_punch
+      0100072FH   CODE     ---       _servo_set_pwm_punch_analysis
+      01000835H   CODE     ---       _servo_set_return_delay_time
+      010006C7H   CODE     ---       _servo_set_return_delay_time_analysis
+      01000D97H   CODE     ---       _servo_set_return_level
+      010006CFH   CODE     ---       _servo_set_return_level_analysis
+      01000E03H   CODE     ---       _servo_set_shutdown_conditions
+      01000757H   CODE     ---       _servo_set_shutdown_conditions_analysis
+      01000CB8H   CODE     ---       _servo_set_target_current
+      0100077FH   CODE     ---       _servo_set_target_current_analysis
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 17
 
 
-      0100057CH   CODE     ---       _servo_set_target_pwm
-      01000784H   CODE     ---       _servo_set_target_pwm_analysis
-      0100041DH   CODE     ---       _servo_set_time_base_target_acc
-      010007B4H   CODE     ---       _servo_set_time_base_target_acc_analysis
-      01000B2AH   CODE     ---       _servo_set_time_base_target_position_and_moving_time
-      010007BCH   CODE     ---       _servo_set_time_base_target_position_and_moving_time_analysis
-      01000322H   CODE     ---       _servo_set_torque_switch
-      0100069EH   CODE     ---       _servo_set_torque_switch_analysis
-      01000407H   CODE     ---       _servo_set_velocity_base_target_acc
-      010007A4H   CODE     ---       _servo_set_velocity_base_target_acc_analysis
-      01000412H   CODE     ---       _servo_set_velocity_base_target_dec
-      010007ACH   CODE     ---       _servo_set_velocity_base_target_dec_analysis
-      01000BA5H   CODE     ---       _servo_set_velocity_base_target_position
-      01000794H   CODE     ---       _servo_set_velocity_base_target_position_analysis
-      01000BBCH   CODE     ---       _servo_set_velocity_base_target_velocity
-      0100079CH   CODE     ---       _servo_set_velocity_base_target_velocity_analysis
+      01000CA2H   CODE     ---       _servo_set_target_pwm
+      01000777H   CODE     ---       _servo_set_target_pwm_analysis
+      01000E3FH   CODE     ---       _servo_set_time_base_target_acc
+      010007A7H   CODE     ---       _servo_set_time_base_target_acc_analysis
+      01000D32H   CODE     ---       _servo_set_time_base_target_position_and_moving_time
+      010007AFH   CODE     ---       _servo_set_time_base_target_position_and_moving_time_analysis
+      01000BA4H   CODE     ---       _servo_set_torque_switch
+      0100065AH   CODE     ---       _servo_set_torque_switch_analysis
+      01000E27H   CODE     ---       _servo_set_velocity_base_target_acc
+      01000797H   CODE     ---       _servo_set_velocity_base_target_acc_analysis
+      01000E33H   CODE     ---       _servo_set_velocity_base_target_dec
+      0100079FH   CODE     ---       _servo_set_velocity_base_target_dec_analysis
+      01000D0AH   CODE     ---       _servo_set_velocity_base_target_position
+      01000787H   CODE     ---       _servo_set_velocity_base_target_position_analysis
+      01000D1EH   CODE     ---       _servo_set_velocity_base_target_velocity
+      0100078FH   CODE     ---       _servo_set_velocity_base_target_velocity_analysis
 *DEL*:00000000H   CODE     ---       _servo_sync_write_time_base_target_acc
 *DEL*:00000000H   CODE     ---       _servo_sync_write_time_base_target_position_and_moving_time
 *DEL*:00000000H   CODE     ---       _servo_sync_write_velocity_base_target_acc
 *DEL*:00000000H   CODE     ---       _servo_sync_write_velocity_base_target_dec
 *DEL*:00000000H   CODE     ---       _servo_sync_write_velocity_base_target_position
 *DEL*:00000000H   CODE     ---       _servo_sync_write_velocity_base_target_velocity
-      010004FBH   CODE     ---       _servo_unpack
-      010002F6H   CODE     ---       _servo_write
+      010005EFH   CODE     ---       _servo_unpack
+      010007F8H   CODE     ---       _servo_write
 *DEL*:00000000H   CODE     ---       _sync_write_data
-      010007C4H   CODE     ---       _uart_send
-      010005AEH   CODE     ---       _uart_send_buffer
+      01000E64H   CODE     ---       _uart_send
+      01000AF7H   CODE     ---       _uart_send_buffer
 *SFR* 000000D0H.6 DATA     BIT       AC
 *SFR* 000000E0H   DATA     BYTE      ACC
 *SFR* 000000F0H   DATA     BYTE      B
@@ -1143,7 +1143,7 @@ PUBLIC SYMBOLS OF MODULE:  template (MAIN)
 *SFR* 000000B8H   DATA     BYTE      IP
 *SFR* 00000088H.0 DATA     BIT       IT0
 *SFR* 00000088H.2 DATA     BIT       IT1
-      01000C55H   CODE     ---       main
+      01000841H   CODE     ---       main
       0200009DH   XDATA    WORD      ms_count
 *SFR* 000000D0H.2 DATA     BIT       OV
 *SFR* 000000D0H.0 DATA     BIT       P
@@ -1155,7 +1155,7 @@ PUBLIC SYMBOLS OF MODULE:  template (MAIN)
 *SFR* 000000B8H.4 DATA     BIT       PS
 *SFR* 000000D0H   DATA     BYTE      PSW
 *SFR* 000000B8H.1 DATA     BIT       PT0
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 18
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 18
 
 
 *SFR* 000000B8H.3 DATA     BIT       PT1
@@ -1195,8 +1195,8 @@ PUBLIC SYMBOLS OF MODULE:  template (MAIN)
 *SFR* 0000008DH   DATA     BYTE      TH1
 *SFR* 000000CDH   DATA     BYTE      TH2
 *SFR* 00000098H.1 DATA     BIT       TI
-      01000B95H   CODE     ---       timer0_init
-      01000BD3H   CODE     ---       timer0_isr
+      01000E75H   CODE     ---       timer0_init
+      01000E85H   CODE     ---       timer0_isr
 *SFR* 0000008AH   DATA     BYTE      TL0
 *SFR* 0000008BH   DATA     BYTE      TL1
 *SFR* 000000CCH   DATA     BYTE      TL2
@@ -1205,9 +1205,9 @@ PUBLIC SYMBOLS OF MODULE:  template (MAIN)
 *SFR* 00000088H.6 DATA     BIT       TR1
 *SFR* 000000C8H.2 DATA     BIT       TR2
 *SFR* 000000B0H.1 DATA     BIT       TXD
-      01000C04H   CODE     ---       uart
-      010005E4H   CODE     ---       uart_init
-      01000659H   CODE     ---       uart_init_recv
+      01000EB7H   CODE     ---       uart
+      010007CDH   CODE     ---       uart_init
+      01000B2DH   CODE     ---       uart_init_recv
 *SFR* 000000B0H.6 DATA     BIT       WR
 
 
@@ -1217,48 +1217,48 @@ LINKER CODE PACKING SYMBOLS OF MODULE:  template (MAIN)
 
       VALUE       CLASS    TYPE      SYMBOL NAME
       ==========================================
-      010005FAH   CODE     PART      ?L?COM0001
-      010005FAH   CODE     END       ?L?COM0002
-      010005FAH   CODE     END       ?L?COM0003
-      010006BDH   CODE     PART      ?L?COM0004
-      01000343H   CODE     PART      ?L?COM0005
-      01000343H   CODE     END       ?L?COM0006
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 19
+      01000B43H   CODE     PART      ?L?COM0001
+      01000B43H   CODE     END       ?L?COM0002
+      01000B43H   CODE     END       ?L?COM0003
+      010006A4H   CODE     PART      ?L?COM0004
+      01000BC3H   CODE     PART      ?L?COM0005
+      01000BC3H   CODE     END       ?L?COM0006
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 19
 
 
-      0100066FH   CODE     PART      ?L?COM0007
-      0100066FH   CODE     END       ?L?COM0008
-      0100066FH   CODE     END       ?L?COM0009
-      0100066FH   CODE     END       ?L?COM000A
-      0100066FH   CODE     END       ?L?COM000B
-      01000479H   CODE     PART      ?L?COM000C
-      01000479H   CODE     END       ?L?COM000D
-      0100044EH   CODE     PART      ?L?COM000E
-      0100068AH   CODE     PART      ?L?COM000F
-      0100068AH   CODE     END       ?L?COM0010
-      01000C35H   CODE     PART      ?L?COM0011
-      01000565H   CODE     PART      ?L?COM0012
-      01000573H   CODE     PART      ?L?COM0013
-      01000573H   CODE     END       ?L?COM0014
-      010002B8H   CODE     PART      ?L?COM0015
-      010002B8H   CODE     END       ?L?COM0016
-      010002B8H   CODE     END       ?L?COM0017
-      010002B8H   CODE     END       ?L?COM0018
+      01000662H   CODE     PART      ?L?COM0007
+      01000662H   CODE     END       ?L?COM0008
+      01000662H   CODE     END       ?L?COM0009
+      01000662H   CODE     END       ?L?COM000A
+      01000662H   CODE     END       ?L?COM000B
+      01000C6CH   CODE     PART      ?L?COM000C
+      01000C6CH   CODE     END       ?L?COM000D
+      01000C40H   CODE     PART      ?L?COM000E
+      010007E3H   CODE     PART      ?L?COM000F
+      010007E3H   CODE     END       ?L?COM0010
+      010007C4H   CODE     PART      ?L?COM0011
+      010007B7H   CODE     PART      ?L?COM0012
+      0100069DH   CODE     PART      ?L?COM0013
+      0100069DH   CODE     END       ?L?COM0014
+      010005D5H   CODE     PART      ?L?COM0015
+      010005D5H   CODE     END       ?L?COM0016
+      010005D5H   CODE     END       ?L?COM0017
+      010005D5H   CODE     END       ?L?COM0018
       0100000EH   CODE     PART      ?L?COM0019
       0100000EH   CODE     END       ?L?COM001A
-      01000C3EH   CODE     PART      ?L?COM001B
-      01000C45H   CODE     PART      ?L?COM001C
-      01000B12H   CODE     PART      ?L?COM001D
-      010002E4H   CODE     PART      ?L?COM001E
-      010002E4H   CODE     END       ?L?COM001F
-      010002D5H   CODE     PART      ?L?COM0020
-      010002D5H   CODE     END       ?L?COM0021
-      01000B8EH   CODE     PART      ?L?COM0022
-      010006AEH   CODE     PART      ?L?COM0023
-      01000C4CH   CODE     PART      ?L?COM0024
+      01000823H   CODE     PART      ?L?COM001B
+      0100082CH   CODE     PART      ?L?COM001C
+      01000E4BH   CODE     PART      ?L?COM001D
+      0100068CH   CODE     PART      ?L?COM001E
+      0100068CH   CODE     END       ?L?COM001F
+      0100067DH   CODE     PART      ?L?COM0020
+      0100067DH   CODE     END       ?L?COM0021
+      01000E6CH   CODE     PART      ?L?COM0022
+      01000BBCH   CODE     PART      ?L?COM0023
+      010007BBH   CODE     PART      ?L?COM0024
       01000003H   CODE     PART      ?L?COM0025
-      01000592H   CODE     BEGIN     ?L?COM0026
-      0100056BH   CODE     PART      ?L?COM0027
+      01000ADBH   CODE     BEGIN     ?L?COM0026
+      01000652H   CODE     PART      ?L?COM0027
 
 
 
@@ -1270,121 +1270,121 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       0200009DH   PUBLIC    XDATA    WORD      ms_count
       02000089H   PUBLIC    XDATA    ---       receive_data
       02000088H   PUBLIC    XDATA    BYTE      receive_len
-      01000C04H   PUBLIC    CODE     ---       uart
-      01000C55H   PUBLIC    CODE     ---       main
-      010005AEH   PUBLIC    CODE     ---       _uart_send_buffer
-      010007C4H   PUBLIC    CODE     ---       _uart_send
-      01000659H   PUBLIC    CODE     ---       uart_init_recv
-      010005E4H   PUBLIC    CODE     ---       uart_init
-      01000BD3H   PUBLIC    CODE     ---       timer0_isr
-      01000596H   PUBLIC    CODE     ---       _delay_ms
-      01000B95H   PUBLIC    CODE     ---       timer0_init
-      010007BCH   PUBLIC    CODE     ---       _servo_set_time_base_target_position_and_moving_time_analysis
-      010007B4H   PUBLIC    CODE     ---       _servo_set_time_base_target_acc_analysis
-      010007ACH   PUBLIC    CODE     ---       _servo_set_velocity_base_target_dec_analysis
-      010007A4H   PUBLIC    CODE     ---       _servo_set_velocity_base_target_acc_analysis
-      0100079CH   PUBLIC    CODE     ---       _servo_set_velocity_base_target_velocity_analysis
-      01000794H   PUBLIC    CODE     ---       _servo_set_velocity_base_target_position_analysis
-      0100078CH   PUBLIC    CODE     ---       _servo_set_target_current_analysis
-      01000784H   PUBLIC    CODE     ---       _servo_set_target_pwm_analysis
-      0100069EH   PUBLIC    CODE     ---       _servo_set_torque_switch_analysis
-      0100077CH   PUBLIC    CODE     ---       _servo_set_led_switch_analysis
-      01000774H   PUBLIC    CODE     ---       _servo_set_flash_switch_analysis
-      010006A6H   PUBLIC    CODE     ---       _servo_set_control_mode_analysis
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 20
+      01000EB7H   PUBLIC    CODE     ---       uart
+      01000841H   PUBLIC    CODE     ---       main
+      01000AF7H   PUBLIC    CODE     ---       _uart_send_buffer
+      01000E64H   PUBLIC    CODE     ---       _uart_send
+      01000B2DH   PUBLIC    CODE     ---       uart_init_recv
+      010007CDH   PUBLIC    CODE     ---       uart_init
+      01000E85H   PUBLIC    CODE     ---       timer0_isr
+      01000ADFH   PUBLIC    CODE     ---       _delay_ms
+      01000E75H   PUBLIC    CODE     ---       timer0_init
+      010007AFH   PUBLIC    CODE     ---       _servo_set_time_base_target_position_and_moving_time_analysis
+      010007A7H   PUBLIC    CODE     ---       _servo_set_time_base_target_acc_analysis
+      0100079FH   PUBLIC    CODE     ---       _servo_set_velocity_base_target_dec_analysis
+      01000797H   PUBLIC    CODE     ---       _servo_set_velocity_base_target_acc_analysis
+      0100078FH   PUBLIC    CODE     ---       _servo_set_velocity_base_target_velocity_analysis
+      01000787H   PUBLIC    CODE     ---       _servo_set_velocity_base_target_position_analysis
+      0100077FH   PUBLIC    CODE     ---       _servo_set_target_current_analysis
+      01000777H   PUBLIC    CODE     ---       _servo_set_target_pwm_analysis
+      0100065AH   PUBLIC    CODE     ---       _servo_set_torque_switch_analysis
+      0100076FH   PUBLIC    CODE     ---       _servo_set_led_switch_analysis
+      01000767H   PUBLIC    CODE     ---       _servo_set_flash_switch_analysis
+      0100075FH   PUBLIC    CODE     ---       _servo_set_control_mode_analysis
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 20
 
 
-      0100076CH   PUBLIC    CODE     ---       _servo_set_shutdown_conditions_analysis
-      01000764H   PUBLIC    CODE     ---       _servo_set_led_condition_analysis
-      0100075CH   PUBLIC    CODE     ---       _servo_set_position_control_d_gain_analysis
-      01000754H   PUBLIC    CODE     ---       _servo_set_position_control_i_gain_analysis
-      0100074CH   PUBLIC    CODE     ---       _servo_set_position_control_p_gain_analysis
-      01000744H   PUBLIC    CODE     ---       _servo_set_pwm_punch_analysis
-      0100073CH   PUBLIC    CODE     ---       _servo_set_ccw_deadband_analysis
-      01000734H   PUBLIC    CODE     ---       _servo_set_cw_deadband_analysis
-      0100072CH   PUBLIC    CODE     ---       _servo_set_current_shutdown_time_analysis
-      01000724H   PUBLIC    CODE     ---       _servo_set_max_current_limit_analysis
-      0100071CH   PUBLIC    CODE     ---       _servo_set_max_pwm_limit_analysis
-      01000714H   PUBLIC    CODE     ---       _servo_set_min_voltage_limit_analysis
-      0100070CH   PUBLIC    CODE     ---       _servo_set_max_voltage_limit_analysis
-      01000704H   PUBLIC    CODE     ---       _servo_set_max_temperature_limit_analysis
-      010006FCH   PUBLIC    CODE     ---       _servo_set_max_angle_limit_analysis
-      010006F4H   PUBLIC    CODE     ---       _servo_set_min_angle_limit_analysis
-      010006ECH   PUBLIC    CODE     ---       _servo_set_baud_rate_analysis
-      010006E4H   PUBLIC    CODE     ---       _servo_set_return_level_analysis
-      010006B5H   PUBLIC    CODE     ---       _servo_set_return_delay_time_analysis
+      01000757H   PUBLIC    CODE     ---       _servo_set_shutdown_conditions_analysis
+      0100074FH   PUBLIC    CODE     ---       _servo_set_led_condition_analysis
+      01000747H   PUBLIC    CODE     ---       _servo_set_position_control_d_gain_analysis
+      0100073FH   PUBLIC    CODE     ---       _servo_set_position_control_i_gain_analysis
+      01000737H   PUBLIC    CODE     ---       _servo_set_position_control_p_gain_analysis
+      0100072FH   PUBLIC    CODE     ---       _servo_set_pwm_punch_analysis
+      01000727H   PUBLIC    CODE     ---       _servo_set_ccw_deadband_analysis
+      0100071FH   PUBLIC    CODE     ---       _servo_set_cw_deadband_analysis
+      01000717H   PUBLIC    CODE     ---       _servo_set_current_shutdown_time_analysis
+      0100070FH   PUBLIC    CODE     ---       _servo_set_max_current_limit_analysis
+      01000707H   PUBLIC    CODE     ---       _servo_set_max_pwm_limit_analysis
+      010006FFH   PUBLIC    CODE     ---       _servo_set_min_voltage_limit_analysis
+      010006F7H   PUBLIC    CODE     ---       _servo_set_max_voltage_limit_analysis
+      010006EFH   PUBLIC    CODE     ---       _servo_set_max_temperature_limit_analysis
+      010006E7H   PUBLIC    CODE     ---       _servo_set_max_angle_limit_analysis
+      010006DFH   PUBLIC    CODE     ---       _servo_set_min_angle_limit_analysis
+      010006D7H   PUBLIC    CODE     ---       _servo_set_baud_rate_analysis
+      010006CFH   PUBLIC    CODE     ---       _servo_set_return_level_analysis
+      010006C7H   PUBLIC    CODE     ---       _servo_set_return_delay_time_analysis
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_time_base_target_position_and_moving_time?BYTE
-      01000B2AH   PUBLIC    CODE     ---       _servo_set_time_base_target_position_and_moving_time
+      01000D32H   PUBLIC    CODE     ---       _servo_set_time_base_target_position_and_moving_time
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_time_base_target_acc?BYTE
-      0100041DH   PUBLIC    CODE     ---       _servo_set_time_base_target_acc
+      01000E3FH   PUBLIC    CODE     ---       _servo_set_time_base_target_acc
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_velocity_base_target_dec?BYTE
-      01000412H   PUBLIC    CODE     ---       _servo_set_velocity_base_target_dec
+      01000E33H   PUBLIC    CODE     ---       _servo_set_velocity_base_target_dec
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_velocity_base_target_acc?BYTE
-      01000407H   PUBLIC    CODE     ---       _servo_set_velocity_base_target_acc
+      01000E27H   PUBLIC    CODE     ---       _servo_set_velocity_base_target_acc
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_velocity_base_target_velocity?BYTE
-      01000BBCH   PUBLIC    CODE     ---       _servo_set_velocity_base_target_velocity
+      01000D1EH   PUBLIC    CODE     ---       _servo_set_velocity_base_target_velocity
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_velocity_base_target_position?BYTE
-      01000BA5H   PUBLIC    CODE     ---       _servo_set_velocity_base_target_position
+      01000D0AH   PUBLIC    CODE     ---       _servo_set_velocity_base_target_position
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_target_current?BYTE
-      01000AF9H   PUBLIC    CODE     ---       _servo_set_target_current
+      01000CB8H   PUBLIC    CODE     ---       _servo_set_target_current
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_target_pwm?BYTE
-      0100057CH   PUBLIC    CODE     ---       _servo_set_target_pwm
+      01000CA2H   PUBLIC    CODE     ---       _servo_set_target_pwm
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_torque_switch?BYTE
-      01000322H   PUBLIC    CODE     ---       _servo_set_torque_switch
+      01000BA4H   PUBLIC    CODE     ---       _servo_set_torque_switch
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_led_switch?BYTE
-      010003FCH   PUBLIC    CODE     ---       _servo_set_led_switch
+      01000E1BH   PUBLIC    CODE     ---       _servo_set_led_switch
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_flash_switch?BYTE
-      010003F1H   PUBLIC    CODE     ---       _servo_set_flash_switch
+      01000E0FH   PUBLIC    CODE     ---       _servo_set_flash_switch
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_control_mode?BYTE
-      0100032DH   PUBLIC    CODE     ---       _servo_set_control_mode
+      01000BB0H   PUBLIC    CODE     ---       _servo_set_control_mode
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_shutdown_conditions?BYTE
-      010003E6H   PUBLIC    CODE     ---       _servo_set_shutdown_conditions
+      01000E03H   PUBLIC    CODE     ---       _servo_set_shutdown_conditions
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_led_condition?BYTE
-      010003DBH   PUBLIC    CODE     ---       _servo_set_led_condition
+      01000DF7H   PUBLIC    CODE     ---       _servo_set_led_condition
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_position_control_d_gain?BYTE
-      010004E8H   PUBLIC    CODE     ---       _servo_set_position_control_d_gain
+      01000CF6H   PUBLIC    CODE     ---       _servo_set_position_control_d_gain
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_position_control_i_gain?BYTE
-      010004D5H   PUBLIC    CODE     ---       _servo_set_position_control_i_gain
+      01000CE2H   PUBLIC    CODE     ---       _servo_set_position_control_i_gain
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_position_control_p_gain?BYTE
-      010004C2H   PUBLIC    CODE     ---       _servo_set_position_control_p_gain
+      01000CCEH   PUBLIC    CODE     ---       _servo_set_position_control_p_gain
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_pwm_punch?BYTE
-      010003D0H   PUBLIC    CODE     ---       _servo_set_pwm_punch
+      01000DEBH   PUBLIC    CODE     ---       _servo_set_pwm_punch
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_ccw_deadband?BYTE
-      010003C5H   PUBLIC    CODE     ---       _servo_set_ccw_deadband
+      01000DDFH   PUBLIC    CODE     ---       _servo_set_ccw_deadband
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_cw_deadband?BYTE
-      010003BAH   PUBLIC    CODE     ---       _servo_set_cw_deadband
+      01000DD3H   PUBLIC    CODE     ---       _servo_set_cw_deadband
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_current_shutdown_time?BYTE
-      010004AFH   PUBLIC    CODE     ---       _servo_set_current_shutdown_time
+      01000C58H   PUBLIC    CODE     ---       _servo_set_current_shutdown_time
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_max_current_limit?BYTE
-      01000466H   PUBLIC    CODE     ---       _servo_set_max_current_limit
+      01000C2CH   PUBLIC    CODE     ---       _servo_set_max_current_limit
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_max_pwm_limit?BYTE
-      0100043BH   PUBLIC    CODE     ---       _servo_set_max_pwm_limit
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 21
+      01000C18H   PUBLIC    CODE     ---       _servo_set_max_pwm_limit
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 21
 
 
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_min_voltage_limit?BYTE
-      010003AFH   PUBLIC    CODE     ---       _servo_set_min_voltage_limit
+      01000DC7H   PUBLIC    CODE     ---       _servo_set_min_voltage_limit
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_max_voltage_limit?BYTE
-      010003A4H   PUBLIC    CODE     ---       _servo_set_max_voltage_limit
+      01000DBBH   PUBLIC    CODE     ---       _servo_set_max_voltage_limit
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_max_temperature_limit?BYTE
-      01000399H   PUBLIC    CODE     ---       _servo_set_max_temperature_limit
+      01000DAFH   PUBLIC    CODE     ---       _servo_set_max_temperature_limit
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_max_angle_limit?BYTE
-      01000428H   PUBLIC    CODE     ---       _servo_set_max_angle_limit
+      01000C04H   PUBLIC    CODE     ---       _servo_set_max_angle_limit
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_min_angle_limit?BYTE
-      01000370H   PUBLIC    CODE     ---       _servo_set_min_angle_limit
+      01000BF0H   PUBLIC    CODE     ---       _servo_set_min_angle_limit
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_baud_rate?BYTE
-      0100038EH   PUBLIC    CODE     ---       _servo_set_baud_rate
+      01000DA3H   PUBLIC    CODE     ---       _servo_set_baud_rate
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_return_level?BYTE
-      01000383H   PUBLIC    CODE     ---       _servo_set_return_level
+      01000D97H   PUBLIC    CODE     ---       _servo_set_return_level
       0200005BH   PUBLIC    XDATA    BYTE      ?_servo_set_return_delay_time?BYTE
-      01000338H   PUBLIC    CODE     ---       _servo_set_return_delay_time
+      01000835H   PUBLIC    CODE     ---       _servo_set_return_delay_time
       0200006AH   PUBLIC    XDATA    BYTE      ?_servo_write?BYTE
-      010002F6H   PUBLIC    CODE     ---       _servo_write
+      010007F8H   PUBLIC    CODE     ---       _servo_write
       02000061H   PUBLIC    XDATA    BYTE      ?_servo_unpack?BYTE
-      010004FBH   PUBLIC    CODE     ---       _servo_unpack
+      010005EFH   PUBLIC    CODE     ---       _servo_unpack
       02000076H   PUBLIC    XDATA    BYTE      ?_servo_pack?BYTE
-      0100016DH   PUBLIC    CODE     ---       _servo_pack
-      01000148H   PUBLIC    CODE     ---       _get_check
+      01000497H   PUBLIC    CODE     ---       _servo_pack
+      01000475H   PUBLIC    CODE     ---       _get_check
       00000080H   SFRSYM    DATA     BYTE      P0
       00000090H   SFRSYM    DATA     BYTE      P1
       000000A0H   SFRSYM    DATA     BYTE      P2
@@ -1427,7 +1427,7 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       000000A8H.1 SFRSYM    DATA     BIT       ET0
       000000A8H.3 SFRSYM    DATA     BIT       ET1
       00000088H.5 SFRSYM    DATA     BIT       TF0
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 22
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 22
 
 
       000000A8H.5 SFRSYM    DATA     BIT       ET2
@@ -1468,51 +1468,51 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       000000B0H.1 SFRSYM    DATA     BIT       TXD
       000000D0H.5 SFRSYM    DATA     BIT       F0
       000000D0H   SFRSYM    DATA     BYTE      PSW
-      010000E8H   SYMBOL    CONST    ---       _?ix1000
-      010000FCH   SYMBOL    CONST    ---       _?ix1010
-      010000EAH   SYMBOL    CONST    ---       _?ix1001
-      010000FEH   SYMBOL    CONST    ---       _?ix1011
-      010000ECH   SYMBOL    CONST    ---       _?ix1002
-      01000100H   SYMBOL    CONST    ---       _?ix1012
-      010000EEH   SYMBOL    CONST    ---       _?ix1003
-      01000104H   SYMBOL    CONST    ---       _?ix1013
-      010000F0H   SYMBOL    CONST    ---       _?ix1004
-      0100010CH   SYMBOL    CONST    ---       _?ix1014
-      010000F2H   SYMBOL    CONST    ---       _?ix1005
-      01000116H   SYMBOL    CONST    ---       _?ix1015
-      010000F4H   SYMBOL    CONST    ---       _?ix1006
-      01000120H   SYMBOL    CONST    ---       _?ix1016
-      010000F6H   SYMBOL    CONST    ---       _?ix1007
-      0100012AH   SYMBOL    CONST    ---       _?ix1017
-      010000F8H   SYMBOL    CONST    ---       _?ix1008
-      01000134H   SYMBOL    CONST    ---       _?ix1018
-      010000FAH   SYMBOL    CONST    ---       _?ix1009
+      01000415H   SYMBOL    CONST    ---       _?ix1000
+      01000429H   SYMBOL    CONST    ---       _?ix1010
+      01000417H   SYMBOL    CONST    ---       _?ix1001
+      0100042BH   SYMBOL    CONST    ---       _?ix1011
+      01000419H   SYMBOL    CONST    ---       _?ix1002
+      0100042DH   SYMBOL    CONST    ---       _?ix1012
+      0100041BH   SYMBOL    CONST    ---       _?ix1003
+      01000431H   SYMBOL    CONST    ---       _?ix1013
+      0100041DH   SYMBOL    CONST    ---       _?ix1004
+      01000439H   SYMBOL    CONST    ---       _?ix1014
+      0100041FH   SYMBOL    CONST    ---       _?ix1005
+      01000443H   SYMBOL    CONST    ---       _?ix1015
+      01000421H   SYMBOL    CONST    ---       _?ix1006
+      0100044DH   SYMBOL    CONST    ---       _?ix1016
+      01000423H   SYMBOL    CONST    ---       _?ix1007
+      01000457H   SYMBOL    CONST    ---       _?ix1017
+      01000425H   SYMBOL    CONST    ---       _?ix1008
+      01000461H   SYMBOL    CONST    ---       _?ix1018
+      01000427H   SYMBOL    CONST    ---       _?ix1009
 
-      01000148H   BLOCK     CODE     ---       LVL=0
-      01000148H   LINE      ---      ---       #11
-      0100014EH   LINE      ---      ---       #12
+      01000475H   BLOCK     CODE     ---       LVL=0
+      01000475H   LINE      ---      ---       #11
+      0100047AH   LINE      ---      ---       #12
       02000085H   SYMBOL    XDATA    ---       buffer
       00000005H   SYMBOL    DATA     BYTE      length
-      0100014EH   BLOCK     CODE     NEAR LAB  LVL=1
-      0100014EH   LINE      ---      ---       #13
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 23
+      0100047AH   BLOCK     CODE     NEAR LAB  LVL=1
+      0100047AH   LINE      ---      ---       #13
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 23
 
 
-      01000151H   LINE      ---      ---       #14
-      01000156H   LINE      ---      ---       #15
-      01000156H   LINE      ---      ---       #16
-      01000166H   LINE      ---      ---       #17
-      01000169H   LINE      ---      ---       #18
-      0100016CH   LINE      ---      ---       #19
-      0100016CH   LINE      ---      ---       #20
+      0100047DH   LINE      ---      ---       #14
+      01000482H   LINE      ---      ---       #15
+      01000482H   LINE      ---      ---       #16
+      01000490H   LINE      ---      ---       #17
+      01000493H   LINE      ---      ---       #18
+      01000496H   LINE      ---      ---       #19
+      01000496H   LINE      ---      ---       #20
       00000007H   SYMBOL    DATA     BYTE      sum
       00000006H   SYMBOL    DATA     BYTE      i
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100016DH   BLOCK     CODE     ---       LVL=0
-      0100016DH   LINE      ---      ---       #33
-      01000174H   LINE      ---      ---       #35
+      01000497H   BLOCK     CODE     ---       LVL=0
+      01000497H   LINE      ---      ---       #33
+      0100049EH   LINE      ---      ---       #35
       00000007H   SYMBOL    DATA     BYTE      id
       02000077H   SYMBOL    XDATA    BYTE      instruction
       00000006H   SYMBOL    DATA     BYTE      address
@@ -1520,118 +1520,118 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       0200007AH   SYMBOL    XDATA    ---       input_buffer
       0200007DH   SYMBOL    XDATA    ---       output_buffer
       02000080H   SYMBOL    XDATA    ---       output_length
-      01000174H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000174H   LINE      ---      ---       #36
-      0100017BH   LINE      ---      ---       #38
-      01000185H   LINE      ---      ---       #42
-      010001A5H   LINE      ---      ---       #43
-      010001A5H   LINE      ---      ---       #44
-      010001A5H   LINE      ---      ---       #45
-      010001ACH   LINE      ---      ---       #46
-      010001AFH   LINE      ---      ---       #47
-      010001B1H   LINE      ---      ---       #48
-      010001B1H   LINE      ---      ---       #49
-      010001B8H   LINE      ---      ---       #50
-      010001BCH   LINE      ---      ---       #51
-      010001C2H   LINE      ---      ---       #52
-      010001D4H   LINE      ---      ---       #53
-      010001D6H   LINE      ---      ---       #54
-      010001D6H   LINE      ---      ---       #55
-      010001E3H   LINE      ---      ---       #56
-      010001E7H   LINE      ---      ---       #57
-      010001EBH   LINE      ---      ---       #58
-      01000200H   LINE      ---      ---       #59
-      01000200H   LINE      ---      ---       #60
-      0100020AH   LINE      ---      ---       #61
-      01000212H   LINE      ---      ---       #62
-      01000212H   LINE      ---      ---       #63
-      01000212H   LINE      ---      ---       #64
-      01000226H   LINE      ---      ---       #65
-      0100022DH   LINE      ---      ---       #66
-      01000259H   LINE      ---      ---       #67
-      01000259H   LINE      ---      ---       #68
-      01000267H   LINE      ---      ---       #69
-      0100026FH   LINE      ---      ---       #70
-      0100026FH   LINE      ---      ---       #71
-      0100026FH   LINE      ---      ---       #72
-      0100026FH   LINE      ---      ---       #73
-      0100026FH   LINE      ---      ---       #74
-      0100026FH   LINE      ---      ---       #75
-      01000276H   LINE      ---      ---       #76
-      0100027DH   LINE      ---      ---       #77
-      01000284H   LINE      ---      ---       #78
-      0100028BH   LINE      ---      ---       #79
-      0100028DH   LINE      ---      ---       #80
-      0100028DH   LINE      ---      ---       #81
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 24
+      0100049EH   BLOCK     CODE     NEAR LAB  LVL=1
+      0100049EH   LINE      ---      ---       #36
+      010004A5H   LINE      ---      ---       #38
+      010004AFH   LINE      ---      ---       #42
+      010004CEH   LINE      ---      ---       #43
+      010004CEH   LINE      ---      ---       #44
+      010004CEH   LINE      ---      ---       #45
+      010004D4H   LINE      ---      ---       #46
+      010004D7H   LINE      ---      ---       #47
+      010004D9H   LINE      ---      ---       #48
+      010004D9H   LINE      ---      ---       #49
+      010004DFH   LINE      ---      ---       #50
+      010004E3H   LINE      ---      ---       #51
+      010004E8H   LINE      ---      ---       #52
+      010004FAH   LINE      ---      ---       #53
+      010004FCH   LINE      ---      ---       #54
+      010004FCH   LINE      ---      ---       #55
+      01000509H   LINE      ---      ---       #56
+      0100050DH   LINE      ---      ---       #57
+      01000511H   LINE      ---      ---       #58
+      01000526H   LINE      ---      ---       #59
+      01000526H   LINE      ---      ---       #60
+      0100052FH   LINE      ---      ---       #61
+      01000537H   LINE      ---      ---       #62
+      01000537H   LINE      ---      ---       #63
+      01000537H   LINE      ---      ---       #64
+      0100054BH   LINE      ---      ---       #65
+      01000552H   LINE      ---      ---       #66
+      0100057CH   LINE      ---      ---       #67
+      0100057CH   LINE      ---      ---       #68
+      01000589H   LINE      ---      ---       #69
+      01000591H   LINE      ---      ---       #70
+      01000591H   LINE      ---      ---       #71
+      01000591H   LINE      ---      ---       #72
+      01000591H   LINE      ---      ---       #73
+      01000591H   LINE      ---      ---       #74
+      01000591H   LINE      ---      ---       #75
+      01000597H   LINE      ---      ---       #76
+      0100059EH   LINE      ---      ---       #77
+      010005A4H   LINE      ---      ---       #78
+      010005AAH   LINE      ---      ---       #79
+      010005ACH   LINE      ---      ---       #80
+      010005ACH   LINE      ---      ---       #81
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 24
 
 
-      01000290H   LINE      ---      ---       #82
-      01000290H   LINE      ---      ---       #83
-      010002A8H   LINE      ---      ---       #84
-      010002B5H   LINE      ---      ---       #85
-      010002B7H   LINE      ---      ---       #86
+      010005AFH   LINE      ---      ---       #82
+      010005AFH   LINE      ---      ---       #83
+      010005C7H   LINE      ---      ---       #84
+      010005D2H   LINE      ---      ---       #85
+      010005D4H   LINE      ---      ---       #86
       02000083H   SYMBOL    XDATA    BYTE      i
       02000084H   SYMBOL    XDATA    BYTE      j
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010004FBH   BLOCK     CODE     ---       LVL=0
-      010004FBH   LINE      ---      ---       #94
-      01000501H   LINE      ---      ---       #95
+      010005EFH   BLOCK     CODE     ---       LVL=0
+      010005EFH   LINE      ---      ---       #94
+      010005F4H   LINE      ---      ---       #95
       02000061H   SYMBOL    XDATA    ---       response_packet
       02000064H   SYMBOL    XDATA    ---       data_buffer
-      01000501H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000501H   LINE      ---      ---       #100
-      01000508H   LINE      ---      ---       #101
-      01000512H   LINE      ---      ---       #103
-      01000519H   LINE      ---      ---       #105
-      01000535H   LINE      ---      ---       #106
-      01000535H   LINE      ---      ---       #107
-      01000535H   LINE      ---      ---       #108
-      01000538H   LINE      ---      ---       #109
-      01000538H   LINE      ---      ---       #111
-      0100053FH   LINE      ---      ---       #112
-      0100053FH   LINE      ---      ---       #113
-      0100053FH   LINE      ---      ---       #114
-      0100053FH   LINE      ---      ---       #115
-      0100053FH   LINE      ---      ---       #116
-      0100053FH   LINE      ---      ---       #117
-      0100053FH   LINE      ---      ---       #118
-      0100053FH   LINE      ---      ---       #119
-      0100053FH   LINE      ---      ---       #120
-      0100053FH   LINE      ---      ---       #121
-      0100053FH   LINE      ---      ---       #122
-      0100053FH   LINE      ---      ---       #123
-      0100053FH   LINE      ---      ---       #124
-      0100053FH   LINE      ---      ---       #125
-      0100053FH   LINE      ---      ---       #126
-      0100053FH   LINE      ---      ---       #127
-      0100053FH   LINE      ---      ---       #128
-      0100053FH   LINE      ---      ---       #129
-      0100053FH   LINE      ---      ---       #130
-      0100053FH   LINE      ---      ---       #131
-      0100053FH   LINE      ---      ---       #132
-      0100053FH   LINE      ---      ---       #133
-      0100053FH   LINE      ---      ---       #134
-      0100053FH   LINE      ---      ---       #135
-      0100053FH   LINE      ---      ---       #136
-      0100053FH   LINE      ---      ---       #137
-      0100053FH   LINE      ---      ---       #138
-      0100053FH   LINE      ---      ---       #139
-      0100053FH   LINE      ---      ---       #140
-      0100053FH   LINE      ---      ---       #141
-      01000540H   LINE      ---      ---       #142
-      01000540H   LINE      ---      ---       #144
-      01000546H   LINE      ---      ---       #145
-      01000562H   LINE      ---      ---       #146
-      01000562H   LINE      ---      ---       #148
-      01000564H   LINE      ---      ---       #149
+      010005F4H   BLOCK     CODE     NEAR LAB  LVL=1
+      010005F4H   LINE      ---      ---       #100
+      010005FAH   LINE      ---      ---       #101
+      01000603H   LINE      ---      ---       #103
+      0100060AH   LINE      ---      ---       #105
+      01000625H   LINE      ---      ---       #106
+      01000625H   LINE      ---      ---       #107
+      01000625H   LINE      ---      ---       #108
+      01000628H   LINE      ---      ---       #109
+      01000628H   LINE      ---      ---       #111
+      0100062FH   LINE      ---      ---       #112
+      0100062FH   LINE      ---      ---       #113
+      0100062FH   LINE      ---      ---       #114
+      0100062FH   LINE      ---      ---       #115
+      0100062FH   LINE      ---      ---       #116
+      0100062FH   LINE      ---      ---       #117
+      0100062FH   LINE      ---      ---       #118
+      0100062FH   LINE      ---      ---       #119
+      0100062FH   LINE      ---      ---       #120
+      0100062FH   LINE      ---      ---       #121
+      0100062FH   LINE      ---      ---       #122
+      0100062FH   LINE      ---      ---       #123
+      0100062FH   LINE      ---      ---       #124
+      0100062FH   LINE      ---      ---       #125
+      0100062FH   LINE      ---      ---       #126
+      0100062FH   LINE      ---      ---       #127
+      0100062FH   LINE      ---      ---       #128
+      0100062FH   LINE      ---      ---       #129
+      0100062FH   LINE      ---      ---       #130
+      0100062FH   LINE      ---      ---       #131
+      0100062FH   LINE      ---      ---       #132
+      0100062FH   LINE      ---      ---       #133
+      0100062FH   LINE      ---      ---       #134
+      0100062FH   LINE      ---      ---       #135
+      0100062FH   LINE      ---      ---       #136
+      0100062FH   LINE      ---      ---       #137
+      0100062FH   LINE      ---      ---       #138
+      0100062FH   LINE      ---      ---       #139
+      0100062FH   LINE      ---      ---       #140
+      0100062FH   LINE      ---      ---       #141
+      01000630H   LINE      ---      ---       #142
+      01000630H   LINE      ---      ---       #144
+      01000636H   LINE      ---      ---       #145
+      0100064FH   LINE      ---      ---       #146
+      0100064FH   LINE      ---      ---       #148
+      01000651H   LINE      ---      ---       #149
       00000004H   SYMBOL    DATA     BYTE      length
       02000067H   SYMBOL    XDATA    BYTE      status
       00000007H   SYMBOL    DATA     BYTE      checksum
       ---         BLOCKEND  CODE     ---       LVL=1
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 25
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 25
 
 
       ---         BLOCKEND  CODE     ---       LVL=0
@@ -1640,12 +1640,12 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       00000005H   SYMBOL    DATA     BYTE      address
       00000006H   SYMBOL    DATA     BYTE      read_data_len
 
-      010002F6H   BLOCK     CODE     ---       LVL=0
-      010002F6H   LINE      ---      ---       #191
-      010002F8H   LINE      ---      ---       #192
-      010002F8H   LINE      ---      ---       #193
-      0100031FH   LINE      ---      ---       #195
-      01000321H   LINE      ---      ---       #196
+      010007F8H   BLOCK     CODE     ---       LVL=0
+      010007F8H   LINE      ---      ---       #191
+      010007FAH   LINE      ---      ---       #192
+      010007FAH   LINE      ---      ---       #193
+      01000820H   LINE      ---      ---       #195
+      01000822H   LINE      ---      ---       #196
       00000007H   SYMBOL    DATA     BYTE      id
       00000005H   SYMBOL    DATA     BYTE      address
       00000006H   SYMBOL    DATA     BYTE      write_data_len
@@ -1661,374 +1661,374 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       00000007H   SYMBOL    DATA     BYTE      id
       00000007H   SYMBOL    DATA     BYTE      id
 
-      01000338H   BLOCK     CODE     ---       LVL=0
-      01000338H   LINE      ---      ---       #307
-      01000340H   LINE      ---      ---       #311
-      01000342H   LINE      ---      ---       #312
+      01000835H   BLOCK     CODE     ---       LVL=0
+      01000835H   LINE      ---      ---       #307
+      0100083EH   LINE      ---      ---       #311
+      01000840H   LINE      ---      ---       #312
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      response_delay_time
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000383H   BLOCK     CODE     ---       LVL=0
-      01000383H   LINE      ---      ---       #322
-      0100038BH   LINE      ---      ---       #326
-      0100038DH   LINE      ---      ---       #327
+      01000D97H   BLOCK     CODE     ---       LVL=0
+      01000D97H   LINE      ---      ---       #322
+      01000DA0H   LINE      ---      ---       #326
+      01000DA2H   LINE      ---      ---       #327
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      return_level
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      0100038EH   BLOCK     CODE     ---       LVL=0
-      0100038EH   LINE      ---      ---       #337
-      01000396H   LINE      ---      ---       #341
-      01000398H   LINE      ---      ---       #342
+      01000DA3H   BLOCK     CODE     ---       LVL=0
+      01000DA3H   LINE      ---      ---       #337
+      01000DACH   LINE      ---      ---       #341
+      01000DAEH   LINE      ---      ---       #342
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      baud_rate_number
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000370H   BLOCK     CODE     ---       LVL=0
-      01000370H   LINE      ---      ---       #352
+      01000BF0H   BLOCK     CODE     ---       LVL=0
+      01000BF0H   LINE      ---      ---       #352
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      min_angle_limit
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      01000370H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000380H   LINE      ---      ---       #361
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 26
+      01000BF0H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000C01H   LINE      ---      ---       #361
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 26
 
 
-      01000382H   LINE      ---      ---       #362
+      01000C03H   LINE      ---      ---       #362
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000428H   BLOCK     CODE     ---       LVL=0
-      01000428H   LINE      ---      ---       #372
+      01000C04H   BLOCK     CODE     ---       LVL=0
+      01000C04H   LINE      ---      ---       #372
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      max_angle_limit
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      01000428H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000438H   LINE      ---      ---       #380
-      0100043AH   LINE      ---      ---       #381
+      01000C04H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000C15H   LINE      ---      ---       #380
+      01000C17H   LINE      ---      ---       #381
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000399H   BLOCK     CODE     ---       LVL=0
-      01000399H   LINE      ---      ---       #391
-      010003A1H   LINE      ---      ---       #394
-      010003A3H   LINE      ---      ---       #395
+      01000DAFH   BLOCK     CODE     ---       LVL=0
+      01000DAFH   LINE      ---      ---       #391
+      01000DB8H   LINE      ---      ---       #394
+      01000DBAH   LINE      ---      ---       #395
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      max_temperature_limit
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010003A4H   BLOCK     CODE     ---       LVL=0
-      010003A4H   LINE      ---      ---       #405
-      010003ACH   LINE      ---      ---       #408
-      010003AEH   LINE      ---      ---       #409
+      01000DBBH   BLOCK     CODE     ---       LVL=0
+      01000DBBH   LINE      ---      ---       #405
+      01000DC4H   LINE      ---      ---       #408
+      01000DC6H   LINE      ---      ---       #409
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      max_voltage_limit
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010003AFH   BLOCK     CODE     ---       LVL=0
-      010003AFH   LINE      ---      ---       #419
-      010003B7H   LINE      ---      ---       #422
-      010003B9H   LINE      ---      ---       #423
+      01000DC7H   BLOCK     CODE     ---       LVL=0
+      01000DC7H   LINE      ---      ---       #419
+      01000DD0H   LINE      ---      ---       #422
+      01000DD2H   LINE      ---      ---       #423
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      min_voltage_limit
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      0100043BH   BLOCK     CODE     ---       LVL=0
-      0100043BH   LINE      ---      ---       #433
+      01000C18H   BLOCK     CODE     ---       LVL=0
+      01000C18H   LINE      ---      ---       #433
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      max_pwm_limit
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      0100043BH   BLOCK     CODE     NEAR LAB  LVL=1
-      0100044BH   LINE      ---      ---       #441
-      0100044DH   LINE      ---      ---       #442
+      01000C18H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000C29H   LINE      ---      ---       #441
+      01000C2BH   LINE      ---      ---       #442
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000466H   BLOCK     CODE     ---       LVL=0
-      01000466H   LINE      ---      ---       #452
+      01000C2CH   BLOCK     CODE     ---       LVL=0
+      01000C2CH   LINE      ---      ---       #452
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      max_current_limit
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 27
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 27
 
 
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      01000466H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000476H   LINE      ---      ---       #460
-      01000478H   LINE      ---      ---       #461
+      01000C2CH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000C3DH   LINE      ---      ---       #460
+      01000C3FH   LINE      ---      ---       #461
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010004AFH   BLOCK     CODE     ---       LVL=0
-      010004AFH   LINE      ---      ---       #471
+      01000C58H   BLOCK     CODE     ---       LVL=0
+      01000C58H   LINE      ---      ---       #471
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      current_shutdown_time
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      010004AFH   BLOCK     CODE     NEAR LAB  LVL=1
-      010004BFH   LINE      ---      ---       #479
-      010004C1H   LINE      ---      ---       #480
+      01000C58H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000C69H   LINE      ---      ---       #479
+      01000C6BH   LINE      ---      ---       #480
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010003BAH   BLOCK     CODE     ---       LVL=0
-      010003BAH   LINE      ---      ---       #490
-      010003C2H   LINE      ---      ---       #493
-      010003C4H   LINE      ---      ---       #494
+      01000DD3H   BLOCK     CODE     ---       LVL=0
+      01000DD3H   LINE      ---      ---       #490
+      01000DDCH   LINE      ---      ---       #493
+      01000DDEH   LINE      ---      ---       #494
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      cw_deadband
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010003C5H   BLOCK     CODE     ---       LVL=0
-      010003C5H   LINE      ---      ---       #504
-      010003CDH   LINE      ---      ---       #507
-      010003CFH   LINE      ---      ---       #508
+      01000DDFH   BLOCK     CODE     ---       LVL=0
+      01000DDFH   LINE      ---      ---       #504
+      01000DE8H   LINE      ---      ---       #507
+      01000DEAH   LINE      ---      ---       #508
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      ccw_deadband
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010003D0H   BLOCK     CODE     ---       LVL=0
-      010003D0H   LINE      ---      ---       #518
-      010003D8H   LINE      ---      ---       #521
-      010003DAH   LINE      ---      ---       #522
+      01000DEBH   BLOCK     CODE     ---       LVL=0
+      01000DEBH   LINE      ---      ---       #518
+      01000DF4H   LINE      ---      ---       #521
+      01000DF6H   LINE      ---      ---       #522
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      pwm_punch
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010004C2H   BLOCK     CODE     ---       LVL=0
-      010004C2H   LINE      ---      ---       #532
+      01000CCEH   BLOCK     CODE     ---       LVL=0
+      01000CCEH   LINE      ---      ---       #532
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      position_control_P_gain
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      010004C2H   BLOCK     CODE     NEAR LAB  LVL=1
-      010004D2H   LINE      ---      ---       #540
-      010004D4H   LINE      ---      ---       #541
+      01000CCEH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000CDFH   LINE      ---      ---       #540
+      01000CE1H   LINE      ---      ---       #541
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 28
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 28
 
 
-      010004D5H   BLOCK     CODE     ---       LVL=0
-      010004D5H   LINE      ---      ---       #551
+      01000CE2H   BLOCK     CODE     ---       LVL=0
+      01000CE2H   LINE      ---      ---       #551
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      position_control_I_gain
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      010004D5H   BLOCK     CODE     NEAR LAB  LVL=1
-      010004E5H   LINE      ---      ---       #559
-      010004E7H   LINE      ---      ---       #560
+      01000CE2H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000CF3H   LINE      ---      ---       #559
+      01000CF5H   LINE      ---      ---       #560
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010004E8H   BLOCK     CODE     ---       LVL=0
-      010004E8H   LINE      ---      ---       #570
+      01000CF6H   BLOCK     CODE     ---       LVL=0
+      01000CF6H   LINE      ---      ---       #570
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      position_control_D_gain
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      010004E8H   BLOCK     CODE     NEAR LAB  LVL=1
-      010004F8H   LINE      ---      ---       #578
-      010004FAH   LINE      ---      ---       #579
+      01000CF6H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000D07H   LINE      ---      ---       #578
+      01000D09H   LINE      ---      ---       #579
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010003DBH   BLOCK     CODE     ---       LVL=0
-      010003DBH   LINE      ---      ---       #589
-      010003E3H   LINE      ---      ---       #592
-      010003E5H   LINE      ---      ---       #593
+      01000DF7H   BLOCK     CODE     ---       LVL=0
+      01000DF7H   LINE      ---      ---       #589
+      01000E00H   LINE      ---      ---       #592
+      01000E02H   LINE      ---      ---       #593
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      led_condition
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010003E6H   BLOCK     CODE     ---       LVL=0
-      010003E6H   LINE      ---      ---       #603
-      010003EEH   LINE      ---      ---       #606
-      010003F0H   LINE      ---      ---       #607
+      01000E03H   BLOCK     CODE     ---       LVL=0
+      01000E03H   LINE      ---      ---       #603
+      01000E0CH   LINE      ---      ---       #606
+      01000E0EH   LINE      ---      ---       #607
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      shutdown_conditions
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      0100032DH   BLOCK     CODE     ---       LVL=0
-      0100032DH   LINE      ---      ---       #617
-      01000335H   LINE      ---      ---       #620
-      01000337H   LINE      ---      ---       #621
+      01000BB0H   BLOCK     CODE     ---       LVL=0
+      01000BB0H   LINE      ---      ---       #617
+      01000BB9H   LINE      ---      ---       #620
+      01000BBBH   LINE      ---      ---       #621
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      control_mode
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010003F1H   BLOCK     CODE     ---       LVL=0
-      010003F1H   LINE      ---      ---       #631
-      010003F9H   LINE      ---      ---       #634
-      010003FBH   LINE      ---      ---       #635
+      01000E0FH   BLOCK     CODE     ---       LVL=0
+      01000E0FH   LINE      ---      ---       #631
+      01000E18H   LINE      ---      ---       #634
+      01000E1AH   LINE      ---      ---       #635
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      flash_switch
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 29
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 29
 
 
 
-      010003FCH   BLOCK     CODE     ---       LVL=0
-      010003FCH   LINE      ---      ---       #645
-      01000404H   LINE      ---      ---       #648
-      01000406H   LINE      ---      ---       #649
+      01000E1BH   BLOCK     CODE     ---       LVL=0
+      01000E1BH   LINE      ---      ---       #645
+      01000E24H   LINE      ---      ---       #648
+      01000E26H   LINE      ---      ---       #649
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      led_switch
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000322H   BLOCK     CODE     ---       LVL=0
-      01000322H   LINE      ---      ---       #659
-      0100032AH   LINE      ---      ---       #662
-      0100032CH   LINE      ---      ---       #663
+      01000BA4H   BLOCK     CODE     ---       LVL=0
+      01000BA4H   LINE      ---      ---       #659
+      01000BADH   LINE      ---      ---       #662
+      01000BAFH   LINE      ---      ---       #663
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      torque_switch
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      0100057CH   BLOCK     CODE     ---       LVL=0
-      0100057CH   LINE      ---      ---       #673
+      01000CA2H   BLOCK     CODE     ---       LVL=0
+      01000CA2H   LINE      ---      ---       #673
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    INT       target_pwm
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      0100057CH   BLOCK     CODE     NEAR LAB  LVL=1
-      0100058FH   LINE      ---      ---       #681
-      01000591H   LINE      ---      ---       #682
+      01000CA2H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000CB5H   LINE      ---      ---       #681
+      01000CB7H   LINE      ---      ---       #682
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000AF9H   BLOCK     CODE     ---       LVL=0
-      01000AF9H   LINE      ---      ---       #692
+      01000CB8H   BLOCK     CODE     ---       LVL=0
+      01000CB8H   LINE      ---      ---       #692
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    INT       target_current
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      01000AF9H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000B0FH   LINE      ---      ---       #700
-      01000B11H   LINE      ---      ---       #701
+      01000CB8H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000CCBH   LINE      ---      ---       #700
+      01000CCDH   LINE      ---      ---       #701
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000BA5H   BLOCK     CODE     ---       LVL=0
-      01000BA5H   LINE      ---      ---       #711
+      01000D0AH   BLOCK     CODE     ---       LVL=0
+      01000D0AH   LINE      ---      ---       #711
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      target_position
       0200005EH   SYMBOL    XDATA    ---       output_buffer
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      01000BA5H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000BB9H   LINE      ---      ---       #719
-      01000BBBH   LINE      ---      ---       #720
+      01000D0AH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000D1BH   LINE      ---      ---       #719
+      01000D1DH   LINE      ---      ---       #720
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000BBCH   BLOCK     CODE     ---       LVL=0
-      01000BBCH   LINE      ---      ---       #730
+      01000D1EH   BLOCK     CODE     ---       LVL=0
+      01000D1EH   LINE      ---      ---       #730
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      target_velocity
       0200005EH   SYMBOL    XDATA    ---       output_buffer
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 30
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 30
 
 
       02000061H   SYMBOL    XDATA    ---       output_buffer_len
-      01000BBCH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000BD0H   LINE      ---      ---       #738
-      01000BD2H   LINE      ---      ---       #739
+      01000D1EH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000D2FH   LINE      ---      ---       #738
+      01000D31H   LINE      ---      ---       #739
       02000064H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000407H   BLOCK     CODE     ---       LVL=0
-      01000407H   LINE      ---      ---       #749
-      0100040FH   LINE      ---      ---       #752
-      01000411H   LINE      ---      ---       #753
+      01000E27H   BLOCK     CODE     ---       LVL=0
+      01000E27H   LINE      ---      ---       #749
+      01000E30H   LINE      ---      ---       #752
+      01000E32H   LINE      ---      ---       #753
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      target_acc
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000412H   BLOCK     CODE     ---       LVL=0
-      01000412H   LINE      ---      ---       #763
-      0100041AH   LINE      ---      ---       #766
-      0100041CH   LINE      ---      ---       #767
+      01000E33H   BLOCK     CODE     ---       LVL=0
+      01000E33H   LINE      ---      ---       #763
+      01000E3CH   LINE      ---      ---       #766
+      01000E3EH   LINE      ---      ---       #767
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      target_dec
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      0100041DH   BLOCK     CODE     ---       LVL=0
-      0100041DH   LINE      ---      ---       #777
-      01000425H   LINE      ---      ---       #780
-      01000427H   LINE      ---      ---       #781
+      01000E3FH   BLOCK     CODE     ---       LVL=0
+      01000E3FH   LINE      ---      ---       #777
+      01000E48H   LINE      ---      ---       #780
+      01000E4AH   LINE      ---      ---       #781
       00000007H   SYMBOL    DATA     BYTE      id
       0200005CH   SYMBOL    XDATA    BYTE      target_acc
       0200005DH   SYMBOL    XDATA    ---       output_buffer
       02000060H   SYMBOL    XDATA    ---       output_buffer_len
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000B2AH   BLOCK     CODE     ---       LVL=0
-      01000B2AH   LINE      ---      ---       #792
-      01000B3BH   LINE      ---      ---       #793
+      01000D32H   BLOCK     CODE     ---       LVL=0
+      01000D32H   LINE      ---      ---       #792
+      01000D43H   LINE      ---      ---       #793
       0200005BH   SYMBOL    XDATA    BYTE      id
       0200005CH   SYMBOL    XDATA    WORD      target_position
       0200005EH   SYMBOL    XDATA    WORD      moving_time
       02000060H   SYMBOL    XDATA    ---       output_buffer
       02000063H   SYMBOL    XDATA    ---       output_buffer_len
-      01000B3BH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000B3BH   LINE      ---      ---       #794
-      01000B4DH   LINE      ---      ---       #796
-      01000B58H   LINE      ---      ---       #797
-      01000B5BH   LINE      ---      ---       #798
-      01000B66H   LINE      ---      ---       #799
-      01000B69H   LINE      ---      ---       #801
-      01000B8BH   LINE      ---      ---       #802
-      01000B8DH   LINE      ---      ---       #803
+      01000D43H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000D43H   LINE      ---      ---       #794
+      01000D56H   LINE      ---      ---       #796
+      01000D61H   LINE      ---      ---       #797
+      01000D64H   LINE      ---      ---       #798
+      01000D6FH   LINE      ---      ---       #799
+      01000D72H   LINE      ---      ---       #801
+      01000D94H   LINE      ---      ---       #802
+      01000D96H   LINE      ---      ---       #803
       02000066H   SYMBOL    XDATA    ---       buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
@@ -2039,7 +2039,7 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       00000007H   SYMBOL    DATA     BYTE      id
       00000007H   SYMBOL    DATA     BYTE      id
       00000007H   SYMBOL    DATA     BYTE      id
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 31
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 31
 
 
       00000007H   SYMBOL    DATA     BYTE      id
@@ -2085,487 +2085,487 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       00000007H   SYMBOL    DATA     BYTE      ret
       00000007H   SYMBOL    DATA     BYTE      ret
 
-      010006B5H   BLOCK     CODE     ---       LVL=0
-      010006B5H   LINE      ---      ---       #1686
+      010006C7H   BLOCK     CODE     ---       LVL=0
+      010006C7H   LINE      ---      ---       #1686
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      010006B5H   BLOCK     CODE     NEAR LAB  LVL=1
-      010006B9H   LINE      ---      ---       #1694
-      010006BAH   LINE      ---      ---       #1695
-      010006BAH   LINE      ---      ---       #1696
-      010006BAH   LINE      ---      ---       #1697
-      010006BCH   LINE      ---      ---       #1698
-      010006BCH   LINE      ---      ---       #1699
+      010006C7H   BLOCK     CODE     NEAR LAB  LVL=1
+      010006CBH   LINE      ---      ---       #1694
+      010006CCH   LINE      ---      ---       #1695
+      010006CCH   LINE      ---      ---       #1696
+      010006CCH   LINE      ---      ---       #1697
+      010006CEH   LINE      ---      ---       #1698
+      010006CEH   LINE      ---      ---       #1699
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010006E4H   BLOCK     CODE     ---       LVL=0
-      010006E4H   LINE      ---      ---       #1706
+      010006CFH   BLOCK     CODE     ---       LVL=0
+      010006CFH   LINE      ---      ---       #1706
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      010006E4H   BLOCK     CODE     NEAR LAB  LVL=1
-      010006E8H   LINE      ---      ---       #1714
-      010006E9H   LINE      ---      ---       #1715
-      010006E9H   LINE      ---      ---       #1716
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 32
+      010006CFH   BLOCK     CODE     NEAR LAB  LVL=1
+      010006D3H   LINE      ---      ---       #1714
+      010006D4H   LINE      ---      ---       #1715
+      010006D4H   LINE      ---      ---       #1716
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 32
 
 
-      010006E9H   LINE      ---      ---       #1717
-      010006EBH   LINE      ---      ---       #1718
-      010006EBH   LINE      ---      ---       #1719
+      010006D4H   LINE      ---      ---       #1717
+      010006D6H   LINE      ---      ---       #1718
+      010006D6H   LINE      ---      ---       #1719
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010006ECH   BLOCK     CODE     ---       LVL=0
-      010006ECH   LINE      ---      ---       #1726
+      010006D7H   BLOCK     CODE     ---       LVL=0
+      010006D7H   LINE      ---      ---       #1726
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      010006ECH   BLOCK     CODE     NEAR LAB  LVL=1
-      010006F0H   LINE      ---      ---       #1734
-      010006F1H   LINE      ---      ---       #1735
-      010006F1H   LINE      ---      ---       #1736
-      010006F1H   LINE      ---      ---       #1737
-      010006F3H   LINE      ---      ---       #1738
-      010006F3H   LINE      ---      ---       #1739
+      010006D7H   BLOCK     CODE     NEAR LAB  LVL=1
+      010006DBH   LINE      ---      ---       #1734
+      010006DCH   LINE      ---      ---       #1735
+      010006DCH   LINE      ---      ---       #1736
+      010006DCH   LINE      ---      ---       #1737
+      010006DEH   LINE      ---      ---       #1738
+      010006DEH   LINE      ---      ---       #1739
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010006F4H   BLOCK     CODE     ---       LVL=0
-      010006F4H   LINE      ---      ---       #1746
+      010006DFH   BLOCK     CODE     ---       LVL=0
+      010006DFH   LINE      ---      ---       #1746
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      010006F4H   BLOCK     CODE     NEAR LAB  LVL=1
-      010006F8H   LINE      ---      ---       #1754
-      010006F9H   LINE      ---      ---       #1755
-      010006F9H   LINE      ---      ---       #1756
-      010006F9H   LINE      ---      ---       #1757
-      010006FBH   LINE      ---      ---       #1758
-      010006FBH   LINE      ---      ---       #1759
+      010006DFH   BLOCK     CODE     NEAR LAB  LVL=1
+      010006E3H   LINE      ---      ---       #1754
+      010006E4H   LINE      ---      ---       #1755
+      010006E4H   LINE      ---      ---       #1756
+      010006E4H   LINE      ---      ---       #1757
+      010006E6H   LINE      ---      ---       #1758
+      010006E6H   LINE      ---      ---       #1759
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010006FCH   BLOCK     CODE     ---       LVL=0
-      010006FCH   LINE      ---      ---       #1766
+      010006E7H   BLOCK     CODE     ---       LVL=0
+      010006E7H   LINE      ---      ---       #1766
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      010006FCH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000700H   LINE      ---      ---       #1774
-      01000701H   LINE      ---      ---       #1775
-      01000701H   LINE      ---      ---       #1776
-      01000701H   LINE      ---      ---       #1777
-      01000703H   LINE      ---      ---       #1778
-      01000703H   LINE      ---      ---       #1779
+      010006E7H   BLOCK     CODE     NEAR LAB  LVL=1
+      010006EBH   LINE      ---      ---       #1774
+      010006ECH   LINE      ---      ---       #1775
+      010006ECH   LINE      ---      ---       #1776
+      010006ECH   LINE      ---      ---       #1777
+      010006EEH   LINE      ---      ---       #1778
+      010006EEH   LINE      ---      ---       #1779
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000704H   BLOCK     CODE     ---       LVL=0
-      01000704H   LINE      ---      ---       #1786
+      010006EFH   BLOCK     CODE     ---       LVL=0
+      010006EFH   LINE      ---      ---       #1786
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      01000704H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000708H   LINE      ---      ---       #1794
-      01000709H   LINE      ---      ---       #1795
-      01000709H   LINE      ---      ---       #1796
-      01000709H   LINE      ---      ---       #1797
-      0100070BH   LINE      ---      ---       #1798
-      0100070BH   LINE      ---      ---       #1799
+      010006EFH   BLOCK     CODE     NEAR LAB  LVL=1
+      010006F3H   LINE      ---      ---       #1794
+      010006F4H   LINE      ---      ---       #1795
+      010006F4H   LINE      ---      ---       #1796
+      010006F4H   LINE      ---      ---       #1797
+      010006F6H   LINE      ---      ---       #1798
+      010006F6H   LINE      ---      ---       #1799
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 33
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 33
 
 
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100070CH   BLOCK     CODE     ---       LVL=0
-      0100070CH   LINE      ---      ---       #1806
+      010006F7H   BLOCK     CODE     ---       LVL=0
+      010006F7H   LINE      ---      ---       #1806
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100070CH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000710H   LINE      ---      ---       #1814
-      01000711H   LINE      ---      ---       #1815
-      01000711H   LINE      ---      ---       #1816
-      01000711H   LINE      ---      ---       #1817
-      01000713H   LINE      ---      ---       #1818
-      01000713H   LINE      ---      ---       #1819
+      010006F7H   BLOCK     CODE     NEAR LAB  LVL=1
+      010006FBH   LINE      ---      ---       #1814
+      010006FCH   LINE      ---      ---       #1815
+      010006FCH   LINE      ---      ---       #1816
+      010006FCH   LINE      ---      ---       #1817
+      010006FEH   LINE      ---      ---       #1818
+      010006FEH   LINE      ---      ---       #1819
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000714H   BLOCK     CODE     ---       LVL=0
-      01000714H   LINE      ---      ---       #1826
+      010006FFH   BLOCK     CODE     ---       LVL=0
+      010006FFH   LINE      ---      ---       #1826
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      01000714H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000718H   LINE      ---      ---       #1834
-      01000719H   LINE      ---      ---       #1835
-      01000719H   LINE      ---      ---       #1836
-      01000719H   LINE      ---      ---       #1837
-      0100071BH   LINE      ---      ---       #1838
-      0100071BH   LINE      ---      ---       #1839
+      010006FFH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000703H   LINE      ---      ---       #1834
+      01000704H   LINE      ---      ---       #1835
+      01000704H   LINE      ---      ---       #1836
+      01000704H   LINE      ---      ---       #1837
+      01000706H   LINE      ---      ---       #1838
+      01000706H   LINE      ---      ---       #1839
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100071CH   BLOCK     CODE     ---       LVL=0
-      0100071CH   LINE      ---      ---       #1846
+      01000707H   BLOCK     CODE     ---       LVL=0
+      01000707H   LINE      ---      ---       #1846
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100071CH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000720H   LINE      ---      ---       #1854
-      01000721H   LINE      ---      ---       #1855
-      01000721H   LINE      ---      ---       #1856
-      01000721H   LINE      ---      ---       #1857
-      01000723H   LINE      ---      ---       #1858
-      01000723H   LINE      ---      ---       #1859
+      01000707H   BLOCK     CODE     NEAR LAB  LVL=1
+      0100070BH   LINE      ---      ---       #1854
+      0100070CH   LINE      ---      ---       #1855
+      0100070CH   LINE      ---      ---       #1856
+      0100070CH   LINE      ---      ---       #1857
+      0100070EH   LINE      ---      ---       #1858
+      0100070EH   LINE      ---      ---       #1859
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000724H   BLOCK     CODE     ---       LVL=0
-      01000724H   LINE      ---      ---       #1866
+      0100070FH   BLOCK     CODE     ---       LVL=0
+      0100070FH   LINE      ---      ---       #1866
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      01000724H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000728H   LINE      ---      ---       #1874
-      01000729H   LINE      ---      ---       #1875
-      01000729H   LINE      ---      ---       #1876
-      01000729H   LINE      ---      ---       #1877
-      0100072BH   LINE      ---      ---       #1878
-      0100072BH   LINE      ---      ---       #1879
+      0100070FH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000713H   LINE      ---      ---       #1874
+      01000714H   LINE      ---      ---       #1875
+      01000714H   LINE      ---      ---       #1876
+      01000714H   LINE      ---      ---       #1877
+      01000716H   LINE      ---      ---       #1878
+      01000716H   LINE      ---      ---       #1879
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100072CH   BLOCK     CODE     ---       LVL=0
-      0100072CH   LINE      ---      ---       #1886
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 34
+      01000717H   BLOCK     CODE     ---       LVL=0
+      01000717H   LINE      ---      ---       #1886
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 34
 
 
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100072CH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000730H   LINE      ---      ---       #1894
-      01000731H   LINE      ---      ---       #1895
-      01000731H   LINE      ---      ---       #1896
-      01000731H   LINE      ---      ---       #1897
-      01000733H   LINE      ---      ---       #1898
-      01000733H   LINE      ---      ---       #1899
+      01000717H   BLOCK     CODE     NEAR LAB  LVL=1
+      0100071BH   LINE      ---      ---       #1894
+      0100071CH   LINE      ---      ---       #1895
+      0100071CH   LINE      ---      ---       #1896
+      0100071CH   LINE      ---      ---       #1897
+      0100071EH   LINE      ---      ---       #1898
+      0100071EH   LINE      ---      ---       #1899
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000734H   BLOCK     CODE     ---       LVL=0
-      01000734H   LINE      ---      ---       #1906
+      0100071FH   BLOCK     CODE     ---       LVL=0
+      0100071FH   LINE      ---      ---       #1906
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      01000734H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000738H   LINE      ---      ---       #1914
-      01000739H   LINE      ---      ---       #1915
-      01000739H   LINE      ---      ---       #1916
-      01000739H   LINE      ---      ---       #1917
-      0100073BH   LINE      ---      ---       #1918
-      0100073BH   LINE      ---      ---       #1919
+      0100071FH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000723H   LINE      ---      ---       #1914
+      01000724H   LINE      ---      ---       #1915
+      01000724H   LINE      ---      ---       #1916
+      01000724H   LINE      ---      ---       #1917
+      01000726H   LINE      ---      ---       #1918
+      01000726H   LINE      ---      ---       #1919
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100073CH   BLOCK     CODE     ---       LVL=0
-      0100073CH   LINE      ---      ---       #1926
+      01000727H   BLOCK     CODE     ---       LVL=0
+      01000727H   LINE      ---      ---       #1926
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100073CH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000740H   LINE      ---      ---       #1934
-      01000741H   LINE      ---      ---       #1935
-      01000741H   LINE      ---      ---       #1936
-      01000741H   LINE      ---      ---       #1937
-      01000743H   LINE      ---      ---       #1938
-      01000743H   LINE      ---      ---       #1939
+      01000727H   BLOCK     CODE     NEAR LAB  LVL=1
+      0100072BH   LINE      ---      ---       #1934
+      0100072CH   LINE      ---      ---       #1935
+      0100072CH   LINE      ---      ---       #1936
+      0100072CH   LINE      ---      ---       #1937
+      0100072EH   LINE      ---      ---       #1938
+      0100072EH   LINE      ---      ---       #1939
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000744H   BLOCK     CODE     ---       LVL=0
-      01000744H   LINE      ---      ---       #1946
+      0100072FH   BLOCK     CODE     ---       LVL=0
+      0100072FH   LINE      ---      ---       #1946
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      01000744H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000748H   LINE      ---      ---       #1954
-      01000749H   LINE      ---      ---       #1955
-      01000749H   LINE      ---      ---       #1956
-      01000749H   LINE      ---      ---       #1957
-      0100074BH   LINE      ---      ---       #1958
-      0100074BH   LINE      ---      ---       #1959
+      0100072FH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000733H   LINE      ---      ---       #1954
+      01000734H   LINE      ---      ---       #1955
+      01000734H   LINE      ---      ---       #1956
+      01000734H   LINE      ---      ---       #1957
+      01000736H   LINE      ---      ---       #1958
+      01000736H   LINE      ---      ---       #1959
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100074CH   BLOCK     CODE     ---       LVL=0
-      0100074CH   LINE      ---      ---       #1966
+      01000737H   BLOCK     CODE     ---       LVL=0
+      01000737H   LINE      ---      ---       #1966
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100074CH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000750H   LINE      ---      ---       #1974
-      01000751H   LINE      ---      ---       #1975
-      01000751H   LINE      ---      ---       #1976
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 35
+      01000737H   BLOCK     CODE     NEAR LAB  LVL=1
+      0100073BH   LINE      ---      ---       #1974
+      0100073CH   LINE      ---      ---       #1975
+      0100073CH   LINE      ---      ---       #1976
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 35
 
 
-      01000751H   LINE      ---      ---       #1977
-      01000753H   LINE      ---      ---       #1978
-      01000753H   LINE      ---      ---       #1979
+      0100073CH   LINE      ---      ---       #1977
+      0100073EH   LINE      ---      ---       #1978
+      0100073EH   LINE      ---      ---       #1979
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000754H   BLOCK     CODE     ---       LVL=0
-      01000754H   LINE      ---      ---       #1986
+      0100073FH   BLOCK     CODE     ---       LVL=0
+      0100073FH   LINE      ---      ---       #1986
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      01000754H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000758H   LINE      ---      ---       #1994
-      01000759H   LINE      ---      ---       #1995
-      01000759H   LINE      ---      ---       #1996
-      01000759H   LINE      ---      ---       #1997
-      0100075BH   LINE      ---      ---       #1998
-      0100075BH   LINE      ---      ---       #1999
+      0100073FH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000743H   LINE      ---      ---       #1994
+      01000744H   LINE      ---      ---       #1995
+      01000744H   LINE      ---      ---       #1996
+      01000744H   LINE      ---      ---       #1997
+      01000746H   LINE      ---      ---       #1998
+      01000746H   LINE      ---      ---       #1999
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100075CH   BLOCK     CODE     ---       LVL=0
-      0100075CH   LINE      ---      ---       #2006
+      01000747H   BLOCK     CODE     ---       LVL=0
+      01000747H   LINE      ---      ---       #2006
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100075CH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000760H   LINE      ---      ---       #2014
-      01000761H   LINE      ---      ---       #2015
-      01000761H   LINE      ---      ---       #2016
-      01000761H   LINE      ---      ---       #2017
-      01000763H   LINE      ---      ---       #2018
-      01000763H   LINE      ---      ---       #2019
+      01000747H   BLOCK     CODE     NEAR LAB  LVL=1
+      0100074BH   LINE      ---      ---       #2014
+      0100074CH   LINE      ---      ---       #2015
+      0100074CH   LINE      ---      ---       #2016
+      0100074CH   LINE      ---      ---       #2017
+      0100074EH   LINE      ---      ---       #2018
+      0100074EH   LINE      ---      ---       #2019
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000764H   BLOCK     CODE     ---       LVL=0
-      01000764H   LINE      ---      ---       #2026
+      0100074FH   BLOCK     CODE     ---       LVL=0
+      0100074FH   LINE      ---      ---       #2026
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      01000764H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000768H   LINE      ---      ---       #2034
-      01000769H   LINE      ---      ---       #2035
-      01000769H   LINE      ---      ---       #2036
-      01000769H   LINE      ---      ---       #2037
-      0100076BH   LINE      ---      ---       #2038
-      0100076BH   LINE      ---      ---       #2039
+      0100074FH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000753H   LINE      ---      ---       #2034
+      01000754H   LINE      ---      ---       #2035
+      01000754H   LINE      ---      ---       #2036
+      01000754H   LINE      ---      ---       #2037
+      01000756H   LINE      ---      ---       #2038
+      01000756H   LINE      ---      ---       #2039
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100076CH   BLOCK     CODE     ---       LVL=0
-      0100076CH   LINE      ---      ---       #2046
+      01000757H   BLOCK     CODE     ---       LVL=0
+      01000757H   LINE      ---      ---       #2046
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100076CH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000770H   LINE      ---      ---       #2054
-      01000771H   LINE      ---      ---       #2055
-      01000771H   LINE      ---      ---       #2056
-      01000771H   LINE      ---      ---       #2057
-      01000773H   LINE      ---      ---       #2058
-      01000773H   LINE      ---      ---       #2059
+      01000757H   BLOCK     CODE     NEAR LAB  LVL=1
+      0100075BH   LINE      ---      ---       #2054
+      0100075CH   LINE      ---      ---       #2055
+      0100075CH   LINE      ---      ---       #2056
+      0100075CH   LINE      ---      ---       #2057
+      0100075EH   LINE      ---      ---       #2058
+      0100075EH   LINE      ---      ---       #2059
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 36
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 36
 
 
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010006A6H   BLOCK     CODE     ---       LVL=0
-      010006A6H   LINE      ---      ---       #2066
+      0100075FH   BLOCK     CODE     ---       LVL=0
+      0100075FH   LINE      ---      ---       #2066
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      010006A6H   BLOCK     CODE     NEAR LAB  LVL=1
-      010006AAH   LINE      ---      ---       #2074
-      010006ABH   LINE      ---      ---       #2075
-      010006ABH   LINE      ---      ---       #2076
-      010006ABH   LINE      ---      ---       #2077
-      010006ADH   LINE      ---      ---       #2078
-      010006ADH   LINE      ---      ---       #2079
+      0100075FH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000763H   LINE      ---      ---       #2074
+      01000764H   LINE      ---      ---       #2075
+      01000764H   LINE      ---      ---       #2076
+      01000764H   LINE      ---      ---       #2077
+      01000766H   LINE      ---      ---       #2078
+      01000766H   LINE      ---      ---       #2079
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000774H   BLOCK     CODE     ---       LVL=0
-      01000774H   LINE      ---      ---       #2086
+      01000767H   BLOCK     CODE     ---       LVL=0
+      01000767H   LINE      ---      ---       #2086
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      01000774H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000778H   LINE      ---      ---       #2094
-      01000779H   LINE      ---      ---       #2095
-      01000779H   LINE      ---      ---       #2096
-      01000779H   LINE      ---      ---       #2097
-      0100077BH   LINE      ---      ---       #2098
-      0100077BH   LINE      ---      ---       #2099
+      01000767H   BLOCK     CODE     NEAR LAB  LVL=1
+      0100076BH   LINE      ---      ---       #2094
+      0100076CH   LINE      ---      ---       #2095
+      0100076CH   LINE      ---      ---       #2096
+      0100076CH   LINE      ---      ---       #2097
+      0100076EH   LINE      ---      ---       #2098
+      0100076EH   LINE      ---      ---       #2099
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100077CH   BLOCK     CODE     ---       LVL=0
-      0100077CH   LINE      ---      ---       #2106
+      0100076FH   BLOCK     CODE     ---       LVL=0
+      0100076FH   LINE      ---      ---       #2106
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100077CH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000780H   LINE      ---      ---       #2114
-      01000781H   LINE      ---      ---       #2115
-      01000781H   LINE      ---      ---       #2116
-      01000781H   LINE      ---      ---       #2117
-      01000783H   LINE      ---      ---       #2118
-      01000783H   LINE      ---      ---       #2119
+      0100076FH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000773H   LINE      ---      ---       #2114
+      01000774H   LINE      ---      ---       #2115
+      01000774H   LINE      ---      ---       #2116
+      01000774H   LINE      ---      ---       #2117
+      01000776H   LINE      ---      ---       #2118
+      01000776H   LINE      ---      ---       #2119
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100069EH   BLOCK     CODE     ---       LVL=0
-      0100069EH   LINE      ---      ---       #2126
+      0100065AH   BLOCK     CODE     ---       LVL=0
+      0100065AH   LINE      ---      ---       #2126
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100069EH   BLOCK     CODE     NEAR LAB  LVL=1
-      010006A2H   LINE      ---      ---       #2134
-      010006A3H   LINE      ---      ---       #2135
-      010006A3H   LINE      ---      ---       #2136
-      010006A3H   LINE      ---      ---       #2137
-      010006A5H   LINE      ---      ---       #2138
-      010006A5H   LINE      ---      ---       #2139
+      0100065AH   BLOCK     CODE     NEAR LAB  LVL=1
+      0100065EH   LINE      ---      ---       #2134
+      0100065FH   LINE      ---      ---       #2135
+      0100065FH   LINE      ---      ---       #2136
+      0100065FH   LINE      ---      ---       #2137
+      01000661H   LINE      ---      ---       #2138
+      01000661H   LINE      ---      ---       #2139
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000784H   BLOCK     CODE     ---       LVL=0
-      01000784H   LINE      ---      ---       #2146
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 37
+      01000777H   BLOCK     CODE     ---       LVL=0
+      01000777H   LINE      ---      ---       #2146
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 37
 
 
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      01000784H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000788H   LINE      ---      ---       #2154
-      01000789H   LINE      ---      ---       #2155
-      01000789H   LINE      ---      ---       #2156
-      01000789H   LINE      ---      ---       #2157
-      0100078BH   LINE      ---      ---       #2158
-      0100078BH   LINE      ---      ---       #2159
+      01000777H   BLOCK     CODE     NEAR LAB  LVL=1
+      0100077BH   LINE      ---      ---       #2154
+      0100077CH   LINE      ---      ---       #2155
+      0100077CH   LINE      ---      ---       #2156
+      0100077CH   LINE      ---      ---       #2157
+      0100077EH   LINE      ---      ---       #2158
+      0100077EH   LINE      ---      ---       #2159
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100078CH   BLOCK     CODE     ---       LVL=0
-      0100078CH   LINE      ---      ---       #2166
+      0100077FH   BLOCK     CODE     ---       LVL=0
+      0100077FH   LINE      ---      ---       #2166
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100078CH   BLOCK     CODE     NEAR LAB  LVL=1
-      01000790H   LINE      ---      ---       #2174
-      01000791H   LINE      ---      ---       #2175
-      01000791H   LINE      ---      ---       #2176
-      01000791H   LINE      ---      ---       #2177
-      01000793H   LINE      ---      ---       #2178
-      01000793H   LINE      ---      ---       #2179
+      0100077FH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000783H   LINE      ---      ---       #2174
+      01000784H   LINE      ---      ---       #2175
+      01000784H   LINE      ---      ---       #2176
+      01000784H   LINE      ---      ---       #2177
+      01000786H   LINE      ---      ---       #2178
+      01000786H   LINE      ---      ---       #2179
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000794H   BLOCK     CODE     ---       LVL=0
-      01000794H   LINE      ---      ---       #2186
+      01000787H   BLOCK     CODE     ---       LVL=0
+      01000787H   LINE      ---      ---       #2186
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      01000794H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000798H   LINE      ---      ---       #2194
-      01000799H   LINE      ---      ---       #2195
-      01000799H   LINE      ---      ---       #2196
-      01000799H   LINE      ---      ---       #2197
-      0100079BH   LINE      ---      ---       #2198
-      0100079BH   LINE      ---      ---       #2199
+      01000787H   BLOCK     CODE     NEAR LAB  LVL=1
+      0100078BH   LINE      ---      ---       #2194
+      0100078CH   LINE      ---      ---       #2195
+      0100078CH   LINE      ---      ---       #2196
+      0100078CH   LINE      ---      ---       #2197
+      0100078EH   LINE      ---      ---       #2198
+      0100078EH   LINE      ---      ---       #2199
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      0100079CH   BLOCK     CODE     ---       LVL=0
-      0100079CH   LINE      ---      ---       #2206
+      0100078FH   BLOCK     CODE     ---       LVL=0
+      0100078FH   LINE      ---      ---       #2206
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      0100079CH   BLOCK     CODE     NEAR LAB  LVL=1
-      010007A0H   LINE      ---      ---       #2214
-      010007A1H   LINE      ---      ---       #2215
-      010007A1H   LINE      ---      ---       #2216
-      010007A1H   LINE      ---      ---       #2217
-      010007A3H   LINE      ---      ---       #2218
-      010007A3H   LINE      ---      ---       #2219
+      0100078FH   BLOCK     CODE     NEAR LAB  LVL=1
+      01000793H   LINE      ---      ---       #2214
+      01000794H   LINE      ---      ---       #2215
+      01000794H   LINE      ---      ---       #2216
+      01000794H   LINE      ---      ---       #2217
+      01000796H   LINE      ---      ---       #2218
+      01000796H   LINE      ---      ---       #2219
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010007A4H   BLOCK     CODE     ---       LVL=0
-      010007A4H   LINE      ---      ---       #2226
+      01000797H   BLOCK     CODE     ---       LVL=0
+      01000797H   LINE      ---      ---       #2226
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      010007A4H   BLOCK     CODE     NEAR LAB  LVL=1
-      010007A8H   LINE      ---      ---       #2234
-      010007A9H   LINE      ---      ---       #2235
-      010007A9H   LINE      ---      ---       #2236
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 38
+      01000797H   BLOCK     CODE     NEAR LAB  LVL=1
+      0100079BH   LINE      ---      ---       #2234
+      0100079CH   LINE      ---      ---       #2235
+      0100079CH   LINE      ---      ---       #2236
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 38
 
 
-      010007A9H   LINE      ---      ---       #2237
-      010007ABH   LINE      ---      ---       #2238
-      010007ABH   LINE      ---      ---       #2239
+      0100079CH   LINE      ---      ---       #2237
+      0100079EH   LINE      ---      ---       #2238
+      0100079EH   LINE      ---      ---       #2239
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010007ACH   BLOCK     CODE     ---       LVL=0
-      010007ACH   LINE      ---      ---       #2246
+      0100079FH   BLOCK     CODE     ---       LVL=0
+      0100079FH   LINE      ---      ---       #2246
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      010007ACH   BLOCK     CODE     NEAR LAB  LVL=1
-      010007B0H   LINE      ---      ---       #2254
-      010007B1H   LINE      ---      ---       #2255
-      010007B1H   LINE      ---      ---       #2256
-      010007B1H   LINE      ---      ---       #2257
-      010007B3H   LINE      ---      ---       #2258
-      010007B3H   LINE      ---      ---       #2259
+      0100079FH   BLOCK     CODE     NEAR LAB  LVL=1
+      010007A3H   LINE      ---      ---       #2254
+      010007A4H   LINE      ---      ---       #2255
+      010007A4H   LINE      ---      ---       #2256
+      010007A4H   LINE      ---      ---       #2257
+      010007A6H   LINE      ---      ---       #2258
+      010007A6H   LINE      ---      ---       #2259
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010007B4H   BLOCK     CODE     ---       LVL=0
-      010007B4H   LINE      ---      ---       #2266
+      010007A7H   BLOCK     CODE     ---       LVL=0
+      010007A7H   LINE      ---      ---       #2266
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      010007B4H   BLOCK     CODE     NEAR LAB  LVL=1
-      010007B8H   LINE      ---      ---       #2274
-      010007B9H   LINE      ---      ---       #2275
-      010007B9H   LINE      ---      ---       #2276
-      010007B9H   LINE      ---      ---       #2277
-      010007BBH   LINE      ---      ---       #2278
-      010007BBH   LINE      ---      ---       #2279
+      010007A7H   BLOCK     CODE     NEAR LAB  LVL=1
+      010007ABH   LINE      ---      ---       #2274
+      010007ACH   LINE      ---      ---       #2275
+      010007ACH   LINE      ---      ---       #2276
+      010007ACH   LINE      ---      ---       #2277
+      010007AEH   LINE      ---      ---       #2278
+      010007AEH   LINE      ---      ---       #2279
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      010007BCH   BLOCK     CODE     ---       LVL=0
-      010007BCH   LINE      ---      ---       #2286
+      010007AFH   BLOCK     CODE     ---       LVL=0
+      010007AFH   LINE      ---      ---       #2286
       0200005BH   SYMBOL    XDATA    ---       response_packet
-      010007BCH   BLOCK     CODE     NEAR LAB  LVL=1
-      010007C0H   LINE      ---      ---       #2294
-      010007C1H   LINE      ---      ---       #2295
-      010007C1H   LINE      ---      ---       #2296
-      010007C1H   LINE      ---      ---       #2297
-      010007C3H   LINE      ---      ---       #2298
-      010007C3H   LINE      ---      ---       #2299
+      010007AFH   BLOCK     CODE     NEAR LAB  LVL=1
+      010007B3H   LINE      ---      ---       #2294
+      010007B4H   LINE      ---      ---       #2295
+      010007B4H   LINE      ---      ---       #2296
+      010007B4H   LINE      ---      ---       #2297
+      010007B6H   LINE      ---      ---       #2298
+      010007B6H   LINE      ---      ---       #2299
       00000007H   SYMBOL    DATA     BYTE      ret
       0200005EH   SYMBOL    XDATA    ---       data_buffer
       ---         BLOCKEND  CODE     ---       LVL=1
@@ -2583,7 +2583,7 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       00000007H   SYMBOL    DATA     BYTE      ret
       00000007H   SYMBOL    DATA     BYTE      ret
       00000007H   SYMBOL    DATA     BYTE      ret
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 39
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 39
 
 
       00000007H   SYMBOL    DATA     BYTE      ret
@@ -2618,176 +2618,176 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       00000007H   SYMBOL    DATA     BYTE      ret
       00000007H   SYMBOL    DATA     BYTE      ret
 
-      01000B95H   BLOCK     CODE     ---       LVL=0
-      01000B95H   LINE      ---      ---       #21
-      01000B95H   LINE      ---      ---       #22
-      01000B95H   LINE      ---      ---       #23
-      01000B98H   LINE      ---      ---       #24
-      01000B9BH   LINE      ---      ---       #25
-      01000B9EH   LINE      ---      ---       #26
-      01000BA0H   LINE      ---      ---       #27
-      01000BA2H   LINE      ---      ---       #28
-      01000BA4H   LINE      ---      ---       #29
+      01000E75H   BLOCK     CODE     ---       LVL=0
+      01000E75H   LINE      ---      ---       #21
+      01000E75H   LINE      ---      ---       #22
+      01000E75H   LINE      ---      ---       #23
+      01000E78H   LINE      ---      ---       #24
+      01000E7BH   LINE      ---      ---       #25
+      01000E7EH   LINE      ---      ---       #26
+      01000E80H   LINE      ---      ---       #27
+      01000E82H   LINE      ---      ---       #28
+      01000E84H   LINE      ---      ---       #29
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000592H   BLOCK     CODE     ---       LVL=0
-      01000596H   LINE      ---      ---       #32
-      01000596H   LINE      ---      ---       #33
-      01000596H   LINE      ---      ---       #34
-      010005A3H   LINE      ---      ---       #35
-      010005ADH   LINE      ---      ---       #36
-      01000592H   SYMBOL    CODE     NEAR LAB  ?L?COM0026
+      01000ADBH   BLOCK     CODE     ---       LVL=0
+      01000ADFH   LINE      ---      ---       #32
+      01000ADFH   LINE      ---      ---       #33
+      01000ADFH   LINE      ---      ---       #34
+      01000AECH   LINE      ---      ---       #35
+      01000AF6H   LINE      ---      ---       #36
+      01000ADBH   SYMBOL    CODE     NEAR LAB  ?L?COM0026
       00000006H   SYMBOL    DATA     WORD      ms
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000BD3H   BLOCK     CODE     ---       LVL=0
-      01000BE0H   LINE      ---      ---       #39
-      01000BE0H   LINE      ---      ---       #41
-      01000BE3H   LINE      ---      ---       #42
-      01000BE6H   LINE      ---      ---       #43
-      01000BF0H   LINE      ---      ---       #44
-      01000BF9H   LINE      ---      ---       #45
+      01000E85H   BLOCK     CODE     ---       LVL=0
+      01000E92H   LINE      ---      ---       #39
+      01000E92H   LINE      ---      ---       #41
+      01000E95H   LINE      ---      ---       #42
+      01000E98H   LINE      ---      ---       #43
+      01000EA2H   LINE      ---      ---       #44
+      01000EACH   LINE      ---      ---       #45
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010005E4H   BLOCK     CODE     ---       LVL=0
-      010005E4H   LINE      ---      ---       #48
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 40
+      010007CDH   BLOCK     CODE     ---       LVL=0
+      010007CDH   LINE      ---      ---       #48
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 40
 
 
-      010005E4H   LINE      ---      ---       #49
-      010005E4H   LINE      ---      ---       #50
-      010005E7H   LINE      ---      ---       #51
-      010005EAH   LINE      ---      ---       #52
-      010005EDH   LINE      ---      ---       #53
-      010005F0H   LINE      ---      ---       #54
-      010005F3H   LINE      ---      ---       #55
-      010005F5H   LINE      ---      ---       #56
-      010005F7H   LINE      ---      ---       #57
-      010005F9H   LINE      ---      ---       #58
+      010007CDH   LINE      ---      ---       #49
+      010007CDH   LINE      ---      ---       #50
+      010007D0H   LINE      ---      ---       #51
+      010007D3H   LINE      ---      ---       #52
+      010007D6H   LINE      ---      ---       #53
+      010007D9H   LINE      ---      ---       #54
+      010007DCH   LINE      ---      ---       #55
+      010007DEH   LINE      ---      ---       #56
+      010007E0H   LINE      ---      ---       #57
+      010007E2H   LINE      ---      ---       #58
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000659H   BLOCK     CODE     ---       LVL=0
-      01000659H   LINE      ---      ---       #60
-      01000659H   LINE      ---      ---       #61
-      01000659H   LINE      ---      ---       #62
-      0100065CH   LINE      ---      ---       #63
-      0100065FH   LINE      ---      ---       #64
-      01000662H   LINE      ---      ---       #65
-      01000665H   LINE      ---      ---       #66
-      01000668H   LINE      ---      ---       #67
-      0100066AH   LINE      ---      ---       #68
-      0100066CH   LINE      ---      ---       #69
-      0100066EH   LINE      ---      ---       #70
+      01000B2DH   BLOCK     CODE     ---       LVL=0
+      01000B2DH   LINE      ---      ---       #60
+      01000B2DH   LINE      ---      ---       #61
+      01000B2DH   LINE      ---      ---       #62
+      01000B30H   LINE      ---      ---       #63
+      01000B33H   LINE      ---      ---       #64
+      01000B36H   LINE      ---      ---       #65
+      01000B39H   LINE      ---      ---       #66
+      01000B3CH   LINE      ---      ---       #67
+      01000B3EH   LINE      ---      ---       #68
+      01000B40H   LINE      ---      ---       #69
+      01000B42H   LINE      ---      ---       #70
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010007C4H   BLOCK     CODE     ---       LVL=0
-      010007C4H   LINE      ---      ---       #73
-      010007C4H   LINE      ---      ---       #74
-      010007C4H   LINE      ---      ---       #75
-      010007C6H   LINE      ---      ---       #76
-      010007C9H   LINE      ---      ---       #77
-      010007CBH   LINE      ---      ---       #78
+      01000E64H   BLOCK     CODE     ---       LVL=0
+      01000E64H   LINE      ---      ---       #73
+      01000E64H   LINE      ---      ---       #74
+      01000E64H   LINE      ---      ---       #75
+      01000E66H   LINE      ---      ---       #76
+      01000E69H   LINE      ---      ---       #77
+      01000E6BH   LINE      ---      ---       #78
       00000007H   SYMBOL    DATA     BYTE      order_data
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010005AEH   BLOCK     CODE     ---       LVL=0
-      010005AEH   LINE      ---      ---       #81
-      010005BCH   LINE      ---      ---       #82
+      01000AF7H   BLOCK     CODE     ---       LVL=0
+      01000AF7H   LINE      ---      ---       #81
+      01000B05H   LINE      ---      ---       #82
       0200005BH   SYMBOL    XDATA    ---       buffer
       0200005EH   SYMBOL    XDATA    WORD      length
-      010005BCH   BLOCK     CODE     NEAR LAB  LVL=1
-      010005BCH   LINE      ---      ---       #84
-      010005CCH   LINE      ---      ---       #85
-      010005DCH   LINE      ---      ---       #86
-      010005E3H   LINE      ---      ---       #87
+      01000B05H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000B05H   LINE      ---      ---       #84
+      01000B15H   LINE      ---      ---       #85
+      01000B25H   LINE      ---      ---       #86
+      01000B2CH   LINE      ---      ---       #87
       00000004H   SYMBOL    DATA     WORD      i
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000C55H   BLOCK     CODE     ---       LVL=0
-      01000C55H   LINE      ---      ---       #90
-      01000C55H   LINE      ---      ---       #91
-      01000C55H   BLOCK     CODE     NEAR LAB  LVL=1
-      01000C55H   LINE      ---      ---       #93
-      01000C5AH   LINE      ---      ---       #94
-      01000C5EH   LINE      ---      ---       #95
-      01000C6FH   LINE      ---      ---       #96
-      01000C7EH   LINE      ---      ---       #97
-      01000C8DH   LINE      ---      ---       #98
-      01000C9CH   LINE      ---      ---       #99
-      01000CABH   LINE      ---      ---       #100
-      01000CBDH   LINE      ---      ---       #102
-      01000CBFH   LINE      ---      ---       #104
-      01000CBFH   LINE      ---      ---       #105
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 41
+      01000841H   BLOCK     CODE     ---       LVL=0
+      01000841H   LINE      ---      ---       #90
+      01000841H   LINE      ---      ---       #91
+      01000841H   BLOCK     CODE     NEAR LAB  LVL=1
+      01000841H   LINE      ---      ---       #93
+      01000846H   LINE      ---      ---       #94
+      0100084AH   LINE      ---      ---       #95
+      0100085CH   LINE      ---      ---       #96
+      0100086AH   LINE      ---      ---       #97
+      01000878H   LINE      ---      ---       #98
+      01000886H   LINE      ---      ---       #99
+      01000894H   LINE      ---      ---       #100
+      010008A7H   LINE      ---      ---       #102
+      010008A9H   LINE      ---      ---       #104
+      010008A9H   LINE      ---      ---       #105
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 41
 
 
-      01000CBFH   LINE      ---      ---       #632
-      01000CC9H   LINE      ---      ---       #634
-      01000CCFH   LINE      ---      ---       #640
-      01000CD9H   LINE      ---      ---       #646
-      01000CDFH   LINE      ---      ---       #652
-      01000CE9H   LINE      ---      ---       #658
-      01000CEFH   LINE      ---      ---       #664
-      01000CF9H   LINE      ---      ---       #670
-      01000CFFH   LINE      ---      ---       #676
-      01000D0DH   LINE      ---      ---       #682
-      01000D13H   LINE      ---      ---       #688
-      01000D22H   LINE      ---      ---       #694
-      01000D28H   LINE      ---      ---       #700
-      01000D32H   LINE      ---      ---       #706
-      01000D38H   LINE      ---      ---       #712
-      01000D42H   LINE      ---      ---       #718
-      01000D48H   LINE      ---      ---       #724
-      01000D52H   LINE      ---      ---       #730
-      01000D58H   LINE      ---      ---       #736
-      01000D67H   LINE      ---      ---       #742
-      01000D6DH   LINE      ---      ---       #748
-      01000D7CH   LINE      ---      ---       #754
-      01000D82H   LINE      ---      ---       #760
-      01000D91H   LINE      ---      ---       #766
-      01000D97H   LINE      ---      ---       #772
-      01000DA1H   LINE      ---      ---       #778
-      01000DA7H   LINE      ---      ---       #784
-      01000DB1H   LINE      ---      ---       #790
-      01000DB7H   LINE      ---      ---       #796
-      01000DC1H   LINE      ---      ---       #802
-      01000DC7H   LINE      ---      ---       #808
-      01000DD6H   LINE      ---      ---       #814
-      01000DDCH   LINE      ---      ---       #820
-      01000DEBH   LINE      ---      ---       #826
-      01000DF1H   LINE      ---      ---       #832
-      01000E00H   LINE      ---      ---       #838
-      01000E06H   LINE      ---      ---       #844
-      01000E10H   LINE      ---      ---       #850
-      01000E16H   LINE      ---      ---       #856
-      01000E20H   LINE      ---      ---       #862
-      01000E26H   LINE      ---      ---       #868
-      01000E30H   LINE      ---      ---       #874
-      01000E36H   LINE      ---      ---       #880
-      01000E55H   LINE      ---      ---       #919
-      01000E5BH   LINE      ---      ---       #925
-      01000E7DH   LINE      ---      ---       #964
-      01000E83H   LINE      ---      ---       #970
-      01000EA5H   LINE      ---      ---       #1009
-      01000EABH   LINE      ---      ---       #1015
-      01000EB5H   LINE      ---      ---       #1021
-      01000EBBH   LINE      ---      ---       #1027
-      01000EC5H   LINE      ---      ---       #1033
-      01000ECBH   LINE      ---      ---       #1039
-      01000ED8H   LINE      ---      ---       #1045
-      01000EDEH   LINE      ---      ---       #1050
-      01000EF8H   LINE      ---      ---       #1088
-      01000EFEH   LINE      ---      ---       #1094
-      01000F01H   LINE      ---      ---       #1097
-      01000F04H   LINE      ---      ---       #1098
-      01000F24H   LINE      ---      ---       #1100
-      01000F2AH   LINE      ---      ---       #1106
-      01000F2DH   LINE      ---      ---       #1268
+      010008A9H   LINE      ---      ---       #632
+      010008B2H   LINE      ---      ---       #634
+      010008B7H   LINE      ---      ---       #640
+      010008C0H   LINE      ---      ---       #646
+      010008C5H   LINE      ---      ---       #652
+      010008CEH   LINE      ---      ---       #658
+      010008D3H   LINE      ---      ---       #664
+      010008DCH   LINE      ---      ---       #670
+      010008E1H   LINE      ---      ---       #676
+      010008EEH   LINE      ---      ---       #682
+      010008F3H   LINE      ---      ---       #688
+      01000901H   LINE      ---      ---       #694
+      01000906H   LINE      ---      ---       #700
+      0100090FH   LINE      ---      ---       #706
+      01000914H   LINE      ---      ---       #712
+      0100091DH   LINE      ---      ---       #718
+      01000922H   LINE      ---      ---       #724
+      0100092BH   LINE      ---      ---       #730
+      01000930H   LINE      ---      ---       #736
+      0100093EH   LINE      ---      ---       #742
+      01000943H   LINE      ---      ---       #748
+      01000951H   LINE      ---      ---       #754
+      01000956H   LINE      ---      ---       #760
+      01000964H   LINE      ---      ---       #766
+      01000969H   LINE      ---      ---       #772
+      01000972H   LINE      ---      ---       #778
+      01000977H   LINE      ---      ---       #784
+      01000980H   LINE      ---      ---       #790
+      01000985H   LINE      ---      ---       #796
+      0100098EH   LINE      ---      ---       #802
+      01000993H   LINE      ---      ---       #808
+      010009A1H   LINE      ---      ---       #814
+      010009A6H   LINE      ---      ---       #820
+      010009B4H   LINE      ---      ---       #826
+      010009B9H   LINE      ---      ---       #832
+      010009C7H   LINE      ---      ---       #838
+      010009CCH   LINE      ---      ---       #844
+      010009D5H   LINE      ---      ---       #850
+      010009DAH   LINE      ---      ---       #856
+      010009E3H   LINE      ---      ---       #862
+      010009E8H   LINE      ---      ---       #868
+      010009F1H   LINE      ---      ---       #874
+      010009F6H   LINE      ---      ---       #880
+      01000A12H   LINE      ---      ---       #919
+      01000A17H   LINE      ---      ---       #925
+      01000A37H   LINE      ---      ---       #964
+      01000A3CH   LINE      ---      ---       #970
+      01000A5CH   LINE      ---      ---       #1009
+      01000A61H   LINE      ---      ---       #1015
+      01000A6AH   LINE      ---      ---       #1021
+      01000A6FH   LINE      ---      ---       #1027
+      01000A78H   LINE      ---      ---       #1033
+      01000A7DH   LINE      ---      ---       #1039
+      01000A8AH   LINE      ---      ---       #1045
+      01000A8FH   LINE      ---      ---       #1050
+      01000AA6H   LINE      ---      ---       #1088
+      01000AABH   LINE      ---      ---       #1094
+      01000AADH   LINE      ---      ---       #1097
+      01000AB0H   LINE      ---      ---       #1098
+      01000AD2H   LINE      ---      ---       #1100
+      01000AD7H   LINE      ---      ---       #1106
+      01000AD9H   LINE      ---      ---       #1268
       02000000H   SYMBOL    XDATA    ---       order_buffer
       02000014H   SYMBOL    XDATA    BYTE      order_buffer_len
       02000015H   SYMBOL    XDATA    WORD      analysis_data
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 42
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 42
 
 
       02000017H   SYMBOL    XDATA    ---       sync_write_velocity_base_target_position
@@ -2799,98 +2799,93 @@ SYMBOL TABLE OF MODULE:  template (MAIN)
       ---         BLOCKEND  CODE     ---       LVL=1
       ---         BLOCKEND  CODE     ---       LVL=0
 
-      01000C04H   BLOCK     CODE     ---       LVL=0
-      01000C11H   LINE      ---      ---       #1271
-      01000C11H   LINE      ---      ---       #1273
-      01000C14H   LINE      ---      ---       #1274
-      01000C14H   LINE      ---      ---       #1275
-      01000C16H   LINE      ---      ---       #1276
-      01000C2AH   LINE      ---      ---       #1277
-      01000C2AH   LINE      ---      ---       #1278
+      01000EB7H   BLOCK     CODE     ---       LVL=0
+      01000EC4H   LINE      ---      ---       #1271
+      01000EC4H   LINE      ---      ---       #1273
+      01000EC7H   LINE      ---      ---       #1274
+      01000EC7H   LINE      ---      ---       #1275
+      01000EC9H   LINE      ---      ---       #1276
+      01000EDDH   LINE      ---      ---       #1277
+      01000EDDH   LINE      ---      ---       #1278
       ---         BLOCKEND  ---      ---       LVL=0
 
       ---         MODULE    ---      ---       ?C_STARTUP
       01000000H   PUBLIC    CODE     ---       ?C_STARTUP
 
       ---         MODULE    ---      ---       ?C?COPY
-      0100089CH   PUBLIC    CODE     ---       ?C?COPY
+      010000F6H   PUBLIC    CODE     ---       ?C?COPY
 
       ---         MODULE    ---      ---       ?C?CLDPTR
-      010008C2H   PUBLIC    CODE     ---       ?C?CLDPTR
+      0100011CH   PUBLIC    CODE     ---       ?C?CLDPTR
 
       ---         MODULE    ---      ---       ?C?CLDOPTR
-      010008DBH   PUBLIC    CODE     ---       ?C?CLDOPTR
+      01000135H   PUBLIC    CODE     ---       ?C?CLDOPTR
 
       ---         MODULE    ---      ---       ?C?CSTPTR
-      01000908H   PUBLIC    CODE     ---       ?C?CSTPTR
+      01000162H   PUBLIC    CODE     ---       ?C?CSTPTR
 
       ---         MODULE    ---      ---       ?C?CSTOPTR
-      0100091AH   PUBLIC    CODE     ---       ?C?CSTOPTR
+      01000174H   PUBLIC    CODE     ---       ?C?CSTOPTR
 
       ---         MODULE    ---      ---       ?C?IILDX
-      0100093CH   PUBLIC    CODE     ---       ?C?IILDX
+      01000196H   PUBLIC    CODE     ---       ?C?IILDX
 
       ---         MODULE    ---      ---       ?C?ILDPTR
-      01000952H   PUBLIC    CODE     ---       ?C?ILDPTR
+      010001ACH   PUBLIC    CODE     ---       ?C?ILDPTR
 
       ---         MODULE    ---      ---       ?C?ILDOPTR
-      0100097DH   PUBLIC    CODE     ---       ?C?ILDOPTR
+      010001D7H   PUBLIC    CODE     ---       ?C?ILDOPTR
 
       ---         MODULE    ---      ---       ?C?ISTPTR
-      010009B5H   PUBLIC    CODE     ---       ?C?ISTPTR
+      0100020FH   PUBLIC    CODE     ---       ?C?ISTPTR
 
       ---         MODULE    ---      ---       ?C?PLDXDATA
-      010009D4H   PUBLIC    CODE     ---       ?C?PLDXDATA
+      0100022EH   PUBLIC    CODE     ---       ?C?PLDXDATA
 
       ---         MODULE    ---      ---       ?C?PSTXDATA
-      010009DDH   PUBLIC    CODE     ---       ?C?PSTXDATA
+      01000237H   PUBLIC    CODE     ---       ?C?PSTXDATA
 
       ---         MODULE    ---      ---       ?C?PSTPTR
-      010009E6H   PUBLIC    CODE     ---       ?C?PSTPTR
+      01000240H   PUBLIC    CODE     ---       ?C?PSTPTR
 
       ---         MODULE    ---      ---       ?C?CCASE
-      01000A35H   PUBLIC    CODE     ---       ?C?CCASE
+      0100028FH   PUBLIC    CODE     ---       ?C?CCASE
 
       ---         MODULE    ---      ---       ?C_INIT
-      01000AB4H   PUBLIC    CODE     ---       ?C_START
+      0100030EH   PUBLIC    CODE     ---       ?C_START
 
       ---         MODULE    ---      ---       ?C?PSTIDATA
-LX51 LINKER/LOCATER V4.66.100.0                                                       07/24/2024  16:38:14  PAGE 43
+LX51 LINKER/LOCATER V4.66.100.0                                                       07/25/2024  17:05:36  PAGE 43
 
 
-      01000A5BH   PUBLIC    CODE     ---       ?C?PSTIDATA
+      010002B5H   PUBLIC    CODE     ---       ?C?PSTIDATA
 
       ---         MODULE    ---      ---       ?C?PSTPDATA
-      01000A64H   PUBLIC    CODE     ---       ?C?PSTPDATA
+      010002BEH   PUBLIC    CODE     ---       ?C?PSTPDATA
 
       ---         MODULE    ---      ---       ?L?COMMON
-      010005FAH   SYMBOL    CODE     NEAR LAB  ?L?COM0001
-      010006BDH   SYMBOL    CODE     NEAR LAB  ?L?COM0004
-      01000343H   SYMBOL    CODE     NEAR LAB  ?L?COM0005
-      0100066FH   SYMBOL    CODE     NEAR LAB  ?L?COM0007
-      01000479H   SYMBOL    CODE     NEAR LAB  ?L?COM000C
-      0100044EH   SYMBOL    CODE     NEAR LAB  ?L?COM000E
-      0100068AH   SYMBOL    CODE     NEAR LAB  ?L?COM000F
-      01000C35H   SYMBOL    CODE     NEAR LAB  ?L?COM0011
-      01000565H   SYMBOL    CODE     NEAR LAB  ?L?COM0012
-      01000573H   SYMBOL    CODE     NEAR LAB  ?L?COM0013
-      010002B8H   SYMBOL    CODE     NEAR LAB  ?L?COM0015
+      01000B43H   SYMBOL    CODE     NEAR LAB  ?L?COM0001
+      010006A4H   SYMBOL    CODE     NEAR LAB  ?L?COM0004
+      01000BC3H   SYMBOL    CODE     NEAR LAB  ?L?COM0005
+      01000662H   SYMBOL    CODE     NEAR LAB  ?L?COM0007
+      01000C6CH   SYMBOL    CODE     NEAR LAB  ?L?COM000C
+      01000C40H   SYMBOL    CODE     NEAR LAB  ?L?COM000E
+      010007E3H   SYMBOL    CODE     NEAR LAB  ?L?COM000F
+      010007C4H   SYMBOL    CODE     NEAR LAB  ?L?COM0011
+      010007B7H   SYMBOL    CODE     NEAR LAB  ?L?COM0012
+      0100069DH   SYMBOL    CODE     NEAR LAB  ?L?COM0013
+      010005D5H   SYMBOL    CODE     NEAR LAB  ?L?COM0015
       0100000EH   SYMBOL    CODE     NEAR LAB  ?L?COM0019
-      01000C3EH   SYMBOL    CODE     NEAR LAB  ?L?COM001B
-      01000C45H   SYMBOL    CODE     NEAR LAB  ?L?COM001C
-      01000B12H   SYMBOL    CODE     NEAR LAB  ?L?COM001D
-      010002E4H   SYMBOL    CODE     NEAR LAB  ?L?COM001E
-      010002D5H   SYMBOL    CODE     NEAR LAB  ?L?COM0020
-      01000B8EH   SYMBOL    CODE     NEAR LAB  ?L?COM0022
-      010006AEH   SYMBOL    CODE     NEAR LAB  ?L?COM0023
-      01000C4CH   SYMBOL    CODE     NEAR LAB  ?L?COM0024
+      01000823H   SYMBOL    CODE     NEAR LAB  ?L?COM001B
+      0100082CH   SYMBOL    CODE     NEAR LAB  ?L?COM001C
+      01000E4BH   SYMBOL    CODE     NEAR LAB  ?L?COM001D
+      0100068CH   SYMBOL    CODE     NEAR LAB  ?L?COM001E
+      0100067DH   SYMBOL    CODE     NEAR LAB  ?L?COM0020
+      01000E6CH   SYMBOL    CODE     NEAR LAB  ?L?COM0022
+      01000BBCH   SYMBOL    CODE     NEAR LAB  ?L?COM0023
+      010007BBH   SYMBOL    CODE     NEAR LAB  ?L?COM0024
       01000003H   SYMBOL    CODE     NEAR LAB  ?L?COM0025
-      0100056BH   SYMBOL    CODE     NEAR LAB  ?L?COM0027
+      01000652H   SYMBOL    CODE     NEAR LAB  ?L?COM0027
 
-******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0BC9H BYTE (147%) *
-******************************************************************************
-
-Program Size: data=17.0 xdata=159 const=262 code=3621
-*** ERROR L250: CODE SIZE LIMIT IN RESTRICTED VERSION EXCEEDED
-    LIMIT:   0800H BYTES
+Program Size: data=17.0 xdata=159 const=262 code=3548
+LX51 RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
