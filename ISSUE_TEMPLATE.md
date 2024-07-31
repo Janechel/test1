@@ -12,7 +12,7 @@ Please fill this template for more accurate and prompt support.
 - ex) `C`, `C++`, `Python`,`Arduino`, `Micro Python`
 
 4. Which platform do you use?
-- ex) `Windows 11`, `stm32f103`, `stc89c52`,`esp32 wroom 32`,`Arduino uno r3`,``
+- ex) `Windows 11`, `stm32f103`, `stc89c52`,`esp32 wroom 32`
 
 5. Have you read the memory table protocol and SDK documentation carefully?
 
