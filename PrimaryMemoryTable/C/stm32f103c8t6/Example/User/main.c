@@ -126,7 +126,7 @@ int main(void)
 #endif				
 		
 #if REBOOT_TEST
-		//舵机重启
+		//ID1舵机重启
     servo_reboot(1, order_buffer,&order_len);
 
     USART1_Send(order_buffer, order_len);
@@ -196,7 +196,7 @@ int main(void)
 #endif
 
 #if READ_TEST
-		//读取舵机的当前电流
+		//读取ID1舵机的当前电流
     servo_read_present_current(1, order_buffer,&order_len);
     
 		USART1_Send(order_buffer, order_len);
@@ -213,7 +213,7 @@ int main(void)
 #endif
 
 #if READ_TEST
-		//读取舵机的当前位置
+		//读取ID1舵机的当前位置
     servo_read_present_position(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -230,7 +230,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的当前速度
+		//读取ID1舵机的当前速度
     servo_read_present_velocity(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -247,7 +247,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的当前的规划位置
+		//读取ID1舵机的当前的规划位置
     servo_read_present_profile_position(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -264,7 +264,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的当前规划速度
+		//读取ID1舵机的当前规划速度
     servo_read_present_profile_velocity(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -281,7 +281,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的当前PWM
+		//读取ID1舵机的当前PWM
     servo_read_present_pwm(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -298,7 +298,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的当前温度
+		//读取ID1舵机的当前温度
     servo_read_present_temperature(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -315,7 +315,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的当前输入电压
+		//读取ID1舵机的当前输入电压
     servo_read_present_voltage(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -332,7 +332,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的控时目标运行时间
+		//读取ID1舵机的控时目标运行时间
     servo_read_time_base_target_moving_time(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -349,7 +349,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的控时目标位置
+		//读取ID1舵机的控时目标位置
     servo_read_time_base_target_position(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -365,7 +365,7 @@ int main(void)
 #endif
 
 #if READ_TEST
-		//读取舵机的控时加速度等级
+		//读取ID1舵机的控时加速度等级
     servo_read_time_base_target_acc(1, order_buffer,&order_len);   
     USART1_Send(order_buffer, order_len);
 
@@ -382,7 +382,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的控速目标减速度
+		//读取ID1舵机的控速目标减速度
     servo_read_velocity_base_target_dec(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -399,7 +399,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的控速目标加速度
+		//读取ID1舵机的控速目标加速度
     servo_read_velocity_base_target_acc(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -416,7 +416,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的控速目标速度
+		//读取ID1舵机的控速目标速度
     servo_read_velocity_base_target_velocity(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -433,7 +433,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的控速目标位置
+		//读取ID1舵机的控速目标位置
     servo_read_velocity_base_target_position(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -450,7 +450,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的目标电流
+		//读取ID1舵机的目标电流
     servo_read_target_current(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -467,7 +467,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的目标PWM
+		//读取ID1舵机的目标PWM
     servo_read_target_pwm(1, order_buffer,&order_len);  
     USART1_Send(order_buffer, order_len);
 
@@ -484,7 +484,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的扭矩开关
+		//读取ID1舵机的扭矩开关
     servo_read_torque_switch(1, order_buffer,&order_len);  
     USART1_Send(order_buffer, order_len);
 
@@ -501,7 +501,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的LED开关
+		//读取ID1舵机的LED开关
     servo_read_led_switch(1, order_buffer,&order_len);   
     USART1_Send(order_buffer, order_len);
 
@@ -517,7 +517,7 @@ int main(void)
 #endif
 
 #if READ_TEST
-		//读取舵机的Flash开关
+		//读取ID1舵机的Flash开关
     servo_read_flash_switch(1, order_buffer,&order_len); 
     USART1_Send(order_buffer, order_len);
 
@@ -534,7 +534,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的电流校正值
+		//读取ID1舵机的电流校正值
     servo_read_current_offset(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -551,7 +551,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的中位校正值
+		//读取ID1舵机的中位校正值
     servo_read_calibration(1, order_buffer,&order_len);  
     USART1_Send(order_buffer, order_len);
 
@@ -568,7 +568,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的控制模式
+		//读取ID1舵机的控制模式
     servo_read_control_mode(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -585,7 +585,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的卸载保护条件
+		//读取ID1舵机的卸载保护条件
     servo_read_shutdown_condition(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -602,7 +602,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的LED报警条件
+		//读取ID1舵机的LED报警条件
     servo_read_led_condition(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -619,7 +619,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的位置控制D增益
+		//读取ID1舵机的位置控制D增益
     servo_read_position_control_d_gain(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -636,7 +636,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的位置控制I增益
+		//读取ID1舵机的位置控制I增益
     servo_read_position_control_i_gain(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -653,7 +653,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的位置控制P增益
+		//读取ID1舵机的位置控制P增益
     servo_read_position_control_p_gain(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -669,7 +669,7 @@ int main(void)
 #endif
 
 #if READ_TEST
-		//读取舵机的PWM叠加值
+		//读取ID1舵机的PWM叠加值
     servo_read_pwm_punch(1, order_buffer,&order_len); 
     USART1_Send(order_buffer, order_len);
 
@@ -686,7 +686,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的反转死区
+		//读取ID1舵机的反转死区
     servo_read_ccw_deadband(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -703,7 +703,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的正转死区
+		//读取ID1舵机的正转死区
     servo_read_cw_deadband(1, order_buffer,&order_len); 
     USART1_Send(order_buffer, order_len);
 
@@ -720,7 +720,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的电流保护时间
+		//读取ID1舵机的电流保护时间
     servo_read_current_shutdown_time(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -737,7 +737,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的电流上限
+		//读取ID1舵机的电流上限
     servo_read_max_current_limit(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -754,7 +754,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的PWM上限
+		//读取ID1舵机的PWM上限
     servo_read_max_pwm_limit(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -771,7 +771,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的电压上限
+		//读取ID1舵机的电压上限
     servo_read_max_voltage_limit(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -788,7 +788,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的电压下限
+		//读取ID1舵机的电压下限
     servo_read_min_voltage_limit(1, order_buffer,&order_len);   
     USART1_Send(order_buffer, order_len);
 
@@ -805,7 +805,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的温度上限
+		//读取ID1舵机的温度上限
     servo_read_max_temperature_limit(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -821,7 +821,7 @@ int main(void)
 #endif
 
 #if READ_TEST
-		//读取舵机的最大位置限制
+		//读取ID1舵机的最大位置限制
     servo_read_max_angle_limit(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -838,7 +838,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的最小位置限制
+		//读取ID1舵机的最小位置限制
     servo_read_min_angle_limit(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -855,7 +855,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的状态返回级别
+		//读取ID1舵机的状态返回级别
     servo_read_return_level(1, order_buffer,&order_len); 
     USART1_Send(order_buffer, order_len);
 
@@ -872,7 +872,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的应答延时时间
+		//读取ID1舵机的应答延时时间
     servo_read_return_delay_time(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -889,7 +889,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的波特率
+		//读取ID1舵机的波特率
     servo_read_baud_rate(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -906,7 +906,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的出厂编号
+		//读取ID1舵机的出厂编号
     servo_read_model_information(1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -923,7 +923,7 @@ int main(void)
 
 
 #if READ_TEST
-		//读取舵机的固件版本号
+		//读取ID1舵机的固件版本号
     servo_read_firmware_version(1, order_buffer,&order_len); 
     USART1_Send(order_buffer, order_len);
 
@@ -939,7 +939,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 0, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -955,7 +955,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的控制模式
+		//设置ID1舵机的控制模式
     servo_set_control_mode(1, 1, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -971,7 +971,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -987,7 +987,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID2舵机的扭矩开关
     servo_set_torque_switch(2, 0, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1003,7 +1003,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的控制模式
+		//设置ID2舵机的控制模式
     servo_set_control_mode(2, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1019,7 +1019,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID2舵机的扭矩开关
     servo_set_torque_switch(2, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1064,7 +1064,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 0, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -1080,7 +1080,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的控制模式
+		//设置ID1舵机的控制模式
     servo_set_control_mode(1, 0, order_buffer,&order_len);
     USART1_Send(order_buffer, order_len);
 
@@ -1096,7 +1096,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1112,7 +1112,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID2舵机的扭矩开关
     servo_set_torque_switch(2, 0, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1128,7 +1128,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的控制模式
+		//设置ID2舵机的控制模式
     servo_set_control_mode(2, 0, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1144,7 +1144,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID2舵机的扭矩开关
     servo_set_torque_switch(2, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1174,7 +1174,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的状态返回级别
+		//设置ID1舵机的状态返回级别
     servo_set_return_level(1, 2, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1190,7 +1190,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的应答延时时间
+		//设置ID1舵机的应答延时时间
 		servo_set_return_delay_time(1, 250,order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1206,7 +1206,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的波特率
+		//设置ID1舵机的波特率
     servo_set_baud_rate(1, 7, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1222,7 +1222,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的最小位置限制
+		//设置ID1舵机的最小位置限制
     servo_set_min_angle_limit(1, 0, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1238,7 +1238,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的最大位置限制
+		//设置ID1舵机的最大位置限制
     servo_set_max_angle_limit(1, 3000, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1254,7 +1254,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的温度上限
+		//设置ID1舵机的温度上限
     servo_set_max_temperature_limit(1, 100, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1270,7 +1270,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的电压上限
+		//设置ID1舵机的电压上限
     servo_set_max_voltage_limit(1,90, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1286,7 +1286,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的电压下限
+		//设置ID1舵机的电压下限
     servo_set_min_voltage_limit(1, 33, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1302,7 +1302,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的PWM上限
+		//设置ID1舵机的PWM上限
     servo_set_max_pwm_limit(1, 1000, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1318,7 +1318,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的电流上限
+		//设置ID1舵机的电流上限
     servo_set_max_current_limit(1, 400, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1334,7 +1334,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的电流保护时间
+		//设置ID1舵机的电流保护时间
     servo_set_current_shutdown_time(1, 1000, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1350,7 +1350,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的正转死区
+		//设置ID1舵机的正转死区
     servo_set_cw_deadband(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1366,7 +1366,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的反转死区
+		//设置ID1舵机的反转死区
     servo_set_ccw_deadband(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1382,7 +1382,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的PWM叠加值
+		//设置ID1舵机的PWM叠加值
     servo_set_pwm_punch(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1398,7 +1398,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的位置控制P增益
+		//设置ID1舵机的位置控制P增益
     servo_set_position_control_p_gain(1, 6000, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1414,7 +1414,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的位置控制I增益
+		//设置ID1舵机的位置控制I增益
     servo_set_position_control_i_gain(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1430,7 +1430,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的位置控制D增益
+		//设置ID1舵机的位置控制D增益
     servo_set_position_control_d_gain(1, 151, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1446,7 +1446,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的LED报警条件
+		//设置ID1舵机的LED报警条件
     servo_set_led_condition(1, 36, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1462,7 +1462,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的卸载保护条件
+		//设置ID1舵机的卸载保护条件
     servo_set_shutdown_conditions(1, 36, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1478,7 +1478,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的Flash开关
+		//设置ID1舵机的Flash开关
     servo_set_flash_switch(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1494,7 +1494,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的LED开关
+		//设置ID1舵机的LED开关
     servo_set_led_switch(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1510,7 +1510,7 @@ int main(void)
 #endif
 		
 #if WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 0, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1526,7 +1526,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的控制模式
+		//设置ID1舵机的控制模式
     servo_set_control_mode(1, 3, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1542,7 +1542,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1558,7 +1558,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的目标PWM
+		//设置ID1舵机的目标PWM
     servo_set_target_pwm(1, 1000, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1574,7 +1574,7 @@ int main(void)
 #endif
 		
 		#if WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 0, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1590,7 +1590,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的控制模式
+		//设置ID1舵机的控制模式
     servo_set_control_mode(1, 2, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1606,7 +1606,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1622,7 +1622,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的目标电流
+		//设置ID1舵机的目标电流
     servo_set_target_current(1, -1000, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1638,7 +1638,7 @@ int main(void)
 #endif
 		
 #if WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 0, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1654,7 +1654,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的控制模式
+		//设置ID1舵机的控制模式
     servo_set_control_mode(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1670,7 +1670,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1686,7 +1686,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的控速目标速度
+		//设置ID1舵机的控速目标速度
     servo_set_velocity_base_target_velocity(1, 3600, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1702,7 +1702,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的控速目标加速度
+		//设置ID1舵机的控速目标加速度
     servo_set_velocity_base_target_acc(1, 150, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1718,7 +1718,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的控速目标减速度
+		//设置ID1舵机的控速目标减速度
     servo_set_velocity_base_target_dec(1, 150, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1734,7 +1734,7 @@ int main(void)
 #endif
 		
 #if WRITE_TEST
-		//设置舵机的控时目标加速度等级
+		//设置ID1舵机的控时目标加速度等级
     servo_set_time_base_target_acc(1, 0, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1750,7 +1750,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的控速目标位置
+		//设置ID1舵机的控速目标位置
     servo_set_velocity_base_target_position(1, 1500, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1766,7 +1766,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 0, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1782,7 +1782,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的控制模式
+		//设置ID1舵机的控制模式
     servo_set_control_mode(1, 0, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1798,7 +1798,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的扭矩开关
+		//设置ID1舵机的扭矩开关
     servo_set_torque_switch(1, 1, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -1814,7 +1814,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-		//设置舵机的控时目标位置和目标运行时间
+		//设置ID1舵机的控时目标位置和目标运行时间
     servo_set_time_base_target_position_and_moving_time(1, 0, 500, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
