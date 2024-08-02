@@ -1,4 +1,4 @@
-# ServoSDK Release Notes
+# Release Notes
 ---
 
 ## Version 1.0.1（2024.8.24）
