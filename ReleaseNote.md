@@ -5,7 +5,7 @@
 #### Enhancements
 - Added PrimaryMemoryTable/Arduino/ArduinoUno/Example,Demo
 #### Contributors
-- Wang Wenlong ( @王文龙 )
+- Wenlong Wang ( @王文龙 )
 ---
 
 ## Version 1.0.0（2024.7.24）
@@ -24,6 +24,6 @@
 - Uploaded PrimaryMemoryTable/Arduino/src
 - Uploaded PrimaryMemoryTable/Arduino/esp32/Example,Demo
 #### Contributors
-- Wang Wenlong ( @王文龙 )
+- Wenlong Wang ( @王文龙 )
 - Shynerain Du ( @Shaynerain )
 ---
