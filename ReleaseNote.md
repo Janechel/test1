@@ -1,4 +1,4 @@
-# Servo SDK Release Notes
+# ServoSDK Release Notes
 ---
 
 ## Version 1.0.1（2024.8.24）
@@ -26,4 +26,4 @@
 #### Contributors
 - Wenlong Wang ( @王文龙 )
 - Shynerain Du ( @Shaynerain )
----
+- Janechel Lin ( @Janechel )
