@@ -1,21 +1,19 @@
-ISSUE TEMPLATE ver. 1.0.0
+# Version 1.0.1（2024.8.24）
+---
+**Please fill this template for more accurate and prompt support.**
 
-Please fill this template for more accurate and prompt support.
+1. Which memory table protocol are you using? (e.g., primary, intermediate, advanced.)
 
-1. Which memory table protocol you are using?
-- ex) `primary`,`intermediate`,`advanced`
+2. Which EnergizeLab Servo model are you working with? (e.g., EM-2030, EM-2100, EH-3030, etc.)
 
-2. What kind of steering gear are you using?
-- ex) `EM2`,`EM3`,`EM10`
+3. What programming language or development toolset are you employing? ( e.g., C, C++, Python, Arduino, MicroPython, etc.)
 
-3. Which programming language/tool do you use?
-- ex) `C`, `C++`, `Python`,`Arduino`, `Micro Python`
+4. On which platform or hardware environment are you deploying your application? (e.g., Windows 11, STM32F103, STC89C52, ESP32 WROOM 32, etc.)
 
-4. Which platform do you use?
-- ex) `Windows 11`, `stm32f103`, `stc89c52`,`esp32 wroom 32`
+5. Have you thoroughly reviewed the memory table protocol and SDK documentation? What specific operations have you attempted?
 
-5. Have you read the memory table protocol and SDK documentation carefully?
-
-6. Please describe the issue in detail
+6. Please briefly describe the issue you are encountering.
 
 7. How can we reproduce the issue?
+
+8. Additional information (if needed).
