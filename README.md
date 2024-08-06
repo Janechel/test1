@@ -16,7 +16,8 @@
 - Python：包含基础库，基于Windows的Example和Demo
 - MicroPython：包含基础库，基于ESP32的Example和Demo
 - Arduino：包含基础库，基于ESP32、ArduinoUno的Example和Demo
+### 文件说明
 - Scr：基础库，包含Servo整个内存表的指令生成和解析。
 - Example：演示Ping指令、读指令、写指令、同步写指令、恢复参数指令、恢复出厂指令、重启指令的使用
 - Demo：演示舵机不同控制模式的使用
-- FAQ：包含基于本项目的FAQ、基于各平台或开发环境的FAQ
+- FAQ：基于本项目的FAQ、基于各平台或开发环境的FAQ
