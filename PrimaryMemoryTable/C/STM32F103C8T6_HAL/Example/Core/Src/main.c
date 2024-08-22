@@ -58,6 +58,7 @@ void SystemClock_Config(void);
 #include "servo.h"
 #include <stdio.h>
 
+#define PING_TEST 0						//PING指令测试
 #define READ_TEST 0				    // 读取舵机数据测试
 #define WRITE_TEST 0			    // 写入舵机数据测试
 #define SYNC_WRITE_TEST 0		    // 同步写测试
@@ -198,7 +199,7 @@ int main(void)
 		HAL_Delay(1000);
 #endif
 		
-#if READ_TEST
+#if PING_TEST
 		//向ID为1的舵机发送PING指令
     servo_ping(1, order_buffer,&order_len);
 
