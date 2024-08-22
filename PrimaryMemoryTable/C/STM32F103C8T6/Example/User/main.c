@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 //调试变量定义
+#define PING_TEST 0   			//PING指令测试
 #define READ_TEST 0					// 读取舵机数据测试
 #define WRITE_TEST 0				// 写入舵机数据测试
 #define SYNC_WRITE_TEST 0			// 同步写测试
@@ -171,7 +172,7 @@ int main(void)
 		Delay(1000);
 #endif
 
-#if READ_TEST
+#if PING_TEST
 		//生成指令
     servo_ping(1, order_buffer,&order_len);
     
