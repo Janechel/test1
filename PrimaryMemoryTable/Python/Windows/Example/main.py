@@ -2,6 +2,7 @@ from servo import *
 import serial
 import time
 
+PING_TEST = 0  # PING指令测试
 READ_TEST = 0  # 读取舵机数据测试
 FACTORY_RESET_TEST = 0  # 恢复出厂设置测试
 PARAMETER_RESET_TEST = 0  # 参数重置测试
@@ -79,9 +80,8 @@ if MODIFY_ID:
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep(1)
 
-# 读取舵机数据
-if READ_TEST:
-    # 向id为1的舵机发出ping指令
+# 向id为1的舵机发出ping指令
+if PING_TEST:
     Servo.servo_ping(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -90,6 +90,8 @@ if READ_TEST:
         print("the servo model number is", analysis_data[0])
     time.sleep(1)
 
+# 读取舵机数据
+if READ_TEST:
     # 读取ID1舵机的当前电流
     Servo.servo_read_present_current(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
