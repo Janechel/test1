@@ -120,14 +120,15 @@ int main() {
     uint16_t sync_write_velocity_base_target_acc[5] = { 1, 150, 2, 150 };                     //同步写多个舵机控速目标加速度
     uint16_t sync_write_velocity_base_target_dec[5] = { 1, 150, 2, 150 };                     //同步写多个舵机控速目标减速度
     uint16_t sync_write_time_base_target_acc[5] = { 1, 0, 2, 0 };                             //同步写多个舵机控时目标加速度
+    uint16_t sync_write_velocity_base_target_position_and_velocity[10] = { 1, 1500, 1800, 2, 1500, 1800};              //同步写多个舵机控速目标速度
     uint16_t sync_write_time_base_target_position_and_moving_time[10] = { 1, 3000, 500, 2, 3000, 500 };           //同步写多个舵机控时目标运动位置和运动时间
 
 
     uint8_t ret;
 
     // 打开串口
-    HANDLE hSerial = CreateFile("COM3", GENERIC_READ | GENERIC_WRITE, 0, NULL,
-        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hSerial = CreateFile("\\\\.\\COM12", GENERIC_READ | GENERIC_WRITE, 0, NULL,
+                                OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     //串口初始化
     ret = uart_init(hSerial);
@@ -1971,6 +1972,22 @@ int main() {
 
     //设置多个舵机的控速目标位置
     servo_sync_write_velocity_base_target_position(2, sync_write_velocity_base_target_position, order_buffer, &order_len);
+    ret = order_send(hSerial, order_buffer, order_len);
+    if (ret == FALSE)
+    {
+        return FALSE;
+    }
+    Sleep(1);
+
+    ret = order_receive(hSerial, pack);
+    if (ret == FALSE)
+    {
+        return FALSE;
+    }
+    Sleep(1000);
+
+    //设置多个舵机的控速目标位置和速度
+    servo_sync_write_velocity_base_target_position_and_velocity(2, sync_write_velocity_base_target_position_and_velocity, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
     {

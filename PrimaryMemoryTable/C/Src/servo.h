@@ -365,6 +365,9 @@ uint8_t servo_sync_write_velocity_base_target_position(uint8_t servo_counts, con
 //设置多个舵机的控速目标速度
 uint8_t servo_sync_write_velocity_base_target_velocity(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
+//设置多个舵机的控速目标位置和速度
+uint8_t servo_sync_write_velocity_base_target_position_and_velocity(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len);
+
 //设置多个舵机的控速目标加速度
 uint8_t servo_sync_write_velocity_base_target_acc(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
