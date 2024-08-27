@@ -1543,6 +1543,38 @@ uint8_t Servo::servo_sync_write_velocity_base_target_position(uint8_t servo_coun
 }
 
 /**
+ * @brief 设置多个舵机的控速目标位置和速度
+ * @param servo_counts 舵机数量
+ * @param input_buffer 命令包参数数据，格式为{ID，位置，速度，ID，位置，速度，···}
+ * @param output_buffer 用于存放指令包的输出缓冲区的指针
+ * @param output_buffer_len 指令包的长度
+ * @return 执行结果，成功或者错误标志
+ */
+uint8_t Servo::servo_sync_write_velocity_base_target_position_and_velocity(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len)
+{
+
+    uint8_t *parameter = (uint8_t *)malloc((servo_counts * 4 + 2 + servo_counts)  * sizeof(uint8_t));
+
+    parameter[0] = VELOCITY_BASE_TARGET_POSITION_L;
+    parameter[1] = 4;
+    for(int i = 0; i < servo_counts; i++)
+    {
+        parameter[i + 2 + i * 4] = input_buffer[3 * i];
+        parameter[i + 3 + i * 4] = input_buffer[3 * i + 1] & 0xff;
+        parameter[i + 4 + i * 4] = (input_buffer[3 * i + 1] >> 8 ) & 0xff;
+        parameter[i + 5 + i * 4] = input_buffer[3 * i + 2] & 0xff;
+        parameter[i + 6 + i * 4] = (input_buffer[3 * i + 2] >> 8 ) & 0xff;
+    }
+
+
+    sync_write_data( VELOCITY_BASE_TARGET_POSITION_L, servo_counts, parameter, output_buffer, output_buffer_len);
+
+    free(parameter);
+
+    return SUCCESS;
+}
+
+/**
  * @brief 设置多个舵机的控速目标速度
  * @param servo_counts 舵机数量
  * @param input_buffer 命令包参数数据，格式为{ID，速度，ID，速度，···}

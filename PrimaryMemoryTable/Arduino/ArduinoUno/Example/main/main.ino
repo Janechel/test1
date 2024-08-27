@@ -22,7 +22,8 @@ uint16_t sync_write_velocity_base_target_velocity[5] = { 1, 3600, 2, 3600 };    
 uint16_t sync_write_velocity_base_target_acc[5] = { 1, 150, 2, 150 };                                //同步写多个舵机控速目标加速度
 uint16_t sync_write_velocity_base_target_dec[5] = { 1, 150, 2, 150 };                                //同步写多个舵机控速目标减速度
 uint16_t sync_write_time_base_target_acc[5] = { 1, 0, 2, 0 };                                        //同步写多个舵机控时目标加速度
-uint16_t sync_write_time_base_target_position_and_moving_time[6] = { 1, 1500, 500, 2, 1500, 500 };  //同步写多个舵机控时目标运动位置和运动时间
+uint16_t sync_write_time_base_target_position_and_moving_time[6] = { 1, 3000, 500, 2, 3000, 500 };  //同步写多个舵机控时目标运动位置和运动时间
+uint16_t sync_write_velocity_base_target_position_and_velocity[6] = { 1, 1500, 1800, 2, 1500, 900 };  //同步写多个舵机控速目标运动位置和速度
 
 Servo servo;
 
@@ -2079,6 +2080,15 @@ void loop() {
 
   //设置多个舵机的控速目标位置
   servo.servo_sync_write_velocity_base_target_position(2, sync_write_velocity_base_target_position, order_buffer, &order_len);
+  if (order_len == Serial.write(order_buffer, order_len)) {
+    Serial.print("Sync Write successfully.\r\n");
+  } else {
+    Serial.print("Failed to send data.\r\n");
+  }
+  delay(1000);
+
+  //设置多个舵机的控速目标位置和速度
+  servo.servo_sync_write_velocity_base_target_position_and_velocity(2, sync_write_velocity_base_target_position_and_velocity, order_buffer, &order_len);
   if (order_len == Serial.write(order_buffer, order_len)) {
     Serial.print("Sync Write successfully.\r\n");
   } else {
