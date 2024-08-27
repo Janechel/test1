@@ -82,6 +82,7 @@ uint16_t sync_write_velocity_base_target_acc[5] = {1, 150, 2, 150};             
 uint16_t sync_write_velocity_base_target_dec[5] = {1, 150, 2, 150};                     //同步写多个舵机控速目标减速度
 uint16_t sync_write_time_base_target_acc[5] = {1, 0, 2, 0};                             //同步写多个舵机控时目标加速度
 uint16_t sync_write_time_base_target_position_and_moving_time[10] = {1, 3000, 500, 2, 3000, 500};           //同步写多个舵机控时目标运动位置和运动时间
+uint16_t sync_write_velocity_base_target_position_and_velocity[10] = { 1, 1500, 1800, 2, 1500, 1800};              //同步写多个舵机控速目标位置和速度
 
 
 void initTransmitMode(UART_HandleTypeDef *huart);
@@ -1172,6 +1173,15 @@ int main(void)
 #if SYNC_WRITE_TEST
 		//设置多个舵机的控速目标位置
 		servo_sync_write_velocity_base_target_position(2, sync_write_velocity_base_target_position, order_buffer,&order_len);
+		HAL_HalfDuplex_EnableTransmitter(&huart1);
+    HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
+		
+		HAL_Delay(1000);
+#endif
+
+#if SYNC_WRITE_TEST
+		//设置多个舵机的控速目标位置和速度
+		servo_sync_write_velocity_base_target_position_and_velocity(2, sync_write_velocity_base_target_position_and_velocity, order_buffer,&order_len);
 		HAL_HalfDuplex_EnableTransmitter(&huart1);
     HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
 		
