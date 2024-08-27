@@ -1,3 +1,0 @@
-﻿  main.c
-D:\vs2022\servo\servo\main.c(129,33): warning C4133: “函数”: 从“char [6]”到“LPCWSTR”的类型不兼容
-  servo.vcxproj -> D:\vs2022\servo\x64\Debug\servo.exe
