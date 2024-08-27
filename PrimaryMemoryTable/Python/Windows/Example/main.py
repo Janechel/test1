@@ -31,6 +31,7 @@ sync_write_velocity_base_target_acc = [1, 150, 2, 150]  # 同步写多个舵机�
 sync_write_velocity_base_target_dec = [1, 150, 2, 150]  # 同步写多个舵机控速目标减速度
 sync_write_time_base_target_acc = [1, 0, 2, 0]  # 同步写多个舵机控时目标加速度
 sync_write_time_base_target_position_and_moving_time = [1, 3000, 500, 2, 3000, 500]  # 同步写多个舵机控时目标运动位置和运动时间
+sync_write_velocity_base_target_position_and_velocity = [1, 1500, 1800, 2, 1500, 900]  # 同步写多个舵机控速目标位置和运动速度
 
 # 恢复出厂设置
 if FACTORY_RESET_TEST:
@@ -936,6 +937,12 @@ if SYNC_WRITE:
 
     # 设置多个舵机的控速目标位置
     Servo.servo_sync_write_velocity_base_target_position(2, sync_write_velocity_base_target_position, output_buffer,
+                                                         output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    time.sleep(1)
+
+    # 设置多个舵机的控速目标位置和速度
+    Servo.servo_sync_write_velocity_base_target_position_and_velocity(2, sync_write_velocity_base_target_position_and_velocity, output_buffer,
                                                          output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep(1)
