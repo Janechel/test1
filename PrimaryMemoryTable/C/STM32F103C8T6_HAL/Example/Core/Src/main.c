@@ -74,15 +74,7 @@ uint8_t order_buffer[20];
 uint8_t order_len;
 uint8_t receive[20];
 uint16_t analysis_data;
-uint8_t ret; 
-
-uint16_t sync_write_velocity_base_target_position[5] = {1, 0, 2, 0};                    //同步写多个舵机控速目标位置
-uint16_t sync_write_velocity_base_target_velocity[5] = {1, 3600, 2, 3600};              //同步写多个舵机控速目标速度
-uint16_t sync_write_velocity_base_target_acc[5] = {1, 150, 2, 150};                     //同步写多个舵机控速目标加速度
-uint16_t sync_write_velocity_base_target_dec[5] = {1, 150, 2, 150};                     //同步写多个舵机控速目标减速度
-uint16_t sync_write_time_base_target_acc[5] = {1, 0, 2, 0};                             //同步写多个舵机控时目标加速度
-uint16_t sync_write_time_base_target_position_and_moving_time[10] = {1, 3000, 500, 2, 3000, 500};           //同步写多个舵机控时目标运动位置和运动时间
-uint16_t sync_write_velocity_base_target_position_and_velocity[10] = { 1, 1500, 1800, 2, 1500, 1800};              //同步写多个舵机控速目标位置和速度
+uint8_t ret;
 
 
 void initTransmitMode(UART_HandleTypeDef *huart);
@@ -130,6 +122,12 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+	
+	struct servo_sync_parameter servo;
+	
+	servo.id_counts = 2;            //同步写两个舵机
+  servo.id[0] = 1;                //第一个舵机id为1
+  servo.id[1] = 2;                //第二个舵机id为2
 
   /* USER CODE END 2 */
 
@@ -1145,7 +1143,12 @@ int main(void)
 		
 #if SYNC_WRITE_TEST
 		//设置多个舵机的控速目标速度
-		servo_sync_write_velocity_base_target_velocity(2, sync_write_velocity_base_target_velocity, order_buffer,&order_len);
+		
+		//id为1，2的舵机速度分别设置为3600，1800，值和前面的id设置对应
+    servo.velocity[0] = 3600;
+    servo.velocity[1] = 1800;
+		
+		servo_sync_write_velocity_base_target_velocity(servo, order_buffer,&order_len);
 		HAL_HalfDuplex_EnableTransmitter(&huart1);
     HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 		
@@ -1154,7 +1157,12 @@ int main(void)
 
 #if SYNC_WRITE_TEST
 		//设置多个舵机的控速目标加速度
-		servo_sync_write_velocity_base_target_acc(2, sync_write_velocity_base_target_acc, order_buffer,&order_len);
+		
+		//id为1，2的舵机加速度分别设置为150，150，值和前面的id设置对应
+    servo.acc_velocity[0] = 150;          
+    servo.acc_velocity[1] = 150;    
+		
+		servo_sync_write_velocity_base_target_acc(servo, order_buffer,&order_len);
 		HAL_HalfDuplex_EnableTransmitter(&huart1);
     HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 		
@@ -1163,7 +1171,12 @@ int main(void)
 
 #if SYNC_WRITE_TEST
 		//设置多个舵机的控速目标减速度
-		servo_sync_write_velocity_base_target_dec(2, sync_write_velocity_base_target_dec, order_buffer,&order_len);
+		
+		//id为1，2的舵机减速度分别设置为150，150，值和前面的id设置对应
+    servo.dec_velocity[0] = 150;           
+    servo.dec_velocity[1] = 150;    
+		
+		servo_sync_write_velocity_base_target_dec(servo, order_buffer,&order_len);
 		HAL_HalfDuplex_EnableTransmitter(&huart1);
     HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 		
@@ -1172,7 +1185,12 @@ int main(void)
 
 #if SYNC_WRITE_TEST
 		//设置多个舵机的控速目标位置
-		servo_sync_write_velocity_base_target_position(2, sync_write_velocity_base_target_position, order_buffer,&order_len);
+		
+		//id为1，2的舵机运动位置分别设置为0，0，值和前面的id设置对应
+    servo.position[0] = 0;
+    servo.position[1] = 0;
+		
+		servo_sync_write_velocity_base_target_position(servo, order_buffer,&order_len);
 		HAL_HalfDuplex_EnableTransmitter(&huart1);
     HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
 		
@@ -1181,7 +1199,34 @@ int main(void)
 
 #if SYNC_WRITE_TEST
 		//设置多个舵机的控速目标位置和速度
-		servo_sync_write_velocity_base_target_position_and_velocity(2, sync_write_velocity_base_target_position_and_velocity, order_buffer,&order_len);
+		
+		//id为1，2的舵机速度分别设置为1800，3600，位置分别设置为3000，3000
+    servo.velocity[0] = 1800;
+    servo.velocity[1] = 3600;
+    servo.position[0] = 3000;
+    servo.position[1] = 3000;
+		
+		servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer,&order_len);
+		HAL_HalfDuplex_EnableTransmitter(&huart1);
+    HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
+		
+		HAL_Delay(1000);
+#endif
+
+#if SYNC_WRITE_TEST
+		//设置多个舵机的加速度，减速度，速度和位置
+
+    //id为1，2的舵机速度分别设置为3600，3600，位置分别设置为0，0,加速度分别设置为100，100，减速度分别设置为100，100
+    servo.velocity[0] = 3600;
+    servo.velocity[1] = 3600;
+    servo.position[0] = 0;
+    servo.position[1] = 0;
+    servo.acc_velocity[0] = 100;
+    servo.acc_velocity[1] = 100;
+    servo.dec_velocity[0] = 100;
+    servo.dec_velocity[1] = 100;
+	
+		servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer,&order_len);
 		HAL_HalfDuplex_EnableTransmitter(&huart1);
     HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
 		
@@ -1291,7 +1336,12 @@ int main(void)
 
 #if SYNC_WRITE_TEST
 		//设置多个舵机的控时目标加速度等级
-    servo_sync_write_time_base_target_acc(2, sync_write_time_base_target_acc, order_buffer,&order_len);
+		
+		//设置舵机id为1，2的加速度等级分别为0，0
+    servo.acc_velocity_grade[0] = 0;
+    servo.acc_velocity_grade[1] = 0;
+		
+    servo_sync_write_time_base_target_acc(servo, order_buffer,&order_len);
    
     HAL_HalfDuplex_EnableTransmitter(&huart1);
     HAL_UART_Transmit(&huart1, order_buffer, order_len, 20);
@@ -1301,7 +1351,14 @@ int main(void)
 
 #if SYNC_WRITE_TEST
 		//设置多个舵机的控时目标位置和运动时间
-    servo_sync_write_time_base_target_position_and_moving_time(2, sync_write_time_base_target_position_and_moving_time, order_buffer,&order_len);
+		
+		//设置舵机id为1，2的运动位置为3000，3000，运动时间为500ms，1500ms
+    servo.position[0] = 3000;
+    servo.position[1] = 3000;
+    servo.time[0] = 500;
+    servo.time[1] = 1500;
+		
+    servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
    
     HAL_HalfDuplex_EnableTransmitter(&huart1);
     HAL_UART_Transmit(&huart1, order_buffer, order_len, 20);

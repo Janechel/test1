@@ -3,7 +3,7 @@
 
 #define READ_TEST 0                 // 读取舵机数据测试
 #define WRITE_TEST 0                // 写入舵机数据测试
-#define SYNC_WRITE_TEST 0           // 同步写测试
+#define SYNC_WRITE_TEST 1           // 同步写测试
 #define PING_TEST 0                 // PING命令测试
 #define FACTORY_RESET_TEST 0        // 恢复出厂设置测试
 #define PARAMETER_RESET_TEST 0      // 参数重置测试
@@ -86,19 +86,13 @@ void uart_send_buffer(uint8_t *buffer, uint16_t length)
     }
 }
 
+struct servo_sync_parameter servo;
 
 void main()
 {
 	xdata uint8_t order_buffer[20];												                    // 存放生成的指令
 	xdata uint8_t order_buffer_len = 0;										                        // 指令长度
 	xdata uint16_t analysis_data = 0;											                    // 应答包解析出来的数据
-	xdata uint16_t sync_write_velocity_base_target_position[4] = {1, 0, 2, 0};                       // 同步写多个舵机控速目标位置
-	xdata uint16_t sync_write_velocity_base_target_velocity[5] = {1, 3600, 2, 3600};                 // 同步写多个舵机控速目标速度
-	xdata uint16_t sync_write_velocity_base_target_acc[5] = {1, 150, 2, 150};                        // 同步写多个舵机控速目标加速度
-	xdata uint16_t sync_write_velocity_base_target_dec[5] = {1, 150, 2, 150};                        // 同步写多个舵机控速目标减速度
-	xdata uint16_t sync_write_time_base_target_acc[5] = {1, 0, 2, 0};                                // 同步写多个舵机控时目标加速度
-	xdata uint16_t sync_write_time_base_target_position_and_moving_time[10] = {1, 3000, 500, 2, 3000, 500};           // 同步写多个舵机控时目标运动位置和运动时间
-	xdata uint16_t sync_write_velocity_base_target_position_and_velocity[10] = { 1, 1500, 1800, 2, 1500, 1800};              // 同步写多个舵机控速目标位置和速度
 	
 	timer0_init();
 
@@ -1108,7 +1102,12 @@ void main()
 #endif
 
 #if SYNC_WRITE_TEST
-        // 设置ID1舵机的扭矩开关
+
+    servo.id_counts = 2;            //同步写两个舵机
+    servo.id[0] = 1;                //第一个舵机id为1
+    servo.id[1] = 2;                //第二个舵机id为2
+		
+    // 设置ID1舵机的扭矩开关
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1169,32 +1168,76 @@ void main()
 		delay_ms(1000);
 
 		// 设置多个舵机的控速目标加速度
+		
+		// id为1，2的舵机加速度分别设置为150，150，值和前面的id设置对应
+		servo.acc_velocity[0] = 150;          
+		servo.acc_velocity[1] = 150;     
+
 		uart_init();
-		servo_sync_write_velocity_base_target_acc(2, sync_write_velocity_base_target_acc, order_buffer,&order_buffer_len);
+		servo_sync_write_velocity_base_target_acc(servo, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
 		// 设置多个舵机的控速目标减速度
+		
+		// id为1，2的舵机减速度分别设置为150，150，值和前面的id设置对应
+		servo.dec_velocity[0] = 150;           
+		servo.dec_velocity[1] = 150;     
+
 		uart_init();
-		servo_sync_write_velocity_base_target_dec(2, sync_write_velocity_base_target_dec, order_buffer,&order_buffer_len);
+		servo_sync_write_velocity_base_target_dec(servo, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
 		// 设置多个舵机的控速目标速度
+		
+		// id为1，2的舵机速度分别设置为3600，1800，值和前面的id设置对应
+    servo.velocity[0] = 3600;
+    servo.velocity[1] = 1800;
+		
 		uart_init();
-		servo_sync_write_velocity_base_target_velocity(2, sync_write_velocity_base_target_velocity, order_buffer,&order_buffer_len);
+		servo_sync_write_velocity_base_target_velocity(servo, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
 		// 设置多个舵机的控速目标位置
+		
+		// id为1，2的舵机运动位置分别设置为0，0，值和前面的id设置对应
+    servo.position[0] = 0;
+    servo.position[1] = 0;
+		
 		uart_init();
-		servo_sync_write_velocity_base_target_position(2, sync_write_velocity_base_target_position, order_buffer,&order_buffer_len);
+		servo_sync_write_velocity_base_target_position(servo, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 		
 		// 设置多个舵机的控速目标位置和速度
+		
+		//id为1，2的舵机速度分别设置为1800，3600，位置分别设置为3000，3000
+		servo.velocity[0] = 1800;
+		servo.velocity[1] = 3600;
+		servo.position[0] = 3000;
+		servo.position[1] = 3000;
+		
 		uart_init();
-		servo_sync_write_velocity_base_target_position_and_velocity(2, sync_write_velocity_base_target_position_and_velocity, order_buffer,&order_buffer_len);
+		servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer,&order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+		delay_ms(1000);
+		
+		//设置多个舵机的加速度，减速度，速度和位置
+
+    //id为1，2的舵机速度分别设置为3600，3600，位置分别设置为0，0,加速度分别设置为100，100，减速度分别设置为100，100
+    servo.velocity[0] = 3600;
+    servo.velocity[1] = 3600;
+    servo.position[0] = 0;
+    servo.position[1] = 0;
+    servo.acc_velocity[0] = 100;
+    servo.acc_velocity[1] = 100;
+    servo.dec_velocity[0] = 100;
+    servo.dec_velocity[1] = 100;
+
+		uart_init();
+		servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
@@ -1259,14 +1302,26 @@ void main()
 		delay_ms(1000);
 
 		// 设置多个舵机的控时目标加速度等级
+		
+		//设置舵机id为1，2的加速度等级分别为0，0
+		servo.acc_velocity_grade[0] = 0;
+		servo.acc_velocity_grade[1] = 0;
+		
 		uart_init();
-		servo_sync_write_time_base_target_acc(1,sync_write_time_base_target_acc, order_buffer,&order_buffer_len);
+		servo_sync_write_time_base_target_acc(servo, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
 		// 设置多个舵机的控时目标位置和运动时间
+		
+		//设置舵机id为1，2的运动位置为3000，3000，运动时间为500ms，1500ms
+		servo.position[0] = 3000;
+		servo.position[1] = 3000;
+		servo.time[0] = 500;
+		servo.time[1] = 1500;
+		
 		uart_init();
-		servo_sync_write_time_base_target_position_and_moving_time(2, sync_write_time_base_target_position_and_moving_time, order_buffer,&order_buffer_len);
+		servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 #endif
