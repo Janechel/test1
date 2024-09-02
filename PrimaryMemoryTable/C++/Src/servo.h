@@ -93,531 +93,544 @@
 #define PRESENT_CURRENT_L           0x4C    //Present actual current of the Servo.
 #endif
 
-class Servo
+struct servo_sync_parameter
 {
-public:
-    //读命令
-    uint8_t servo_read(uint8_t id, uint8_t address, uint8_t read_data_len, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //写命令
-    uint8_t servo_write(uint8_t id, uint8_t address, uint8_t write_data_len, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //命令打包
-    uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byte_length, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_length);
-
-    //计算校验和
-    static uint8_t get_check(const uint8_t* buffer, uint8_t length);
-
-    //应答包解析
-    uint8_t servo_unpack(uint8_t* response_packet, uint8_t** data_buffer);
-
-    //同步写
-    uint8_t sync_write_data(uint8_t address, uint8_t servo_counts, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //PING
-    uint8_t servo_ping(uint8_t id, uint8_t* output_buffer, uint8_t* len);
-
-    //恢复出厂设置
-    uint8_t servo_factory_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //参数重置
-    uint8_t servo_parameter_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //校正偏移值
-    uint8_t servo_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //重启
-    uint8_t servo_reboot(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //修改指定舵机ID
-    uint8_t servo_modify_known_id(uint8_t id, uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //修改未知舵机ID
-    uint8_t servo_modify_unknown_id(uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的应答延时时间
-    uint8_t servo_set_return_delay_time(uint8_t id, uint8_t response_delay_time, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的状态返回级别
-    uint8_t servo_set_return_level(uint8_t id, uint8_t return_level, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的波特率
-    uint8_t servo_set_baud_rate(uint8_t id, uint8_t baud_rate_number, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的最小位置限制
-    uint8_t servo_set_min_angle_limit(uint8_t id, uint16_t min_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的最大位置限制
-    uint8_t servo_set_max_angle_limit(uint8_t id, uint16_t max_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的温度上限
-    uint8_t servo_set_max_temperature_limit(uint8_t id, uint8_t max_temperature_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的电压上限
-    uint8_t servo_set_max_voltage_limit(uint8_t id, uint8_t max_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的电压下限
-    uint8_t servo_set_min_voltage_limit(uint8_t id, uint8_t min_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的PWM上限
-    uint8_t servo_set_max_pwm_limit(uint8_t id, uint16_t max_pwm_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的电流上限
-    uint8_t servo_set_max_current_limit(uint8_t id, uint16_t max_current_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的电流保护时间
-    uint8_t servo_set_current_shutdown_time(uint8_t id, uint16_t current_shutdown_time, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的正转死区
-    uint8_t servo_set_cw_deadband(uint8_t id, uint8_t cw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的反转死区
-    uint8_t servo_set_ccw_deadband(uint8_t id, uint8_t ccw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的PWM叠加值
-    uint8_t servo_set_pwm_punch(uint8_t id, uint8_t pwm_punch, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的位置控制P增益
-    uint8_t servo_set_position_control_p_gain(uint8_t id, uint16_t position_control_P_gain, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的位置控制I增益
-    uint8_t servo_set_position_control_i_gain(uint8_t id, uint16_t position_control_I_gain, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的位置控制D增益
-    uint8_t servo_set_position_control_d_gain(uint8_t id, uint16_t position_control_D_gain, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的LED报警条件
-    uint8_t servo_set_led_condition(uint8_t id, uint8_t led_condition, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的卸载保护条件
-    uint8_t servo_set_shutdown_conditions(uint8_t id, uint8_t shutdown_conditions, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的控制模式
-    uint8_t servo_set_control_mode(uint8_t id, uint8_t control_mode, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的Flash开关
-    uint8_t servo_set_flash_switch(uint8_t id, uint8_t flash_switch, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的LED开关
-    uint8_t servo_set_led_switch(uint8_t id, uint8_t led_switch, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的扭矩开关
-    uint8_t servo_set_torque_switch(uint8_t id, uint8_t torque_switch, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的目标PWM
-    uint8_t servo_set_target_pwm(uint8_t id, int16_t target_pwm, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的目标电流
-    uint8_t servo_set_target_current(uint8_t id, int16_t target_current, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的控速目标位置
-    uint8_t servo_set_velocity_base_target_position(uint8_t id, uint16_t target_position, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的控速目标速度
-    uint8_t servo_set_velocity_base_target_velocity(uint8_t id, uint16_t target_velocity, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的控速目标加速度
-    uint8_t servo_set_velocity_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的控速目标减速度
-    uint8_t servo_set_velocity_base_target_dec(uint8_t id, uint8_t target_dec, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //brief设置舵机的控时目标加速度等级
-    uint8_t servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置舵机的控时目标位置和目标运行时间
-    uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t target_position, uint16_t moving_time, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的当前电流
-    uint8_t servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的当前位置
-    uint8_t servo_read_present_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的当前速度
-    uint8_t servo_read_present_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的当前规划位置
-    uint8_t servo_read_present_profile_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的当前规划速度
-    uint8_t servo_read_present_profile_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的当前PWM
-    uint8_t servo_read_present_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的当前温度
-    uint8_t servo_read_present_temperature(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的当前输入电压
-    uint8_t servo_read_present_voltage(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的控时目标运行时间
-    uint8_t servo_read_time_base_target_moving_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的控时目标位置
-    uint8_t servo_read_time_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的控时目标加速度等级
-    uint8_t servo_read_time_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的控速目标减速度
-    uint8_t servo_read_velocity_base_target_dec(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的控速目标加速度
-    uint8_t servo_read_velocity_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的控速目标速度
-    uint8_t servo_read_velocity_base_target_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的控速目标位置
-    uint8_t servo_read_velocity_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的目标电流
-    uint8_t servo_read_target_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的目标PWM
-    uint8_t servo_read_target_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的扭矩开关状态
-    uint8_t servo_read_torque_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的LED开关状态
-    uint8_t servo_read_led_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的FLASH开关状态
-    uint8_t servo_read_flash_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的电流校正值
-    uint8_t servo_read_current_offset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的中位校正值
-    uint8_t servo_read_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的控制模式
-    uint8_t servo_read_control_mode(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的卸载保护条件
-    uint8_t servo_read_shutdown_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的LED报警条件
-    uint8_t servo_read_led_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的位置控制D增益
-    uint8_t servo_read_position_control_d_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的位置控制I增益
-    uint8_t servo_read_position_control_i_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的位置控制P增益
-    uint8_t servo_read_position_control_p_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的PWM叠加值
-    uint8_t servo_read_pwm_punch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的反转死区
-    uint8_t servo_read_ccw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的正转死区
-    uint8_t servo_read_cw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的电流保护时间
-    uint8_t servo_read_current_shutdown_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的电流上限
-    uint8_t servo_read_max_current_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的PWM上限
-    uint8_t servo_read_max_pwm_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的电压上限
-    uint8_t servo_read_max_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的电压下限
-    uint8_t servo_read_min_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的温度上限
-    uint8_t servo_read_max_temperature_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的最大位置限制
-    uint8_t servo_read_max_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的最小位置限制
-    uint8_t servo_read_min_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的状态返回级别
-    uint8_t servo_read_return_level(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的应答延迟时间
-    uint8_t servo_read_return_delay_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的波特率编号
-    uint8_t servo_read_baud_rate(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的出厂编号
-    uint8_t servo_read_model_information(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //读取舵机的固件版本号
-    uint8_t servo_read_firmware_version(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置多个舵机的控速目标位置
-    uint8_t servo_sync_write_velocity_base_target_position(uint8_t servo_counts, const uint16_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置多个舵机的控速目标位置和速度
-    uint8_t servo_sync_write_velocity_base_target_position_and_velocity(uint8_t servo_counts, const uint16_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置多个舵机的控速目标速度
-    uint8_t servo_sync_write_velocity_base_target_velocity(uint8_t servo_counts, const uint16_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置多个舵机的控速目标加速度
-    uint8_t servo_sync_write_velocity_base_target_acc(uint8_t servo_counts, const uint16_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置多个舵机的控速目标减速度
-    uint8_t servo_sync_write_velocity_base_target_dec(uint8_t servo_counts, const uint16_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置多个舵机的控时目标加速度等级
-    uint8_t servo_sync_write_time_base_target_acc(uint8_t servo_counts, const uint16_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //设置多个舵机的控时目标位置和运行时间
-    uint8_t servo_sync_write_time_base_target_position_and_moving_time(uint8_t servo_counts, const uint16_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
-
-    //ping命令包的应答包解析
-    uint8_t servo_ping_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //恢复出厂设置指令的应答包解析
-    uint8_t servo_factory_reset_analysis(uint8_t* response_packet);
-
-    //参数重置指令的应答包解析
-    uint8_t servo_parameter_reset_analysis(uint8_t* response_packet);
-
-    //校准偏移值指令的应答包解析
-    uint8_t servo_calibration_analysis(uint8_t* response_packet);
-
-    //设置舵机的应答延迟时间指令的应答包解析
-    uint8_t servo_set_return_delay_time_analysis(uint8_t* response_packet);
-
-    //设置舵机状态返回级别指令的应答包解析
-    uint8_t servo_set_return_level_analysis(uint8_t* response_packet);
-
-    //设置舵机波特率编号指令的应答包解析
-    uint8_t servo_set_baud_rate_analysis(uint8_t* response_packet);
-
-    //设置舵机最小未知限制指令的应答包解析
-    uint8_t servo_set_min_angle_limit_analysis(uint8_t* response_packet);
-
-    //设置舵机最大未知限制指令的应答包解析
-    uint8_t servo_set_max_angle_limit_analysis(uint8_t* response_packet);
-
-    //设置舵机温度上限指令的应答包解析
-    uint8_t servo_set_max_temperature_limit_analysis(uint8_t* response_packet);
-
-    //设置舵机电压上限指令的应答包解析
-    uint8_t servo_set_max_voltage_limit_analysis(uint8_t* response_packet);
-
-    //设置舵机电压下限指令的应答包解析
-    uint8_t servo_set_min_voltage_limit_analysis(uint8_t* response_packet);
-
-    //设置舵机PWM上限指令的应答包解析
-    uint8_t servo_set_max_pwm_limit_analysis(uint8_t* response_packet);
-
-    //设置舵机电流上限指令的应答包解析
-    uint8_t servo_set_max_current_limit_analysis(uint8_t* response_packet);
-
-    //设置舵机电流保护时间指令的应答包解析
-    uint8_t servo_set_current_shutdown_time_analysis(uint8_t* response_packet);
-
-    //设置舵机正转死区指令的应答包解析
-    uint8_t servo_set_cw_deadband_analysis(uint8_t* response_packet);
-
-    //设置舵机反转死区指令的应答包解析
-    uint8_t servo_set_ccw_deadband_analysis(uint8_t* response_packet);
-
-    //设置舵机PWM叠加值指令的应答包解析
-    uint8_t servo_set_pwm_punch_analysis(uint8_t* response_packet);
-
-    //设置舵机位置控制P增益指令的应答包解析
-    uint8_t servo_set_position_control_P_gain_analysis(uint8_t* response_packet);
-
-    //设置舵机位置控制I增益指令的应答包解析
-    uint8_t servo_set_position_control_I_gain_analysis(uint8_t* response_packet);
-
-    //设置舵机位置控制D增益指令的应答包解析
-    uint8_t servo_set_position_control_D_gain_analysis(uint8_t* response_packet);
-
-    //设置舵机LED报警条件指令的应答包解析
-    uint8_t servo_set_led_condition_analysis(uint8_t* response_packet);
-
-    //设置舵机卸载保护条件指令的应答包解析
-    uint8_t servo_set_shutdown_conditions_analysis(uint8_t* response_packet);
-
-    //设置舵机控制模式指令的应答包解析
-    uint8_t servo_set_control_mode_analysis(uint8_t* response_packet);
-
-    //设置舵机FLASH开关状态指令的应答包解析
-    uint8_t servo_set_flash_switch_analysis(uint8_t* response_packet);
-
-    //设置舵机LED开关状态指令的应答包解析
-    uint8_t servo_set_led_switch_analysis(uint8_t* response_packet);
-
-    //设置舵机扭矩开关状态指令的应答包解析
-    uint8_t servo_set_torque_switch_analysis(uint8_t* response_packet);
-
-    //设置舵机目标PWM指令的应答包解析
-    uint8_t servo_set_target_pwm_analysis(uint8_t* response_packet);
-
-    //设置舵机目标电流指令的应答包解析
-    uint8_t servo_set_target_current_analysis(uint8_t* response_packet);
-
-    //设置舵机控速目标位置指令的应答包解析
-    uint8_t servo_set_velocity_base_target_position_analysis(uint8_t* response_packet);
-
-    //设置舵机控速目标速度指令的应答包解析
-    uint8_t servo_set_velocity_base_target_velocity_analysis(uint8_t* response_packet);
-
-    //设置舵机控速目标加速度指令的应答包解析
-    uint8_t servo_set_velocity_base_target_acc_analysis(uint8_t* response_packet);
-
-    //设置舵机控速目标减速度指令的应答包解析
-    uint8_t servo_set_velocity_base_target_dec_analysis(uint8_t* response_packet);
-
-    //设置舵机控时目标加速度指令的应答包解析
-    uint8_t servo_set_time_base_target_acc_analysis(uint8_t* response_packet);
-
-    //设置舵机控时目标位置和运行时间指令的应答包解析
-    uint8_t servo_set_time_base_target_position_and_moving_time_analysis(uint8_t* response_packet);
-
-    //读取舵机的当前电流的指令应答包解析
-    uint8_t servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的当前位置的指令应答包解析
-    uint8_t servo_read_present_position_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的当前速度的指令应答包解析
-    uint8_t servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的当前规划位置的指令应答包解析
-    uint8_t servo_read_present_profile_position_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的当前规划速度的指令应答包解析
-    uint8_t servo_read_present_profile_velocity_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的当前PWM的指令应答包解析
-    uint8_t servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的当前温度的指令应答包解析
-    uint8_t servo_read_present_temperature_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的当前输入电压的指令应答包解析
-    uint8_t servo_read_present_voltage_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的控时目标运行时间的指令应答包解析
-    uint8_t servo_read_time_base_target_moving_time_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的控时目标位置的指令应答包解析
-    uint8_t servo_read_time_base_target_position_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的控时目标加速度等级的指令应答包解析
-    uint8_t servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的控速目标减速度的指令应答包解析
-    uint8_t servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的控速目标加速度的指令应答包解析
-    uint8_t servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的控速目标速度的指令应答包解析
-    uint8_t servo_read_velocity_base_target_velocity_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的控速目标位置的指令应答包解析
-    uint8_t servo_read_velocity_base_target_position_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的目标电流的指令应答包解析
-    uint8_t servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的目标PWM的指令应答包解析
-    uint8_t servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的扭矩开关状态的指令应答包解析
-    uint8_t servo_read_torque_switch_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的LED开关状态的指令应答包解析
-    uint8_t servo_read_led_switch_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的FLASH开关状态的指令应答包解析
-    uint8_t servo_read_flash_switch_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的电流校正值的指令应答包解析
-    uint8_t servo_read_current_offset_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的中位校正值的指令应答包解析
-    uint8_t servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的控制模式的指令应答包解析
-    uint8_t servo_read_control_mode_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的卸载保护条件的指令应答包解析
-    uint8_t servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的LED报警条件的指令应答包解析
-    uint8_t servo_read_led_condition_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的位置控制D增益的指令应答包解析
-    uint8_t servo_read_position_control_d_gain_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的位置控制I增益的指令应答包解析
-    uint8_t servo_read_position_control_i_gain_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的位置控制P增益的指令应答包解析
-    uint8_t servo_read_position_control_p_gain_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的PWM叠加值的指令应答包解析
-    uint8_t servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的反转死区的指令应答包解析
-    uint8_t servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的正转死区的指令应答包解析
-    uint8_t servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的电流保护时间的指令应答包解析
-    uint8_t servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的电流上限的指令应答包解析
-    uint8_t servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的PWM上限的指令应答包解析
-    uint8_t servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的电压上限的指令应答包解析
-    uint8_t servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的电压下限的指令应答包解析
-    uint8_t servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的温度上限的指令应答包解析
-    uint8_t servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的最大位置限制的指令应答包解析
-    uint8_t servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的最小位置限制的指令应答包解析
-    uint8_t servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的状态返回级别的指令应答包解析
-    uint8_t servo_read_return_level_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的应答延迟时间的指令应答包解析
-    uint8_t servo_read_return_delay_time_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的波特率编号的指令应答包解析
-    uint8_t servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的出厂编号的指令应答包解析
-    uint8_t servo_read_model_information_analysis(uint8_t* response_packet, uint16_t* data);
-
-    //读取舵机的固件版本号的指令应答包解析
-    uint8_t servo_read_firmware_version_analysis(uint8_t* response_packet, uint16_t* data);
-
+    uint8_t id_counts;                  //同步写操作舵机的数量
+    uint8_t id[20];                     //同步写操作舵机的id
+    uint16_t position[20];              //舵机位置
+    uint16_t time[20];                  //舵机运行时间
+    uint16_t velocity[20];              //舵机运动速度
+    uint16_t acc_velocity[20];          //舵机运动加速度
+    uint16_t dec_velocity[20];          //舵机运动减速度
+    uint16_t acc_velocity_grade[20];    //舵机控时下的加速度等级
 };
+
+//命令打包
+uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byte_length, const uint8_t* input_buffer,
+    uint8_t* output_buffer, uint8_t* output_length);
+
+//应答包解析
+uint8_t servo_unpack(uint8_t* response_packet, uint8_t** data_buffer);
+
+//PING
+uint8_t servo_ping(uint8_t id, uint8_t* output_buffer, uint8_t* len);
+
+//读命令
+uint8_t servo_read(uint8_t id, uint8_t address, uint8_t read_data_len, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//写命令
+uint8_t servo_write(uint8_t id, uint8_t address, uint8_t write_data_len, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//同步写
+uint8_t sync_write_data(uint8_t address, uint8_t servo_counts, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//恢复出厂设置
+uint8_t servo_factory_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//参数重置
+uint8_t servo_parameter_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//校正偏移值
+uint8_t servo_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//重启
+uint8_t servo_reboot(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//修改指定舵机ID
+uint8_t servo_modify_known_id(uint8_t id, uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//修改未知舵机ID
+uint8_t servo_modify_unknown_id(uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的应答延时时间
+uint8_t servo_set_return_delay_time(uint8_t id, uint8_t response_delay_time, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的状态返回级别
+uint8_t servo_set_return_level(uint8_t id, uint8_t return_level, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的波特率
+uint8_t servo_set_baud_rate(uint8_t id, uint8_t baud_rate_number, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的最小位置限制
+uint8_t servo_set_min_angle_limit(uint8_t id, uint16_t min_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的最大位置限制
+uint8_t servo_set_max_angle_limit(uint8_t id, uint16_t max_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的温度上限
+uint8_t servo_set_max_temperature_limit(uint8_t id, uint8_t max_temperature_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的电压上限
+uint8_t servo_set_max_voltage_limit(uint8_t id, uint8_t max_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的电压下限
+uint8_t servo_set_min_voltage_limit(uint8_t id, uint8_t min_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的PWM上限
+uint8_t servo_set_max_pwm_limit(uint8_t id, uint16_t max_pwm_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的电流上限
+uint8_t servo_set_max_current_limit(uint8_t id, uint16_t max_current_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的电流保护时间
+uint8_t servo_set_current_shutdown_time(uint8_t id, uint16_t current_shutdown_time, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的正转死区
+uint8_t servo_set_cw_deadband(uint8_t id, uint8_t cw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的反转死区
+uint8_t servo_set_ccw_deadband(uint8_t id, uint8_t ccw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的PWM叠加值
+uint8_t servo_set_pwm_punch(uint8_t id, uint8_t pwm_punch, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的位置控制P增益
+uint8_t servo_set_position_control_p_gain(uint8_t id, uint16_t position_control_P_gain, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的位置控制I增益
+uint8_t servo_set_position_control_i_gain(uint8_t id, uint16_t position_control_I_gain, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的位置控制D增益
+uint8_t servo_set_position_control_d_gain(uint8_t id, uint16_t position_control_D_gain, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的LED报警条件
+uint8_t servo_set_led_condition(uint8_t id, uint8_t led_condition, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的卸载保护条件
+uint8_t servo_set_shutdown_conditions(uint8_t id, uint8_t shutdown_conditions, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的控制模式
+uint8_t servo_set_control_mode(uint8_t id, uint8_t control_mode, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的Flash开关
+uint8_t servo_set_flash_switch(uint8_t id, uint8_t flash_switch, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的LED开关
+uint8_t servo_set_led_switch(uint8_t id, uint8_t led_switch, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的扭矩开关
+uint8_t servo_set_torque_switch(uint8_t id, uint8_t torque_switch, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的目标PWM
+uint8_t servo_set_target_pwm(uint8_t id, int16_t target_pwm, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的目标电流
+uint8_t servo_set_target_current(uint8_t id, int16_t target_current, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的控速目标位置
+uint8_t servo_set_velocity_base_target_position(uint8_t id, uint16_t target_position, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的控速目标速度
+uint8_t servo_set_velocity_base_target_velocity(uint8_t id, uint16_t target_velocity, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的控速目标加速度
+uint8_t servo_set_velocity_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的控速目标减速度
+uint8_t servo_set_velocity_base_target_dec(uint8_t id, uint8_t target_dec, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//brief设置舵机的控时目标加速度等级
+uint8_t servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置舵机的控时目标位置和目标运行时间
+uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t target_position, uint16_t moving_time, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的当前电流
+uint8_t servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的当前位置
+
+uint8_t servo_read_present_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的当前速度
+uint8_t servo_read_present_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的当前规划位置
+uint8_t servo_read_present_profile_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的当前规划速度
+uint8_t servo_read_present_profile_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的当前PWM
+uint8_t servo_read_present_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的当前温度
+uint8_t servo_read_present_temperature(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的当前输入电压
+uint8_t servo_read_present_voltage(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的控时目标运行时间
+uint8_t servo_read_time_base_target_moving_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的控时目标位置
+uint8_t servo_read_time_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的控时目标加速度等级
+uint8_t servo_read_time_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的控速目标减速度
+uint8_t servo_read_velocity_base_target_dec(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的控速目标加速度
+uint8_t servo_read_velocity_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的控速目标速度
+uint8_t servo_read_velocity_base_target_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的控速目标位置
+uint8_t servo_read_velocity_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的目标电流
+uint8_t servo_read_target_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的目标PWM
+uint8_t servo_read_target_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的扭矩开关状态
+uint8_t servo_read_torque_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的LED开关状态
+uint8_t servo_read_led_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的FLASH开关状态
+uint8_t servo_read_flash_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的电流校正值
+uint8_t servo_read_current_offset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的中位校正值
+uint8_t servo_read_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的控制模式
+uint8_t servo_read_control_mode(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的卸载保护条件
+uint8_t servo_read_shutdown_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的LED报警条件
+uint8_t servo_read_led_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的位置控制D增益
+uint8_t servo_read_position_control_d_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的位置控制I增益
+uint8_t servo_read_position_control_i_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的位置控制P增益
+uint8_t servo_read_position_control_p_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的PWM叠加值
+uint8_t servo_read_pwm_punch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的反转死区
+uint8_t servo_read_ccw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的正转死区
+uint8_t servo_read_cw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的电流保护时间
+uint8_t servo_read_current_shutdown_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的电流上限
+uint8_t servo_read_max_current_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的PWM上限
+uint8_t servo_read_max_pwm_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的电压上限
+uint8_t servo_read_max_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的电压下限
+uint8_t servo_read_min_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的温度上限
+uint8_t servo_read_max_temperature_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的最大位置限制
+uint8_t servo_read_max_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的最小位置限制
+uint8_t servo_read_min_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的状态返回级别
+uint8_t servo_read_return_level(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的应答延迟时间
+uint8_t servo_read_return_delay_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的波特率编号
+uint8_t servo_read_baud_rate(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的出厂编号
+uint8_t servo_read_model_information(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//读取舵机的固件版本号
+uint8_t servo_read_firmware_version(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置多个舵机的控速目标加速度、减速度、速度和位置
+uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置多个舵机的控速目标位置
+uint8_t servo_sync_write_velocity_base_target_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置多个舵机的控速目标速度
+uint8_t servo_sync_write_velocity_base_target_velocity(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置多个舵机的控速目标位置和速度
+uint8_t servo_sync_write_velocity_base_target_position_and_velocity(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置多个舵机的控速目标加速度
+uint8_t servo_sync_write_velocity_base_target_acc(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置多个舵机的控速目标减速度
+uint8_t servo_sync_write_velocity_base_target_dec(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置多个舵机的控时目标加速度等级
+uint8_t servo_sync_write_time_base_target_acc(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置多个舵机的控时目标位置和运行时间
+uint8_t servo_sync_write_time_base_target_position_and_moving_time(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//ping命令包的应答包解析
+uint8_t servo_ping_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//恢复出厂设置指令的应答包解析
+uint8_t servo_factory_reset_analysis(uint8_t* response_packet);
+
+//参数重置指令的应答包解析
+uint8_t servo_parameter_reset_analysis(uint8_t* response_packet);
+
+//校准偏移值指令的应答包解析
+uint8_t servo_calibration_analysis(uint8_t* response_packet);
+
+//重启指令的应答包解析
+uint8_t servo_reboot_analysis(uint8_t* response_packet);
+
+//设置舵机的应答延迟时间指令的应答包解析
+uint8_t servo_set_return_delay_time_analysis(uint8_t* response_packet);
+
+//设置舵机状态返回级别指令的应答包解析
+uint8_t servo_set_return_level_analysis(uint8_t* response_packet);
+
+//设置舵机波特率编号指令的应答包解析
+uint8_t servo_set_baud_rate_analysis(uint8_t* response_packet);
+
+//设置舵机最小未知限制指令的应答包解析
+uint8_t servo_set_min_angle_limit_analysis(uint8_t* response_packet);
+
+//设置舵机最大未知限制指令的应答包解析
+uint8_t servo_set_max_angle_limit_analysis(uint8_t* response_packet);
+
+//设置舵机温度上限指令的应答包解析
+uint8_t servo_set_max_temperature_limit_analysis(uint8_t* response_packet);
+
+//设置舵机电压上限指令的应答包解析
+uint8_t servo_set_max_voltage_limit_analysis(uint8_t* response_packet);
+
+//设置舵机电压下限指令的应答包解析
+uint8_t servo_set_min_voltage_limit_analysis(uint8_t* response_packet);
+
+//设置舵机PWM上限指令的应答包解析
+uint8_t servo_set_max_pwm_limit_analysis(uint8_t* response_packet);
+
+//设置舵机电流上限指令的应答包解析
+uint8_t servo_set_max_current_limit_analysis(uint8_t* response_packet);
+
+//设置舵机电流保护时间指令的应答包解析
+uint8_t servo_set_current_shutdown_time_analysis(uint8_t* response_packet);
+
+//设置舵机正转死区指令的应答包解析
+uint8_t servo_set_cw_deadband_analysis(uint8_t* response_packet);
+
+//设置舵机反转死区指令的应答包解析
+uint8_t servo_set_ccw_deadband_analysis(uint8_t* response_packet);
+
+//设置舵机PWM叠加值指令的应答包解析
+uint8_t servo_set_pwm_punch_analysis(uint8_t* response_packet);
+
+//设置舵机位置控制P增益指令的应答包解析
+uint8_t servo_set_position_control_p_gain_analysis(uint8_t* response_packet);
+
+//设置舵机位置控制I增益指令的应答包解析
+uint8_t servo_set_position_control_i_gain_analysis(uint8_t* response_packet);
+
+//设置舵机位置控制D增益指令的应答包解析
+uint8_t servo_set_position_control_d_gain_analysis(uint8_t* response_packet);
+
+//设置舵机LED报警条件指令的应答包解析
+uint8_t servo_set_led_condition_analysis(uint8_t* response_packet);
+
+//设置舵机卸载保护条件指令的应答包解析
+uint8_t servo_set_shutdown_conditions_analysis(uint8_t* response_packet);
+
+//设置舵机控制模式指令的应答包解析
+uint8_t servo_set_control_mode_analysis(uint8_t* response_packet);
+
+//设置舵机FLASH开关状态指令的应答包解析
+uint8_t servo_set_flash_switch_analysis(uint8_t* response_packet);
+
+//设置舵机LED开关状态指令的应答包解析
+uint8_t servo_set_led_switch_analysis(uint8_t* response_packet);
+
+//设置舵机扭矩开关状态指令的应答包解析
+uint8_t servo_set_torque_switch_analysis(uint8_t* response_packet);
+
+//设置舵机目标PWM指令的应答包解析
+uint8_t servo_set_target_pwm_analysis(uint8_t* response_packet);
+
+//设置舵机目标电流指令的应答包解析
+uint8_t servo_set_target_current_analysis(uint8_t* response_packet);
+
+//设置舵机控速目标位置指令的应答包解析
+uint8_t servo_set_velocity_base_target_position_analysis(uint8_t* response_packet);
+
+//设置舵机控速目标速度指令的应答包解析
+uint8_t servo_set_velocity_base_target_velocity_analysis(uint8_t* response_packet);
+
+//设置舵机控速目标加速度指令的应答包解析
+uint8_t servo_set_velocity_base_target_acc_analysis(uint8_t* response_packet);
+
+//设置舵机控速目标减速度指令的应答包解析
+uint8_t servo_set_velocity_base_target_dec_analysis(uint8_t* response_packet);
+
+//设置舵机控时目标加速度指令的应答包解析
+uint8_t servo_set_time_base_target_acc_analysis(uint8_t* response_packet);
+
+//设置舵机控时目标位置和运行时间指令的应答包解析
+uint8_t servo_set_time_base_target_position_and_moving_time_analysis(uint8_t* response_packet);
+
+//读取舵机的当前电流的指令应答包解析
+uint8_t servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的当前位置的指令应答包解析
+uint8_t servo_read_present_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的当前速度的指令应答包解析
+uint8_t servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的当前规划位置的指令应答包解析
+uint8_t servo_read_present_profile_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的当前规划速度的指令应答包解析
+uint8_t servo_read_present_profile_velocity_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的当前PWM的指令应答包解析
+uint8_t servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的当前温度的指令应答包解析
+uint8_t servo_read_present_temperature_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的当前输入电压的指令应答包解析
+uint8_t servo_read_present_voltage_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的控时目标运行时间的指令应答包解析
+uint8_t servo_read_time_base_target_moving_time_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的控时目标位置的指令应答包解析
+uint8_t servo_read_time_base_target_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的控时目标加速度等级的指令应答包解析
+uint8_t servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的控速目标减速度的指令应答包解析
+uint8_t servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的控速目标加速度的指令应答包解析
+uint8_t servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的控速目标速度的指令应答包解析
+uint8_t servo_read_velocity_base_target_velocity_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的控速目标位置的指令应答包解析
+uint8_t servo_read_velocity_base_target_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的目标电流的指令应答包解析
+uint8_t servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的目标PWM的指令应答包解析
+uint8_t servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的扭矩开关状态的指令应答包解析
+uint8_t servo_read_torque_switch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的LED开关状态的指令应答包解析
+uint8_t servo_read_led_switch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的FLASH开关状态的指令应答包解析
+uint8_t servo_read_flash_switch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的电流校正值的指令应答包解析
+uint8_t servo_read_current_offset_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的中位校正值的指令应答包解析
+uint8_t servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的控制模式的指令应答包解析
+uint8_t servo_read_control_mode_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的卸载保护条件的指令应答包解析
+uint8_t servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的LED报警条件的指令应答包解析
+uint8_t servo_read_led_condition_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的位置控制D增益的指令应答包解析
+uint8_t servo_read_position_control_d_gain_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的位置控制I增益的指令应答包解析
+uint8_t servo_read_position_control_i_gain_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的位置控制P增益的指令应答包解析
+uint8_t servo_read_position_control_p_gain_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的PWM叠加值的指令应答包解析
+uint8_t servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的反转死区的指令应答包解析
+uint8_t servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的正转死区的指令应答包解析
+uint8_t servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的电流保护时间的指令应答包解析
+uint8_t servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的电流上限的指令应答包解析
+uint8_t servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的PWM上限的指令应答包解析
+uint8_t servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的电压上限的指令应答包解析
+uint8_t servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的电压下限的指令应答包解析
+uint8_t servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的温度上限的指令应答包解析
+uint8_t servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的最大位置限制的指令应答包解析
+uint8_t servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的最小位置限制的指令应答包解析
+uint8_t servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的状态返回级别的指令应答包解析
+uint8_t servo_read_return_level_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的应答延迟时间的指令应答包解析
+uint8_t servo_read_return_delay_time_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的波特率编号的指令应答包解析
+uint8_t servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的出厂编号的指令应答包解析
+uint8_t servo_read_model_information_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
+//读取舵机的固件版本号的指令应答包解析
+uint8_t servo_read_firmware_version_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+
 
 #endif
