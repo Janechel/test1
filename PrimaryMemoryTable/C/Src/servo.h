@@ -2,7 +2,7 @@
 #define C_SERVO_H
 
 #define MAX_SERVERS 20              //最大同步写舵机数量
-#define PRINTF_ENABLE 0             //打印输出使能
+#define PRINTF_ENABLE 1             //打印输出使能
 
 #if PRINTF_ENABLE
 #define PRINTF printf
@@ -14,6 +14,18 @@
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
 typedef short int16_t;
+
+struct servo_sync_parameter
+{
+    uint8_t id_counts;                  //同步写操作舵机的数量
+    uint8_t id[20];                     //同步写操作舵机的id
+    uint16_t position[20];              //舵机位置
+    uint16_t time[20];                  //舵机运行时间
+    uint16_t velocity[20];              //舵机运动速度
+    uint16_t acc_velocity[20];          //舵机运动加速度
+    uint16_t dec_velocity[20];          //舵机运动减速度
+    uint16_t acc_velocity_grade[20];    //舵机控时下的加速度等级
+};
 
 //Basic instruction types
 #define PING                0x01    //Used to obtain Status Packet.
@@ -359,26 +371,29 @@ uint8_t servo_read_model_information(uint8_t id, uint8_t *output_buffer, uint8_t
 //读取舵机的固件版本号
 uint8_t servo_read_firmware_version(uint8_t id, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
+//设置多个舵机的控速目标加速度、减速度、速度和位置
+uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
 //设置多个舵机的控速目标位置
-uint8_t servo_sync_write_velocity_base_target_position(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len);
+uint8_t servo_sync_write_velocity_base_target_position(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
 //设置多个舵机的控速目标速度
-uint8_t servo_sync_write_velocity_base_target_velocity(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len);
+uint8_t servo_sync_write_velocity_base_target_velocity(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
 //设置多个舵机的控速目标位置和速度
-uint8_t servo_sync_write_velocity_base_target_position_and_velocity(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len);
+uint8_t servo_sync_write_velocity_base_target_position_and_velocity(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
 //设置多个舵机的控速目标加速度
-uint8_t servo_sync_write_velocity_base_target_acc(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len);
+uint8_t servo_sync_write_velocity_base_target_acc(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
 //设置多个舵机的控速目标减速度
-uint8_t servo_sync_write_velocity_base_target_dec(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len);
+uint8_t servo_sync_write_velocity_base_target_dec(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
 //设置多个舵机的控时目标加速度等级
-uint8_t servo_sync_write_time_base_target_acc(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len);
+uint8_t servo_sync_write_time_base_target_acc(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
 //设置多个舵机的控时目标位置和运行时间
-uint8_t servo_sync_write_time_base_target_position_and_moving_time(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len);
+uint8_t servo_sync_write_time_base_target_position_and_moving_time(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
 //ping命令包的应答包解析
 uint8_t servo_ping_analysis(uint8_t *response_packet, uint16_t *analysis_data);

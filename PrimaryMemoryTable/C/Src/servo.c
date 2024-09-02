@@ -1419,84 +1419,111 @@ uint8_t servo_read_firmware_version(uint8_t id, uint8_t *output_buffer, uint8_t 
 }
 
 /**
- * @brief 设置多个舵机的控速目标位置
- * @param servo_counts 舵机数量
- * @param input_buffer 命令包参数数据，格式为{ID，位置，ID，位置，···}
+ * @brief 设置多个舵机的控速目标加速度、减速度、速度和位置
+ * @param servo 舵机修改结构体
  * @param output_buffer 用于存放指令包的输出缓冲区的指针
  * @param output_buffer_len 指令包的长度
  * @return 执行结果，成功或者错误标志
  */
-uint8_t servo_sync_write_velocity_base_target_position(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len)
+uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+{
+    uint8_t i = 0;
+    uint8_t parameter[MAX_SERVERS * 6 + 2 + MAX_SERVERS];
+
+    parameter[0] = VELOCITY_BASE_TARGET_POSITION_L;
+    parameter[1] = 6;
+    for (i = 0; i < servo.id_counts; i++)
+    {
+        parameter[2 + i * 7] = servo.id[i];
+        parameter[3 + i * 7] = servo.position[i] & 0xff;
+        parameter[4 + i * 7] = (servo.position[i] >> 8) & 0xff;
+        parameter[5 + i * 7] = servo.velocity[i] & 0xff;
+        parameter[6 + i * 7] = (servo.velocity[i] >> 8) & 0xff;
+        parameter[7 + i * 7] = servo.acc_velocity[i];
+        parameter[8 + i * 7] = servo.dec_velocity[i];
+    }
+
+    sync_write_data(VELOCITY_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
+
+    return SUCCESS;
+}
+
+/**
+ * @brief 设置多个舵机的控速目标位置
+ * @param servo 舵机修改结构体
+ * @param output_buffer 用于存放指令包的输出缓冲区的指针
+ * @param output_buffer_len 指令包的长度
+ * @return 执行结果，成功或者错误标志
+ */
+uint8_t servo_sync_write_velocity_base_target_position(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len)
 {
     uint8_t i = 0;
     uint8_t parameter[MAX_SERVERS * 2 + 2 + MAX_SERVERS];
 
     parameter[0] = VELOCITY_BASE_TARGET_POSITION_L;
     parameter[1] = 2;
-    for(i = 0; i < servo_counts; i++)
+    for(i = 0; i < servo.id_counts; i++)
     {
-        parameter[i + 2 + i * 2] = input_buffer[2 * i];
-        parameter[i + 3 + i * 2] = input_buffer[2 * i + 1] & 0xff;
-        parameter[i + 4 + i * 2] = (input_buffer[2 * i + 1] >> 8 ) & 0xff;
+        parameter[2 + i * 3] = servo.id[i];
+        parameter[3 + i * 3] = servo.position[i] & 0xff;
+        parameter[4 + i * 3] = (servo.position[i] >> 8 ) & 0xff;
     }
 
-    sync_write_data( VELOCITY_BASE_TARGET_POSITION_L, servo_counts, parameter, output_buffer, output_buffer_len);
+    sync_write_data( VELOCITY_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     return SUCCESS;
 }
 
 /**
  * @brief 设置多个舵机的控速目标速度
- * @param servo_counts 舵机数量
- * @param input_buffer 命令包参数数据，格式为{ID，速度，ID，速度，···}
+ * @param servo 舵机修改结构体
  * @param output_buffer 用于存放指令包的输出缓冲区的指针
  * @param output_buffer_len 指令包的长度
  * @return 执行结果，成功或者错误标志
  */
-uint8_t servo_sync_write_velocity_base_target_velocity(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len)
+uint8_t servo_sync_write_velocity_base_target_velocity(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len)
 {
     uint8_t i = 0;
     uint8_t parameter[MAX_SERVERS * 2 + 2 + MAX_SERVERS];
 
     parameter[0] = VELOCITY_BASE_TARGET_VELOCITY_L;
     parameter[1] = 2;
-    for(i = 0; i < servo_counts; i++)
+    for(i = 0; i < servo.id_counts; i++)
     {
-        parameter[i + 2 + i * 2] = input_buffer[2 * i];
-        parameter[i + 3 + i * 2] = input_buffer[2 * i + 1] & 0xff;
-        parameter[i + 4 + i * 2] = (input_buffer[2 * i + 1] >> 8 ) & 0xff;
+        parameter[2 + i * 3] = servo.id[i];
+        parameter[3 + i * 3] = servo.velocity[i] & 0xff;
+        parameter[4 + i * 3] = (servo.velocity[i] >> 8 ) & 0xff;
     }
 
-    sync_write_data( VELOCITY_BASE_TARGET_VELOCITY_L, servo_counts, parameter, output_buffer, output_buffer_len);
+    sync_write_data( VELOCITY_BASE_TARGET_VELOCITY_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     return SUCCESS;
 }
 
 /**
  * @brief 设置多个舵机的控速目标位置和速度
- * @param servo_counts 舵机数量
- * @param input_buffer 命令包参数数据，格式为{ID，位置，速度，ID，位置，速度，···}
+ * @param servo 舵机修改结构体
  * @param output_buffer 用于存放指令包的输出缓冲区的指针
  * @param output_buffer_len 指令包的长度
  * @return 执行结果，成功或者错误标志
  */
-uint8_t servo_sync_write_velocity_base_target_position_and_velocity(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len)
+uint8_t servo_sync_write_velocity_base_target_position_and_velocity(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len)
 {
     uint8_t i = 0;
     uint8_t parameter[MAX_SERVERS * 4 + 2 + MAX_SERVERS];
 
     parameter[0] = VELOCITY_BASE_TARGET_POSITION_L;
     parameter[1] = 4;
-    for(i = 0; i < servo_counts; i++)
+    for(i = 0; i < servo.id_counts; i++)
     {
-        parameter[i + 2 + i * 4] = input_buffer[3 * i];
-        parameter[i + 3 + i * 4] = input_buffer[3 * i + 1] & 0xff;
-        parameter[i + 4 + i * 4] = (input_buffer[3 * i + 1] >> 8 ) & 0xff;
-        parameter[i + 5 + i * 4] = input_buffer[3 * i + 2] & 0xff;
-        parameter[i + 6 + i * 4] = (input_buffer[3 * i + 2] >> 8 ) & 0xff;
+        parameter[2 + i * 5] = servo.id[i];
+        parameter[3 + i * 5] = servo.position[i] & 0xff;
+        parameter[4 + i * 5] = (servo.position[i] >> 8 ) & 0xff;
+        parameter[5 + i * 5] = servo.velocity[i] & 0xff;
+        parameter[6 + i * 5] = (servo.velocity[i] >> 8 ) & 0xff;
     }
 
-    sync_write_data( VELOCITY_BASE_TARGET_POSITION_L, servo_counts, parameter, output_buffer, output_buffer_len);
+    sync_write_data( VELOCITY_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     return SUCCESS;
 
@@ -1504,107 +1531,103 @@ uint8_t servo_sync_write_velocity_base_target_position_and_velocity(uint8_t serv
 
 /**
  * @brief 设置多个舵机的控速目标加速度
- * @param servo_counts 舵机数量
- * @param input_buffer 命令包参数数据，格式为{ID，加速度，ID，加速度，···}
+ * @param servo 舵机修改结构体
  * @param output_buffer 用于存放指令包的输出缓冲区的指针
  * @param output_buffer_len 指令包的长度
  * @return 执行结果，成功或者错误标志
  */
-uint8_t servo_sync_write_velocity_base_target_acc(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len)
+uint8_t servo_sync_write_velocity_base_target_acc(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len)
 {
     uint8_t i = 0;
     uint8_t parameter[MAX_SERVERS + 2 + MAX_SERVERS];
 
     parameter[0] = VELOCITY_BASE_TARGET_ACC;
     parameter[1] = 1;
-    for(i = 0; i < servo_counts; i++)
+    for(i = 0; i < servo.id_counts; i++)
     {
-        parameter[i * 2 + 2] = input_buffer[2 * i];
-        parameter[i * 2 + 3] = input_buffer[2 * i + 1];
+        parameter[2 + i * 2] = servo.id[i];
+        parameter[3 + i * 2] = servo.acc_velocity[i];
     }
 
-    sync_write_data( VELOCITY_BASE_TARGET_ACC, servo_counts, parameter, output_buffer, output_buffer_len);
+    sync_write_data( VELOCITY_BASE_TARGET_ACC, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     return SUCCESS;
 }
 
 /**
  * @brief 设置多个舵机的控速目标减速度
- * @param servo_counts 舵机数量
- * @param input_buffer 命令包参数数据，格式为{ID，减速度，ID，减速度，···}
+ * @param servo 舵机修改结构体
  * @param output_buffer 用于存放指令包的输出缓冲区的指针
  * @param output_buffer_len 指令包的长度
  * @return 执行结果，成功或者错误标志
  */
-uint8_t servo_sync_write_velocity_base_target_dec(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len)
+uint8_t servo_sync_write_velocity_base_target_dec(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len)
 {
     uint8_t i = 0;
     uint8_t parameter[MAX_SERVERS + 2 + MAX_SERVERS];
 
     parameter[0] = VELOCITY_BASE_TARGET_DEC;
     parameter[1] = 1;
-    for(i = 0; i < servo_counts; i++)
+    for(i = 0; i < servo.id_counts; i++)
     {
-        parameter[i * 2 + 2] = input_buffer[2 * i];
-        parameter[i * 2 + 3] = input_buffer[2 * i + 1];
+        parameter[2 + i * 2] = servo.id[i];
+        parameter[3 + i * 2] = servo.dec_velocity[i];
     }
 
-    sync_write_data( VELOCITY_BASE_TARGET_DEC, servo_counts, parameter, output_buffer, output_buffer_len);
+    sync_write_data( VELOCITY_BASE_TARGET_DEC, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     return SUCCESS;
 }
 
 /**
  * @brief 设置多个舵机的控时目标加速度等级
- * @param servo_counts 等级数量
- * @param input_buffer 命令包参数数据，格式为{ID，加速度等级，ID，加速度等级，···}
+ * @param servo 舵机修改结构体
  * @param output_buffer 用于存放指令包的输出缓冲区的指针
  * @param output_buffer_len 指令包的长度
  * @return 执行结果，成功或者错误标志
  */
-uint8_t servo_sync_write_time_base_target_acc(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len)
+uint8_t servo_sync_write_time_base_target_acc(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len)
 {
     uint8_t i = 0;
     uint8_t parameter[MAX_SERVERS + 2 + MAX_SERVERS];
 
     parameter[0] = TIME_BASE_TARGET_ACC;
     parameter[1] = 1;
-    for(i = 0; i < servo_counts; i++)
+    for(i = 0; i < servo.id_counts; i++)
     {
-        parameter[i * 2 + 2] = input_buffer[2 * i];
-        parameter[i * 2 + 3] = input_buffer[2 * i + 1];
+        parameter[2 + i * 2] = servo.id[i];
+        parameter[3 + i * 2] = servo.acc_velocity_grade[i];
     }
 
-    sync_write_data( TIME_BASE_TARGET_ACC, servo_counts, parameter, output_buffer, output_buffer_len);
+    sync_write_data( TIME_BASE_TARGET_ACC, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     return SUCCESS;
 }
 
 /**
  * @brief 设置多个舵机的控时目标位置和运动时间
- * @param servo_counts 舵机数量
- * @param input_buffer 命令包参数数据，格式为{ID，位置，时间，ID，位置，时间，···}
+ * @param servo 舵机修改结构体
  * @param output_buffer 用于存放指令包的输出缓冲区的指针
  * @param output_buffer_len 指令包的长度
  * @return 执行结果，成功或者错误标志
  */
-uint8_t servo_sync_write_time_base_target_position_and_moving_time(uint8_t servo_counts, const uint16_t *input_buffer, uint8_t *output_buffer, uint8_t *output_buffer_len)
+uint8_t servo_sync_write_time_base_target_position_and_moving_time(struct servo_sync_parameter servo, uint8_t *output_buffer, uint8_t *output_buffer_len)
 {
     uint8_t i = 0;
     uint8_t parameter[MAX_SERVERS * 4 + 2 + MAX_SERVERS];
 
     parameter[0] = TIME_BASE_TARGET_POSITION_L;
     parameter[1] = 4;
-    for(i = 0; i < servo_counts; i++)
+    for(i = 0; i < servo.id_counts; i++)
     {
-        parameter[i + 2 + i * 4] = input_buffer[3 * i];
-        parameter[i + 3 + i * 4] = input_buffer[3 * i + 1] & 0xff;
-        parameter[i + 4 + i * 4] = (input_buffer[3 * i + 1] >> 8 ) & 0xff;
-        parameter[i + 5 + i * 4] = input_buffer[3 * i + 2] & 0xff;
-        parameter[i + 6 + i * 4] = (input_buffer[3 * i + 2] >> 8 ) & 0xff;
+        parameter[2 + i * 5] = servo.id[i];
+        parameter[3 + i * 5] = servo.position[i] & 0xff;
+        parameter[4 + i * 5] = (servo.position[i] >> 8 ) & 0xff;
+        parameter[5 + i * 5] = servo.time[i] & 0xff;
+        parameter[6 + i * 5] = (servo.time[i] >> 8 ) & 0xff;
     }
 
-    sync_write_data( TIME_BASE_TARGET_POSITION_L, servo_counts, parameter, output_buffer, output_buffer_len);
+    sync_write_data( TIME_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     return SUCCESS;
 }
