@@ -3,7 +3,7 @@
 
 #define READ_TEST 0                 // 读取舵机数据测试
 #define WRITE_TEST 0                // 写入舵机数据测试
-#define SYNC_WRITE_TEST 1           // 同步写测试
+#define SYNC_WRITE_TEST 0          // 同步写测试
 #define PING_TEST 0                 // PING命令测试
 #define FACTORY_RESET_TEST 0        // 恢复出厂设置测试
 #define PARAMETER_RESET_TEST 0      // 参数重置测试
