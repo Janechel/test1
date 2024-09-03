@@ -13,19 +13,12 @@ SYNC_WRITE = 0  # 同步写测试
 MODIFY_ID = 0  # 修改舵机ID测试
 MODIFY_UNKNOWN_ID = 0  # 修改未知ID舵机ID测试
 
-output_buffer = bytearray(20)  # 存放生成的指令
+output_buffer = bytearray(40)  # 存放生成的指令
 output_buffer_len = [0]  # 指令长度
-receive_data = bytearray(20)  # 存放接收的应答包
+receive_data = bytearray(40)  # 存放接收的应答包
 receive_data_len = 0  # 接收数据的长度
 analysis_data = [0]  # 应答包解析出来的数据
-sync_write_velocity_base_target_position = [1, 0, 2, 0]  # 同步写多个舵机控速目标位置
-sync_write_velocity_base_target_velocity = [1, 3600, 2, 3600]  # 同步写多个舵机控速目标速度
-sync_write_velocity_base_target_acc = [1, 150, 2, 150]  # 同步写多个舵机控速目标加速度
-sync_write_velocity_base_target_dec = [1, 150, 2, 150]  # 同步写多个舵机控速目标减速度
-sync_write_time_base_target_acc = [1, 0, 2, 0]  # 同步写多个舵机控时目标加速度
-sync_write_time_base_target_position_and_moving_time = [1, 3000, 500, 2, 3000, 500]  # 同步写多个舵机控时目标运动位置和运动时间
-sync_write_velocity_base_target_position_and_velocity = [1, 1500, 1800, 2, 1500, 900]  # 同步写多个舵机控速目标位置和速度
-
+servo_sync_parameter = Servo_Sync_Parameter()  # 创建同步写内存表类
 
 # 配置串口2 (UART2)
 uart2 = UART(2, baudrate=1000000, tx=17, rx=16)
@@ -954,6 +947,15 @@ while True:
 
     # 同步写测试
     if SYNC_WRITE:
+        # 同步写操作两个舵机
+        servo_sync_parameter.id_counts = 2
+
+        #第一个舵机id为1
+        servo_sync_parameter.id[0] = 1
+
+        #第一个舵机id为2
+        servo_sync_parameter.id[1] = 2
+    
         # 设置ID1舵机的扭矩开关
         Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -1015,39 +1017,84 @@ while True:
         time.sleep(1)
 
         # 设置多个舵机的控速目标加速度
-        Servo.servo_sync_write_velocity_base_target_acc(2, sync_write_velocity_base_target_acc, output_buffer,
+        
+        # id为1，2的舵机加速度分别设置为150，150，值和前面的id设置对应
+        servo_sync_parameter.acc_velocity[0] = 150;          
+        servo_sync_parameter.acc_velocity[1] = 150;
+    
+        Servo.servo_sync_write_velocity_base_target_acc(servo_sync_parameter, output_buffer,
                                                         output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         time.sleep(1)
 
         # 设置多个舵机的控速目标减速度
-        Servo.servo_sync_write_velocity_base_target_dec(2, sync_write_velocity_base_target_dec, output_buffer,
+        
+        # id为1，2的舵机减速度分别设置为150，150，值和前面的id设置对应
+        servo_sync_parameter.dec_velocity[0] = 150;           
+        servo_sync_parameter.dec_velocity[1] = 150;
+    
+        Servo.servo_sync_write_velocity_base_target_dec(servo_sync_parameter, output_buffer,
                                                         output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         time.sleep(1)
 
         # 设置多个舵机的控速目标速度
-        Servo.servo_sync_write_velocity_base_target_velocity(2, sync_write_velocity_base_target_velocity, output_buffer,
+        
+        # id为1，2的舵机速度分别设置为3600，1800，值和前面的id设置对应
+        servo_sync_parameter.velocity[0] = 3600;
+        servo_sync_parameter.velocity[1] = 1800;
+    
+        Servo.servo_sync_write_velocity_base_target_velocity(servo_sync_parameter, output_buffer,
                                                              output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         time.sleep(1)
 
         # 设置多个舵机的控速目标位置
-        Servo.servo_sync_write_velocity_base_target_position(2, sync_write_velocity_base_target_position, output_buffer,
+        
+        # id为1，2的舵机运动位置分别设置为0，0，值和前面的id设置对应
+        servo_sync_parameter.position[0] = 0;
+        servo_sync_parameter.position[1] = 0;
+    
+        Servo.servo_sync_write_velocity_base_target_position(servo_sync_parameter, output_buffer,
                                                              output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         time.sleep(1)
 
         # 设置多个舵机的控速目标位置和速度
-        Servo.servo_sync_write_velocity_base_target_position_and_velocity(2,sync_write_velocity_base_target_position_and_velocity, output_buffer, output_buffer_len)
+        
+        # id为1，2的舵机速度分别设置为1800，3600，位置分别设置为3000，3000
+        servo_sync_parameter.velocity[0] = 1800;
+        servo_sync_parameter.velocity[1] = 3600;
+        servo_sync_parameter.position[0] = 3000;
+        servo_sync_parameter.position[1] = 3000;
+    
+        Servo.servo_sync_write_velocity_base_target_position_and_velocity(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         time.sleep(1)
+        
+        # 设置多个舵机的加速度，减速度，速度和位置
 
+        # id为1，2的舵机速度分别设置为3600，3600，位置分别设置为0，0,加速度分别设置为100，100，减速度分别设置为100，100
+        servo_sync_parameter.velocity[0] = 3600;
+        servo_sync_parameter.velocity[1] = 3600;
+        servo_sync_parameter.position[0] = 0;
+        servo_sync_parameter.position[1] = 0;
+        servo_sync_parameter.acc_velocity[0] = 100;
+        servo_sync_parameter.acc_velocity[1] = 100;
+        servo_sync_parameter.dec_velocity[0] = 100;
+        servo_sync_parameter.dec_velocity[1] = 100;
+        
+        Servo.servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter, output_buffer, output_buffer_len)
+        uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        time.sleep_ms(1)
+        time.sleep(1)
+        
+    
         # 设置ID1舵机的扭矩开关
         Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -1109,13 +1156,25 @@ while True:
         time.sleep(1)
 
         # 设置多个舵机的控时目标加速度等级
-        Servo.servo_sync_write_time_base_target_acc(2, sync_write_time_base_target_acc, output_buffer, output_buffer_len)
+        
+        # 设置舵机id为1，2的加速度等级分别为0，0
+        servo_sync_parameter.acc_velocity_grade[0] = 0;
+        servo_sync_parameter.acc_velocity_grade[1] = 0;
+    
+        Servo.servo_sync_write_time_base_target_acc(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         time.sleep(1)
 
         # 设置多个舵机的控时目标位置和运动时间
-        Servo.servo_sync_write_time_base_target_position_and_moving_time(2, sync_write_time_base_target_position_and_moving_time, output_buffer, output_buffer_len)
+        
+        # 设置舵机id为1，2的运动位置为3000，3000，运动时间为500ms，1500ms
+        servo_sync_parameter.position[0] = 3000;
+        servo_sync_parameter.position[1] = 3000;
+        servo_sync_parameter.time[0] = 500;
+        servo_sync_parameter.time[1] = 1500;
+    
+        Servo.servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         time.sleep(1)

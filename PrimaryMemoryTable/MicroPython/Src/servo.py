@@ -60,6 +60,21 @@ class State:
     # 指令包数据帧格式不对
     UNPACK_ERROR = 0x80
 
+class Servo_Sync_Parameter:
+    """
+    这个class存放的是同步写指令的参数
+    """
+
+    def __init__(self):
+        self.id_counts = 0                    # 同步写操作舵机的数量
+        self.id = [0] * 20                    # 同步写操作舵机的id
+        self.position = [0] * 20              # 舵机位置
+        self.time = [0] * 20                  # 舵机运行时间
+        self.velocity = [0] * 20              # 舵机运动速度
+        self.acc_velocity = [0] * 20          # 舵机运动加速度
+        self.dec_velocity = [0] * 20          # 舵机运动减速度
+        self.acc_velocity_grade = [0] * 20    # 舵机控时下的加速度等级
+
 
 class Address:
     """
@@ -226,7 +241,7 @@ class Servo:
         return total
 
     @staticmethod
-    def servo_pack(servo_id: int, instruction: int, address: int, byte_length: int, input_buffer: list | None,
+    def servo_pack(servo_id: int, instruction: int, address: int, byte_length: int, input_buffer: list,
                    output_buffer: list, output_length: list) -> int:
         """
         生成指令数据
@@ -296,12 +311,12 @@ class Servo:
         return State.SUCCESS
 
     @staticmethod
-    def servo_unpack(response_packet: bytearray | None, data_buffer: list | None) -> int:
+    def servo_unpack(response_packet: bytearray, data_buffer: list) -> int:
         """
         解析应答包
         :param response_packet: 应答包数据
         :param data_buffer: 从应答包中解析出来的参数数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
 
         length = response_packet[3]
@@ -343,10 +358,10 @@ class Servo:
         生成同步写指令包
         :param address: 要写入的存储器地址
         :param servo_counts: 要操作的舵机数量
-        :param input_buffer: 写入的数据 
+        :param input_buffer: 写入的数据
         :param output_buffer: 用于存放指令包的输出缓冲区的指针
         :param output_buffer_len: 指令包的长度
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
 
         Servo.servo_pack(0xfe, Instruction.SYNC_WRITE, address, servo_counts, input_buffer, output_buffer,
@@ -359,12 +374,12 @@ class Servo:
         """
         写指令包的生成
         :param servo_id: 舵机ID
-        :param address: 要写入的存储器地址 
+        :param address: 要写入的存储器地址
         :param write_data_len: 要写入的数据长度
         :param input_buffer: 写入的数据
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_pack(servo_id, Instruction.WRITE_DATA, address, write_data_len, input_buffer, output_buffer,
@@ -379,9 +394,9 @@ class Servo:
         :param servo_id: 舵机ID
         :param address: 要读取的存储器地址
         :param read_data_len: 要读取的数据长度
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_pack(servo_id, Instruction.READ_DATA, address, read_data_len, None, output_buffer,
@@ -393,9 +408,9 @@ class Servo:
         """
         生成PING指令的指令包
         :param servo_id: 舵机ID
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_pack(servo_id, Instruction.PING, 0, 0, None, output_buffer, output_buffer_len)
@@ -406,9 +421,9 @@ class Servo:
         """
         生成恢复出厂设置指令
         :param servo_id: 舵机ID 舵机ID
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_pack(servo_id, Instruction.FACTORY_RESET, 0, 0, None, output_buffer, output_buffer_len)
@@ -418,10 +433,10 @@ class Servo:
     def servo_parameter_reset(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         生成参数重置指令
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_pack(servo_id, Instruction.PARAMETER_RESET, 0, 0, None, output_buffer, output_buffer_len)
@@ -444,10 +459,10 @@ class Servo:
     def servo_reboot(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         生成舵机重启指令
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_pack(servo_id, Instruction.REBOOT, 0, 0, None, output_buffer, output_buffer_len)
@@ -457,10 +472,10 @@ class Servo:
     def servo_read_present_current(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的当前电流
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_read(servo_id, Address.PRESENT_CURRENT_L, 2, output_buffer, output_buffer_len)
@@ -470,10 +485,10 @@ class Servo:
     def servo_read_present_position(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的当前位置
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_read(servo_id, Address.PRESENT_POSITION_L, 2, output_buffer, output_buffer_len)
@@ -483,10 +498,10 @@ class Servo:
     def servo_read_present_velocity(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的当前速度
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_read(servo_id, Address.PRESENT_VELOCITY_L, 2, output_buffer, output_buffer_len)
@@ -496,10 +511,10 @@ class Servo:
     def servo_read_present_profile_position(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的当前的规划位置
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_read(servo_id, Address.PRESENT_PROFILE_POSITION_L, 2, output_buffer, output_buffer_len)
@@ -509,10 +524,10 @@ class Servo:
     def servo_read_present_profile_velocity(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的当前规划速度
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_read(servo_id, Address.PRESENT_PROFILE_VELOCITY_L, 2, output_buffer, output_buffer_len)
@@ -522,10 +537,10 @@ class Servo:
     def servo_read_present_pwm(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的当前PWM
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
 
         Servo.servo_read(servo_id, Address.PRESENT_PWM_L, 2, output_buffer, output_buffer_len)
@@ -535,10 +550,10 @@ class Servo:
     def servo_read_present_temperature(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的当前温度
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.PRESENT_TEMPERATURE, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -547,10 +562,10 @@ class Servo:
     def servo_read_present_voltage(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的当前输入电压
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.PRESENT_VOLTAGE, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -559,10 +574,10 @@ class Servo:
     def servo_read_time_base_target_moving_time(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的控时目标运行时间
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.TIME_BASE_TARGET_MOVINGTIME_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -571,10 +586,10 @@ class Servo:
     def servo_read_time_base_target_position(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的控时目标位置
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.TIME_BASE_TARGET_POSITION_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -583,10 +598,10 @@ class Servo:
     def servo_read_time_base_target_acc(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的控时加速度等级
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.TIME_BASE_TARGET_ACC, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -595,10 +610,10 @@ class Servo:
     def servo_read_velocity_base_target_dec(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的控速目标减速度
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.VELOCITY_BASE_TARGET_DEC, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -607,10 +622,10 @@ class Servo:
     def servo_read_velocity_base_target_acc(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的控速目标加速度
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.VELOCITY_BASE_TARGET_ACC, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -619,10 +634,10 @@ class Servo:
     def servo_read_velocity_base_target_velocity(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的控速目标速度
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.VELOCITY_BASE_TARGET_VELOCITY_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -631,10 +646,10 @@ class Servo:
     def servo_read_velocity_base_target_position(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的控速目标位置
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.VELOCITY_BASE_TARGET_POSITION_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -643,10 +658,10 @@ class Servo:
     def servo_read_target_current(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的目标电流
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.TARGET_CURRENT_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -655,10 +670,10 @@ class Servo:
     def servo_read_target_pwm(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的目标PWM
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.TARGET_PWM_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -667,10 +682,10 @@ class Servo:
     def servo_read_torque_switch(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的扭矩开关
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.TORQUE_SW, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -679,10 +694,10 @@ class Servo:
     def servo_read_led_switch(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的LED开关
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.LED_SW, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -691,10 +706,10 @@ class Servo:
     def servo_read_flash_switch(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的Flash开关
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.FLASH_SW, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -703,10 +718,10 @@ class Servo:
     def servo_read_current_offset(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的电流校正值
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.CURRENT_OFFSET, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -715,10 +730,10 @@ class Servo:
     def servo_read_calibration(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的中位校正值
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.CALIBRATION_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -727,10 +742,10 @@ class Servo:
     def servo_read_control_mode(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的控制模式
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.CONTROL_MODE, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -739,10 +754,10 @@ class Servo:
     def servo_read_shutdown_condition(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的卸载保护条件
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.SHUTDOWN_CONDITION, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -751,10 +766,10 @@ class Servo:
     def servo_read_led_condition(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的LED报警条件
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.LED_CONDITION, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -763,10 +778,10 @@ class Servo:
     def servo_read_position_control_d_gain(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的位置控制D增益
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.POSITION_D_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -775,10 +790,10 @@ class Servo:
     def servo_read_position_control_i_gain(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的位置控制I增益
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.POSITION_I_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -787,10 +802,10 @@ class Servo:
     def servo_read_position_control_p_gain(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的位置控制P增益
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.POSITION_P_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -799,10 +814,10 @@ class Servo:
     def servo_read_pwm_punch(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的PWM叠加值
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.PWM_PUNCH, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -811,10 +826,10 @@ class Servo:
     def servo_read_ccw_deadband(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的反转死区
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.CCW_DEADBAND, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -823,10 +838,10 @@ class Servo:
     def servo_read_cw_deadband(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的正转死区
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.CW_DEADBAND, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -835,10 +850,10 @@ class Servo:
     def servo_read_current_shutdown_time(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的电流保护时间
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.CURRENT_TIME_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -847,10 +862,10 @@ class Servo:
     def servo_read_max_current_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的电流上限
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.MAX_CURRENT_LIMIT_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -859,10 +874,10 @@ class Servo:
     def servo_read_max_pwm_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的PWM上限
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.MAX_PWM_LIMIT_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -871,10 +886,10 @@ class Servo:
     def servo_read_max_voltage_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的电压上限
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.MAX_VOLTAGE_LIMIT, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -883,10 +898,10 @@ class Servo:
     def servo_read_min_voltage_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的电压下限
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.MIN_VOLTAGE_LIMIT, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -895,10 +910,10 @@ class Servo:
     def servo_read_max_temperature_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的温度上限
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.MAX_TEMPERATURE_LIMIT, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -907,10 +922,10 @@ class Servo:
     def servo_read_max_angle_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的最大位置限制
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.MAX_ANGLE_LIMIT_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -919,10 +934,10 @@ class Servo:
     def servo_read_min_angle_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的最小位置限制
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.MIN_ANGLE_LIMIT_L, 2, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -931,10 +946,10 @@ class Servo:
     def servo_read_return_level(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的状态返回级别
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.RETURN_LEVEL, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -943,10 +958,10 @@ class Servo:
     def servo_read_return_delay_time(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的应答延时时间
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.RETURN_DELAY_TIME, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -955,10 +970,10 @@ class Servo:
     def servo_read_baud_rate(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的波特率
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.BAUD_RATE, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -967,10 +982,10 @@ class Servo:
     def servo_read_model_information(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的出厂编号
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.MODEL_INFORMATION, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -979,10 +994,10 @@ class Servo:
     def servo_read_firmware_version(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         读取舵机的固件版本号
-        :param servo_id: 舵机ID 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         Servo.servo_read(servo_id, Address.FIRMWARE_VERSION, 1, output_buffer, output_buffer_len)
         return State.SUCCESS
@@ -993,7 +1008,7 @@ class Servo:
         PING命令应答包的解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1009,7 +1024,7 @@ class Servo:
         """
         恢复出厂设置命令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = None
         ret = Servo.servo_unpack(response_packet, data_buffer)
@@ -1023,7 +1038,7 @@ class Servo:
         """
         参数重置命令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = None
         ret = Servo.servo_unpack(response_packet, data_buffer)
@@ -1037,7 +1052,7 @@ class Servo:
         """
         校正偏移指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = None
         ret = Servo.servo_unpack(response_packet, data_buffer)
@@ -1052,7 +1067,7 @@ class Servo:
         读取舵机的当前电流的指令应答包解析
         :param response_packet: 应答包数据应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1069,7 +1084,7 @@ class Servo:
         读取舵机的当前位置的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1086,7 +1101,7 @@ class Servo:
         读取舵机的当前速度的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1103,7 +1118,7 @@ class Servo:
         读取舵机的当前规划位置的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1120,7 +1135,7 @@ class Servo:
         读取舵机的当前规划速度的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1137,7 +1152,7 @@ class Servo:
         读取舵机的当前PWM的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1155,7 +1170,7 @@ class Servo:
         读取舵机的当前温度的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1172,7 +1187,7 @@ class Servo:
         读取舵机的当前输入电压的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1189,7 +1204,7 @@ class Servo:
         读取舵机的控时目标运行时间的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1206,7 +1221,7 @@ class Servo:
         读取舵机的控时目标位置的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1223,7 +1238,7 @@ class Servo:
         读取舵机的控时目标加速度等级的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1240,7 +1255,7 @@ class Servo:
         读取舵机的控速目标减速度的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1257,7 +1272,7 @@ class Servo:
         读取舵机的控速目标加速度的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1274,7 +1289,7 @@ class Servo:
         读取舵机的控速目标速度的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1291,7 +1306,7 @@ class Servo:
         读取舵机的控速目标位置的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1308,7 +1323,7 @@ class Servo:
         读取舵机的目标电流的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1325,7 +1340,7 @@ class Servo:
         读取舵机的目标PWM的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1342,7 +1357,7 @@ class Servo:
         读取舵机的扭矩开关状态的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1359,7 +1374,7 @@ class Servo:
         读取舵机的LED开关状态的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1376,7 +1391,7 @@ class Servo:
         读取舵机的FLASH开关状态的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1393,7 +1408,7 @@ class Servo:
         读取舵机的电流校正值的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1410,7 +1425,7 @@ class Servo:
         读取舵机的中位校正值的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1428,7 +1443,7 @@ class Servo:
         读取舵机的控制模式的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1445,7 +1460,7 @@ class Servo:
         读取舵机的卸载保护条件的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1462,7 +1477,7 @@ class Servo:
         读取舵机的LED报警条件的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1479,7 +1494,7 @@ class Servo:
         读取舵机的位置控制D增益的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1496,7 +1511,7 @@ class Servo:
         读取舵机的位置控制I增益的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1513,7 +1528,7 @@ class Servo:
         读取舵机的位置控制P增益的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1530,7 +1545,7 @@ class Servo:
         读取舵机的PWM叠加值的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1547,7 +1562,7 @@ class Servo:
         读取舵机的反转死区的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1564,7 +1579,7 @@ class Servo:
         读取舵机的正转死区的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1581,7 +1596,7 @@ class Servo:
         读取舵机的电流保护时间的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1598,7 +1613,7 @@ class Servo:
         读取舵机的电流上限的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1615,7 +1630,7 @@ class Servo:
         读取舵机的PWM上限的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1632,7 +1647,7 @@ class Servo:
         读取舵机的电压上限的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1649,7 +1664,7 @@ class Servo:
         读取舵机的电压下限的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1666,7 +1681,7 @@ class Servo:
         读取舵机的温度上限的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1683,7 +1698,7 @@ class Servo:
         读取舵机的最大位置限制的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1700,7 +1715,7 @@ class Servo:
         读取舵机的最小位置限制的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1718,7 +1733,7 @@ class Servo:
         读取舵机的状态返回级别的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1735,7 +1750,7 @@ class Servo:
         读取舵机的应答延迟时间的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1752,7 +1767,7 @@ class Servo:
         读取舵机的波特率编号的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1769,7 +1784,7 @@ class Servo:
         读取舵机的出厂编号的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1786,7 +1801,7 @@ class Servo:
         读取舵机的固件版本号的指令应答包解析
         :param response_packet: 应答包数据
         :param analysis_data: 解析出来的应答包参数
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -1801,11 +1816,11 @@ class Servo:
     def servo_modify_known_id(servo_id: int, new_servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         修改目标舵机的ID
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param new_servo_id: 修改后ID
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = new_servo_id
@@ -1817,9 +1832,9 @@ class Servo:
         """
         修改未知舵机ID的ID
         :param new_servo_id: 修改后ID
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = new_servo_id
@@ -1831,11 +1846,11 @@ class Servo:
                                     output_buffer_len: list) -> int:
         """
         设置舵机的应答延时时间
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param response_delay_time: 舵机应答返回数据包的延时时间，取值范围0~255，单位是2微妙
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = response_delay_time
@@ -1846,11 +1861,11 @@ class Servo:
     def servo_set_return_level(servo_id: int, return_level: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的状态返回级别
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param return_level: 舵机应答返回的级别，取值为0 1 2
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = return_level
@@ -1861,11 +1876,11 @@ class Servo:
     def servo_set_baud_rate(servo_id: int, baud_rate_number: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的波特率
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param baud_rate_number: 舵机波特率编号，取值范围为0~7
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = baud_rate_number
@@ -1877,11 +1892,11 @@ class Servo:
                                   output_buffer_len: list) -> int:
         """
         设置舵机的最小位置限制
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param min_angle_limit: 舵机转动的最小位置限制，取值范围为0~3000，单位为0.1°
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -1896,11 +1911,11 @@ class Servo:
                                   output_buffer_len: list) -> int:
         """
         设置舵机的最大位置限制
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param max_angle_limit: 舵机转动的最大位置限制，取值范围为0~3000，单位为0.1°
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -1915,11 +1930,11 @@ class Servo:
                                         output_buffer_len: list) -> int:
         """
         设置舵机的温度上限
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param max_temperature_limit: 舵机工作的温度上限，取值范围为0~127，单位为1℃
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = max_temperature_limit
@@ -1931,11 +1946,11 @@ class Servo:
                                     output_buffer_len: list) -> int:
         """
         设置舵机的电压上限
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param max_voltage_limit: 舵机工作的电压上限，取值范围为33~90，单位为0.1V
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = max_voltage_limit
@@ -1947,11 +1962,11 @@ class Servo:
                                     output_buffer_len: list) -> int:
         """
         设置舵机的电压下限
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param min_voltage_limit: 舵机工作的电压下限，取值范围为33~90，单位为0.1V
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = min_voltage_limit
@@ -1962,11 +1977,11 @@ class Servo:
     def servo_set_max_pwm_limit(servo_id: int, max_pwm_limit: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的PWM上限
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param max_pwm_limit: 舵机输出的PWM上限，取值范围为0~1000，单位为0.1%
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -1981,11 +1996,11 @@ class Servo:
                                     output_buffer_len: list) -> int:
         """
         设置舵机的电流上限
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param max_current_limit: 舵机工作的电流上限，取值范围为0~1500，单位为1mA
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -2000,11 +2015,11 @@ class Servo:
                                         output_buffer_len: list) -> int:
         """
         设置舵机的电流保护时间
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param current_shutdown_time: 舵机达到电流上限后开启过载保护的触发时间，取值范围为0~65536，单位为1ms
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -2018,11 +2033,11 @@ class Servo:
     def servo_set_cw_deadband(servo_id: int, cw_deadband: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的正转死区
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param cw_deadband: 正转方向的死区，取值范围为0~255，单位为0.1°
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = cw_deadband
@@ -2033,11 +2048,11 @@ class Servo:
     def servo_set_ccw_deadband(servo_id: int, ccw_deadband: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的反转死区
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param ccw_deadband: 反转方向的死区，取值范围为0~255，单位为0.1°
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = ccw_deadband
@@ -2048,11 +2063,11 @@ class Servo:
     def servo_set_pwm_punch(servo_id: int, pwm_punch: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的PWM叠加值
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param pwm_punch: 舵机输出PWM的叠加值，取值范围为0~255，单位为0.1%
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = pwm_punch
@@ -2064,11 +2079,11 @@ class Servo:
                                           output_buffer_len: list) -> int:
         """
         设置舵机的位置控制P增益
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param position_control_p_gain: 舵机位置控制PID的比例项，取值范围为0~65535，Kp = 该值/1000
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -2083,11 +2098,11 @@ class Servo:
                                           output_buffer_len: list) -> int:
         """
         设置舵机的位置控制I增益
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param position_control_i_gain: 舵机位置控制PID的积分项，取值范围为0~65535，Ki = 该值/10000
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -2102,11 +2117,11 @@ class Servo:
                                           output_buffer_len: list) -> int:
         """
         设置舵机的位置控制D增益
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param position_control_d_gain: 舵机位置控制PID的微分项，取值范围为0~65535，Ki = 该值/100
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -2120,11 +2135,11 @@ class Servo:
     def servo_set_led_condition(servo_id: int, led_condition: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的LED报警条件
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param led_condition: LED报警的条件设置，取值范围为0~255
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = led_condition
@@ -2136,11 +2151,11 @@ class Servo:
                                       output_buffer_len: list) -> int:
         """
         设置舵机的卸载保护条件
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param shutdown_conditions: 卸载扭矩的条件设置，取值范围为0~255
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = shutdown_conditions
@@ -2151,11 +2166,11 @@ class Servo:
     def servo_set_control_mode(servo_id: int, control_mode: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的控制模式
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param control_mode: 取值为0控时 1控速 2电流 3PWM
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = control_mode
@@ -2166,11 +2181,11 @@ class Servo:
     def servo_set_flash_switch(servo_id: int, flash_switch: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的Flash开关
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param flash_switch: Flash区域写入开关：0关闭写入 1开启写入
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = flash_switch
@@ -2181,11 +2196,11 @@ class Servo:
     def servo_set_led_switch(servo_id: int, led_switch: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的LED开关
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param led_switch: 舵机指示灯开关，0关闭 1开启
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = led_switch
@@ -2196,11 +2211,11 @@ class Servo:
     def servo_set_torque_switch(servo_id: int, torque_switch: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的扭矩开关
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param torque_switch: 舵机扭矩使能开关：0关闭 1开启 2刹车模式
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = torque_switch
@@ -2211,11 +2226,11 @@ class Servo:
     def servo_set_target_pwm(servo_id: int, target_pwm: int, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的目标PWM
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param target_pwm: 对点击输出的PWM直接控制，取值范围为-1000~1000，单位为0.1%
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -2230,11 +2245,11 @@ class Servo:
                                  output_buffer_len: list) -> int:
         """
         设置舵机的目标电流
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param target_current: 舵机工作的目标电流，取值范围为-1000~1000，单位为1mA
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -2249,11 +2264,11 @@ class Servo:
                                                 output_buffer_len: list) -> int:
         """
         设置舵机的控速目标位置
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param target_position: 取值范围为0~3000，单位为0.1°
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -2269,11 +2284,11 @@ class Servo:
                                                 output_buffer_len: list) -> int:
         """
         设置舵机的控速目标速度
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param target_velocity: 取值范围为0~65535，单位为0.1°/s
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 2
 
@@ -2289,11 +2304,11 @@ class Servo:
                                            output_buffer_len: list) -> int:
         """
         设置舵机的控速目标加速度
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param target_acc: 取值范围为0~255，单位为50°/s²
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = target_acc
@@ -2305,11 +2320,11 @@ class Servo:
                                            output_buffer_len: list) -> int:
         """
         设置舵机的控速目标减速度
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param target_dec: 取值范围为0~255，单位为单位为50°/s²
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = target_dec
@@ -2321,11 +2336,11 @@ class Servo:
                                        output_buffer_len: list) -> int:
         """
         设置舵机的控时目标加速度等级
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param target_acc: 取值范围为0~5
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         input_buffer = [0]
         input_buffer[0] = target_acc
@@ -2337,12 +2352,12 @@ class Servo:
                                                             output_buffer: list, output_buffer_len: list) -> int:
         """
         设置舵机的控时目标位置和目标运行时间
-        :param servo_id: 舵机ID 
+        :param servo_id: 舵机ID
         :param target_position: 运动目标位置，取值范围为0~3000，单位为0.1°
         :param moving_time: 目标运动时间，取值范围为0~65535，单位为1ms
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
         buffer = [0] * 4
 
@@ -2355,11 +2370,11 @@ class Servo:
         return State.SUCCESS
 
     @staticmethod
-    def servo_set_return_delay_time_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_return_delay_time_analysis(response_packet: bytearray) -> int:
         """
         设置应答延时时间命令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2371,11 +2386,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_return_level_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_return_level_analysis(response_packet: bytearray) -> int:
         """
         恢复状态返回级别命令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2387,11 +2402,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_baud_rate_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_baud_rate_analysis(response_packet: bytearray) -> int:
         """
         恢复波特率命令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2402,11 +2417,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_min_angle_limit_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_min_angle_limit_analysis(response_packet: bytearray) -> int:
         """
         恢复最小位置限制命令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2417,11 +2432,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_max_angle_limit_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_max_angle_limit_analysis(response_packet: bytearray) -> int:
         """
         设置舵机最大未知限制指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2432,11 +2447,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_max_temperature_limit_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_max_temperature_limit_analysis(response_packet: bytearray) -> int:
         """
         设置舵机温度上限指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2447,11 +2462,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_max_voltage_limit_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_max_voltage_limit_analysis(response_packet: bytearray) -> int:
         """
         设置舵机电压上限指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2462,11 +2477,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_min_voltage_limit_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_min_voltage_limit_analysis(response_packet: bytearray) -> int:
         """
         设置舵机电压下限指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2477,11 +2492,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_max_pwm_limit_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_max_pwm_limit_analysis(response_packet: bytearray) -> int:
         """
         设置舵机PWM上限指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2492,11 +2507,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_max_current_limit_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_max_current_limit_analysis(response_packet: bytearray) -> int:
         """
         设置舵机电流上限指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2507,11 +2522,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_current_shutdown_time_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_current_shutdown_time_analysis(response_packet: bytearray) -> int:
         """
         设置舵机电流保护时间指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2522,11 +2537,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_cw_deadband_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_cw_deadband_analysis(response_packet: bytearray) -> int:
         """
         设置舵机正转死区指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2537,11 +2552,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_ccw_deadband_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_ccw_deadband_analysis(response_packet: bytearray) -> int:
         """
         设置舵机反转死区指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2552,11 +2567,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_pwm_punch_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_pwm_punch_analysis(response_packet: bytearray) -> int:
         """
         设置舵机PWM叠加值指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2567,11 +2582,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_position_control_p_gain_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_position_control_p_gain_analysis(response_packet: bytearray) -> int:
         """
         设置舵机位置控制P增益指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2582,11 +2597,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_position_control_i_gain_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_position_control_i_gain_analysis(response_packet: bytearray) -> int:
         """
         设置舵机位置控制I增益指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2597,11 +2612,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_position_control_d_gain_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_position_control_d_gain_analysis(response_packet: bytearray) -> int:
         """
         设置舵机位置控制D增益指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2612,11 +2627,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_led_condition_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_led_condition_analysis(response_packet: bytearray) -> int:
         """
         设置舵机LED报警条件指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2627,11 +2642,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_shutdown_conditions_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_shutdown_conditions_analysis(response_packet: bytearray) -> int:
         """
         设置舵机卸载保护条件指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2642,11 +2657,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_control_mode_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_control_mode_analysis(response_packet: bytearray) -> int:
         """
         设置舵机控制模式指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2657,11 +2672,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_flash_switch_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_flash_switch_analysis(response_packet: bytearray) -> int:
         """
         设置舵机FLASH开关状态指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2672,11 +2687,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_led_switch_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_led_switch_analysis(response_packet: bytearray) -> int:
         """
         设置舵机LED开关状态指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2687,11 +2702,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_torque_switch_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_torque_switch_analysis(response_packet: bytearray) -> int:
         """
         设置舵机扭矩开关状态指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2702,11 +2717,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_target_pwm_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_target_pwm_analysis(response_packet: bytearray) -> int:
         """
         设置舵机目标PWM指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2717,11 +2732,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_target_current_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_target_current_analysis(response_packet: bytearray) -> int:
         """
         设置舵机目标电流指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2732,11 +2747,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_velocity_base_target_position_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_velocity_base_target_position_analysis(response_packet: bytearray) -> int:
         """
         设置舵机控速目标位置指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2747,11 +2762,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_velocity_base_target_velocity_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_velocity_base_target_velocity_analysis(response_packet: bytearray) -> int:
         """
         设置舵机控速目标速度指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2762,11 +2777,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_velocity_base_target_acc_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_velocity_base_target_acc_analysis(response_packet: bytearray) -> int:
         """
         设置舵机控速目标加速度指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2777,11 +2792,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_velocity_base_target_dec_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_velocity_base_target_dec_analysis(response_packet: bytearray) -> int:
         """
         设置舵机控速目标减速度指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2792,11 +2807,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_time_base_target_acc_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_time_base_target_acc_analysis(response_packet: bytearray) -> int:
         """
         设置舵机控时目标加速度指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2807,11 +2822,11 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_time_base_target_position_and_moving_time_analysis(response_packet: bytearray | None) -> int:
+    def servo_set_time_base_target_position_and_moving_time_analysis(response_packet: bytearray) -> int:
         """
         设置舵机控时目标位置和运行时间指令的应答包解析
         :param response_packet: 应答包数据
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
         data_buffer = [0] * 2
 
@@ -2822,165 +2837,183 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_position(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_position(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控速目标位置
-        :param servo_counts: 要操作的舵机数量 
-        :param input_buffer: 写入的数据 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
-        """
-        parameter = bytearray(servo_counts * 2 + 2 + servo_counts)
-
-        parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
-        parameter[1] = 2
-
-        for i in range(servo_counts):
-            parameter[i + 2 + i * 2] = input_buffer[2 * i]
-            parameter[i + 3 + i * 2] = input_buffer[2 * i + 1] & 0xff
-            parameter[i + 4 + i * 2] = (input_buffer[2 * i + 1] >> 8) & 0xff
-
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_counts, parameter, output_buffer, output_buffer_len)
-        return State.SUCCESS
-
-    @staticmethod
-    def servo_sync_write_velocity_base_target_position_and_velocity(servo_counts: int, input_buffer: list, output_buffer: bytearray, output_buffer_len: bytearray) -> int:
-        """
-        设置多个舵机的控速目标位置和速度
-        :param servo_counts: 舵机数量
-        :param input_buffer: 命令包参数数据，格式为{ID，位置，速度，ID，位置，速度，···}
+        :param servo_sync_parameter: 舵机同步写修改类
         :param output_buffer: 用于存放指令包的输出缓冲区的指针
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts * 4 + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts * 2 + 2 + servo_sync_parameter.id_counts)
+
+        parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
+        parameter[1] = 2
+
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i + 2 + i * 2] = servo_sync_parameter.id[i]
+            parameter[i + 3 + i * 2] = servo_sync_parameter.position[i] & 0xff
+            parameter[i + 4 + i * 2] = (servo_sync_parameter.position[i] >> 8) & 0xff
+
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return State.SUCCESS
+
+    @staticmethod
+    def servo_sync_write_velocity_base_target_position_and_velocity(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+        """
+        设置多个舵机的控速目标位置和速度
+        :param servo_sync_parameter: 舵机同步写修改类
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
+        """
+        parameter = bytearray(servo_sync_parameter.id_counts * 4 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
         parameter[1] = 4
 
-        for i in range(servo_counts):
-            parameter[i + 2 + i * 4] = input_buffer[3 * i]
-            parameter[i + 3 + i * 4] = input_buffer[3 * i + 1] & 0xff
-            parameter[i + 4 + i * 4] = (input_buffer[3 * i + 1] >> 8) & 0xff
-            parameter[i + 5 + i * 4] = input_buffer[3 * i + 2] & 0xff
-            parameter[i + 6 + i * 4] = (input_buffer[3 * i + 2] >> 8) & 0xff
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i + 2 + i * 4] = servo_sync_parameter.id[i]
+            parameter[i + 3 + i * 4] = servo_sync_parameter.position[i] & 0xff
+            parameter[i + 4 + i * 4] = (servo_sync_parameter.position[i] >> 8) & 0xff
+            parameter[i + 5 + i * 4] = servo_sync_parameter.velocity[i] & 0xff
+            parameter[i + 6 + i * 4] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_counts, parameter, output_buffer,
-                              output_buffer_len)
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_velocity(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+        """
+        设置多个舵机的控速目标加速度、减速度、速度和位置
+        :param servo_sync_parameter: 舵机同步写修改类
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
+        """
+        parameter = bytearray(servo_sync_parameter.id_counts * 6 + 2 + servo_sync_parameter.id_counts)
+
+        parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
+        parameter[1] = 6
+
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[2 + i * 7] = servo_sync_parameter.id[i]
+            parameter[3 + i * 7] = servo_sync_parameter.position[i] & 0xff
+            parameter[4 + i * 7] = (servo_sync_parameter.position[i] >> 8) & 0xff
+            parameter[5 + i * 7] = servo_sync_parameter.velocity[i] & 0xff
+            parameter[6 + i * 7] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
+            parameter[7 + i * 7] = servo_sync_parameter.acc_velocity[i] & 0xff
+            parameter[8 + i * 7] = servo_sync_parameter.dec_velocity[i] & 0xff
+
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return State.SUCCESS
+
+    @staticmethod
+    def servo_sync_write_velocity_base_target_velocity(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控速目标速度
-        :param servo_counts: 要操作的舵机数量 
-        :param input_buffer: 写入的数据 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_sync_parameter: 舵机同步写修改类
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts * 2 + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts * 2 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_VELOCITY_L
         parameter[1] = 2
 
-        for i in range(servo_counts):
-            parameter[i + 2 + i * 2] = input_buffer[2 * i]
-            parameter[i + 3 + i * 2] = input_buffer[2 * i + 1] & 0xff
-            parameter[i + 4 + i * 2] = (input_buffer[2 * i + 1] >> 8) & 0xff
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i + 2 + i * 2] = servo_sync_parameter.id[i]
+            parameter[i + 3 + i * 2] = servo_sync_parameter.velocity[i] & 0xff
+            parameter[i + 4 + i * 2] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_VELOCITY_L, servo_counts, parameter, output_buffer, output_buffer_len)
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_VELOCITY_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_acc(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_acc(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控速目标加速度
-        :param servo_counts: 要操作的舵机数量 
-        :param input_buffer: 写入的数据 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_sync_parameter: 舵机同步写修改类
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_ACC
         parameter[1] = 1
 
-        for i in range(servo_counts):
-            parameter[i * 2 + 2] = input_buffer[2 * i]
-            parameter[i * 2 + 3] = input_buffer[2 * i + 1]
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i * 2 + 2] = servo_sync_parameter.id[i]
+            parameter[i * 2 + 3] = servo_sync_parameter.acc_velocity[i]
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_ACC, servo_counts, parameter, output_buffer, output_buffer_len)
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_ACC, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_dec(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_dec(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控速目标减速度
-        :param servo_counts: 要操作的舵机数量 
-        :param input_buffer: 写入的数据 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_sync_parameter: 舵机同步写修改类
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_DEC
         parameter[1] = 1
 
-        for i in range(servo_counts):
-            parameter[i * 2 + 2] = input_buffer[2 * i]
-            parameter[i * 2 + 3] = input_buffer[2 * i + 1]
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i * 2 + 2] = servo_sync_parameter.id[i]
+            parameter[i * 2 + 3] = servo_sync_parameter.dec_velocity[i]
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_DEC, servo_counts, parameter, output_buffer, output_buffer_len)
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_DEC, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_time_base_target_acc(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_time_base_target_acc(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控时目标加速度等级
-        :param servo_counts: 要操作的舵机数量 
-        :param input_buffer: 写入的数据 
-        :param output_buffer: 用于存放指令包的输出缓冲区的指针 
-        :param output_buffer_len: 指令包的长度 
-        :return: 成功或者错误类型 
+        :param servo_sync_parameter: 舵机同步写修改类
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.TIME_BASE_TARGET_ACC
         parameter[1] = 1
 
-        for i in range(servo_counts):
-            parameter[i * 2 + 2] = input_buffer[2 * i]
-            parameter[i * 2 + 3] = input_buffer[2 * i + 1]
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i * 2 + 2] = servo_sync_parameter.id[i]
+            parameter[i * 2 + 3] = servo_sync_parameter.acc_velocity_grade[i]
 
-        Servo.sync_write_data(Address.TIME_BASE_TARGET_ACC, servo_counts, parameter, output_buffer, output_buffer_len)
+        Servo.sync_write_data(Address.TIME_BASE_TARGET_ACC, servo_sync_parameter.id_counts , parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_time_base_target_position_and_moving_time(servo_counts: int, input_buffer: list, output_buffer: bytearray, output_buffer_len: bytearray) -> int:
+    def servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: bytearray, output_buffer_len: bytearray) -> int:
         """
         设置多个舵机的控时目标位置和运动时间
-        :param servo_counts: 舵机数量
-        :param input_buffer: 命令包参数数据，格式为{ID，位置，时间，ID，位置，时间，···}
+        :param servo_sync_parameter: 舵机同步写修改类
         :param output_buffer: 用于存放指令包的输出缓冲区的指针
         :param output_buffer_len: 指令包的长度
-        :return: 成功或者错误类型 
+        :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts * 4 + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts * 4 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.TIME_BASE_TARGET_POSITION_L
         parameter[1] = 4
 
-        for i in range(servo_counts):
-            parameter[i + 2 + i * 4] = input_buffer[3 * i]
-            parameter[i + 3 + i * 4] = input_buffer[3 * i + 1] & 0xff
-            parameter[i + 4 + i * 4] = (input_buffer[3 * i + 1] >> 8) & 0xff
-            parameter[i + 5 + i * 4] = input_buffer[3 * i + 2] & 0xff
-            parameter[i + 6 + i * 4] = (input_buffer[3 * i + 2] >> 8) & 0xff
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i + 2 + i * 4] = servo_sync_parameter.id[i]
+            parameter[i + 3 + i * 4] = servo_sync_parameter.position[i] & 0xff
+            parameter[i + 4 + i * 4] = (servo_sync_parameter.position[i] >> 8) & 0xff
+            parameter[i + 5 + i * 4] = servo_sync_parameter.velocity[i] & 0xff
+            parameter[i + 6 + i * 4] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.TIME_BASE_TARGET_POSITION_L, servo_counts, parameter, output_buffer,
+        Servo.sync_write_data(Address.TIME_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer,
                               output_buffer_len)
         return State.SUCCESS
