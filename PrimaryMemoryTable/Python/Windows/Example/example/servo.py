@@ -60,6 +60,21 @@ class State:
     # 指令包数据帧格式不对
     UNPACK_ERROR = 0x80
 
+class Servo_Sync_Parameter:
+    """
+    这个class存放的是同步写指令的参数
+    """
+
+    def __init__(self):
+        self.id_counts = 0                    # 同步写操作舵机的数量
+        self.id = [0] * 20                    # 同步写操作舵机的id
+        self.position = [0] * 20              # 舵机位置
+        self.time = [0] * 20                  # 舵机运行时间
+        self.velocity = [0] * 20              # 舵机运动速度
+        self.acc_velocity = [0] * 20          # 舵机运动加速度
+        self.dec_velocity = [0] * 20          # 舵机运动减速度
+        self.acc_velocity_grade = [0] * 20    # 舵机控时下的加速度等级
+
 
 class Address:
     """
@@ -2822,164 +2837,183 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_position(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_position(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控速目标位置
-        :param servo_counts: 要操作的舵机数量
-        :param input_buffer: 写入的数据,格式为{id, 位置, id, 位置,...}
+        :param servo_sync_parameter: 舵机同步写修改类
         :param output_buffer: 用于存放指令包的输出缓冲区的指针
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts * 2 + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts * 2 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
         parameter[1] = 2
 
-        for i in range(servo_counts):
-            parameter[i + 2 + i * 2] = input_buffer[2 * i]
-            parameter[i + 3 + i * 2] = input_buffer[2 * i + 1] & 0xff
-            parameter[i + 4 + i * 2] = (input_buffer[2 * i + 1] >> 8) & 0xff
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i + 2 + i * 2] = servo_sync_parameter.id[i]
+            parameter[i + 3 + i * 2] = servo_sync_parameter.position[i] & 0xff
+            parameter[i + 4 + i * 2] = (servo_sync_parameter.position[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_counts, parameter, output_buffer, output_buffer_len)
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_position_and_velocity(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_position_and_velocity(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控速目标位置和速度
-        :param servo_counts: 要操作的舵机数量
-        :param input_buffer: 写入的数据，格式为{id, 位置, 速度, id, 位置, 速度,...}
+        :param servo_sync_parameter: 舵机同步写修改类
         :param output_buffer: 用于存放指令包的输出缓冲区的指针
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts * 4 + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts * 4 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
         parameter[1] = 4
 
-        for i in range(servo_counts):
-            parameter[i + 2 + i * 4] = input_buffer[3 * i]
-            parameter[i + 3 + i * 4] = input_buffer[3 * i + 1] & 0xff
-            parameter[i + 4 + i * 4] = (input_buffer[3 * i + 1] >> 8) & 0xff
-            parameter[i + 5 + i * 4] = input_buffer[3 * i + 2] & 0xff
-            parameter[i + 6 + i * 4] = (input_buffer[3 * i + 2] >> 8) & 0xff
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i + 2 + i * 4] = servo_sync_parameter.id[i]
+            parameter[i + 3 + i * 4] = servo_sync_parameter.position[i] & 0xff
+            parameter[i + 4 + i * 4] = (servo_sync_parameter.position[i] >> 8) & 0xff
+            parameter[i + 5 + i * 4] = servo_sync_parameter.velocity[i] & 0xff
+            parameter[i + 6 + i * 4] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_counts, parameter, output_buffer, output_buffer_len)
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_velocity(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
-        设置多个舵机的控速目标速度
-        :param servo_counts: 要操作的舵机数量
-        :param input_buffer: 写入的数据
+        设置多个舵机的控速目标加速度、减速度、速度和位置
+        :param servo_sync_parameter: 舵机同步写修改类
         :param output_buffer: 用于存放指令包的输出缓冲区的指针
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts * 2 + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts * 6 + 2 + servo_sync_parameter.id_counts)
+
+        parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
+        parameter[1] = 6
+
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[2 + i * 7] = servo_sync_parameter.id[i]
+            parameter[3 + i * 7] = servo_sync_parameter.position[i] & 0xff
+            parameter[4 + i * 7] = (servo_sync_parameter.position[i] >> 8) & 0xff
+            parameter[5 + i * 7] = servo_sync_parameter.velocity[i] & 0xff
+            parameter[6 + i * 7] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
+            parameter[7 + i * 7] = servo_sync_parameter.acc_velocity[i] & 0xff
+            parameter[8 + i * 7] = servo_sync_parameter.dec_velocity[i] & 0xff
+
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return State.SUCCESS
+
+    @staticmethod
+    def servo_sync_write_velocity_base_target_velocity(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+        """
+        设置多个舵机的控速目标速度
+        :param servo_sync_parameter: 舵机同步写修改类
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
+        """
+        parameter = bytearray(servo_sync_parameter.id_counts * 2 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_VELOCITY_L
         parameter[1] = 2
 
-        for i in range(servo_counts):
-            parameter[i + 2 + i * 2] = input_buffer[2 * i]
-            parameter[i + 3 + i * 2] = input_buffer[2 * i + 1] & 0xff
-            parameter[i + 4 + i * 2] = (input_buffer[2 * i + 1] >> 8) & 0xff
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i + 2 + i * 2] = servo_sync_parameter.id[i]
+            parameter[i + 3 + i * 2] = servo_sync_parameter.velocity[i] & 0xff
+            parameter[i + 4 + i * 2] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_VELOCITY_L, servo_counts, parameter, output_buffer, output_buffer_len)
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_VELOCITY_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_acc(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_acc(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控速目标加速度
-        :param servo_counts: 要操作的舵机数量
-        :param input_buffer: 写入的数据
+        :param servo_sync_parameter: 舵机同步写修改类
         :param output_buffer: 用于存放指令包的输出缓冲区的指针
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_ACC
         parameter[1] = 1
 
-        for i in range(servo_counts):
-            parameter[i * 2 + 2] = input_buffer[2 * i]
-            parameter[i * 2 + 3] = input_buffer[2 * i + 1]
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i * 2 + 2] = servo_sync_parameter.id[i]
+            parameter[i * 2 + 3] = servo_sync_parameter.acc_velocity[i]
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_ACC, servo_counts, parameter, output_buffer, output_buffer_len)
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_ACC, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_dec(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_dec(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控速目标减速度
-        :param servo_counts: 要操作的舵机数量
-        :param input_buffer: 写入的数据
+        :param servo_sync_parameter: 舵机同步写修改类
         :param output_buffer: 用于存放指令包的输出缓冲区的指针
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_DEC
         parameter[1] = 1
 
-        for i in range(servo_counts):
-            parameter[i * 2 + 2] = input_buffer[2 * i]
-            parameter[i * 2 + 3] = input_buffer[2 * i + 1]
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i * 2 + 2] = servo_sync_parameter.id[i]
+            parameter[i * 2 + 3] = servo_sync_parameter.dec_velocity[i]
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_DEC, servo_counts, parameter, output_buffer, output_buffer_len)
+        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_DEC, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_time_base_target_acc(servo_counts: int, input_buffer: list, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_time_base_target_acc(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控时目标加速度等级
-        :param servo_counts: 要操作的舵机数量
-        :param input_buffer: 写入的数据
+        :param servo_sync_parameter: 舵机同步写修改类
         :param output_buffer: 用于存放指令包的输出缓冲区的指针
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.TIME_BASE_TARGET_ACC
         parameter[1] = 1
 
-        for i in range(servo_counts):
-            parameter[i * 2 + 2] = input_buffer[2 * i]
-            parameter[i * 2 + 3] = input_buffer[2 * i + 1]
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i * 2 + 2] = servo_sync_parameter.id[i]
+            parameter[i * 2 + 3] = servo_sync_parameter.acc_velocity_grade[i]
 
-        Servo.sync_write_data(Address.TIME_BASE_TARGET_ACC, servo_counts, parameter, output_buffer, output_buffer_len)
+        Servo.sync_write_data(Address.TIME_BASE_TARGET_ACC, servo_sync_parameter.id_counts , parameter, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_time_base_target_position_and_moving_time(servo_counts: int, input_buffer: list, output_buffer: bytearray, output_buffer_len: bytearray) -> int:
+    def servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: bytearray, output_buffer_len: bytearray) -> int:
         """
         设置多个舵机的控时目标位置和运动时间
-        :param servo_counts: 舵机数量
-        :param input_buffer: 命令包参数数据，格式为{ID，位置，时间，ID，位置，时间，···}
+        :param servo_sync_parameter: 舵机同步写修改类
         :param output_buffer: 用于存放指令包的输出缓冲区的指针
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_counts * 4 + 2 + servo_counts)
+        parameter = bytearray(servo_sync_parameter.id_counts * 4 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.TIME_BASE_TARGET_POSITION_L
         parameter[1] = 4
 
-        for i in range(servo_counts):
-            parameter[i + 2 + i * 4] = input_buffer[3 * i]
-            parameter[i + 3 + i * 4] = input_buffer[3 * i + 1] & 0xff
-            parameter[i + 4 + i * 4] = (input_buffer[3 * i + 1] >> 8) & 0xff
-            parameter[i + 5 + i * 4] = input_buffer[3 * i + 2] & 0xff
-            parameter[i + 6 + i * 4] = (input_buffer[3 * i + 2] >> 8) & 0xff
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i + 2 + i * 4] = servo_sync_parameter.id[i]
+            parameter[i + 3 + i * 4] = servo_sync_parameter.position[i] & 0xff
+            parameter[i + 4 + i * 4] = (servo_sync_parameter.position[i] >> 8) & 0xff
+            parameter[i + 5 + i * 4] = servo_sync_parameter.velocity[i] & 0xff
+            parameter[i + 6 + i * 4] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.TIME_BASE_TARGET_POSITION_L, servo_counts, parameter, output_buffer,
+        Servo.sync_write_data(Address.TIME_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer,
                               output_buffer_len)
         return State.SUCCESS
