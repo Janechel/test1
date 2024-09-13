@@ -53,52 +53,33 @@ int main(void)
 	
 	//信息打印串口初始化
 	USART2_Init();
-
-	//设置舵机的扭矩开关
-	servo_set_torque_switch(1, 0, order_buffer,&order_len);
-	USART1_Send(order_buffer, order_len);
-
-	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-	receive_len = 0x00;
-	Delay(10);
-	USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
-
-	ret = servo_set_torque_switch_analysis(receive_data);
-	if(ret == SUCCESS)
-		PRINTF("servo set torque switch success");
-	Delay(1000);
-
-	//设置舵机的控制模式
-	servo_set_control_mode(1, 0, order_buffer,&order_len);
-	USART1_Send(order_buffer, order_len);
-
-	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-	receive_len = 0x00;
-	Delay(10);
-	USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
-
-	ret = servo_set_control_mode_analysis(receive_data);
-	if(ret == SUCCESS)
-		PRINTF("servo set control mode success");
-	Delay(1000);
-
-	//设置舵机的扭矩开关
-	servo_set_torque_switch(1, 1, order_buffer,&order_len);
-	USART1_Send(order_buffer, order_len);
-
-	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-	receive_len = 0x00;
-	Delay(10);
-	USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
-
-	ret = servo_set_torque_switch_analysis(receive_data);
-	if(ret == SUCCESS)
-		PRINTF("servo set torque switch success");
-	Delay(1000);
 	
+	struct servo_sync_parameter servo;
+	
+	servo.id_counts = 2;            //同步写两个舵机
+  servo.id[0] = 1;                //第一个舵机id为1
+  servo.id[1] = 2;                //第二个舵机id为2
+
+	//将ID1、ID2舵机的扭矩开关状态，分别修改为关闭
+	servo.torque_switch[0] = 0;
+	servo.torque_switch[1] = 0;
+	servo_sync_write_torque_switch(servo, order_buffer, &order_len);
+	USART1_Send(order_buffer, order_len);
+	PRINTF("sync write torque switch!");
+	Delay(1000);
+
+
+	//将ID1、ID2舵机的控制模式，分别修改为控时模式
+	servo.control_mode[0] = 0;
+	servo.control_mode[1] = 0;
+	servo_sync_write_control_mode(servo, order_buffer, &order_len);
+	USART1_Send(order_buffer, order_len);
+	PRINTF("sync write control mode!");
+	Delay(1000);
+
 	while(1)
 	{
-		//设置舵机的控时目标位置和目标运行时间
+		//在控时模式下，让ID1舵机以500ms运动到300°位置
 		servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -112,21 +93,7 @@ int main(void)
 			PRINTF("servo set time base target position and moving time success");
 		Delay(1000);
 		
-		//设置舵机的控时目标加速度等级
-		servo_set_time_base_target_acc(1, 0, order_buffer,&order_len);
-		USART1_Send(order_buffer, order_len);
-
-		USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-		receive_len = 0x00;
-		Delay(10);
-		USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
-
-		ret = servo_set_time_base_target_acc_analysis(receive_data);
-		if(ret == SUCCESS)
-			PRINTF("servo set time base target acc success");
-		Delay(1000);
-		
-		//设置舵机的控时目标位置和目标运行时间
+		//在控时模式下，让ID1舵机以1s匀速运动到0°位置
 		servo_set_time_base_target_position_and_moving_time(1, 0, 1000, order_buffer,&order_len);
 		USART1_Send(order_buffer, order_len);
 
@@ -138,8 +105,30 @@ int main(void)
 		ret = servo_set_time_base_target_position_and_moving_time_analysis(receive_data);
 		if(ret == SUCCESS)
 			PRINTF("servo set time base target position and moving time success");
-		Delay(2000);
-	}
+		Delay(1000);
+		
+		//在控时模式下，让ID1舵机以500ms运动到150°位置，让ID2舵机以1s匀速运动到0°位置
+		servo.position[0] = 1500;
+    servo.position[1] = 0;
+    servo.time[0] = 500;
+    servo.time[1] = 1000;
+		
+		servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
+    USART1_Send(order_buffer, order_len);
+		PRINTF("sync write time base target position and moving time!");
+		Delay(1000);
+		
+		//在控时模式下，让ID1舵机以1000ms运动到0°位置，让ID2舵机以500ms匀速运动到3000°位置
+		servo.position[0] = 0;
+    servo.position[1] = 3000;
+    servo.time[0] = 1000;
+    servo.time[1] = 500;
+		
+		servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
+    USART1_Send(order_buffer, order_len);
+		PRINTF("sync write time base target position and moving time!");
+		Delay(1000);
+	}	
 }
 
 void RCC_Configuration(void)

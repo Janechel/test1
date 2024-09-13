@@ -1,23 +1,23 @@
 #include "reg52.h"
 #include "servo.c"
 
-#define READ_TEST 0                 // 读取舵机数据测试
-#define WRITE_TEST 0                // 写入舵机数据测试
-#define SYNC_WRITE_TEST 0          // 同步写测试
-#define PING_TEST 0                 // PING命令测试
-#define FACTORY_RESET_TEST 0        // 恢复出厂设置测试
-#define PARAMETER_RESET_TEST 0      // 参数重置测试
-#define REBOOT_TEST 0               // 重启测试
-#define CALIBRATION_TEST 0          // 校正偏移值测试
-#define MODIFY_ID_TEST 0            // 修改舵机ID测试
-#define MODIFY_UNKNOWN_ID_TEST 0    // 修改未知ID舵机ID测试
+#define READ_TEST 0                 // ?áè????úêy?Y2aê?
+#define WRITE_TEST 1                // D′è????úêy?Y2aê?
+#define SYNC_WRITE_TEST 0           // í?2?D′2aê?
+#define PING_TEST 0                 // PING?üá?2aê?
+#define FACTORY_RESET_TEST 0        // ???′3?3§éè??2aê?
+#define PARAMETER_RESET_TEST 0      // 2?êy????2aê?
+#define REBOOT_TEST 0               // ????2aê?
+#define CALIBRATION_TEST 0          // D￡?y??ò??μ2aê?
+#define MODIFY_ID_TEST 0            // DT?????úID2aê?
+#define MODIFY_UNKNOWN_ID_TEST 0    // DT???′?aID???úID2aê?
 
 uint16_t ms_count;
 
 xdata uint8_t receive_data[20] = {0};
-xdata uint8_t receive_len = 0;          // 接收应答包长度
+xdata uint8_t receive_len = 0;          // ?óê?ó|′e°ü3¤?è
 
-// time0初始化做延时
+// time03?ê??ˉ×??óê±
 void timer0_init()
 {
     TMOD |= 0x01;
@@ -28,14 +28,14 @@ void timer0_init()
     TR0 = 1;
 }
 
-// 延时函数
+// ?óê±oˉêy
 void delay_ms(uint16_t ms)
 {
-    ms_count =  2 * ms;   // 因为开了双倍速6T，所以这里延时时间需要乘以2
+    ms_count =  2 * ms;   // òò?a?aá???±??ù6T￡??ùò??aà??óê±ê±??Dèòa3?ò?2
     while (ms_count);
 }
 
-// 定时器中断函数
+// ?¨ê±?÷?D??oˉêy
 void timer0_isr() interrupt 1 using 1
 {
     TH0 = 0xFC;
@@ -44,37 +44,37 @@ void timer0_isr() interrupt 1 using 1
         ms_count--;
 }
 
-// 串口初始化
+// ′??ú3?ê??ˉ
 void uart_init()
 {
-	TMOD|=0X20;	   // 8位自动重装载定时器
-	SCON=0X40;	   // 8位UART，波特率可变
-	PCON=0X80;	   // 波特率加倍
-	TH1=0xff;	   // 设置波特率为115200
+	TMOD|=0X20;	   // 8??×??ˉ??×°???¨ê±?÷
+	SCON=0X40;	   // 8??UART￡?2¨ì??ê?é±?
+	PCON=0X80;	   // 2¨ì??ê?ó±?
+	TH1=0xff;	   // éè??2¨ì??ê?a115200
 	TL1=0xff;
-    ES=0;		   // 关闭接收中断
-    EA=1;		   // CPU总中断
-    TR1=1;		   // 开启定时器T1开始计数
+    ES=0;		   // 1?±??óê??D??
+    EA=1;		   // CPU×ü?D??
+    TR1=1;		   // ?a???¨ê±?÷T1?aê???êy
 }
 
 void uart_init_recv()
 {
-    TMOD |= 0x20;  // 8位自动重装载定时器
-    SCON = 0x50;   // 8位UART，波特率可变，并开启串行接收
-    PCON = 0x80;   // 波特率加倍
-    TH1 = 0xff;    // 设置波特率为115200
+    TMOD |= 0x20;  // 8??×??ˉ??×°???¨ê±?÷
+    SCON = 0x50;   // 8??UART￡?2¨ì??ê?é±?￡?2￠?a??′?DD?óê?
+    PCON = 0x80;   // 2¨ì??ê?ó±?
+    TH1 = 0xff;    // éè??2¨ì??ê?a115200
     TL1 = 0xff;
-    ES = 1;        // 开启接收中断
-    EA = 1;        // CPU总中断
-    TR1 = 1;       // 开启定时器T1开始计数
+    ES = 1;        // ?a???óê??D??
+    EA = 1;        // CPU×ü?D??
+    TR1 = 1;       // ?a???¨ê±?÷T1?aê???êy
 }
 
-// 串口发送函数
+// ′??ú·￠?íoˉêy
 void uart_send(uint8_t order_data)
 {
-    SBUF = order_data;      // 将数据写入串口缓冲寄存器开始传输
-    while(!TI);    			// 等待传输完成
-    TI = 0;      			// 清除传输完成标志
+    SBUF = order_data;      // ??êy?YD′è?′??ú?o3???′??÷?aê?′?ê?
+    while(!TI);    			// μè′y′?ê?íê3é
+    TI = 0;      			// ??3y′?ê?íê3é±ê??
 }
 
 
@@ -86,20 +86,25 @@ void uart_send_buffer(uint8_t *buffer, uint16_t length)
     }
 }
 
-struct servo_sync_parameter servo;
 
 void main()
 {
-	xdata uint8_t order_buffer[20];												                    // 存放生成的指令
-	xdata uint8_t order_buffer_len = 0;										                        // 指令长度
-	xdata uint16_t analysis_data = 0;											                    // 应答包解析出来的数据
-	
+	xdata uint8_t order_buffer[20];												                    // ′?·?éú3éμ???á?
+	xdata uint8_t order_buffer_len = 0;										                        // ??á?3¤?è
+	xdata uint16_t analysis_data = 0;											                    // ó|′e°ü?a??3?à′μ?êy?Y
+	xdata uint16_t sync_write_velocity_base_target_position[4] = {1, 0, 2, 0};                       // í?2?D′?à?????ú???ù??±ê????
+	xdata uint16_t sync_write_velocity_base_target_velocity[5] = {1, 3600, 2, 3600};                 // í?2?D′?à?????ú???ù??±ê?ù?è
+	xdata uint16_t sync_write_velocity_base_target_acc[5] = {1, 150, 2, 150};                        // í?2?D′?à?????ú???ù??±ê?ó?ù?è
+	xdata uint16_t sync_write_velocity_base_target_dec[5] = {1, 150, 2, 150};                        // í?2?D′?à?????ú???ù??±ê???ù?è
+	xdata uint16_t sync_write_time_base_target_acc[5] = {1, 0, 2, 0};                                // í?2?D′?à?????ú??ê±??±ê?ó?ù?è
+	xdata uint16_t sync_write_time_base_target_position_and_moving_time[10] = {1, 3000, 500, 2, 3000, 500};           // í?2?D′?à?????ú??ê±??±ê???ˉ????oí???ˉê±??
+
 	timer0_init();
 
 	while(1)
 	{
 #if FACTORY_RESET_TEST
-		// 恢复出厂设置
+		// ???′3?3§éè??
 		uart_init();
 		servo_factory_reset(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -111,7 +116,7 @@ void main()
 #endif			
 		
 #if PARAMETER_RESET_TEST
-        // 参数重置
+        // 2?êy????
 		uart_init();
 		servo_parameter_reset(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -123,7 +128,7 @@ void main()
 #endif			
 
 #if CALIBRATION_TEST
-        // 校正偏移值
+        // D￡?y??ò??μ
 		uart_init();
 		servo_calibration(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -135,7 +140,7 @@ void main()
 #endif				
 		
 #if REBOOT_TEST
-        // 舵机重启
+        // ???ú????
 		uart_init();
 		servo_reboot(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -144,7 +149,7 @@ void main()
 #endif		
 
 #if PING_TEST
-		// 向ID为1的舵机发送PING指令
+		// ?òID?a1μ????ú·￠?íPING??á?
 		uart_init();
 		servo_ping(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -156,7 +161,7 @@ void main()
 #endif	
 
 #if MODIFY_ID_TEST
-        // 修改ID1舵机为ID2
+        // DT?????úID2aê?
 		uart_init();
 		servo_modify_known_id(1, 2, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -168,7 +173,7 @@ void main()
 #endif
 
 #if MODIFY_UNKNOWN_ID_TEST
-        // 将未知ID舵机ID修改为2
+        // DT???′?aID???úID2aê?
 		uart_init();
 		servo_modify_unknown_id(2, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -180,7 +185,7 @@ void main()
 #endif
 
 #if READ_TEST
-        // 读取ID1舵机的当前电流
+        // ?áè????úμ?μ±?°μ?á÷
 		uart_init();
 		servo_read_present_current(1, order_buffer, &order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -190,7 +195,7 @@ void main()
 		servo_read_present_current_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的当前位置
+		// ?áè????úμ?μ±?°????
 		uart_init();
 		servo_read_present_position(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -200,7 +205,7 @@ void main()
 		servo_read_present_position_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的当前速度
+		// ?áè????úμ?μ±?°?ù?è
 		uart_init();
 		servo_read_present_velocity(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -210,7 +215,7 @@ void main()
 		servo_read_present_velocity_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 		
-		// 读取ID1舵机的当前的规划位置
+		// ?áè????úμ?μ±?°μ?1???????
 		uart_init();
 		servo_read_present_profile_position(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -221,7 +226,7 @@ void main()
 		servo_read_present_profile_position_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的当前规划速度
+		// ?áè????úμ?μ±?°1????ù?è
 		uart_init();
 		servo_read_present_profile_velocity(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -231,7 +236,7 @@ void main()
 		servo_read_present_profile_velocity_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的当前PWM
+		// ?áè????úμ?μ±?°PWM
 		uart_init();
 		servo_read_present_pwm(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -241,7 +246,7 @@ void main()
 		servo_read_present_pwm_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的当前温度
+		// ?áè????úμ?μ±?°???è
 		uart_init();
 		servo_read_present_temperature(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -251,7 +256,7 @@ void main()
 		servo_read_present_temperature_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的当前输入电压
+		// ?áè????úμ?μ±?°ê?è?μ??1
 		uart_init();
 		servo_read_present_voltage(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -261,7 +266,7 @@ void main()
 		servo_read_present_voltage_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的控时目标运行时间
+		// ?áè????úμ???ê±??±ê??DDê±??
 		uart_init();
 		servo_read_time_base_target_moving_time(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -271,7 +276,7 @@ void main()
 		servo_read_time_base_target_moving_time_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的控时目标位置
+		// ?áè????úμ???ê±??±ê????
 		uart_init();
 		servo_read_time_base_target_position(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -281,7 +286,7 @@ void main()
 		servo_read_time_base_target_position_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的控时加速度等级
+		// ?áè????úμ???ê±?ó?ù?èμè??
 		uart_init();
 		servo_read_time_base_target_acc(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -291,7 +296,7 @@ void main()
 		servo_read_time_base_target_acc_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的控速目标减速度
+		// ?áè????úμ????ù??±ê???ù?è
 		uart_init();
 		servo_read_velocity_base_target_dec(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -301,7 +306,7 @@ void main()
 		servo_read_velocity_base_target_dec_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的控速目标加速度
+		// ?áè????úμ????ù??±ê?ó?ù?è
 		uart_init();
 		servo_read_velocity_base_target_acc(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -311,7 +316,7 @@ void main()
 		servo_read_velocity_base_target_acc_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的控速目标速度
+		// ?áè????úμ????ù??±ê?ù?è
 		uart_init();
 		servo_read_velocity_base_target_velocity(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -321,7 +326,7 @@ void main()
 		servo_read_velocity_base_target_velocity_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的控速目标位置
+		// ?áè????úμ????ù??±ê????
 		uart_init();
 		servo_read_velocity_base_target_position(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -331,7 +336,7 @@ void main()
 		servo_read_velocity_base_target_position_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的目标电流
+		// ?áè????úμ???±êμ?á÷
 		uart_init();
 		servo_read_target_current(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -341,7 +346,7 @@ void main()
 		servo_read_target_current_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的目标PWM
+		// ?áè????úμ???±êPWM
 		uart_init();
 		servo_read_target_pwm(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -351,7 +356,7 @@ void main()
 		servo_read_target_pwm_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的扭矩开关
+		// ?áè????úμ??¤???a1?
 		uart_init();
 		servo_read_torque_switch(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -361,7 +366,7 @@ void main()
 		servo_read_torque_switch_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的LED开关
+		// ?áè????úμ?LED?a1?
 		uart_init();
 		servo_read_led_switch(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -371,7 +376,7 @@ void main()
 		servo_read_led_switch_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的Flash开关
+		// ?áè????úμ?Flash?a1?
 		uart_init();
 		servo_read_flash_switch(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -381,7 +386,7 @@ void main()
 		servo_read_flash_switch_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的电流校正值
+		// ?áè????úμ?μ?á÷D￡?y?μ
 		uart_init();
 		servo_read_current_offset(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -391,7 +396,7 @@ void main()
 		servo_read_current_offset_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的中位校正值
+		// ?áè????úμ??D??D￡?y?μ
 		uart_init();
 		servo_read_calibration(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -401,7 +406,7 @@ void main()
 		servo_read_calibration_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的控制模式
+		// ?áè????úμ??????￡ê?
 		uart_init();
 		servo_read_control_mode(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -411,7 +416,7 @@ void main()
 		servo_read_control_mode_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的卸载保护条件
+		// ?áè????úμ?D???±￡?¤ì??t
 		uart_init();
 		servo_read_shutdown_condition(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -421,7 +426,7 @@ void main()
 		servo_read_shutdown_condition_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的LED报警条件
+		// ?áè????úμ?LED±¨?ˉì??t
 		uart_init();
 		servo_read_led_condition(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -431,7 +436,7 @@ void main()
 		servo_read_led_condition_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的位置控制D增益
+		// ?áè????úμ?????????D??ò?
 		uart_init();
 		servo_read_position_control_d_gain(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -441,7 +446,7 @@ void main()
 		servo_read_position_control_d_gain_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的位置控制I增益
+		// ?áè????úμ?????????I??ò?
 		uart_init();
 		servo_read_position_control_i_gain(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -451,7 +456,7 @@ void main()
 		servo_read_position_control_i_gain_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的位置控制P增益
+		// ?áè????úμ?????????P??ò?
 		uart_init();
 		servo_read_position_control_p_gain(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -461,7 +466,7 @@ void main()
 		servo_read_position_control_p_gain_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的PWM叠加值
+		// ?áè????úμ?PWMμt?ó?μ
 		uart_init();
 		servo_read_pwm_punch(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -471,7 +476,7 @@ void main()
 		servo_read_pwm_punch_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的反转死区
+		// ?áè????úμ?·′×a?à??
 		uart_init();
 		servo_read_ccw_deadband(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -481,7 +486,7 @@ void main()
 		servo_read_ccw_deadband_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的正转死区
+		// ?áè????úμ??y×a?à??
 		uart_init();
 		servo_read_cw_deadband(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -491,7 +496,7 @@ void main()
 		servo_read_cw_deadband_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的电流保护时间
+		// ?áè????úμ?μ?á÷±￡?¤ê±??
 		uart_init();
 		servo_read_current_shutdown_time(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -501,7 +506,7 @@ void main()
 		servo_read_current_shutdown_time_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的电流上限
+		// ?áè????úμ?μ?á÷é??T
 		uart_init();
 		servo_read_max_current_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -511,7 +516,7 @@ void main()
 		servo_read_max_current_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的PWM上限
+		// ?áè????úμ?PWMé??T
 		uart_init();
 		servo_read_max_pwm_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -521,7 +526,7 @@ void main()
 		servo_read_max_pwm_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的电压上限
+		// ?áè????úμ?μ??1é??T
 		uart_init();
 		servo_read_max_voltage_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -531,7 +536,7 @@ void main()
 		servo_read_max_voltage_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的电压下限
+		// ?áè????úμ?μ??1???T
 		uart_init();
 		servo_read_min_voltage_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -541,7 +546,7 @@ void main()
 		servo_read_min_voltage_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的温度上限
+		// ?áè????úμ????èé??T
 		uart_init();
 		servo_read_max_temperature_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -551,7 +556,7 @@ void main()
 		servo_read_max_temperature_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的最大位置限制
+		// ?áè????úμ?×?′ó?????T??
 		uart_init();
 		servo_read_max_angle_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -561,7 +566,7 @@ void main()
 		servo_read_max_angle_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的最小位置限制
+		// ?áè????úμ?×?D??????T??
 		uart_init();
 		servo_read_min_angle_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -571,7 +576,7 @@ void main()
 		servo_read_min_angle_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的状态返回级别
+		// ?áè????úμ?×′ì?·μ????±e
 		uart_init();
 		servo_read_return_level(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -581,7 +586,7 @@ void main()
 		servo_read_return_level_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的应答延时时间
+		// ?áè????úμ?ó|′e?óê±ê±??
 		uart_init();
 		servo_read_return_delay_time(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -591,7 +596,7 @@ void main()
 		servo_read_return_delay_time_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的波特率
+		// ?áè????úμ?2¨ì??ê
 		uart_init();
 		servo_read_baud_rate(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -601,7 +606,7 @@ void main()
 		servo_read_baud_rate_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的出厂编号
+		// ?áè????úμ?3?3§±ào?
 		uart_init();
 		servo_read_model_information(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -611,7 +616,7 @@ void main()
 		servo_read_model_information_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// 读取ID1舵机的固件版本号
+		// ?áè????úμ?1ì?t°?±?o?
 		uart_init();
 		servo_read_firmware_version(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -623,7 +628,7 @@ void main()
 #endif
 
 #if WRITE_TEST
-        // 设置ID1舵机的Flash开关
+        // éè?????úμ?Flash?a1?
 		uart_init();
 		servo_set_flash_switch(1, 1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -634,7 +639,7 @@ void main()
 		servo_set_flash_switch_analysis(receive_data);
 		delay_ms(1000);
 
-		// 设置ID1舵机的应答延时时间
+		// éè?????úμ?ó|′e?óê±ê±??
 		uart_init();
 		servo_set_return_delay_time(1, 250,order_buffer,&order_buffer_len);
 
@@ -646,7 +651,7 @@ void main()
 		servo_set_return_delay_time_analysis(receive_data);	 
 		delay_ms(1000);
 
-		// 设置ID1舵机的状态返回级别
+		// éè?????úμ?×′ì?·μ????±e
 		uart_init();
 		servo_set_return_level(1, 2, order_buffer,&order_buffer_len);
 
@@ -658,7 +663,7 @@ void main()
 		servo_set_return_level_analysis(receive_data);	   
 		delay_ms(1000);
 
-		// 设置ID1舵机的波特率
+		// éè?????úμ?2¨ì??ê
 		uart_init();
 		servo_set_baud_rate(1, 3, order_buffer,&order_buffer_len);
 
@@ -670,7 +675,7 @@ void main()
 		servo_set_baud_rate_analysis(receive_data);		 
 		delay_ms(1000);
 
-		// 设置ID1舵机的最小位置限制
+		// éè?????úμ?×?D??????T??
 		uart_init();
 		servo_set_min_angle_limit(1, 0, order_buffer,&order_buffer_len);
 
@@ -682,7 +687,7 @@ void main()
 		servo_set_min_angle_limit_analysis(receive_data);	 
 		delay_ms(1000);
 
-		// 设置ID1舵机的最大位置限制
+		// éè?????úμ?×?′ó?????T??
 		uart_init();
 		servo_set_max_angle_limit(1, 3000, order_buffer,&order_buffer_len);
 
@@ -694,7 +699,7 @@ void main()
 		servo_set_max_angle_limit_analysis(receive_data);	 
 		delay_ms(1000);
 
-		// 设置ID1舵机的温度上限
+		// éè?????úμ????èé??T
 		uart_init();
 		servo_set_max_temperature_limit(1, 100, order_buffer,&order_buffer_len);
 
@@ -706,7 +711,7 @@ void main()
 		servo_set_max_temperature_limit_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的电压上限
+		// éè?????úμ?μ??1é??T
 		uart_init();
 		servo_set_max_voltage_limit(1,90, order_buffer,&order_buffer_len);
 
@@ -718,7 +723,7 @@ void main()
 		servo_set_max_voltage_limit_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的电压下限
+		// éè?????úμ?μ??1???T
 		uart_init();
 		servo_set_min_voltage_limit(1, 33, order_buffer,&order_buffer_len);
 
@@ -730,7 +735,7 @@ void main()
 		servo_set_min_voltage_limit_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的PWM上限
+		// éè?????úμ?PWMé??T
 		uart_init();
 		servo_set_max_pwm_limit(1, 1000, order_buffer,&order_buffer_len);
 
@@ -742,7 +747,7 @@ void main()
 		servo_set_max_pwm_limit_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的电流上限
+		// éè?????úμ?μ?á÷é??T
 		uart_init();
 		servo_set_max_current_limit(1, 400, order_buffer,&order_buffer_len);
 
@@ -754,7 +759,7 @@ void main()
 		servo_set_max_current_limit_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的电流保护时间
+		// éè?????úμ?μ?á÷±￡?¤ê±??
 		uart_init();
 		servo_set_current_shutdown_time(1, 1000, order_buffer,&order_buffer_len);
 
@@ -766,7 +771,7 @@ void main()
 		servo_set_current_shutdown_time_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置ID1舵机的正转死区
+		// éè?????úμ??y×a?à??
 		uart_init();
 		servo_set_cw_deadband(1, 1, order_buffer,&order_buffer_len);
 
@@ -778,7 +783,7 @@ void main()
 		servo_set_cw_deadband_analysis(receive_data);		
 		delay_ms(1000);
 
-		// 设置ID1舵机的反转死区
+		// éè?????úμ?·′×a?à??
 		uart_init();
 		servo_set_ccw_deadband(1, 1, order_buffer,&order_buffer_len);
 
@@ -790,7 +795,7 @@ void main()
 		servo_set_ccw_deadband_analysis(receive_data); 
 		delay_ms(1000);
 
-		// 设置ID1舵机的PWM叠加值
+		// éè?????úμ?PWMμt?ó?μ
 		uart_init();
 		servo_set_pwm_punch(1, 1, order_buffer,&order_buffer_len);
 
@@ -802,7 +807,7 @@ void main()
 		servo_set_pwm_punch_analysis(receive_data);		 
 		delay_ms(1000);
 
-		// 设置ID1舵机的位置控制P增益
+		// éè?????úμ?????????P??ò?
 		uart_init();
 		servo_set_position_control_p_gain(1, 6000, order_buffer,&order_buffer_len);
 
@@ -814,7 +819,7 @@ void main()
 		servo_set_position_control_p_gain_analysis(receive_data); 
 		delay_ms(1000);
 
-		// 设置ID1舵机的位置控制I增益
+		// éè?????úμ?????????I??ò?
 		uart_init();
 		servo_set_position_control_i_gain(1, 1, order_buffer,&order_buffer_len);
 
@@ -826,7 +831,7 @@ void main()
 		servo_set_position_control_i_gain_analysis(receive_data);  
 		delay_ms(1000);
 
-		// 设置ID1舵机的位置控制D增益
+		// éè?????úμ?????????D??ò?
 		uart_init();
 		servo_set_position_control_d_gain(1, 151, order_buffer,&order_buffer_len);
 
@@ -838,7 +843,7 @@ void main()
 		servo_set_position_control_d_gain_analysis(receive_data); 
 		delay_ms(1000);
 
-		// 设置ID1舵机的LED报警条件
+		// éè?????úμ?LED±¨?ˉì??t
 		uart_init();
 		servo_set_led_condition(1, 36, order_buffer,&order_buffer_len);
 
@@ -850,7 +855,7 @@ void main()
 		servo_set_led_condition_analysis(receive_data);		   
 		delay_ms(1000);
 
-		// 设置ID1舵机的卸载保护条件
+		// éè?????úμ?D???±￡?¤ì??t
 		uart_init();
 		servo_set_shutdown_conditions(1, 36, order_buffer,&order_buffer_len);
 
@@ -862,7 +867,7 @@ void main()
 		servo_set_shutdown_conditions_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置ID1舵机的LED开关
+		// éè?????úμ?LED?a1?
 		uart_init();
 		servo_set_led_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -874,7 +879,7 @@ void main()
 		servo_set_led_switch_analysis(receive_data);	 
 		delay_ms(1000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 
@@ -885,7 +890,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的控制模式
+		// éè?????úμ??????￡ê?
 		uart_init();
 		servo_set_control_mode(1, 3, order_buffer,&order_buffer_len);
 
@@ -896,7 +901,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -907,7 +912,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的目标PWM
+		// éè?????úμ???±êPWM
 		uart_init();
 		servo_set_target_pwm(1, 1000, order_buffer,&order_buffer_len);
 
@@ -919,7 +924,7 @@ void main()
 		servo_set_target_pwm_analysis(receive_data);  
 		delay_ms(3000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 
@@ -930,7 +935,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的控制模式
+		// éè?????úμ??????￡ê?
 		uart_init();
 		servo_set_control_mode(1, 2, order_buffer,&order_buffer_len);
 
@@ -941,7 +946,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -952,7 +957,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的目标电流
+		// éè?????úμ???±êμ?á÷
 		uart_init();
 		servo_set_target_current(1, -1000, order_buffer,&order_buffer_len);
 
@@ -964,7 +969,7 @@ void main()
 		servo_set_target_current_analysis(receive_data);   
 		delay_ms(3000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 
@@ -975,7 +980,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的控制模式
+		// éè?????úμ??????￡ê?
 		uart_init();
 		servo_set_control_mode(1, 1, order_buffer,&order_buffer_len);
 
@@ -986,7 +991,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -997,7 +1002,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的控速目标速度
+		// éè?????úμ????ù??±ê?ù?è
 		uart_init();
 		servo_set_velocity_base_target_velocity(1, 3600, order_buffer,&order_buffer_len);
 
@@ -1009,7 +1014,7 @@ void main()
 		servo_set_velocity_base_target_velocity_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置ID1舵机的控速目标加速度
+		// éè?????úμ????ù??±ê?ó?ù?è
 		uart_init();
 		servo_set_velocity_base_target_acc(1, 150, order_buffer,&order_buffer_len);
 
@@ -1021,7 +1026,7 @@ void main()
 		servo_set_velocity_base_target_acc_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置ID1舵机的控速目标减速度
+		// éè?????úμ????ù??±ê???ù?è
 		uart_init();
 		servo_set_velocity_base_target_dec(1, 150, order_buffer,&order_buffer_len);
 
@@ -1033,7 +1038,7 @@ void main()
 		servo_set_velocity_base_target_dec_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置ID1舵机的控速目标位置
+		// éè?????úμ????ù??±ê????
 		uart_init();
 		servo_set_velocity_base_target_position(1, 0, order_buffer,&order_buffer_len);
 
@@ -1044,7 +1049,7 @@ void main()
 		servo_set_velocity_base_target_position_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 
@@ -1055,7 +1060,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);		
 		delay_ms(1000);
 
-		// 设置ID1舵机的控制模式
+		// éè?????úμ??????￡ê?
 		uart_init();
 		servo_set_control_mode(1, 0, order_buffer,&order_buffer_len);
 
@@ -1066,7 +1071,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -1077,7 +1082,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);		 
 		delay_ms(1000);
 
-		// 设置ID1舵机的控时目标加速度等级
+		// éè?????úμ???ê±??±ê?ó?ù?èμè??
 		uart_init();
 		servo_set_time_base_target_acc(1, 0, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1088,7 +1093,7 @@ void main()
 		servo_set_time_base_target_acc_analysis(receive_data);	 
 		delay_ms(1000);
 
-		// 设置ID1舵机的控时目标位置和目标运行时间
+		// éè?????úμ???ê±??±ê????oí??±ê??DDê±??
 		uart_init();
 		servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_buffer_len);
 
@@ -1102,12 +1107,7 @@ void main()
 #endif
 
 #if SYNC_WRITE_TEST
-
-    servo.id_counts = 2;            //同步写两个舵机
-    servo.id[0] = 1;                //第一个舵机id为1
-    servo.id[1] = 2;                //第二个舵机id为2
-		
-    // 设置ID1舵机的扭矩开关
+        // éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1117,7 +1117,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的控制模式
+		// éè?????úμ??????￡ê?
 		uart_init();
 		servo_set_control_mode(1, 1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1127,7 +1127,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1137,7 +1137,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	   
 		delay_ms(1000);
 
-		// 设置ID2舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(2, 0, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1147,7 +1147,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);		
 		delay_ms(1000);
 
-		// 设置ID2舵机的控制模式
+		// éè?????úμ??????￡ê?
 		uart_init();
 		servo_set_control_mode(2, 1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1157,7 +1157,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	   
 		delay_ms(1000);
 
-		// 设置ID2舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(2, 1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1167,81 +1167,31 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);		
 		delay_ms(1000);
 
-		// 设置多个舵机的控速目标加速度
-		
-		// id为1，2的舵机加速度分别设置为150，150，值和前面的id设置对应
-		servo.acc_velocity[0] = 150;          
-		servo.acc_velocity[1] = 150;     
-
+		// éè???à?????úμ????ù??±ê?ó?ù?è
 		uart_init();
-		servo_sync_write_velocity_base_target_acc(servo, order_buffer,&order_buffer_len);
+		servo_sync_write_velocity_base_target_acc(2, sync_write_velocity_base_target_acc, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
-		// 设置多个舵机的控速目标减速度
-		
-		// id为1，2的舵机减速度分别设置为150，150，值和前面的id设置对应
-		servo.dec_velocity[0] = 150;           
-		servo.dec_velocity[1] = 150;     
-
+		// éè???à?????úμ????ù??±ê???ù?è
 		uart_init();
-		servo_sync_write_velocity_base_target_dec(servo, order_buffer,&order_buffer_len);
+		servo_sync_write_velocity_base_target_dec(2, sync_write_velocity_base_target_dec, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
-		// 设置多个舵机的控速目标速度
-		
-		// id为1，2的舵机速度分别设置为3600，1800，值和前面的id设置对应
-    servo.velocity[0] = 3600;
-    servo.velocity[1] = 1800;
-		
+		// éè???à?????úμ????ù??±ê?ù?è
 		uart_init();
-		servo_sync_write_velocity_base_target_velocity(servo, order_buffer,&order_buffer_len);
+		servo_sync_write_velocity_base_target_velocity(2, sync_write_velocity_base_target_velocity, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
-		// 设置多个舵机的控速目标位置
-		
-		// id为1，2的舵机运动位置分别设置为0，0，值和前面的id设置对应
-    servo.position[0] = 0;
-    servo.position[1] = 0;
-		
+		// éè???à?????úμ????ù??±ê????
 		uart_init();
-		servo_sync_write_velocity_base_target_position(servo, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-		delay_ms(1000);
-		
-		// 设置多个舵机的控速目标位置和速度
-		
-		//id为1，2的舵机速度分别设置为1800，3600，位置分别设置为3000，3000
-		servo.velocity[0] = 1800;
-		servo.velocity[1] = 3600;
-		servo.position[0] = 3000;
-		servo.position[1] = 3000;
-		
-		uart_init();
-		servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-		delay_ms(1000);
-		
-		//设置多个舵机的加速度，减速度，速度和位置
-
-    //id为1，2的舵机速度分别设置为3600，3600，位置分别设置为0，0,加速度分别设置为100，100，减速度分别设置为100，100
-    servo.velocity[0] = 3600;
-    servo.velocity[1] = 3600;
-    servo.position[0] = 0;
-    servo.position[1] = 0;
-    servo.acc_velocity[0] = 100;
-    servo.acc_velocity[1] = 100;
-    servo.dec_velocity[0] = 100;
-    servo.dec_velocity[1] = 100;
-
-		uart_init();
-		servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer,&order_buffer_len);
+		servo_sync_write_velocity_base_target_position(2, sync_write_velocity_base_target_position, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1251,7 +1201,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	   
 		delay_ms(1000);
 
-		// 设置ID1舵机的控制模式
+		// éè?????úμ??????￡ê?
 		uart_init();
 		servo_set_control_mode(1, 0, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1261,7 +1211,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID1舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1271,7 +1221,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置ID2舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(2, 0, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1281,7 +1231,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	   
 		delay_ms(1000);
 
-		// 设置ID2舵机的控制模式
+		// éè?????úμ??????￡ê?
 		uart_init();
 		servo_set_control_mode(2, 0, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1291,7 +1241,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置ID2舵机的扭矩开关
+		// éè?????úμ??¤???a1?
 		uart_init();
 		servo_set_torque_switch(2, 1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -1301,27 +1251,15 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置多个舵机的控时目标加速度等级
-		
-		//设置舵机id为1，2的加速度等级分别为0，0
-		servo.acc_velocity_grade[0] = 0;
-		servo.acc_velocity_grade[1] = 0;
-		
+		// éè???à?????úμ???ê±??±ê?ó?ù?èμè??
 		uart_init();
-		servo_sync_write_time_base_target_acc(servo, order_buffer,&order_buffer_len);
+		servo_sync_write_time_base_target_acc(1,sync_write_time_base_target_acc, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
-		// 设置多个舵机的控时目标位置和运动时间
-		
-		//设置舵机id为1，2的运动位置为3000，3000，运动时间为500ms，1500ms
-		servo.position[0] = 3000;
-		servo.position[1] = 3000;
-		servo.time[0] = 500;
-		servo.time[1] = 1500;
-		
+		// éè???à?????úμ???ê±??±ê????oí???ˉê±??
 		uart_init();
-		servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_buffer_len);
+		servo_sync_write_time_base_target_position_and_moving_time(2, sync_write_time_base_target_position_and_moving_time, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 #endif
@@ -1332,10 +1270,10 @@ void main()
 
 void uart() interrupt 4
 {
-	if(RI)                                          // 检查接收中断标志
+	if(RI)                                          // ?ì2é?óê??D??±ê??
 	{
-		RI = 0;                                     // 清除接收中断标志
-		receive_data[receive_len++] = SBUF;         // 将接收到的数据存储到缓冲区
+		RI = 0;                                     // ??3y?óê??D??±ê??
+		receive_data[receive_len++] = SBUF;         // ???óê?μ?μ?êy?Y′?′￠μ??o3???
 	}				
 }
 
