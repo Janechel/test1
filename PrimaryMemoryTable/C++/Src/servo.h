@@ -97,6 +97,8 @@ struct servo_sync_parameter
 {
     uint8_t id_counts;                  //同步写操作舵机的数量
     uint8_t id[20];                     //同步写操作舵机的id
+    uint8_t torque_switch[20];          //舵机扭矩开关状态
+    uint8_t control_mode[20];           //舵机控制模式
     uint16_t position[20];              //舵机位置
     uint16_t time[20];                  //舵机运行时间
     uint16_t velocity[20];              //舵机运动速度
@@ -235,6 +237,9 @@ uint8_t servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* 
 //设置舵机的控时目标位置和目标运行时间
 uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t target_position, uint16_t moving_time, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
+//读取舵机的当前位置和当前电流
+uint8_t servo_read_present_position_and_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
 //读取舵机的当前电流
 uint8_t servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
@@ -368,6 +373,12 @@ uint8_t servo_read_model_information(uint8_t id, uint8_t* output_buffer, uint8_t
 //读取舵机的固件版本号
 uint8_t servo_read_firmware_version(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
+//设置多个舵机的扭矩开关
+uint8_t servo_sync_write_torque_switch(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置多个舵机的控制模式
+uint8_t servo_sync_write_control_mode(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
 //设置多个舵机的控速目标加速度、减速度、速度和位置
 uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
@@ -499,6 +510,9 @@ uint8_t servo_set_time_base_target_acc_analysis(uint8_t* response_packet);
 
 //设置舵机控时目标位置和运行时间指令的应答包解析
 uint8_t servo_set_time_base_target_position_and_moving_time_analysis(uint8_t* response_packet);
+
+//读取舵机的当前位置和当前电流的指令应答包解析
+uint8_t servo_read_present_position_and_present_current_analysis(uint8_t* response_packet, uint16_t* position, uint16_t* current);
 
 //读取舵机的当前电流的指令应答包解析
 uint8_t servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* analysis_data);

@@ -376,7 +376,6 @@ uint8_t servo_set_max_angle_limit(uint8_t id, uint16_t max_angle_limit, uint8_t*
     buffer[0] = max_angle_limit & 0xff;
     buffer[1] = (max_angle_limit >> 8) & 0xff;
 
-
     servo_write(id, MAX_ANGLE_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -391,8 +390,6 @@ uint8_t servo_set_max_angle_limit(uint8_t id, uint16_t max_angle_limit, uint8_t*
  */
 uint8_t servo_set_max_temperature_limit(uint8_t id, uint8_t max_temperature_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
-
     servo_write(id, MAX_TEMPERATURE_LIMIT, 1, &max_temperature_limit, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -407,7 +404,6 @@ uint8_t servo_set_max_temperature_limit(uint8_t id, uint8_t max_temperature_limi
  */
 uint8_t servo_set_max_voltage_limit(uint8_t id, uint8_t max_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, MAX_VOLTAGE_LIMIT, 1, &max_voltage_limit, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -422,7 +418,6 @@ uint8_t servo_set_max_voltage_limit(uint8_t id, uint8_t max_voltage_limit, uint8
  */
 uint8_t servo_set_min_voltage_limit(uint8_t id, uint8_t min_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, MIN_VOLTAGE_LIMIT, 1, &min_voltage_limit, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -437,13 +432,10 @@ uint8_t servo_set_min_voltage_limit(uint8_t id, uint8_t min_voltage_limit, uint8
  */
 uint8_t servo_set_max_pwm_limit(uint8_t id, uint16_t max_pwm_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[2] = { 0 };
-
 
     buffer[0] = max_pwm_limit & 0xff;
     buffer[1] = (max_pwm_limit >> 8) & 0xff;
-
 
     servo_write(id, MAX_PWM_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
@@ -459,13 +451,10 @@ uint8_t servo_set_max_pwm_limit(uint8_t id, uint16_t max_pwm_limit, uint8_t* out
  */
 uint8_t servo_set_max_current_limit(uint8_t id, uint16_t max_current_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[2] = { 0 };
-
 
     buffer[0] = max_current_limit & 0xff;
     buffer[1] = (max_current_limit >> 8) & 0xff;
-
 
     servo_write(id, MAX_CURRENT_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
@@ -481,13 +470,10 @@ uint8_t servo_set_max_current_limit(uint8_t id, uint16_t max_current_limit, uint
  */
 uint8_t servo_set_current_shutdown_time(uint8_t id, uint16_t current_shutdown_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[2] = { 0 };
-
 
     buffer[0] = current_shutdown_time & 0xff;
     buffer[1] = (current_shutdown_time >> 8) & 0xff;
-
 
     servo_write(id, CURRENT_TIME_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
@@ -503,7 +489,6 @@ uint8_t servo_set_current_shutdown_time(uint8_t id, uint16_t current_shutdown_ti
  */
 uint8_t servo_set_cw_deadband(uint8_t id, uint8_t cw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, CW_DEADBAND, 1, &cw_deadband, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -518,7 +503,6 @@ uint8_t servo_set_cw_deadband(uint8_t id, uint8_t cw_deadband, uint8_t* output_b
  */
 uint8_t servo_set_ccw_deadband(uint8_t id, uint8_t ccw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, CCW_DEADBAND, 1, &ccw_deadband, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -533,7 +517,6 @@ uint8_t servo_set_ccw_deadband(uint8_t id, uint8_t ccw_deadband, uint8_t* output
  */
 uint8_t servo_set_pwm_punch(uint8_t id, uint8_t pwm_punch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, PWM_PUNCH, 1, &pwm_punch, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -548,13 +531,10 @@ uint8_t servo_set_pwm_punch(uint8_t id, uint8_t pwm_punch, uint8_t* output_buffe
  */
 uint8_t servo_set_position_control_p_gain(uint8_t id, uint16_t position_control_P_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[2] = { 0 };
-
 
     buffer[0] = position_control_P_gain & 0xff;
     buffer[1] = (position_control_P_gain >> 8) & 0xff;
-
 
     servo_write(id, POSITION_P_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
@@ -570,13 +550,10 @@ uint8_t servo_set_position_control_p_gain(uint8_t id, uint16_t position_control_
  */
 uint8_t servo_set_position_control_i_gain(uint8_t id, uint16_t position_control_I_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[2] = { 0 };
-
 
     buffer[0] = position_control_I_gain & 0xff;
     buffer[1] = (position_control_I_gain >> 8) & 0xff;
-
 
     servo_write(id, POSITION_I_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
@@ -592,13 +569,10 @@ uint8_t servo_set_position_control_i_gain(uint8_t id, uint16_t position_control_
  */
 uint8_t servo_set_position_control_d_gain(uint8_t id, uint16_t position_control_D_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[2] = { 0 };
-
 
     buffer[0] = position_control_D_gain & 0xff;
     buffer[1] = (position_control_D_gain >> 8) & 0xff;
-
 
     servo_write(id, POSITION_D_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
@@ -614,7 +588,6 @@ uint8_t servo_set_position_control_d_gain(uint8_t id, uint16_t position_control_
  */
 uint8_t servo_set_led_condition(uint8_t id, uint8_t led_condition, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, LED_CONDITION, 1, &led_condition, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -629,7 +602,6 @@ uint8_t servo_set_led_condition(uint8_t id, uint8_t led_condition, uint8_t* outp
  */
 uint8_t servo_set_shutdown_conditions(uint8_t id, uint8_t shutdown_conditions, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, SHUTDOWN_CONDITION, 1, &shutdown_conditions, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -644,7 +616,6 @@ uint8_t servo_set_shutdown_conditions(uint8_t id, uint8_t shutdown_conditions, u
  */
 uint8_t servo_set_control_mode(uint8_t id, uint8_t control_mode, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, CONTROL_MODE, 1, &control_mode, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -659,7 +630,6 @@ uint8_t servo_set_control_mode(uint8_t id, uint8_t control_mode, uint8_t* output
  */
 uint8_t servo_set_flash_switch(uint8_t id, uint8_t flash_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, FLASH_SW, 1, &flash_switch, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -674,7 +644,6 @@ uint8_t servo_set_flash_switch(uint8_t id, uint8_t flash_switch, uint8_t* output
  */
 uint8_t servo_set_led_switch(uint8_t id, uint8_t led_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, LED_SW, 1, &led_switch, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -689,7 +658,6 @@ uint8_t servo_set_led_switch(uint8_t id, uint8_t led_switch, uint8_t* output_buf
  */
 uint8_t servo_set_torque_switch(uint8_t id, uint8_t torque_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, TORQUE_SW, 1, &torque_switch, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -704,13 +672,10 @@ uint8_t servo_set_torque_switch(uint8_t id, uint8_t torque_switch, uint8_t* outp
  */
 uint8_t servo_set_target_pwm(uint8_t id, int16_t target_pwm, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[2] = { 0 };
-
 
     buffer[0] = target_pwm & 0xff;
     buffer[1] = (target_pwm >> 8) & 0xff;
-
 
     servo_write(id, TARGET_PWM_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
@@ -726,13 +691,10 @@ uint8_t servo_set_target_pwm(uint8_t id, int16_t target_pwm, uint8_t* output_buf
  */
 uint8_t servo_set_target_current(uint8_t id, int16_t target_current, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[2] = { 0 };
-
 
     buffer[0] = target_current & 0xff;
     buffer[1] = (target_current >> 8) & 0xff;
-
 
     servo_write(id, TARGET_CURRENT_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
@@ -748,13 +710,10 @@ uint8_t servo_set_target_current(uint8_t id, int16_t target_current, uint8_t* ou
  */
 uint8_t servo_set_velocity_base_target_position(uint8_t id, uint16_t target_position, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[2] = { 0 };
-
 
     buffer[0] = target_position & 0xff;
     buffer[1] = (target_position >> 8) & 0xff;
-
 
     servo_write(id, VELOCITY_BASE_TARGET_POSITION_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
@@ -770,13 +729,10 @@ uint8_t servo_set_velocity_base_target_position(uint8_t id, uint16_t target_posi
  */
 uint8_t servo_set_velocity_base_target_velocity(uint8_t id, uint16_t target_velocity, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[2] = { 0 };
-
 
     buffer[0] = target_velocity & 0xff;
     buffer[1] = (target_velocity >> 8) & 0xff;
-
 
     servo_write(id, VELOCITY_BASE_TARGET_VELOCITY_L, 2, buffer, output_buffer, output_buffer_len);
     return SUCCESS;
@@ -792,7 +748,6 @@ uint8_t servo_set_velocity_base_target_velocity(uint8_t id, uint16_t target_velo
  */
 uint8_t servo_set_velocity_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, VELOCITY_BASE_TARGET_ACC, 1, &target_acc, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -807,7 +762,6 @@ uint8_t servo_set_velocity_base_target_acc(uint8_t id, uint8_t target_acc, uint8
  */
 uint8_t servo_set_velocity_base_target_dec(uint8_t id, uint8_t target_dec, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, VELOCITY_BASE_TARGET_DEC, 1, &target_dec, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -822,7 +776,6 @@ uint8_t servo_set_velocity_base_target_dec(uint8_t id, uint8_t target_dec, uint8
  */
 uint8_t servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_write(id, TIME_BASE_TARGET_ACC, 1, &target_acc, output_buffer, output_buffer_len);
     return SUCCESS;
 }
@@ -838,9 +791,7 @@ uint8_t servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* 
  */
 uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t target_position, uint16_t moving_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     uint8_t buffer[4] = { 0 };
-
 
     buffer[0] = target_position & 0xff;
     buffer[1] = (target_position >> 8) & 0xff;
@@ -861,8 +812,21 @@ uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t
  */
 uint8_t servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_read(id, PRESENT_CURRENT_L, 2, output_buffer, output_buffer_len);
+
+    return SUCCESS;
+}
+
+/**
+ * @brief 读取舵机的当前位置和当前电流
+ * @param id 舵机ID
+ * @param output_buffer 用于存放指令包的输出缓冲区的指针
+ * @param output_buffer_len 指令包的长度
+ * @return 执行结果，成功或者错误标志
+ */
+uint8_t servo_read_present_position_and_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+{
+    servo_read(id, PRESENT_POSITION_L, 4, output_buffer, output_buffer_len);
 
     return SUCCESS;
 }
@@ -876,7 +840,6 @@ uint8_t servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* 
  */
 uint8_t servo_read_present_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_read(id, PRESENT_POSITION_L, 2, output_buffer, output_buffer_len);
 
     return SUCCESS;
@@ -891,7 +854,6 @@ uint8_t servo_read_present_position(uint8_t id, uint8_t* output_buffer, uint8_t*
  */
 uint8_t servo_read_present_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_read(id, PRESENT_VELOCITY_L, 2, output_buffer, output_buffer_len);
 
     return SUCCESS;
@@ -906,7 +868,6 @@ uint8_t servo_read_present_velocity(uint8_t id, uint8_t* output_buffer, uint8_t*
  */
 uint8_t servo_read_present_profile_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-
     servo_read(id, PRESENT_PROFILE_POSITION_L, 2, output_buffer, output_buffer_len);
 
     return SUCCESS;
@@ -1568,6 +1529,54 @@ uint8_t servo_sync_write_velocity_base_target_position_and_velocity(struct servo
     sync_write_data(VELOCITY_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     free(parameter);
+
+    return SUCCESS;
+}
+
+/**
+ * @brief 设置多个舵机的扭矩开关
+ * @param servo 舵机同步写控制参数结构体
+ * @param output_buffer 用于存放指令包的输出缓冲区的指针
+ * @param output_buffer_len 指令包的长度
+ * @return 执行结果，成功或者错误标志
+ */
+uint8_t servo_sync_write_torque_switch(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+{
+    uint8_t* parameter = (uint8_t*)malloc((servo.id_counts * 1 + 2 + servo.id_counts) * sizeof(uint8_t));
+
+    parameter[0] = TORQUE_SW;
+    parameter[1] = 1;
+    for (int i = 0; i < servo.id_counts; i++)
+    {
+        parameter[2 + i * 2] = servo.id[i];
+        parameter[3 + i * 2] = servo.torque_switch[i] & 0xff;
+    }
+
+    sync_write_data(TORQUE_SW, servo.id_counts, parameter, output_buffer, output_buffer_len);
+
+    return SUCCESS;
+}
+
+/**
+ * @brief 设置多个舵机的控制模式
+ * @param servo 舵机同步写控制参数结构体
+ * @param output_buffer 用于存放指令包的输出缓冲区的指针
+ * @param output_buffer_len 指令包的长度
+ * @return 执行结果，成功或者错误标志
+ */
+uint8_t servo_sync_write_control_mode(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+{
+    uint8_t* parameter = (uint8_t*)malloc((servo.id_counts * 1 + 2 + servo.id_counts) * sizeof(uint8_t));
+
+    parameter[0] = CONTROL_MODE;
+    parameter[1] = 1;
+    for (int i = 0; i < servo.id_counts; i++)
+    {
+        parameter[2 + i * 2] = servo.id[i];
+        parameter[3 + i * 2] = servo.control_mode[i] & 0xff;
+    }
+
+    sync_write_data(CONTROL_MODE, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     return SUCCESS;
 }
@@ -2491,6 +2500,34 @@ uint8_t servo_read_present_position_analysis(uint8_t* response_packet, uint16_t*
         *data = data_buffer[1];
         *data = *data << 8;
         *data = *data | data_buffer[0];
+
+        return SUCCESS;
+    }
+}
+
+/**
+ * @brief 读取舵机的当前位置和当前电流的指令应答包解析
+ * @param response_packet 应答包数据
+ * @param data
+ * @return 执行结果，成功或者错误标志
+ */
+uint8_t servo_read_present_position_and_present_current_analysis(uint8_t* response_packet, uint16_t* position, uint16_t* current)
+{
+    uint8_t ret;
+    uint8_t* data_buffer = nullptr;
+
+    ret = servo_unpack(response_packet, &data_buffer);
+
+    if (ret != SUCCESS) {
+        return ret;
+    }
+    else {
+        *position = data_buffer[1];
+        *position = *position << 8;
+        *position = *position | data_buffer[0];
+        *current = data_buffer[3];
+        *current = *current << 8;
+        *current = *current | data_buffer[2];
 
         return SUCCESS;
     }
