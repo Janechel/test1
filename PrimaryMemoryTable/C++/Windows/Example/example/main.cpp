@@ -1,17 +1,17 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include "servo.h"
 #include "CSerialPort.h"
 
-#define READ_TEST 0             //¶ÁÈ¡¶æ»úÊı¾İ²âÊÔ
-#define WRITE_TEST 0            //Ğ´Èë¶æ»úÊı¾İ²âÊÔ
-#define SYNC_WRITE_TEST 0       //Í¬²½Ğ´²âÊÔ
-#define PING_TEST 0             //PINGÃüÁî²âÊÔ
-#define FACTORY_RESET_TEST 0    //»Ö¸´³ö³§ÉèÖÃ²âÊÔ
-#define PARAMETER_RESET_TEST 0  //²ÎÊıÖØÖÃ²âÊÔ
-#define REBOOT_TEST 0           //ÖØÆô²âÊÔ
-#define CALIBRATION_TEST 0      //Ğ£ÕıÆ«ÒÆÖµ²âÊÔ
-#define MODIFY_ID 0             //ĞŞ¸Ä¶æ»úID²âÊÔ
-#define MODIFY_UNKNOWN_ID 0     //ĞŞ¸ÄÎ´ÖªID¶æ»ú²âÊÔ
+#define READ_TEST 0             //è¯»å–èˆµæœºæ•°æ®æµ‹è¯•
+#define WRITE_TEST 0            //å†™å…¥èˆµæœºæ•°æ®æµ‹è¯•
+#define SYNC_WRITE_TEST 0       //åŒæ­¥å†™æµ‹è¯•
+#define PING_TEST 0             //PINGå‘½ä»¤æµ‹è¯•
+#define FACTORY_RESET_TEST 0    //æ¢å¤å‡ºå‚è®¾ç½®æµ‹è¯•
+#define PARAMETER_RESET_TEST 0  //å‚æ•°é‡ç½®æµ‹è¯•
+#define REBOOT_TEST 0           //é‡å¯æµ‹è¯•
+#define CALIBRATION_TEST 0      //æ ¡æ­£åç§»å€¼æµ‹è¯•
+#define MODIFY_ID 0             //ä¿®æ”¹å·²çŸ¥èˆµæœºIDæµ‹è¯•
+#define MODIFY_UNKNOWN_ID 0     //ä¿®æ”¹æœªçŸ¥IDèˆµæœºæµ‹è¯•
 
 struct servo_sync_parameter servo;
 
@@ -19,16 +19,19 @@ int main()
 {
 
     uint8_t ret;
-    uint8_t order_buffer[40];                                                                         //´æ·ÅÉú³ÉµÄÖ¸Áî
-    uint8_t order_len = 0;                                                                                  //Ö¸Áî³¤¶È
-    uint8_t pack[40];                                                                                 //´æ·Å½ÓÊÕµÄÓ¦´ğ°ü
-    uint16_t analysis_data = 0;                                                                             //Ó¦´ğ°ü½âÎö³öÀ´µÄÊı¾İ
+    uint8_t order_buffer[40];                                      //å­˜æ”¾ç”Ÿæˆçš„æŒ‡ä»¤
+    uint8_t order_len = 0;                                         //æŒ‡ä»¤é•¿åº¦
+    uint8_t pack[40];                                              //å­˜æ”¾æ¥æ”¶çš„åº”ç­”åŒ…
+    uint16_t analysis_data = 0;                                    //åº”ç­”åŒ…è§£æå‡ºæ¥çš„æ•°æ®
+    uint16_t position = 0;                                         //å½“å‰ä½ç½®
+    uint16_t current = 0;                                          //å½“å‰ç”µæµ
+    uint8_t write_buffer[20] = { 0 };                              //å†™å…¥å†…å­˜è¡¨æ•°æ®                                                                      //åº”ç­”åŒ…è§£æå‡ºæ¥çš„æ•°æ®
 
     CSerialPort serialPort;
 
-    //Êµ¼Ê´®¿Ú¶ÁÈ¡µ½µÄ×Ö½ÚÊı
+    //å®é™…ä¸²å£è¯»å–åˆ°çš„å­—èŠ‚æ•°
     DWORD bytesRead;
-    //Êµ¼Ê´®¿ÚĞ´ÈëµÄ×Ö½ÚÊı
+    //å®é™…ä¸²å£å†™å…¥çš„å­—èŠ‚æ•°
     DWORD bytesWritten;
 
     if (serialPort.Open(12, 1000000))
@@ -37,13 +40,13 @@ int main()
     }
     else
     {
-        // ´®¿Ú´ò¿ªÊ§°Ü
+        // ä¸²å£æ‰“å¼€å¤±è´¥
         PRINTF("\r\nFailed to open serial port.");
         return -1;
     }
 
 #if PING_TEST
-    //ÏòidÎª1µÄ¶æ»ú·¢ËÍpingÖ¸Áî
+    //å‘idä¸º1çš„èˆµæœºå‘é€pingæŒ‡ä»¤
     servo_ping(1, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -71,7 +74,7 @@ int main()
 #endif
 
 #if CALIBRATION_TEST
-    //Ğ£ÕıÆ«ÒÆÖµ
+    //æ ¡æ­£åç§»å€¼
     servo_calibration(1, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -100,7 +103,7 @@ int main()
 #endif
 
 #if FACTORY_RESET_TEST
-    //»Ö¸´³ö³§ÉèÖÃ
+    //æ¢å¤å‡ºå‚è®¾ç½®
     servo_factory_reset(1, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -128,7 +131,7 @@ int main()
 #endif
 
 #if PARAMETER_RESET_TEST
-    //²ÎÊıÖØÖÃ
+    //å‚æ•°é‡ç½®
     servo_parameter_reset(1, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -156,7 +159,7 @@ int main()
 #endif
 
 #if REBOOT_TEST
-    //ÖØÆô¶æ»ú
+    //é‡å¯èˆµæœº
     servo_reboot(1, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -169,8 +172,36 @@ int main()
     Sleep(20);
 #endif
 
+#if MODIFY_ID
+    //ä¿®æ”¹ID1èˆµæœºIDä¸º2
+    servo_modify_known_id(1, 2, order_buffer, &order_len);
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nModify successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(20);
+#endif
+
+#if MODIFY_UNKNOWN_ID
+    //å°†æœªçŸ¥IDèˆµæœºçš„IDç¼–å·ä¿®æ”¹ä¸º1
+    servo_modify_unknown_id(1, order_buffer, &order_len);
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nModify successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(20);
+#endif
+
 #if READ_TEST
-    //¶ÁÈ¡ID1¶æ»úµÄµ±Ç°µçÁ÷
+    //è¯»å–ID1èˆµæœºçš„å½“å‰ç”µæµ
     servo_read_present_current(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -185,8 +216,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_present_current_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent current is: %d", analysis_data);
+        ret = servo_read_present_current_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent current is: %d", analysis_data);
+        }
     }
     else
     {
@@ -194,7 +228,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµ±Ç°Î»ÖÃ
+    //è¯»å–ID1èˆµæœºçš„å½“å‰ä½ç½®
     servo_read_present_position(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -209,8 +243,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_present_position_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent position is: %d", analysis_data);
+        ret = servo_read_present_position_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent position is: %d", analysis_data);
+        }
     }
     else
     {
@@ -218,7 +255,34 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµ±Ç°ËÙ¶È
+    //è¯»å–ID1èˆµæœºçš„å½“å‰ä½ç½®å’Œå½“å‰ç”µæµ
+    servo_read_present_position_and_present_current(1, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nData sent successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        ret = servo_read_present_position_and_present_current_analysis(pack, &position, &current);
+        if (ret == SUCCESS)
+        {
+            PRINTF("present position is : % d, present current is : % d\r\n", position, current);
+        }
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //è¯»å–ID1èˆµæœºçš„å½“å‰é€Ÿåº¦
     servo_read_present_velocity(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -232,8 +296,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_present_velocity_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent velocity is: %d", analysis_data);
+        ret = servo_read_present_velocity_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent velocity is: %d", analysis_data);
+        }
     }
     else
     {
@@ -241,7 +308,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµ±Ç°µÄ¹æ»®Î»ÖÃ
+    //è¯»å–ID1èˆµæœºçš„å½“å‰çš„è§„åˆ’ä½ç½®
     servo_read_present_profile_position(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -256,8 +323,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_present_profile_position_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent profile position is: %d", analysis_data);
+        ret = servo_read_present_profile_position_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent profile position is: %d", analysis_data);
+        }
     }
     else
     {
@@ -265,7 +335,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµ±Ç°¹æ»®ËÙ¶È
+    //è¯»å–ID1èˆµæœºçš„å½“å‰è§„åˆ’é€Ÿåº¦
     servo_read_present_profile_velocity(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -280,8 +350,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_present_profile_velocity_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent profile velocity is: %d", analysis_data);
+        ret = servo_read_present_profile_velocity_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent profile velocity is: %d", analysis_data);
+        }
     }
     else
     {
@@ -289,7 +362,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµ±Ç°PWM
+    //è¯»å–ID1èˆµæœºçš„å½“å‰PWM
     servo_read_present_pwm(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -304,8 +377,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_present_pwm_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent pwm is: %d", analysis_data);
+        ret = servo_read_present_pwm_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent pwm is: %d", analysis_data);
+        }
     }
     else
     {
@@ -313,7 +389,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµ±Ç°ÎÂ¶È
+    //è¯»å–ID1èˆµæœºçš„å½“å‰æ¸©åº¦
     servo_read_present_temperature(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -328,8 +404,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_present_temperature_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent temperature is: %d", analysis_data);
+        ret = servo_read_present_temperature_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent temperature is: %d", analysis_data);
+        }
     }
     else
     {
@@ -337,7 +416,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµ±Ç°ÊäÈëµçÑ¹
+    //è¯»å–ID1èˆµæœºçš„å½“å‰è¾“å…¥ç”µå‹
     servo_read_present_voltage(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -352,8 +431,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_present_voltage_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent voltage is: %d", analysis_data);
+        ret = servo_read_present_voltage_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent voltage is: %d", analysis_data);
+        }
     }
     else
     {
@@ -361,7 +443,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ¿ØÊ±Ä¿±êÔËĞĞÊ±¼ä
+    //è¯»å–ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡è¿è¡Œæ—¶é—´
     servo_read_time_base_target_moving_time(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -376,8 +458,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_time_base_target_moving_time_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent time base target moving time is: %d", analysis_data);
+        ret = servo_read_time_base_target_moving_time_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent time base target moving time is: %d", analysis_data);
+        }
     }
     else
     {
@@ -385,7 +470,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃ
+    //è¯»å–ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡ä½ç½®
     servo_read_time_base_target_position(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -400,8 +485,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_time_base_target_position_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent time base target position is: %d", analysis_data);
+        ret = servo_read_time_base_target_position_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent time base target position is: %d", analysis_data);
+        }
     }
     else
     {
@@ -409,7 +497,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ¿ØÊ±¼ÓËÙ¶ÈµÈ¼¶
+    //è¯»å–ID1èˆµæœºçš„æ§æ—¶åŠ é€Ÿåº¦ç­‰çº§
     servo_read_time_base_target_acc(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -424,8 +512,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_time_base_target_acc_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent time base target acc is: %d", analysis_data);
+        ret = servo_read_time_base_target_acc_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent time base target acc is: %d", analysis_data);
+        }
     }
     else
     {
@@ -433,7 +524,63 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ¿ØËÙÄ¿±ê¼õËÙ¶È
+    //è¯»å–ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡ä½ç½®å’Œè¿è¡Œæ—¶é—´
+    servo_read(1, 0x3C, 4, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nData sent successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("the time base target position and moving time pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //è¯»å–ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡åŠ é€Ÿåº¦ç­‰çº§ã€ä½ç½®å’Œè¿è¡Œæ—¶é—´
+    servo_read(1, 0x3B, 5, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nData sent successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("the time base target acc, position and moving time pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡å‡é€Ÿåº¦
     servo_read_velocity_base_target_dec(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -448,8 +595,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_velocity_base_target_dec_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent velocity base target dec is: %d", analysis_data);
+        ret = servo_read_velocity_base_target_dec_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent velocity base target dec is: %d", analysis_data);
+        }
     }
     else
     {
@@ -457,7 +607,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ¿ØËÙÄ¿±ê¼ÓËÙ¶È
+    //è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡åŠ é€Ÿåº¦
     servo_read_velocity_base_target_acc(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -472,8 +622,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_velocity_base_target_acc_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent velocity base target acc is: %d", analysis_data);
+        ret = servo_read_velocity_base_target_acc_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent velocity base target acc is: %d", analysis_data);
+        }
     }
     else
     {
@@ -481,7 +634,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ¿ØËÙÄ¿±êËÙ¶È
+    //è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡é€Ÿåº¦
     servo_read_velocity_base_target_velocity(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -496,8 +649,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_velocity_base_target_velocity_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent velocity base target velocity is: %d", analysis_data);
+        ret = servo_read_velocity_base_target_velocity_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent velocity base target velocity is: %d", analysis_data);
+        }
     }
     else
     {
@@ -505,7 +661,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃ
+    //è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®
     servo_read_velocity_base_target_position(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -520,8 +676,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_velocity_base_target_position_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent velocity base target position is: %d", analysis_data);
+        ret = servo_read_velocity_base_target_position_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent velocity base target position is: %d", analysis_data);
+        }
     }
     else
     {
@@ -529,7 +688,63 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄÄ¿±êµçÁ÷
+    //è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®å’Œé€Ÿåº¦
+    servo_read(1, 0x35, 4, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nData sent successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("the velocity base target position and velocity pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®ã€é€Ÿåº¦å’ŒåŠ å‡é€Ÿåº¦
+    servo_read(1, 0x35, 6, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nData sent successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("the velocity base target position,velocity,acc and dec pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //è¯»å–ID1èˆµæœºçš„ç›®æ ‡ç”µæµ
     servo_read_target_current(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -544,8 +759,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_target_current_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent target current is: %d", analysis_data);
+        ret = servo_read_target_current_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent target current is: %d", analysis_data);
+        }
     }
     else
     {
@@ -553,7 +771,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄÄ¿±êPWM
+    //è¯»å–ID1èˆµæœºçš„ç›®æ ‡PWM
     servo_read_target_pwm(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -568,8 +786,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_target_pwm_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent target pwm is: %d", analysis_data);
+        ret = servo_read_target_pwm_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent target pwm is: %d", analysis_data);
+        }
     }
     else
     {
@@ -577,7 +798,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    //è¯»å–ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³
     servo_read_torque_switch(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -592,8 +813,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_torque_switch_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent torque switch is: %d", analysis_data);
+        ret = servo_read_torque_switch_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent torque switch is: %d", analysis_data);
+        }
     }
     else
     {
@@ -601,7 +825,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄLED¿ª¹Ø
+    //è¯»å–ID1èˆµæœºçš„LEDå¼€å…³
     servo_read_led_switch(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -616,8 +840,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_led_switch_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent led switch is: %d", analysis_data);
+        ret = servo_read_led_switch_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent led switch is: %d", analysis_data);
+        }
     }
     else
     {
@@ -625,7 +852,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄFlash¿ª¹Ø
+    //è¯»å–ID1èˆµæœºçš„Flashå¼€å…³
     servo_read_flash_switch(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -640,8 +867,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_flash_switch_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent flash switch is: %d", analysis_data);
+        ret = servo_read_flash_switch_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent flash switch is: %d", analysis_data);
+        }
     }
     else
     {
@@ -649,7 +879,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµçÁ÷Ğ£ÕıÖµ
+    //è¯»å–ID1èˆµæœºçš„ç”µæµæ ¡æ­£å€¼
     servo_read_current_offset(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -664,8 +894,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_current_offset_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent current offset is: %d", analysis_data);
+        ret = servo_read_current_offset_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent current offset is: %d", analysis_data);
+        }
     }
     else
     {
@@ -673,7 +906,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄÖĞÎ»Ğ£ÕıÖµ
+    //è¯»å–ID1èˆµæœºçš„ä¸­ä½æ ¡æ­£å€¼
     servo_read_calibration(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -688,8 +921,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_calibration_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent calibration is: %d", analysis_data);
+        ret = servo_read_calibration_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent calibration is: %d", analysis_data);
+        }
     }
     else
     {
@@ -697,7 +933,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ¿ØÖÆÄ£Ê½
+    //è¯»å–ID1èˆµæœºçš„æ§åˆ¶æ¨¡å¼
     servo_read_control_mode(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -712,8 +948,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_control_mode_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent control mode is: %d", analysis_data);
+        ret = servo_read_control_mode_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent control mode is: %d", analysis_data);
+        }
     }
     else
     {
@@ -721,7 +960,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄĞ¶ÔØ±£»¤Ìõ¼ş
+    //è¯»å–ID1èˆµæœºçš„å¸è½½ä¿æŠ¤æ¡ä»¶
     servo_read_shutdown_condition(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -736,8 +975,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_shutdown_condition_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent shutdown condition is: %d", analysis_data);
+        ret = servo_read_shutdown_condition_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent shutdown condition is: %d", analysis_data);
+        }
     }
     else
     {
@@ -745,7 +987,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄLED±¨¾¯Ìõ¼ş
+    //è¯»å–ID1èˆµæœºçš„LEDæŠ¥è­¦æ¡ä»¶
     servo_read_led_condition(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -760,8 +1002,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_led_condition_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent led condition is: %d", analysis_data);
+        ret = servo_read_led_condition_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent led condition is: %d", analysis_data);
+        }
     }
     else
     {
@@ -769,7 +1014,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄÎ»ÖÃ¿ØÖÆDÔöÒæ
+    //è¯»å–ID1èˆµæœºçš„ä½ç½®æ§åˆ¶Då¢ç›Š
     servo_read_position_control_d_gain(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -784,8 +1029,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_position_control_d_gain_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent position control d gain is: %d", analysis_data);
+        ret = servo_read_position_control_d_gain_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent position control d gain is: %d", analysis_data);
+        }
     }
     else
     {
@@ -793,7 +1041,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄÎ»ÖÃ¿ØÖÆIÔöÒæ
+    //è¯»å–ID1èˆµæœºçš„ä½ç½®æ§åˆ¶Iå¢ç›Š
     servo_read_position_control_i_gain(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -808,8 +1056,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_position_control_i_gain_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent position control i gain is: %d", analysis_data);
+        ret = servo_read_position_control_i_gain_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent position control i gain is: %d", analysis_data);
+        }
     }
     else
     {
@@ -817,7 +1068,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄÎ»ÖÃ¿ØÖÆPÔöÒæ
+    //è¯»å–ID1èˆµæœºçš„ä½ç½®æ§åˆ¶På¢ç›Š
     servo_read_position_control_p_gain(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -832,8 +1083,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_position_control_p_gain_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent position control p gain is: %d", analysis_data);
+        ret = servo_read_position_control_p_gain_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent position control p gain is: %d", analysis_data);
+        }
     }
     else
     {
@@ -841,7 +1095,35 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄPWMµş¼ÓÖµ
+    //è¯»å–ID1èˆµæœºçš„ä½ç½®æ§åˆ¶PIDå¢ç›Š
+    servo_read(1, 0x1B, 6, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nData sent successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("position control pid gain pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //è¯»å–ID1èˆµæœºçš„PWMå åŠ å€¼
     servo_read_pwm_punch(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -856,8 +1138,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_pwm_punch_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent pwm punch is: %d", analysis_data);
+        ret = servo_read_pwm_punch_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent pwm punch is: %d", analysis_data);
+        }
     }
     else
     {
@@ -865,7 +1150,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ·´×ªËÀÇø
+    //è¯»å–ID1èˆµæœºçš„åè½¬æ­»åŒº
     servo_read_ccw_deadband(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -880,8 +1165,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_ccw_deadband_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent ccw deadband is: %d", analysis_data);
+        ret = servo_read_ccw_deadband_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent ccw deadband is: %d", analysis_data);
+        }
     }
     else
     {
@@ -889,7 +1177,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄÕı×ªËÀÇø
+    //è¯»å–ID1èˆµæœºçš„æ­£è½¬æ­»åŒº
     servo_read_cw_deadband(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -904,8 +1192,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_cw_deadband_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent cw deadband is: %d", analysis_data);
+        ret = servo_read_cw_deadband_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent cw deadband is: %d", analysis_data);
+        }
     }
     else
     {
@@ -913,7 +1204,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµçÁ÷±£»¤Ê±¼ä
+    //è¯»å–ID1èˆµæœºçš„ç”µæµä¿æŠ¤æ—¶é—´
     servo_read_current_shutdown_time(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -928,8 +1219,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_current_shutdown_time_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent current shutdown time is: %d", analysis_data);
+        ret = servo_read_current_shutdown_time_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent current shutdown time is: %d", analysis_data);
+        }
     }
     else
     {
@@ -937,7 +1231,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµçÁ÷ÉÏÏŞ
+    //è¯»å–ID1èˆµæœºçš„ç”µæµä¸Šé™
     servo_read_max_current_limit(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -952,8 +1246,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_max_current_limit_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent max current limit is: %d", analysis_data);
+        ret = servo_read_max_current_limit_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent max current limit is: %d", analysis_data);
+        }
     }
     else
     {
@@ -961,7 +1258,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄPWMÉÏÏŞ
+    //è¯»å–ID1èˆµæœºçš„PWMä¸Šé™
     servo_read_max_pwm_limit(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -976,8 +1273,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_max_pwm_limit_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent max pwm limit is: %d", analysis_data);
+        ret = servo_read_max_pwm_limit_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent max pwm limit is: %d", analysis_data);
+        }
     }
     else
     {
@@ -985,7 +1285,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµçÑ¹ÉÏÏŞ
+    //è¯»å–ID1èˆµæœºçš„ç”µå‹ä¸Šé™
     servo_read_max_voltage_limit(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1000,8 +1300,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_max_voltage_limit_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent max voltage limit is: %d", analysis_data);
+        ret = servo_read_max_voltage_limit_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent max voltage limit is: %d", analysis_data);
+        }
     }
     else
     {
@@ -1009,7 +1312,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄµçÑ¹ÏÂÏŞ
+    //è¯»å–ID1èˆµæœºçš„ç”µå‹ä¸‹é™
     servo_read_min_voltage_limit(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1024,8 +1327,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_min_voltage_limit_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent min voltage limit is: %d", analysis_data);
+        ret = servo_read_min_voltage_limit_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent min voltage limit is: %d", analysis_data);
+        }
     }
     else
     {
@@ -1033,7 +1339,35 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄÎÂ¶ÈÉÏÏŞ
+    //è¯»å–ID1èˆµæœºçš„ç”µå‹é™åˆ¶
+    servo_read(1, 0x10, 2, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nData sent successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("the voltage limit pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //è¯»å–ID1èˆµæœºçš„æ¸©åº¦ä¸Šé™
     servo_read_max_temperature_limit(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1048,8 +1382,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_max_temperature_limit_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent max temperature limit is: %d", analysis_data);
+        ret = servo_read_max_temperature_limit_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent max temperature limit is: %d", analysis_data);
+        }
     }
     else
     {
@@ -1057,7 +1394,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ×î´óÎ»ÖÃÏŞÖÆ
+    //è¯»å–ID1èˆµæœºçš„æœ€å¤§ä½ç½®é™åˆ¶
     servo_read_max_angle_limit(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1072,8 +1409,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_max_angle_limit_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent max angle limit is: %d", analysis_data);
+        ret = servo_read_max_angle_limit_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent max angle limit is: %d", analysis_data);
+        }
     }
     else
     {
@@ -1081,7 +1421,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ×îĞ¡Î»ÖÃÏŞÖÆ
+    //è¯»å–ID1èˆµæœºçš„æœ€å°ä½ç½®é™åˆ¶
     servo_read_min_angle_limit(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1096,8 +1436,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_min_angle_limit_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent min angle limit is: %d", analysis_data);
+        ret = servo_read_min_angle_limit_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent min angle limit is: %d", analysis_data);
+        }
     }
     else
     {
@@ -1105,7 +1448,35 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ×´Ì¬·µ»Ø¼¶±ğ
+    //è¯»å–ID1èˆµæœºçš„ä½ç½®é™åˆ¶
+    servo_read(1, 0x0B, 4, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nData sent successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("the angle limit pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //è¯»å–ID1èˆµæœºçš„çŠ¶æ€è¿”å›çº§åˆ«
     servo_read_return_level(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1120,8 +1491,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_return_level_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent return level is: %d", analysis_data);
+        ret = servo_read_return_level_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent return level is: %d", analysis_data);
+        }
     }
     else
     {
@@ -1129,7 +1503,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄÓ¦´ğÑÓÊ±Ê±¼ä
+    //è¯»å–ID1èˆµæœºçš„åº”ç­”å»¶æ—¶æ—¶é—´
     servo_read_return_delay_time(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1144,8 +1518,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_return_delay_time_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent return delay time is: %d", analysis_data);
+        ret = servo_read_return_delay_time_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent return delay time is: %d", analysis_data);
+        }
     }
     else
     {
@@ -1153,7 +1530,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ²¨ÌØÂÊ
+    //è¯»å–ID1èˆµæœºçš„æ³¢ç‰¹ç‡
     servo_read_baud_rate(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1168,8 +1545,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_baud_rate_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent baud rate is: %d", analysis_data);
+        ret = servo_read_baud_rate_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent baud rate is: %d", analysis_data);
+        }
     }
     else
     {
@@ -1177,7 +1557,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ³ö³§±àºÅ
+    //è¯»å–ID1èˆµæœºçš„å‡ºå‚ç¼–å·
     servo_read_model_information(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1192,8 +1572,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_model_information_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent model information is: %d", analysis_data);
+        ret = servo_read_model_information_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent model information is: %d", analysis_data);
+        }
     }
     else
     {
@@ -1201,7 +1584,7 @@ int main()
     }
     Sleep(20);
 
-    //¶ÁÈ¡ID1¶æ»úµÄ¹Ì¼ş°æ±¾ºÅ
+    //è¯»å–ID1èˆµæœºçš„å›ºä»¶ç‰ˆæœ¬å·
     servo_read_firmware_version(1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1216,8 +1599,11 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        servo_read_firmware_version_analysis(pack, &analysis_data);
-        PRINTF("\r\npresent firmware version is: %d", analysis_data);
+        ret = servo_read_firmware_version_analysis(pack, &analysis_data);
+        if (ret == SUCCESS)
+        {
+            PRINTF("\r\npresent firmware version is: %d", analysis_data);
+        }
     }
     else
     {
@@ -1227,7 +1613,7 @@ int main()
 #endif
 
 #if WRITE_TEST
-    //ÉèÖÃID1¶æ»úµÄÓ¦´ğÑÓÊ±Ê±¼ä
+    //å°†ID1èˆµæœºçš„åº”ç­”å»¶è¿Ÿæ—¶é—´ä¿®æ”¹ä¸º500us
     servo_set_return_delay_time(1, 250, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -1243,7 +1629,7 @@ int main()
     {
         ret = servo_set_return_delay_time_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set return delay time successfully.\r\n");
     }
     else
     {
@@ -1251,7 +1637,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ×´Ì¬·µ»Ø¼¶±ğ
+    //å°†ID1èˆµæœºçš„çŠ¶æ€è¿”å›çº§åˆ«ä¿®æ”¹ä¸ºåº”ç­”æ‰€æœ‰æŒ‡ä»¤
     servo_set_return_level(1, 2, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1268,7 +1654,7 @@ int main()
     {
         ret = servo_set_return_level_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set return level successfully.\r\n");
     }
     else
     {
@@ -1276,7 +1662,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ²¨ÌØÂÊ
+    //è®¾ç½®ID1èˆµæœºçš„æ³¢ç‰¹ç‡ä¸º1000000
     servo_set_baud_rate(1, 7, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1293,7 +1679,7 @@ int main()
     {
         ret = servo_set_baud_rate_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set baud rate successfully.\r\n");
     }
     else
     {
@@ -1301,7 +1687,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ×îĞ¡Î»ÖÃÏŞÖÆ
+    //å°†èˆµæœºID1çš„æœ€å°ä½ç½®é™åˆ¶ä¿®æ”¹ä¸º0Â°
     servo_set_min_angle_limit(1, 0, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1318,7 +1704,7 @@ int main()
     {
         ret = servo_set_min_angle_limit_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set min angle limit successfully.\r\n");
     }
     else
     {
@@ -1326,7 +1712,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ×î´óÎ»ÖÃÏŞÖÆ
+    //å°†èˆµæœºID1çš„æœ€å¤§ä½ç½®é™åˆ¶ä¿®æ”¹ä¸º300Â°
     servo_set_max_angle_limit(1, 3000, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1343,7 +1729,7 @@ int main()
     {
         ret = servo_set_max_angle_limit_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set max angle limit successfully.\r\n");
     }
     else
     {
@@ -1351,8 +1737,41 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÎÂ¶ÈÉÏÏŞ
-    servo_set_max_temperature_limit(1, 100, order_buffer, &order_len);
+    //å°†èˆµæœºID1çš„ä½ç½®é™åˆ¶ä¿®æ”¹ä¸º0Â°~300Â°
+    write_buffer[0] = 0 & 0xff;;
+    write_buffer[1] = (0 >> 8) & 0xff;
+    write_buffer[2] = 3000 & 0xff;
+    write_buffer[3] = (3000 >> 8) & 0xff;
+
+    servo_write(1, 0x0B, 4, write_buffer, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nWrite successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("servo set angle limit pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //å°†ID1èˆµæœºçš„æ¸©åº¦ä¸Šé™ä¿®æ”¹ä¸º65â„ƒ
+    servo_set_max_temperature_limit(1, 65, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
         PRINTF("\r\nWrite successfully.");
@@ -1367,7 +1786,7 @@ int main()
     {
         ret = servo_set_max_temperature_limit_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set max temperature limit successfully.\r\n");
     }
     else
     {
@@ -1375,8 +1794,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄµçÑ¹ÉÏÏŞ
-    servo_set_max_voltage_limit(1, 90, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ç”µå‹ä¸Šé™ä¿®æ”¹ä¸º8.4V
+    servo_set_max_voltage_limit(1, 84, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1392,7 +1811,7 @@ int main()
     {
         ret = servo_set_max_voltage_limit_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set max voltage limit successfully.\r\n");
     }
     else
     {
@@ -1400,8 +1819,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄµçÑ¹ÏÂÏŞ
-    servo_set_min_voltage_limit(1, 33, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ç”µå‹ä¸‹é™ä¿®æ”¹ä¸º3.5V
+    servo_set_min_voltage_limit(1, 35, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1417,7 +1836,7 @@ int main()
     {
         ret = servo_set_min_voltage_limit_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set min voltage limit successfully.\r\n");
     }
     else
     {
@@ -1425,8 +1844,39 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄPWMÉÏÏŞ
-    servo_set_max_pwm_limit(1, 1000, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ç”µå‹é™åˆ¶ä¿®æ”¹ä¸º3.5V~8.4V
+    write_buffer[0] = 84 & 0xff;
+    write_buffer[1] = 35 & 0xff;
+
+    servo_write(1, 0x10, 2, write_buffer, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nWrite successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("the voltage limit pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //å°†ID1èˆµæœºçš„PWMä¸Šé™ä¿®æ”¹ä¸º90%
+    servo_set_max_pwm_limit(1, 900, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1442,7 +1892,7 @@ int main()
     {
         ret = servo_set_max_pwm_limit_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set max pwm limit successfully.\r\n");
     }
     else
     {
@@ -1450,8 +1900,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄµçÁ÷ÉÏÏŞ
-    servo_set_max_current_limit(1, 400, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ç”µæµä¸Šé™ä¿®æ”¹ä¸º900mA
+    servo_set_max_current_limit(1, 900, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1467,7 +1917,7 @@ int main()
     {
         ret = servo_set_max_current_limit_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set max current limit successfully.\r\n");
     }
     else
     {
@@ -1475,8 +1925,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄµçÁ÷±£»¤Ê±¼ä
-    servo_set_current_shutdown_time(1, 1000, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ç”µæµä¿æŠ¤æ—¶é—´ä¿®æ”¹ä¸º500ms
+    servo_set_current_shutdown_time(1, 500, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1492,7 +1942,7 @@ int main()
     {
         ret = servo_set_current_shutdown_time_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set current shutdown time successfully.\r\n");
     }
     else
     {
@@ -1500,8 +1950,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÕı×ªËÀÇø
-    servo_set_cw_deadband(1, 1, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„æ­£è½¬æ­»åŒºä¿®æ”¹ä¸º0.2Â°
+    servo_set_cw_deadband(1, 2, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1517,7 +1967,7 @@ int main()
     {
         ret = servo_set_cw_deadband_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set cw deadband successfully.\r\n");
     }
     else
     {
@@ -1525,8 +1975,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ·´×ªËÀÇø
-    servo_set_ccw_deadband(1, 1, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„åè½¬æ­»åŒºä¿®æ”¹ä¸º0.2Â°
+    servo_set_ccw_deadband(1, 2, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1542,7 +1992,7 @@ int main()
     {
         ret = servo_set_ccw_deadband_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set ccw deadband successfully.\r\n");
     }
     else
     {
@@ -1550,8 +2000,39 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄPWMµş¼ÓÖµ
-    servo_set_pwm_punch(1, 1, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„æ­£åè½¬æ­»åŒºä¿®æ”¹ä¸º0.2Â°
+    write_buffer[0] = 2 & 0xff;
+    write_buffer[1] = 2 & 0xff;
+
+    servo_write(1, 0x18, 2, write_buffer, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nWrite successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("servo set cw deadband and ccw deadband pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //å°†ID1èˆµæœºçš„PWMå åŠ å€¼ä¿®æ”¹ä¸º1%
+    servo_set_pwm_punch(1, 10, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1567,7 +2048,7 @@ int main()
     {
         ret = servo_set_pwm_punch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set pwm punch successfully.\r\n");
     }
     else
     {
@@ -1575,8 +2056,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÎ»ÖÃ¿ØÖÆPÔöÒæ
-    servo_set_position_control_p_gain(1, 6000, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ä½ç½®æ§åˆ¶På¢ç›Šä¿®æ”¹ä¸º5995
+    servo_set_position_control_p_gain(1, 5995, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1592,7 +2073,7 @@ int main()
     {
         ret = servo_set_position_control_p_gain_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set position control p gain successfully.\r\n");
     }
     else
     {
@@ -1600,8 +2081,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÎ»ÖÃ¿ØÖÆIÔöÒæ
-    servo_set_position_control_i_gain(1, 1, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ä½ç½®æ§åˆ¶Iå¢ç›Šä¿®æ”¹ä¸º5
+    servo_set_position_control_i_gain(1, 5, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1617,7 +2098,7 @@ int main()
     {
         ret = servo_set_position_control_i_gain_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set position control i gain successfully.\r\n");
     }
     else
     {
@@ -1625,8 +2106,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÎ»ÖÃ¿ØÖÆDÔöÒæ
-    servo_set_position_control_d_gain(1, 151, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ä½ç½®æ§åˆ¶Då¢ç›Šä¿®æ”¹ä¸º145
+    servo_set_position_control_d_gain(1, 145, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1642,7 +2123,7 @@ int main()
     {
         ret = servo_set_position_control_d_gain_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set position control d gain successfully.\r\n");
     }
     else
     {
@@ -1650,8 +2131,43 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄLED±¨¾¯Ìõ¼ş
-    servo_set_led_condition(1, 36, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ä½ç½®æ§åˆ¶PIDå¢ç›Šï¼Œåˆ†åˆ«ä¿®æ”¹ä¸º5500ã€100ã€250
+    write_buffer[0] = 5500 & 0xff;
+    write_buffer[1] = (5500 >> 8) & 0xff;
+    write_buffer[2] = 100 & 0xff;
+    write_buffer[3] = (100 >> 8) & 0xff;
+    write_buffer[4] = 250 & 0xff;
+    write_buffer[5] = (250 >> 8) & 0xff;
+
+    servo_write(1, 0x1B, 6, write_buffer, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nWrite successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        PRINTF("servo set position control pid gain pack is: ");
+        for (uint8_t i = 0; i < bytesRead; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //å°†ID1èˆµæœºçš„LEDæŠ¥è­¦æ¡ä»¶ä¿®æ”¹ä¸ºå¼€å¯å µè½¬æŠ¥é”™ã€è¿‡çƒ­æŠ¥é”™å’Œè§’åº¦æŠ¥é”™
+    servo_set_led_condition(1, 38, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1667,7 +2183,7 @@ int main()
     {
         ret = servo_set_led_condition_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set led condition successfully.\r\n");
     }
     else
     {
@@ -1675,8 +2191,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄĞ¶ÔØ±£»¤Ìõ¼ş
-    servo_set_shutdown_conditions(1, 36, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„å¸è½½ä¿æŠ¤æ¡ä»¶ä¿®æ”¹ä¸ºå¼€å¯å µè½¬æŠ¥é”™ã€è¿‡çƒ­æŠ¥é”™ã€ç”µå‹æŠ¥é”™å’Œè§’åº¦æŠ¥é”™
+    servo_set_shutdown_conditions(1, 39, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1692,7 +2208,7 @@ int main()
     {
         ret = servo_set_shutdown_conditions_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set shutdown conditions successfully.\r\n");
     }
     else
     {
@@ -1700,7 +2216,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄFlash¿ª¹Ø
+    //å°†ID1èˆµæœºçš„Flashå¼€å…³çŠ¶æ€ä¿®æ”¹ä¸ºæ‰“å¼€
     servo_set_flash_switch(1, 1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1717,7 +2233,7 @@ int main()
     {
         ret = servo_set_flash_switch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set flash switch successfully.\r\n");
     }
     else
     {
@@ -1725,7 +2241,32 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄLED¿ª¹Ø
+    //å°†ID1èˆµæœºçš„Flashå¼€å…³çŠ¶æ€ä¿®æ”¹ä¸ºå…³é—­
+    servo_set_flash_switch(1, 0, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nWrite successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        ret = servo_set_flash_switch_analysis(pack);
+        if (ret == SUCCESS)
+            PRINTF("servo set flash switch successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //å°†ID1èˆµæœºçš„LEDå¼€å…³çŠ¶æ€ä¿®æ”¹ä¸ºæ‰“å¼€
     servo_set_led_switch(1, 1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -1742,7 +2283,7 @@ int main()
     {
         ret = servo_set_led_switch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set led switch successfully.\r\n");
     }
     else
     {
@@ -1750,7 +2291,32 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    //å°†ID1èˆµæœºçš„LEDå¼€å…³çŠ¶æ€ä¿®æ”¹ä¸ºå…³é—­
+    servo_set_led_switch(1, 0, order_buffer, &order_len);
+
+    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
+    {
+        PRINTF("\r\nWrite successfully.");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to send data.");
+    }
+    Sleep(1);
+
+    if (serialPort.Read(pack, &bytesRead))
+    {
+        ret = servo_set_led_switch_analysis(pack);
+        if (ret == SUCCESS)
+            PRINTF("servo set led switch successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("\r\nFailed to read data.");
+    }
+    Sleep(20);
+
+    //è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå…³é—­
     servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -1766,7 +2332,7 @@ int main()
     {
         ret = servo_set_torque_switch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set torque switch successfully.\r\n");
     }
     else
     {
@@ -1774,7 +2340,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
+    //å°†ID1èˆµæœºçš„æ§åˆ¶æ¨¡å¼ä¿®æ”¹ä¸ºPWMè¾“å‡ºæ§åˆ¶æ¨¡å¼
     servo_set_control_mode(1, 3, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -1790,7 +2356,7 @@ int main()
     {
         ret = servo_set_control_mode_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set control mode successfully.\r\n");
     }
     else
     {
@@ -1798,7 +2364,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    //è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå¼€å¯
     servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -1814,7 +2380,7 @@ int main()
     {
         ret = servo_set_torque_switch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set torque switch successfully.\r\n");
     }
     else
     {
@@ -1822,8 +2388,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÄ¿±êPWM
-    servo_set_target_pwm(1, 1000, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ç›®æ ‡PWMä¿®æ”¹ä¸º-50%
+    servo_set_target_pwm(1, -500, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1839,7 +2405,7 @@ int main()
     {
         ret = servo_set_target_pwm_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set target pwm successfully.\r\n");
     }
     else
     {
@@ -1847,7 +2413,7 @@ int main()
     }
     Sleep(3000);
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    //è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå…³é—­
     servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -1863,7 +2429,7 @@ int main()
     {
         ret = servo_set_torque_switch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set torque switch successfully.\r\n");
     }
     else
     {
@@ -1871,7 +2437,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
+    //å°†ID1èˆµæœºçš„æ§åˆ¶æ¨¡å¼ä¿®æ”¹ä¸ºç”µæµæ§åˆ¶æ¨¡å¼
     servo_set_control_mode(1, 2, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -1887,7 +2453,7 @@ int main()
     {
         ret = servo_set_control_mode_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set control mode successfully.\r\n");
     }
     else
     {
@@ -1895,7 +2461,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    //è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå¼€å¯
     servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -1911,7 +2477,7 @@ int main()
     {
         ret = servo_set_torque_switch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set torque switch successfully.\r\n");
     }
     else
     {
@@ -1919,8 +2485,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÄ¿±êµçÁ÷
-    servo_set_target_current(1, -1000, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„ç›®æ ‡ç”µæµä¿®æ”¹ä¸º-400mA
+    servo_set_target_current(1, -400, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -1936,7 +2502,7 @@ int main()
     {
         ret = servo_set_target_current_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set target current successfully.\r\n");
     }
     else
     {
@@ -1944,7 +2510,7 @@ int main()
     }
     Sleep(3000);
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    //è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå…³é—­
     servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -1960,7 +2526,7 @@ int main()
     {
         ret = servo_set_torque_switch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set torque switch successfully.\r\n");
     }
     else
     {
@@ -1968,7 +2534,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
+    //å°†ID1èˆµæœºçš„æ§åˆ¶æ¨¡å¼ä¿®æ”¹ä¸ºæ§é€Ÿæ¨¡å¼
     servo_set_control_mode(1, 1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -1984,7 +2550,7 @@ int main()
     {
         ret = servo_set_control_mode_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set control mode successfully.\r\n");
     }
     else
     {
@@ -1992,7 +2558,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    //è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå¼€å¯
     servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -2008,7 +2574,7 @@ int main()
     {
         ret = servo_set_torque_switch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set torque switch successfully.\r\n");
     }
     else
     {
@@ -2016,7 +2582,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØËÙÄ¿±êËÙ¶È
+    //å°†ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡é€Ÿåº¦ä¿®æ”¹ä¸º360Â°/s
     servo_set_velocity_base_target_velocity(1, 3600, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
@@ -2033,7 +2599,7 @@ int main()
     {
         ret = servo_set_velocity_base_target_velocity_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set velocity base target velocity successfully.\r\n");
     }
     else
     {
@@ -2041,8 +2607,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØËÙÄ¿±ê¼ÓËÙ¶È
-    servo_set_velocity_base_target_acc(1, 150, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡åŠ é€Ÿåº¦ä¿®æ”¹ä¸º500Â°/sÂ²
+    servo_set_velocity_base_target_acc(1, 10, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -2058,7 +2624,7 @@ int main()
     {
         ret = servo_set_velocity_base_target_acc_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set velocity base target acc successfully.\r\n");
     }
     else
     {
@@ -2066,8 +2632,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØËÙÄ¿±ê¼õËÙ¶È
-    servo_set_velocity_base_target_dec(1, 150, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡å‡é€Ÿåº¦ä¿®æ”¹ä¸º50Â°/sÂ²
+    servo_set_velocity_base_target_dec(1, 1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -2083,7 +2649,7 @@ int main()
     {
         ret = servo_set_velocity_base_target_dec_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set velocity base target dec successfully.\r\n");
     }
     else
     {
@@ -2091,8 +2657,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃ
-    servo_set_velocity_base_target_position(1, 0, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®ä¿®æ”¹ä¸º150Â°
+    servo_set_velocity_base_target_position(1, 1500, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
         PRINTF("\r\nWrite successfully.");
     }
@@ -2106,7 +2672,7 @@ int main()
     {
         ret = servo_set_velocity_base_target_position_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set velocity base target position successfully.\r\n");
     }
     else
     {
@@ -2114,7 +2680,7 @@ int main()
     }
     Sleep(1000);
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    //è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå…³é—­
     servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -2130,7 +2696,7 @@ int main()
     {
         ret = servo_set_torque_switch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set torque switch successfully.\r\n");
     }
     else
     {
@@ -2138,7 +2704,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
+    //å°†ID1èˆµæœºçš„æ§åˆ¶æ¨¡å¼ä¿®æ”¹ä¸ºæ§æ—¶æ¨¡å¼
     servo_set_control_mode(1, 0, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -2154,7 +2720,7 @@ int main()
     {
         ret = servo_set_control_mode_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set control mode successfully.\r\n");
     }
     else
     {
@@ -2162,7 +2728,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    //è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå¼€å¯
     servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -2178,7 +2744,7 @@ int main()
     {
         ret = servo_set_torque_switch_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set torque switch successfully.\r\n");
     }
     else
     {
@@ -2186,8 +2752,8 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØÊ±Ä¿±ê¼ÓËÙ¶ÈµÈ¼¶
-    servo_set_time_base_target_acc(1, 0, order_buffer, &order_len);
+    //å°†ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡åŠ é€Ÿåº¦ç­‰çº§ä¿®æ”¹ä¸º5
+    servo_set_time_base_target_acc(1, 5, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -2203,7 +2769,7 @@ int main()
     {
         ret = servo_set_time_base_target_acc_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set time base target acc successfully.\r\n");
     }
     else
     {
@@ -2211,7 +2777,7 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃºÍÄ¿±êÔËĞĞÊ±¼ä
+    //å°†ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡ä½ç½®å’Œè¿è¡Œæ—¶é—´ï¼Œåˆ†åˆ«ä¿®æ”¹ä¸º300Â°ã€500ms
     servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
@@ -2227,7 +2793,7 @@ int main()
     {
         ret = servo_set_time_base_target_position_and_moving_time_analysis(pack);
         if (ret == SUCCESS)
-            PRINTF("\r\nSet successfully.");
+            PRINTF("servo set time base target position and moving time successfully.\r\n");
     }
     else
     {
@@ -2237,158 +2803,50 @@ int main()
 #endif
 
 #if SYNC_WRITE_TEST
-    servo.id_counts = 2;            //Í¬²½Ğ´Á½¸ö¶æ»ú
-    servo.id[0] = 1;                //µÚÒ»¸ö¶æ»úidÎª1
-    servo.id[1] = 2;                //µÚ¶ş¸ö¶æ»úidÎª2
+    servo.id_counts = 2;            //åŒæ­¥å†™ä¸¤ä¸ªèˆµæœº
+    servo.id[0] = 1;                //ç¬¬ä¸€ä¸ªèˆµæœºidä¸º1
+    servo.id[1] = 2;                //ç¬¬äºŒä¸ªèˆµæœºidä¸º2
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    servo_set_torque_switch(1, 0, order_buffer, &order_len);
+    //å°†ID1ã€ID2èˆµæœºçš„æ‰­çŸ©å¼€å…³çŠ¶æ€ï¼Œåˆ†åˆ«ä¿®æ”¹ä¸ºå…³é—­
+    servo.torque_switch[0] = 0;
+    servo.torque_switch[1] = 0;
+    servo_sync_write_torque_switch(servo, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nWrite successfully.");
+        PRINTF("Sync Write torque witch successfully.\r\n");
     }
     else
     {
         PRINTF("\r\nFailed to send data.");
     }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_torque_switch_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
-    servo_set_control_mode(1, 1, order_buffer, &order_len);
+    //å°†ID1ã€ID2èˆµæœºçš„æ§åˆ¶æ¨¡å¼ï¼Œåˆ†åˆ«ä¿®æ”¹ä¸ºæ§é€Ÿæ¨¡å¼
+    servo.control_mode[0] = 1;
+    servo.control_mode[1] = 1;
+    servo_sync_write_control_mode(servo, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nWrite successfully.");
+        PRINTF("Sync Write control mode successfully.\r\n");
     }
     else
     {
         PRINTF("\r\nFailed to send data.");
     }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_control_mode_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    servo_set_torque_switch(1, 1, order_buffer, &order_len);
+    //è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§é€Ÿç›®æ ‡é€Ÿåº¦
 
-    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
-    {
-        PRINTF("\r\nWrite successfully.");
-    }
-    else
-    {
-        PRINTF("\r\nFailed to send data.");
-    }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_torque_switch_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
-    Sleep(20);
-
-    //ÉèÖÃID2¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    servo_set_torque_switch(2, 0, order_buffer, &order_len);
-
-    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
-    {
-        PRINTF("\r\nWrite successfully.");
-    }
-    else
-    {
-        PRINTF("\r\nFailed to send data.");
-    }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_torque_switch_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
-    Sleep(20);
-
-    //ÉèÖÃID2¶æ»úµÄ¿ØÖÆÄ£Ê½
-    servo_set_control_mode(2, 1, order_buffer, &order_len);
-
-    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
-    {
-        PRINTF("\r\nWrite successfully.");
-    }
-    else
-    {
-        PRINTF("\r\nFailed to send data.");
-    }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_control_mode_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
-    Sleep(20);
-
-    //ÉèÖÃID2¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    servo_set_torque_switch(2, 1, order_buffer, &order_len);
-
-    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
-    {
-        PRINTF("\r\nWrite successfully.");
-    }
-    else
-    {
-        PRINTF("\r\nFailed to send data.");
-    }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_torque_switch_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
-    Sleep(20);
-
-    //ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±êËÙ¶È
-
-    //idÎª1£¬2µÄ¶æ»úËÙ¶È·Ö±ğÉèÖÃÎª3600£¬1800£¬ÖµºÍÇ°ÃæµÄidÉèÖÃ¶ÔÓ¦
+    //idä¸º1ï¼Œ2çš„èˆµæœºé€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º3600ï¼Œ1800ï¼Œå€¼å’Œå‰é¢çš„idè®¾ç½®å¯¹åº”
     servo.velocity[0] = 3600;
     servo.velocity[1] = 1800;
 
     servo_sync_write_velocity_base_target_velocity(servo, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nSync Write successfully.");
+        PRINTF("Sync Write velocity base target velocity successfully.\r\n");
     }
     else
     {
@@ -2396,16 +2854,16 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±ê¼ÓËÙ¶È
+    //è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§é€Ÿç›®æ ‡åŠ é€Ÿåº¦
 
-    //idÎª1£¬2µÄ¶æ»ú¼ÓËÙ¶È·Ö±ğÉèÖÃÎª150£¬150£¬ÖµºÍÇ°ÃæµÄidÉèÖÃ¶ÔÓ¦
+    //idä¸º1ï¼Œ2çš„èˆµæœºåŠ é€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º150ï¼Œ150ï¼Œå€¼å’Œå‰é¢çš„idè®¾ç½®å¯¹åº”
     servo.acc_velocity[0] = 150;
     servo.acc_velocity[1] = 150;
 
     servo_sync_write_velocity_base_target_acc(servo, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nSync Write successfully.");
+        PRINTF("Sync Write velocity base target acc successfully.\r\n");
     }
     else
     {
@@ -2413,16 +2871,16 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±ê¼õËÙ¶È
+    //è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§é€Ÿç›®æ ‡å‡é€Ÿåº¦
 
-    //idÎª1£¬2µÄ¶æ»ú¼õËÙ¶È·Ö±ğÉèÖÃÎª150£¬150£¬ÖµºÍÇ°ÃæµÄidÉèÖÃ¶ÔÓ¦
+    //idä¸º1ï¼Œ2çš„èˆµæœºå‡é€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º150ï¼Œ150ï¼Œå€¼å’Œå‰é¢çš„idè®¾ç½®å¯¹åº”
     servo.dec_velocity[0] = 150;
     servo.dec_velocity[1] = 150;
 
     servo_sync_write_velocity_base_target_dec(servo, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nSync Write successfully.");
+        PRINTF("Sync Write velocity base target dec successfully.\r\n");
     }
     else
     {
@@ -2430,16 +2888,16 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃ
+    //è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®
 
-    //idÎª1£¬2µÄ¶æ»úÔË¶¯Î»ÖÃ·Ö±ğÉèÖÃÎª0£¬0£¬ÖµºÍÇ°ÃæµÄidÉèÖÃ¶ÔÓ¦
+    //idä¸º1ï¼Œ2çš„èˆµæœºè¿åŠ¨ä½ç½®åˆ†åˆ«è®¾ç½®ä¸º0ï¼Œ0ï¼Œå€¼å’Œå‰é¢çš„idè®¾ç½®å¯¹åº”
     servo.position[0] = 0;
     servo.position[1] = 0;
 
     servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nSync Write successfully.");
+        PRINTF("Sync Write velocity base target position successfully.\r\n");
     }
     else
     {
@@ -2447,9 +2905,9 @@ int main()
     }
     Sleep(1000);
 
-    //ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃºÍËÙ¶È
+    //è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®å’Œé€Ÿåº¦
 
-    //idÎª1£¬2µÄ¶æ»úËÙ¶È·Ö±ğÉèÖÃÎª1800£¬3600£¬Î»ÖÃ·Ö±ğÉèÖÃÎª3000£¬3000
+    //idä¸º1ï¼Œ2çš„èˆµæœºé€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º1800ï¼Œ3600ï¼Œä½ç½®åˆ†åˆ«è®¾ç½®ä¸º3000ï¼Œ3000
     servo.velocity[0] = 1800;
     servo.velocity[1] = 3600;
     servo.position[0] = 3000;
@@ -2458,7 +2916,7 @@ int main()
     servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nSync Write successfully.");
+        PRINTF("Sync Write velocity base target position and velocity successfully.\r\n");
     }
     else
     {
@@ -2466,9 +2924,9 @@ int main()
     }
     Sleep(1000);
 
-    //ÉèÖÃ¶à¸ö¶æ»úµÄ¼ÓËÙ¶È£¬¼õËÙ¶È£¬ËÙ¶ÈºÍÎ»ÖÃ
+    //è®¾ç½®å¤šä¸ªèˆµæœºçš„åŠ é€Ÿåº¦ï¼Œå‡é€Ÿåº¦ï¼Œé€Ÿåº¦å’Œä½ç½®
 
-    //idÎª1£¬2µÄ¶æ»úËÙ¶È·Ö±ğÉèÖÃÎª3600£¬3600£¬Î»ÖÃ·Ö±ğÉèÖÃÎª0£¬0,¼ÓËÙ¶È·Ö±ğÉèÖÃÎª100£¬100£¬¼õËÙ¶È·Ö±ğÉèÖÃÎª100£¬100
+    //idä¸º1ï¼Œ2çš„èˆµæœºé€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º3600ï¼Œ3600ï¼Œä½ç½®åˆ†åˆ«è®¾ç½®ä¸º0ï¼Œ0,åŠ é€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º100ï¼Œ100ï¼Œå‡é€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º100ï¼Œ100
     servo.velocity[0] = 3600;
     servo.velocity[1] = 3600;
     servo.position[0] = 0;
@@ -2481,7 +2939,7 @@ int main()
     servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nSync Write successfully.");
+        PRINTF("Sync Write velocity base target acc,dec,velocity and position successfully.\r\n");
     }
     else
     {
@@ -2490,154 +2948,46 @@ int main()
     Sleep(1000);
 
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    servo_set_torque_switch(1, 0, order_buffer, &order_len);
+    //å°†ID1ã€ID2èˆµæœºçš„æ‰­çŸ©å¼€å…³çŠ¶æ€ï¼Œåˆ†åˆ«ä¿®æ”¹ä¸ºå…³é—­
+    servo.torque_switch[0] = 0;
+    servo.torque_switch[1] = 0;
+    servo_sync_write_torque_switch(servo, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nWrite successfully.");
+        PRINTF("Sync Write torque witch successfully.\r\n");
     }
     else
     {
         PRINTF("\r\nFailed to send data.");
     }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_torque_switch_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
-    servo_set_control_mode(1, 0, order_buffer, &order_len);
+    //å°†ID1ã€ID2èˆµæœºçš„æ§åˆ¶æ¨¡å¼ï¼Œåˆ†åˆ«ä¿®æ”¹ä¸ºæ§æ—¶æ¨¡å¼
+    servo.control_mode[0] = 0;
+    servo.control_mode[1] = 0;
+    servo_sync_write_control_mode(servo, order_buffer, &order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nWrite successfully.");
+        PRINTF("Sync Write control mode successfully.\r\n");
     }
     else
     {
         PRINTF("\r\nFailed to send data.");
     }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_control_mode_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
     Sleep(20);
 
-    //ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    servo_set_torque_switch(1, 1, order_buffer, &order_len);
+    //è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§æ—¶ç›®æ ‡åŠ é€Ÿåº¦ç­‰çº§
 
-    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
-    {
-        PRINTF("\r\nWrite successfully.");
-    }
-    else
-    {
-        PRINTF("\r\nFailed to send data.");
-    }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_torque_switch_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
-    Sleep(20);
-
-    //ÉèÖÃID2¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    servo_set_torque_switch(2, 0, order_buffer, &order_len);
-
-    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
-    {
-        PRINTF("\r\nWrite successfully.");
-    }
-    else
-    {
-        PRINTF("\r\nFailed to send data.");
-    }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_torque_switch_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
-    Sleep(20);
-
-    //ÉèÖÃID2¶æ»úµÄ¿ØÖÆÄ£Ê½
-    servo_set_control_mode(2, 0, order_buffer, &order_len);
-
-    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
-    {
-        PRINTF("\r\nWrite successfully.");
-    }
-    else
-    {
-        PRINTF("\r\nFailed to send data.");
-    }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_control_mode_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
-    Sleep(20);
-
-    //ÉèÖÃID2¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    servo_set_torque_switch(2, 1, order_buffer, &order_len);
-
-    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
-    {
-        PRINTF("\r\nWrite successfully.");
-    }
-    else
-    {
-        PRINTF("\r\nFailed to send data.");
-    }
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        servo_set_torque_switch_analysis(pack);
-    }
-    else
-    {
-        PRINTF("\r\nFailed to read data.");
-    }
-    Sleep(20);
-
-    //ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØÊ±Ä¿±ê¼ÓËÙ¶ÈµÈ¼¶
-
-    //ÉèÖÃ¶æ»úidÎª1£¬2µÄ¼ÓËÙ¶ÈµÈ¼¶·Ö±ğÎª0£¬0
+    //è®¾ç½®èˆµæœºidä¸º1ï¼Œ2çš„åŠ é€Ÿåº¦ç­‰çº§åˆ†åˆ«ä¸º0ï¼Œ0
     servo.acc_velocity_grade[0] = 0;
     servo.acc_velocity_grade[1] = 0;
 
     servo_sync_write_time_base_target_acc(servo, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nSync Write successfully.");
+        PRINTF("Sync Write time base target acc successfully.\r\n");
     }
     else
     {
@@ -2645,9 +2995,9 @@ int main()
     }
     Sleep(20);
 
-    //ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃºÍÔË¶¯Ê±¼ä
+    //è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§æ—¶ç›®æ ‡ä½ç½®å’Œè¿åŠ¨æ—¶é—´
 
-    //ÉèÖÃ¶æ»úidÎª1£¬2µÄÔË¶¯Î»ÖÃÎª3000£¬3000£¬ÔË¶¯Ê±¼äÎª500ms£¬1500ms
+    //è®¾ç½®èˆµæœºidä¸º1ï¼Œ2çš„è¿åŠ¨ä½ç½®ä¸º3000ï¼Œ3000ï¼Œè¿åŠ¨æ—¶é—´ä¸º500msï¼Œ1500ms
     servo.position[0] = 3000;
     servo.position[1] = 3000;
     servo.time[0] = 500;
@@ -2657,7 +3007,7 @@ int main()
     servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
     if (serialPort.Write(order_buffer, order_len, &bytesWritten))
     {
-        PRINTF("\r\nSync Write successfully.");
+        PRINTF("Sync Write time base target position and moving time successfully.\r\n");
     }
     else
     {
@@ -2666,35 +3016,7 @@ int main()
     Sleep(1000);
 #endif
 
-#if MODIFY_ID
-    //½«idÎª1µÄ¶æ»úidĞŞ¸ÄÎª2
-    servo_modify_known_id(1, 2, order_buffer, &order_len);
-    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
-    {
-        PRINTF("\r\nModify successfully.");
-    }
-    else
-    {
-        PRINTF("\r\nFailed to send data.");
-    }
-    Sleep(20);
-#endif
-
-#if MODIFY_UNKNOWN_ID
-    //½«ËùÓĞ¶æ»úidĞŞ¸ÄÎª2
-    servo_modify_unknown_id(2, order_buffer, &order_len);
-    if (serialPort.Write(order_buffer, order_len, &bytesWritten))
-    {
-        PRINTF("\r\nModify successfully.");
-    }
-    else
-    {
-        PRINTF("\r\nFailed to send data.");
-    }
-    Sleep(20);
-#endif
-
-    // ¹Ø±Õ´®¿Ú
+    // å…³é—­ä¸²å£
     serialPort.Close();
 
     return 0;
