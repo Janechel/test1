@@ -803,6 +803,20 @@ uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id,uint16_t 
 }
 
 /**
+ * @brief 读取舵机的当前位置和当前电流
+ * @param id 舵机ID
+ * @param output_buffer 用于存放指令包的输出缓冲区的指针
+ * @param output_buffer_len 指令包的长度
+ * @return 执行结果，成功或者错误标志
+ */
+uint8_t servo_read_present_position_and_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+{
+    servo_read(id, PRESENT_POSITION_L, 4, output_buffer, output_buffer_len);
+
+    return SUCCESS;
+}
+
+/**
  * @brief 读取舵机的当前电流
  * @param id 舵机ID
  * @param output_buffer 用于存放指令包的输出缓冲区的指针
@@ -1414,6 +1428,56 @@ uint8_t servo_read_model_information(uint8_t id, uint8_t *output_buffer, uint8_t
 uint8_t servo_read_firmware_version(uint8_t id, uint8_t *output_buffer, uint8_t *output_buffer_len)
 {
     servo_read(id, FIRMWARE_VERSION, 1, output_buffer, output_buffer_len);
+
+    return SUCCESS;
+}
+
+/**
+ * @brief 设置多个舵机的扭矩开关
+ * @param servo 舵机修改结构体
+ * @param output_buffer 用于存放指令包的输出缓冲区的指针
+ * @param output_buffer_len 指令包的长度
+ * @return 执行结果，成功或者错误标志
+ */
+uint8_t servo_sync_write_torque_switch(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+{
+    uint8_t i = 0;
+    uint8_t parameter[MAX_SERVERS * 6 + 2 + MAX_SERVERS];
+
+    parameter[0] = TORQUE_SW;
+    parameter[1] = 1;
+    for (i = 0; i < servo.id_counts; i++)
+    {
+        parameter[2 + i * 2] = servo.id[i];
+        parameter[3 + i * 2] = servo.torque_switch[i] & 0xff;
+    }
+
+    sync_write_data(TORQUE_SW, servo.id_counts, parameter, output_buffer, output_buffer_len);
+
+    return SUCCESS;
+}
+
+/**
+ * @brief 设置多个舵机的控制模式
+ * @param servo 舵机修改结构体
+ * @param output_buffer 用于存放指令包的输出缓冲区的指针
+ * @param output_buffer_len 指令包的长度
+ * @return 执行结果，成功或者错误标志
+ */
+uint8_t servo_sync_write_control_mode(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+{
+    uint8_t i = 0;
+    uint8_t parameter[MAX_SERVERS * 6 + 2 + MAX_SERVERS];
+
+    parameter[0] = CONTROL_MODE;
+    parameter[1] = 1;
+    for (i = 0; i < servo.id_counts; i++)
+    {
+        parameter[2 + i * 2] = servo.id[i];
+        parameter[3 + i * 2] = servo.control_mode[i] & 0xff;
+    }
+
+    sync_write_data(CONTROL_MODE, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     return SUCCESS;
 }
@@ -2393,6 +2457,33 @@ uint8_t servo_read_present_position_analysis(uint8_t *response_packet, uint16_t 
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
+        return SUCCESS;
+    }
+}
+
+/**
+ * @brief 读取舵机的当前位置和当前电流的指令应答包解析
+ * @param response_packet 应答包数据
+ * @param analysis_data
+ * @return 执行结果，成功或者错误标志
+ */
+uint8_t servo_read_present_position_and_present_current_analysis(uint8_t* response_packet, uint16_t* position, uint16_t* current)
+{
+    uint8_t ret;
+    uint8_t* data_buffer = NULL;
+
+    ret = servo_unpack(response_packet, &data_buffer);
+
+    if (ret != SUCCESS) {
+        return ret;
+    }
+    else {
+        *position = data_buffer[1];
+        *position = *position << 8;
+        *position = *position | data_buffer[0];
+        *current = data_buffer[3];
+        *current = *current << 8;
+        *current = *current | data_buffer[2];
         return SUCCESS;
     }
 }

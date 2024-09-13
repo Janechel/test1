@@ -19,6 +19,8 @@ struct servo_sync_parameter
 {
     uint8_t id_counts;                  //同步写操作舵机的数量
     uint8_t id[20];                     //同步写操作舵机的id
+    uint8_t torque_switch[20];          //舵机扭矩开关状态
+    uint8_t control_mode[20];           //舵机控制模式
     uint16_t position[20];              //舵机位置
     uint16_t time[20];                  //舵机运行时间
     uint16_t velocity[20];              //舵机运动速度
@@ -90,10 +92,10 @@ struct servo_sync_parameter
 #define TORQUE_SW                   0x30    //Servo torque switch: 0 for torque disabled, 1 for torque enabled, 2 for brake mode.
 #define TARGET_PWM_L                0x31    //Direct control of PWM output to the motor.
 #define TARGET_CURRENT_L            0x33    //Aim current for servo operation.
-#define VELOCITY_BASE_TARGET_POSITION_L     0x35    //Used in Velocity-based Position Control Mode,Plan Profile Position.
-#define VELOCITY_BASE_TARGET_VELOCITY_L     0x37    //Used in Velocity-based Position Control Mode,Plan Profile Velocity.
-#define VELOCITY_BASE_TARGET_ACC            0x39    //Used in Velocity-based Position Control Mode,Plan Profile Acceleration.
-#define VELOCITY_BASE_TARGET_DEC            0x3A    //Used in Velocity-based Position Control Mode,Plan Profile Deceleration.
+#define VELOCITY_BASE_TARGET_POSITION_L     0x35    //Used in Velocity-based Position Control Mode,Plan Target Position.
+#define VELOCITY_BASE_TARGET_VELOCITY_L     0x37    //Used in Velocity-based Position Control Mode,Plan Target Velocity.
+#define VELOCITY_BASE_TARGET_ACC            0x39    //Used in Velocity-based Position Control Mode,Plan Target Acceleration.
+#define VELOCITY_BASE_TARGET_DEC            0x3A    //Used in Velocity-based Position Control Mode,Plan Target Deceleration.
 #define TIME_BASE_TARGET_ACC               0x3B    //Acceleration level in Time-based Position Control Mode.
 #define TIME_BASE_TARGET_POSITION_L        0x3C    //Plan position and moving time must be written into the analysis_data simultaneously.
 #define TIME_BASE_TARGET_MOVINGTIME_L      0x3E    //Plan position and moving time must be written into the analysis_data simultaneously.
@@ -237,12 +239,13 @@ uint8_t servo_set_time_base_target_acc(uint8_t id,uint8_t target_acc,uint8_t *ou
 //设置舵机的控时目标位置和目标运行时间
 uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id,uint16_t target_position, uint16_t moving_time, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
-//读取舵机的当前电流
+//读取舵机的当前位置和当前电流
+uint8_t servo_read_present_position_and_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
+//读取舵机的当前电流
 uint8_t servo_read_present_current(uint8_t id, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
 //读取舵机的当前位置
-
 uint8_t servo_read_present_position(uint8_t id, uint8_t *output_buffer, uint8_t *output_buffer_len);
 
 //读取舵机的当前速度
@@ -370,6 +373,12 @@ uint8_t servo_read_model_information(uint8_t id, uint8_t *output_buffer, uint8_t
 
 //读取舵机的固件版本号
 uint8_t servo_read_firmware_version(uint8_t id, uint8_t *output_buffer, uint8_t *output_buffer_len);
+
+//设置多个舵机的扭矩开关
+uint8_t servo_sync_write_torque_switch(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
+
+//设置多个舵机的控制模式
+uint8_t servo_sync_write_control_mode(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
 //设置多个舵机的控速目标加速度、减速度、速度和位置
 uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
@@ -508,6 +517,9 @@ uint8_t servo_read_present_current_analysis(uint8_t *response_packet, uint16_t *
 
 //读取舵机的当前位置的指令应答包解析
 uint8_t servo_read_present_position_analysis(uint8_t *response_packet, uint16_t *analysis_data);
+
+//读取舵机的当前位置和当前电流的指令应答包解析
+uint8_t servo_read_present_position_and_present_current_analysis(uint8_t* response_packet, uint16_t* position, uint16_t* current);
 
 //读取舵机的当前速度的指令应答包解析
 uint8_t servo_read_present_velocity_analysis(uint8_t *response_packet, uint16_t *analysis_data);
