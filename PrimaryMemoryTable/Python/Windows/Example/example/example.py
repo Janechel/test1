@@ -1,33 +1,38 @@
-from servo import *
+ï»¿from servo import *
 import serial
 import time
 
-PING_TEST = 0  # PINGÖ¸Áî²âÊÔ
-READ_TEST = 0  # ¶ÁÈ¡¶æ»úÊı¾İ²âÊÔ
-FACTORY_RESET_TEST = 0  # »Ö¸´³ö³§ÉèÖÃ²âÊÔ
-PARAMETER_RESET_TEST = 0  # ²ÎÊıÖØÖÃ²âÊÔ
-CALIBRATION_TEST = 0  # Ğ£ÕıÆ«ÒÆÖµ²âÊÔ
-REBOOT_TEST = 0  # ÖØÆô²âÊÔ
-WRITE_TEST = 0  # Ğ´Èë¶æ»úÊı¾İ²âÊÔ
-SYNC_WRITE = 0  # Í¬²½Ğ´²âÊÔ
-MODIFY_ID = 0  # ĞŞ¸Ä¶æ»úID²âÊÔ
-MODIFY_UNKNOWN_ID = 0  # ĞŞ¸ÄÎ´ÖªID¶æ»úID²âÊÔ
+PING_TEST = 0  # PINGæŒ‡ä»¤æµ‹è¯•
+READ_TEST = 0  # è¯»å–èˆµæœºæ•°æ®æµ‹è¯•
+FACTORY_RESET_TEST = 0  # æ¢å¤å‡ºå‚è®¾ç½®æµ‹è¯•
+PARAMETER_RESET_TEST = 0  # å‚æ•°é‡ç½®æµ‹è¯•
+CALIBRATION_TEST = 0  # æ ¡æ­£åç§»å€¼æµ‹è¯•
+REBOOT_TEST = 0  # é‡å¯æµ‹è¯•
+WRITE_TEST = 0  # å†™å…¥èˆµæœºæ•°æ®æµ‹è¯•
+SYNC_WRITE = 0  # åŒæ­¥å†™æµ‹è¯•
+MODIFY_ID = 0  # ä¿®æ”¹å·²çŸ¥èˆµæœºIDæµ‹è¯•
+MODIFY_UNKNOWN_ID = 0  # ä¿®æ”¹æœªçŸ¥IDèˆµæœºIDæµ‹è¯•
 
-MAX_RECEIVE_LEN = 30  # ¶ÁÈ¡´®¿Ú×î´óÊı¾İ³¤¶È
+MAX_RECEIVE_LEN = 30  # è¯»å–ä¸²å£æœ€å¤§æ•°æ®é•¿åº¦
 
-serial = serial.Serial('COM12', 1000000, timeout=0.01)  # ´ò¿ªÖ¸¶¨´®¿Ú£¬²¢ÉèÖÃ³¬Ê±
+serial = serial.Serial('COM12', 1000000, timeout=0.01)  # æ‰“å¼€æŒ‡å®šä¸²å£ï¼Œå¹¶è®¾ç½®è¶…æ—¶
 if serial.isOpen():
     print("open success")
 else:
     print("open failed")
 
-output_buffer = [0] * 40  # ´æ·ÅÉú³ÉµÄÖ¸Áî
-output_buffer_len = [0]  # Ö¸Áî³¤¶È
-receive_data = [0] * 40  # ´æ·Å½ÓÊÕµÄÓ¦´ğ°ü
-analysis_data = [0]  # Ó¦´ğ°ü½âÎö³öÀ´µÄÊı¾İ
-servo_sync_parameter = Servo_Sync_Parameter()  # ´´½¨Í¬²½Ğ´ÄÚ´æ±íÀà
+ret = 0   # é”™è¯¯æ£€éªŒæ ‡å¿—
+output_buffer = [0] * 40    # å­˜æ”¾ç”Ÿæˆçš„æŒ‡ä»¤
+output_buffer_len = [0]    # æŒ‡ä»¤é•¿åº¦
+receive_data = [0] * 40    # å­˜æ”¾æ¥æ”¶çš„åº”ç­”åŒ…
+analysis_data = [0]    # åº”ç­”åŒ…è§£æå‡ºæ¥çš„æ•°æ®
+position = [0]    # å½“å‰ä½ç½®
+current = [0]    # å½“å‰ç”µæµ
+write_buffer = [0] * 20    # å†™å…¥å†…å­˜è¡¨æ•°æ®
 
-# »Ö¸´³ö³§ÉèÖÃ
+servo_sync_parameter = Servo_Sync_Parameter()  # åˆ›å»ºåŒæ­¥å†™å†…å­˜è¡¨ç±»
+
+# æ¢å¤å‡ºå‚è®¾ç½®
 if FACTORY_RESET_TEST:
     Servo.servo_factory_reset(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -37,7 +42,7 @@ if FACTORY_RESET_TEST:
         print("FACTORY RESET SUCCESS")
     time.sleep(1)
 
-# ²ÎÊıÖØÖÃ
+# å‚æ•°é‡ç½®
 if PARAMETER_RESET_TEST:
     Servo.servo_parameter_reset(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -47,7 +52,7 @@ if PARAMETER_RESET_TEST:
         print("PARAMETER RESET SUCCESS")
     time.sleep(1)
 
-# Ğ£ÕıÆ«ÒÆÖµ
+# æ ¡æ­£åç§»å€¼
 if CALIBRATION_TEST:
     Servo.servo_calibration(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -57,25 +62,25 @@ if CALIBRATION_TEST:
         print("CALIBRATION SUCCESS")
     time.sleep(1)
 
-# ÖØÆô¶æ»ú
+# é‡å¯èˆµæœº
 if REBOOT_TEST:
     Servo.servo_reboot(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep(1)
 
-# ½«¶æ»úID1¸ÄÎª2
+# å°†èˆµæœºID1æ”¹ä¸º2
 if MODIFY_ID:
     Servo.servo_modify_known_id(1, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep(1)
 
-# ½«Î´ÖªID¶æ»úID¸ÄÎª2
-if MODIFY_ID:
-    Servo.servo_modify_unknown_id(2, output_buffer, output_buffer_len)
+# å°†æœªçŸ¥IDèˆµæœºçš„IDç¼–å·ä¿®æ”¹ä¸º1
+if MODIFY_UNKNOWN_ID:
+    Servo.servo_modify_unknown_id(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep(1)
 
-# ÏòidÎª1µÄ¶æ»ú·¢³öpingÖ¸Áî
+# å‘idä¸º1çš„èˆµæœºå‘å‡ºpingæŒ‡ä»¤
 if PING_TEST:
     Servo.servo_ping(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -85,9 +90,9 @@ if PING_TEST:
         print("the servo model number is", analysis_data[0])
     time.sleep(1)
 
-# ¶ÁÈ¡¶æ»úÊı¾İ
+# è¯»å–èˆµæœºæ•°æ®
 if READ_TEST:
-    # ¶ÁÈ¡ID1¶æ»úµÄµ±Ç°µçÁ÷
+    # è¯»å–ID1èˆµæœºçš„å½“å‰ç”µæµ
     Servo.servo_read_present_current(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -96,7 +101,7 @@ if READ_TEST:
         print("the present current is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµ±Ç°Î»ÖÃ
+    # è¯»å–ID1èˆµæœºçš„å½“å‰ä½ç½®
     Servo.servo_read_present_position(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -105,7 +110,16 @@ if READ_TEST:
         print("the present position is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµ±Ç°ËÙ¶È
+    # è¯»å–ID1èˆµæœºçš„å½“å‰ä½ç½®å’Œå½“å‰ç”µæµ
+    Servo.servo_read_present_position_and_present_current(1, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    ret = Servo.servo_read_present_position_and_present_current_analysis(receive_data, position, current)
+    if ret == State.SUCCESS:
+        print(f"present position is: {position[0]}, present current is: {current[0]}")
+    time.sleep(1)
+
+    # è¯»å–ID1èˆµæœºçš„å½“å‰é€Ÿåº¦
     Servo.servo_read_present_velocity(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -114,7 +128,7 @@ if READ_TEST:
         print("the present velocity is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµ±Ç°µÄ¹æ»®Î»ÖÃ
+    # è¯»å–ID1èˆµæœºçš„å½“å‰çš„è§„åˆ’ä½ç½®
     Servo.servo_read_present_profile_position(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -123,7 +137,7 @@ if READ_TEST:
         print("the present profile position is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµ±Ç°¹æ»®ËÙ¶È
+    # è¯»å–ID1èˆµæœºçš„å½“å‰è§„åˆ’é€Ÿåº¦
     Servo.servo_read_present_profile_velocity(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -132,7 +146,7 @@ if READ_TEST:
         print("the present profile velocity is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµ±Ç°PWM
+    # è¯»å–ID1èˆµæœºçš„å½“å‰PWM
     Servo.servo_read_present_pwm(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -141,7 +155,7 @@ if READ_TEST:
         print("the present pwm is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµ±Ç°ÎÂ¶È
+    # è¯»å–ID1èˆµæœºçš„å½“å‰æ¸©åº¦
     Servo.servo_read_present_temperature(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -150,7 +164,7 @@ if READ_TEST:
         print("the present temperature is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµ±Ç°ÊäÈëµçÑ¹
+    # è¯»å–ID1èˆµæœºçš„å½“å‰è¾“å…¥ç”µå‹
     Servo.servo_read_present_voltage(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -159,7 +173,7 @@ if READ_TEST:
         print("the present voltage is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ¿ØÊ±Ä¿±êÔËĞĞÊ±¼ä
+    # è¯»å–ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡è¿è¡Œæ—¶é—´
     Servo.servo_read_time_base_target_moving_time(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -168,7 +182,7 @@ if READ_TEST:
         print("the present time base target moving time is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃ
+    # è¯»å–ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡ä½ç½®
     Servo.servo_read_time_base_target_position(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -177,7 +191,7 @@ if READ_TEST:
         print("the present time base target position is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ¿ØÊ±¼ÓËÙ¶ÈµÈ¼¶
+    # è¯»å–ID1èˆµæœºçš„æ§æ—¶åŠ é€Ÿåº¦ç­‰çº§
     Servo.servo_read_time_base_target_acc(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -186,7 +200,27 @@ if READ_TEST:
         print("the present time base target acc is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ¿ØËÙÄ¿±ê¼õËÙ¶È
+    # è¯»å–ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡ä½ç½®å’Œè¿è¡Œæ—¶é—´
+    Servo.servo_read(1, 0x3C, 4, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("the time base target position and moving time pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    time.sleep(1)
+
+    # è¯»å–ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡åŠ é€Ÿåº¦ç­‰çº§ã€ä½ç½®å’Œè¿è¡Œæ—¶é—´
+    Servo.servo_read(1, 0x3B, 5, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("the time base target acc, position and moving time pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    time.sleep(1)
+
+    # è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡å‡é€Ÿåº¦
     Servo.servo_read_velocity_base_target_dec(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -195,7 +229,7 @@ if READ_TEST:
         print("the present velocity base target dec is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ¿ØËÙÄ¿±ê¼ÓËÙ¶È
+    # è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡åŠ é€Ÿåº¦
     Servo.servo_read_velocity_base_target_acc(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -204,7 +238,7 @@ if READ_TEST:
         print("the present velocity base target acc is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ¿ØËÙÄ¿±êËÙ¶È
+    # è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡é€Ÿåº¦
     Servo.servo_read_velocity_base_target_velocity(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -213,7 +247,7 @@ if READ_TEST:
         print("the present velocity base target velocity is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃ
+    # è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®
     Servo.servo_read_velocity_base_target_position(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -222,7 +256,27 @@ if READ_TEST:
         print("the present velocity base target position is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄÄ¿±êµçÁ÷
+    # è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®å’Œé€Ÿåº¦
+    Servo.servo_read(1, 0x35, 4, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("the velocity base target position and velocity pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    time.sleep(1)
+
+    # è¯»å–ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®ã€é€Ÿåº¦å’ŒåŠ å‡é€Ÿåº¦
+    Servo.servo_read(1, 0x35, 6, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("the velocity base target position,velocity,acc and dec pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    time.sleep(1)
+
+    # è¯»å–ID1èˆµæœºçš„ç›®æ ‡ç”µæµ
     Servo.servo_read_target_current(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -231,7 +285,7 @@ if READ_TEST:
         print("the present target current is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄÄ¿±êPWM
+    # è¯»å–ID1èˆµæœºçš„ç›®æ ‡PWM
     Servo.servo_read_target_pwm(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -240,7 +294,7 @@ if READ_TEST:
         print("the present target pwm is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    # è¯»å–ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³
     Servo.servo_read_torque_switch(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -249,7 +303,7 @@ if READ_TEST:
         print("the present torque switch is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄLED¿ª¹Ø
+    # è¯»å–ID1èˆµæœºçš„LEDå¼€å…³
     Servo.servo_read_led_switch(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -258,7 +312,7 @@ if READ_TEST:
         print("the present led switch is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄFlash¿ª¹Ø
+    # è¯»å–ID1èˆµæœºçš„Flashå¼€å…³
     Servo.servo_read_flash_switch(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -267,7 +321,7 @@ if READ_TEST:
         print("the present flash switch is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµçÁ÷Ğ£ÕıÖµ
+    # è¯»å–ID1èˆµæœºçš„ç”µæµæ ¡æ­£å€¼
     Servo.servo_read_current_offset(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -276,7 +330,7 @@ if READ_TEST:
         print("the present current offset is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄÖĞÎ»Ğ£ÕıÖµ
+    # è¯»å–ID1èˆµæœºçš„ä¸­ä½æ ¡æ­£å€¼
     Servo.servo_read_calibration(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -285,7 +339,7 @@ if READ_TEST:
         print("the present calibration is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ¿ØÖÆÄ£Ê½
+    # è¯»å–ID1èˆµæœºçš„æ§åˆ¶æ¨¡å¼
     Servo.servo_read_control_mode(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -294,7 +348,7 @@ if READ_TEST:
         print("the present control mode is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄĞ¶ÔØ±£»¤Ìõ¼ş
+    # è¯»å–ID1èˆµæœºçš„å¸è½½ä¿æŠ¤æ¡ä»¶
     Servo.servo_read_shutdown_condition(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -303,7 +357,7 @@ if READ_TEST:
         print("the present shutdown condition is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄLED±¨¾¯Ìõ¼ş
+    # è¯»å–ID1èˆµæœºçš„LEDæŠ¥è­¦æ¡ä»¶
     Servo.servo_read_led_condition(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -312,7 +366,7 @@ if READ_TEST:
         print("the present led condition is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄÎ»ÖÃ¿ØÖÆDÔöÒæ
+    # è¯»å–ID1èˆµæœºçš„ä½ç½®æ§åˆ¶Då¢ç›Š
     Servo.servo_read_position_control_d_gain(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -321,7 +375,7 @@ if READ_TEST:
         print("the present position control d gain is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄÎ»ÖÃ¿ØÖÆIÔöÒæ
+    # è¯»å–ID1èˆµæœºçš„ä½ç½®æ§åˆ¶Iå¢ç›Š
     Servo.servo_read_position_control_i_gain(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -330,7 +384,7 @@ if READ_TEST:
         print("the present position control I gain is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄÎ»ÖÃ¿ØÖÆPÔöÒæ
+    # è¯»å–ID1èˆµæœºçš„ä½ç½®æ§åˆ¶På¢ç›Š
     Servo.servo_read_position_control_p_gain(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -339,7 +393,17 @@ if READ_TEST:
         print("the present position control P gain is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄPWMµş¼ÓÖµ
+    # è¯»å–ID1èˆµæœºçš„ä½ç½®æ§åˆ¶PIDå¢ç›Š
+    Servo.servo_read(1, 0x1B, 6, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("position control pid gain pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    time.sleep(1)
+
+    # è¯»å–ID1èˆµæœºçš„PWMå åŠ å€¼
     Servo.servo_read_pwm_punch(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -348,7 +412,7 @@ if READ_TEST:
         print("the present pwm punch is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ·´×ªËÀÇø
+    # è¯»å–ID1èˆµæœºçš„åè½¬æ­»åŒº
     Servo.servo_read_ccw_deadband(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -357,7 +421,7 @@ if READ_TEST:
         print("the present ccw deadband is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄÕı×ªËÀÇø
+    # è¯»å–ID1èˆµæœºçš„æ­£è½¬æ­»åŒº
     Servo.servo_read_cw_deadband(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -366,7 +430,7 @@ if READ_TEST:
         print("the present cw deadband is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµçÁ÷±£»¤Ê±¼ä
+    # è¯»å–ID1èˆµæœºçš„ç”µæµä¿æŠ¤æ—¶é—´
     Servo.servo_read_current_shutdown_time(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -375,7 +439,7 @@ if READ_TEST:
         print("the present current shutdown time is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµçÁ÷ÉÏÏŞ
+    # è¯»å–ID1èˆµæœºçš„ç”µæµä¸Šé™
     Servo.servo_read_max_current_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -384,7 +448,7 @@ if READ_TEST:
         print("the present max current limit is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄPWMÉÏÏŞ
+    # è¯»å–ID1èˆµæœºçš„PWMä¸Šé™
     Servo.servo_read_max_pwm_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -393,7 +457,7 @@ if READ_TEST:
         print("the present max pwm limit is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµçÑ¹ÉÏÏŞ
+    # è¯»å–ID1èˆµæœºçš„ç”µå‹ä¸Šé™
     Servo.servo_read_max_voltage_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -402,7 +466,7 @@ if READ_TEST:
         print("the present max voltage limit is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄµçÑ¹ÏÂÏŞ
+    # è¯»å–ID1èˆµæœºçš„ç”µå‹ä¸‹é™
     Servo.servo_read_min_voltage_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -411,7 +475,17 @@ if READ_TEST:
         print("the present min voltage limit is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄÎÂ¶ÈÉÏÏŞ
+    # è¯»å–ID1èˆµæœºçš„ç”µå‹é™åˆ¶
+    Servo.servo_read(1, 0x10, 2, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("the voltage limit pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    time.sleep(1)
+
+    # è¯»å–ID1èˆµæœºçš„æ¸©åº¦ä¸Šé™
     Servo.servo_read_max_temperature_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -420,7 +494,7 @@ if READ_TEST:
         print("the present max temperature limit is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ×î´óÎ»ÖÃÏŞÖÆ
+    # è¯»å–ID1èˆµæœºçš„æœ€å¤§ä½ç½®é™åˆ¶
     Servo.servo_read_max_angle_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -429,7 +503,7 @@ if READ_TEST:
         print("the present max angle limit is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ×îĞ¡Î»ÖÃÏŞÖÆ
+    # è¯»å–ID1èˆµæœºçš„æœ€å°ä½ç½®é™åˆ¶
     Servo.servo_read_min_angle_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -438,7 +512,17 @@ if READ_TEST:
         print("the present min angle limit is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ×´Ì¬·µ»Ø¼¶±ğ
+    # è¯»å–ID1èˆµæœºçš„ä½ç½®é™åˆ¶
+    Servo.servo_read(1, 0x0B, 4, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("the angle limit pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    time.sleep(1)
+
+    # è¯»å–ID1èˆµæœºçš„çŠ¶æ€è¿”å›çº§åˆ«
     Servo.servo_read_return_level(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -447,7 +531,7 @@ if READ_TEST:
         print("the present return level is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄÓ¦´ğÑÓÊ±Ê±¼ä
+    # è¯»å–ID1èˆµæœºçš„åº”ç­”å»¶æ—¶æ—¶é—´
     Servo.servo_read_return_delay_time(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -456,7 +540,7 @@ if READ_TEST:
         print("the present return delay time is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ²¨ÌØÂÊ
+    # è¯»å–ID1èˆµæœºçš„æ³¢ç‰¹ç‡
     Servo.servo_read_baud_rate(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -465,7 +549,7 @@ if READ_TEST:
         print("the present baud rate is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ³ö³§±àºÅ
+    # è¯»å–ID1èˆµæœºçš„å‡ºå‚ç¼–å·
     Servo.servo_read_model_information(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -474,7 +558,7 @@ if READ_TEST:
         print("the present model information is", analysis_data[0])
     time.sleep(1)
 
-    # ¶ÁÈ¡ID1¶æ»úµÄ¹Ì¼ş°æ±¾ºÅ
+    # è¯»å–ID1èˆµæœºçš„å›ºä»¶ç‰ˆæœ¬å·
     Servo.servo_read_firmware_version(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -484,9 +568,9 @@ if READ_TEST:
     time.sleep(1)
 
     #
-# Ğ´Èë¶æ»úÊı¾İ
+# å†™å…¥èˆµæœºæ•°æ®
 if WRITE_TEST:
-    # ÉèÖÃID1¶æ»úµÄÓ¦´ğÑÓÊ±Ê±¼ä
+    # å°†ID1èˆµæœºçš„åº”ç­”å»¶è¿Ÿæ—¶é—´ä¿®æ”¹ä¸º500us
     Servo.servo_set_return_delay_time(1, 250, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -494,8 +578,8 @@ if WRITE_TEST:
     if ret == State.SUCCESS:
         print("servo set return delay time is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄ×´Ì¬·µ»Ø¼¶±ğ
+    
+    # å°†ID1èˆµæœºçš„çŠ¶æ€è¿”å›çº§åˆ«ä¿®æ”¹ä¸ºåº”ç­”æ‰€æœ‰æŒ‡ä»¤
     Servo.servo_set_return_level(1, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -503,8 +587,8 @@ if WRITE_TEST:
     if ret == State.SUCCESS:
         print("servo set return level is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄ²¨ÌØÂÊ
+    
+    # è®¾ç½®ID1èˆµæœºçš„æ³¢ç‰¹ç‡ä¸º1000000
     Servo.servo_set_baud_rate(1, 7, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -512,8 +596,8 @@ if WRITE_TEST:
     if ret == State.SUCCESS:
         print("servo set baud rate is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄ×îĞ¡Î»ÖÃÏŞÖÆ
+    
+    # å°†èˆµæœºID1çš„æœ€å°ä½ç½®é™åˆ¶ä¿®æ”¹ä¸º0Â°
     Servo.servo_set_min_angle_limit(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -521,8 +605,8 @@ if WRITE_TEST:
     if ret == State.SUCCESS:
         print("servo set min angle limit is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄ×î´óÎ»ÖÃÏŞÖÆ
+    
+    # å°†èˆµæœºID1çš„æœ€å¤§ä½ç½®é™åˆ¶ä¿®æ”¹ä¸º300Â°
     Servo.servo_set_max_angle_limit(1, 3000, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -531,26 +615,41 @@ if WRITE_TEST:
         print("servo set max angle limit is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÎÂ¶ÈÉÏÏŞ
-    Servo.servo_set_max_temperature_limit(1, 100, output_buffer, output_buffer_len)
+    # å°†èˆµæœºID1çš„ä½ç½®é™åˆ¶ä¿®æ”¹ä¸º0Â°~300Â°
+    write_buffer[0] = 0 & 0xff
+    write_buffer[1] = (0 >> 8) & 0xff
+    write_buffer[2] = 3000 & 0xff
+    write_buffer[3] = (3000 >> 8) & 0xff
+
+    Servo.servo_write(1, 0x0B, 4, write_buffer, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("servo set angle limit pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    time.sleep(1)
+    
+    # å°†ID1èˆµæœºçš„æ¸©åº¦ä¸Šé™ä¿®æ”¹ä¸º65â„ƒ
+    Servo.servo_set_max_temperature_limit(1, 65, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_max_temperature_limit_analysis(receive_data)
     if ret == State.SUCCESS:
         print("servo set max temperature limit is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄµçÑ¹ÉÏÏŞ
-    Servo.servo_set_max_voltage_limit(1, 90, output_buffer, output_buffer_len)
+    
+    # å°†ID1èˆµæœºçš„ç”µå‹ä¸Šé™ä¿®æ”¹ä¸º8.4V
+    Servo.servo_set_max_voltage_limit(1, 84, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_max_voltage_limit_analysis(receive_data)
     if ret == State.SUCCESS:
         print("servo_set_max_voltage_limit is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄµçÑ¹ÏÂÏŞ
-    Servo.servo_set_min_voltage_limit(1, 33, output_buffer, output_buffer_len)
+    
+    # å°†ID1èˆµæœºçš„ç”µå‹ä¸‹é™ä¿®æ”¹ä¸º3.5V
+    Servo.servo_set_min_voltage_limit(1, 35, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_min_voltage_limit_analysis(receive_data)
@@ -558,44 +657,57 @@ if WRITE_TEST:
         print("servo_set_min_voltage_limit is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄPWMÉÏÏŞ
-    Servo.servo_set_max_pwm_limit(1, 1000, output_buffer, output_buffer_len)
+    # å°†ID1èˆµæœºçš„ç”µå‹é™åˆ¶ä¿®æ”¹ä¸º3.5V~8.4V
+    write_buffer[0] = 84 & 0xff
+    write_buffer[1] = 35 & 0xff
+
+    Servo.servo_write(1, 0x10, 2, write_buffer, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("the voltage limit pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    time.sleep(1)
+    
+    # å°†ID1èˆµæœºçš„PWMä¸Šé™ä¿®æ”¹ä¸º90%
+    Servo.servo_set_max_pwm_limit(1, 900, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_max_pwm_limit_analysis(receive_data)
     if ret == State.SUCCESS:
         print("servo_set_max_pwm_limit is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄµçÁ÷ÉÏÏŞ
-    Servo.servo_set_max_current_limit(1, 400, output_buffer, output_buffer_len)
+    
+    # å°†ID1èˆµæœºçš„ç”µæµä¸Šé™ä¿®æ”¹ä¸º900mA
+    Servo.servo_set_max_current_limit(1, 900, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_max_current_limit_analysis(receive_data)
     if ret == State.SUCCESS:
         print("servo_set_max_current_limit is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄµçÁ÷±£»¤Ê±¼ä
-    Servo.servo_set_current_shutdown_time(1, 1000, output_buffer, output_buffer_len)
+    
+    # å°†ID1èˆµæœºçš„ç”µæµä¿æŠ¤æ—¶é—´ä¿®æ”¹ä¸º500ms
+    Servo.servo_set_current_shutdown_time(1, 500, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_current_shutdown_time_analysis(receive_data)
     if ret == State.SUCCESS:
         print("servo_set_current_shutdown_time is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄÕı×ªËÀÇø
-    Servo.servo_set_cw_deadband(1, 1, output_buffer, output_buffer_len)
+    
+    # å°†ID1èˆµæœºçš„æ­£è½¬æ­»åŒºä¿®æ”¹ä¸º0.2Â°
+    Servo.servo_set_cw_deadband(1, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_cw_deadband_analysis(receive_data)
     if ret == State.SUCCESS:
         print("servo_set_cw_deadband is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄ·´×ªËÀÇø
-    Servo.servo_set_ccw_deadband(1, 1, output_buffer, output_buffer_len)
+    
+    # å°†ID1èˆµæœºçš„åè½¬æ­»åŒºä¿®æ”¹ä¸º0.2Â°
+    Servo.servo_set_ccw_deadband(1, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_ccw_deadband_analysis(receive_data)
@@ -603,35 +715,47 @@ if WRITE_TEST:
         print("servo_set_ccw_deadband is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄPWMµş¼ÓÖµ
-    Servo.servo_set_pwm_punch(1, 1, output_buffer, output_buffer_len)
+    # å°†ID1èˆµæœºçš„æ­£åè½¬æ­»åŒºä¿®æ”¹ä¸º0.2Â°
+    write_buffer[0] = 2 & 0xff
+    write_buffer[1] = 2 & 0xff
+
+    Servo.servo_write(1, 0x18, 2, write_buffer, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("servo set cw deadband and ccw deadband pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    
+    # å°†ID1èˆµæœºçš„PWMå åŠ å€¼ä¿®æ”¹ä¸º1%
+    Servo.servo_set_pwm_punch(1, 10, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_pwm_punch_analysis(receive_data)
     if ret == State.SUCCESS:
         print("servo_set_pwm_punch is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄÎ»ÖÃ¿ØÖÆPÔöÒæ
-    Servo.servo_set_position_control_p_gain(1, 6000, output_buffer, output_buffer_len)
+    
+    # å°†ID1èˆµæœºçš„ä½ç½®æ§åˆ¶På¢ç›Šä¿®æ”¹ä¸º5995
+    Servo.servo_set_position_control_p_gain(1, 5995, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_position_control_p_gain_analysis(receive_data)
     if ret == State.SUCCESS:
         print("servo_set_position_control_p_gain is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄÎ»ÖÃ¿ØÖÆIÔöÒæ
-    Servo.servo_set_position_control_i_gain(1, 1, output_buffer, output_buffer_len)
+    
+    # å°†ID1èˆµæœºçš„ä½ç½®æ§åˆ¶Iå¢ç›Šä¿®æ”¹ä¸º5
+    Servo.servo_set_position_control_i_gain(1, 5, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_position_control_i_gain_analysis(receive_data)
     if ret == State.SUCCESS:
         print("servo_set_position_control_i_gain is successful")
     time.sleep(1)
-
-    # ÉèÖÃID1¶æ»úµÄÎ»ÖÃ¿ØÖÆDÔöÒæ
-    Servo.servo_set_position_control_d_gain(1, 150, output_buffer, output_buffer_len)
+    
+    # å°†ID1èˆµæœºçš„ä½ç½®æ§åˆ¶Då¢ç›Šä¿®æ”¹ä¸º145
+    Servo.servo_set_position_control_d_gain(1, 145, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_position_control_d_gain_analysis(receive_data)
@@ -639,8 +763,25 @@ if WRITE_TEST:
         print("servo_set_position_control_d_gain is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄLED±¨¾¯Ìõ¼ş
-    Servo.servo_set_led_condition(1, 36, output_buffer, output_buffer_len)
+    # å°†ID1èˆµæœºçš„ä½ç½®æ§åˆ¶PIDå¢ç›Šï¼Œåˆ†åˆ«ä¿®æ”¹ä¸º5500ã€100ã€250
+    write_buffer[0] = 5500 & 0xff
+    write_buffer[1] = (5500 >> 8) & 0xff
+    write_buffer[2] = 100 & 0xff
+    write_buffer[3] = (100 >> 8) & 0xff
+    write_buffer[4] = 250 & 0xff
+    write_buffer[5] = (250 >> 8) & 0xff
+
+    Servo.servo_write(1, 0x1B, 6, write_buffer, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    print("servo set position control pid gain pack is:", end=' ')
+    for i in range(len(receive_data)):
+        print(f"0x{receive_data[i]:02x}", end=' ')
+    print("\r\n")
+    time.sleep(1)
+
+    # å°†ID1èˆµæœºçš„LEDæŠ¥è­¦æ¡ä»¶ä¿®æ”¹ä¸ºå¼€å¯å µè½¬æŠ¥é”™ã€è¿‡çƒ­æŠ¥é”™å’Œè§’åº¦æŠ¥é”™
+    Servo.servo_set_led_condition(1, 38, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_led_condition_analysis(receive_data)
@@ -648,8 +789,8 @@ if WRITE_TEST:
         print("servo_set_led_condition is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄĞ¶ÔØ±£»¤Ìõ¼ş
-    Servo.servo_set_shutdown_conditions(1, 36, output_buffer, output_buffer_len)
+    # å°†ID1èˆµæœºçš„å¸è½½ä¿æŠ¤æ¡ä»¶ä¿®æ”¹ä¸ºå¼€å¯å µè½¬æŠ¥é”™ã€è¿‡çƒ­æŠ¥é”™ã€ç”µå‹æŠ¥é”™å’Œè§’åº¦æŠ¥é”™
+    Servo.servo_set_shutdown_conditions(1, 39, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_shutdown_conditions_analysis(receive_data)
@@ -657,7 +798,16 @@ if WRITE_TEST:
         print("servo_set_shutdown_conditions is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄFlash¿ª¹Ø
+    # å°†ID1èˆµæœºçš„Flashå¼€å…³çŠ¶æ€ä¿®æ”¹ä¸ºæ‰“å¼€
+    Servo.servo_set_flash_switch(1, 1, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    ret = Servo.servo_set_flash_switch_analysis(receive_data)
+    if ret == State.SUCCESS:
+        print("servo_set_flash_switch is successful")
+    time.sleep(1)
+
+    # å°†ID1èˆµæœºçš„Flashå¼€å…³çŠ¶æ€ä¿®æ”¹ä¸ºå…³é—­
     Servo.servo_set_flash_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -666,7 +816,7 @@ if WRITE_TEST:
         print("servo_set_flash_switch is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄLED¿ª¹Ø
+    # å°†ID1èˆµæœºçš„LEDå¼€å…³çŠ¶æ€ä¿®æ”¹ä¸ºæ‰“å¼€
     Servo.servo_set_led_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -674,8 +824,17 @@ if WRITE_TEST:
     if ret == State.SUCCESS:
         print("servo_set_led_switch is successful")
     time.sleep(1)
+    
+    # å°†ID1èˆµæœºçš„LEDå¼€å…³çŠ¶æ€ä¿®æ”¹ä¸ºå…³é—­
+    Servo.servo_set_led_switch(1, 0, output_buffer, output_buffer_len)
+    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    receive_data = serial.read(MAX_RECEIVE_LEN)
+    ret = Servo.servo_set_led_switch_analysis(receive_data)
+    if ret == State.SUCCESS:
+        print("servo_set_led_switch is successful")
+    time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    # è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå…³é—­
     Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -684,7 +843,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
+    # å°†ID1èˆµæœºçš„æ§åˆ¶æ¨¡å¼ä¿®æ”¹ä¸ºPWMè¾“å‡ºæ§åˆ¶æ¨¡å¼
     Servo.servo_set_control_mode(1, 3, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -693,7 +852,7 @@ if WRITE_TEST:
         print("servo_set_control_mode is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    # è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå¼€å¯
     Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -702,8 +861,8 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÄ¿±êPWM
-    Servo.servo_set_target_pwm(1, 1000, output_buffer, output_buffer_len)
+    # å°†ID1èˆµæœºçš„ç›®æ ‡PWMä¿®æ”¹ä¸º-50%
+    Servo.servo_set_target_pwm(1, -500, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_target_pwm_analysis(receive_data)
@@ -711,7 +870,7 @@ if WRITE_TEST:
         print("servo_set_target_pwm is successful")
     time.sleep(3)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    # è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå…³é—­
     Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -720,7 +879,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
+    # å°†ID1èˆµæœºçš„æ§åˆ¶æ¨¡å¼ä¿®æ”¹ä¸ºç”µæµæ§åˆ¶æ¨¡å¼
     Servo.servo_set_control_mode(1, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -729,7 +888,7 @@ if WRITE_TEST:
         print("servo_set_control_mode is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    # è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå¼€å¯
     Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -738,8 +897,8 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÄ¿±êµçÁ÷
-    Servo.servo_set_target_current(1, -1000, output_buffer, output_buffer_len)
+    # å°†ID1èˆµæœºçš„ç›®æ ‡ç”µæµä¿®æ”¹ä¸º-400mA
+    Servo.servo_set_target_current(1, -400, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_velocity_base_target_position_analysis(receive_data)
@@ -747,7 +906,7 @@ if WRITE_TEST:
         print("servo_set_target_current is successful")
     time.sleep(3)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    # è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå…³é—­
     Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -756,7 +915,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
+    # å°†ID1èˆµæœºçš„æ§åˆ¶æ¨¡å¼ä¿®æ”¹ä¸ºæ§é€Ÿæ¨¡å¼
     Servo.servo_set_control_mode(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -765,7 +924,7 @@ if WRITE_TEST:
         print("servo_set_control_mode is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    # è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå¼€å¯
     Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -774,7 +933,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØËÙÄ¿±êËÙ¶È
+    # å°†ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡é€Ÿåº¦ä¿®æ”¹ä¸º360Â°/s
     Servo.servo_set_velocity_base_target_velocity(1, 3600, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -783,8 +942,8 @@ if WRITE_TEST:
         print("servo_set_velocity_base_target_velocity is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØËÙÄ¿±ê¼ÓËÙ¶È
-    Servo.servo_set_velocity_base_target_acc(1, 150, output_buffer, output_buffer_len)
+    # å°†ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡åŠ é€Ÿåº¦ä¿®æ”¹ä¸º500Â°/sÂ²
+    Servo.servo_set_velocity_base_target_acc(1, 10, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_velocity_base_target_acc_analysis(receive_data)
@@ -792,8 +951,8 @@ if WRITE_TEST:
         print("servo_set_velocity_base_target_acc is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØËÙÄ¿±ê¼õËÙ¶È
-    Servo.servo_set_velocity_base_target_dec(1, 150, output_buffer, output_buffer_len)
+    # å°†ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡å‡é€Ÿåº¦ä¿®æ”¹ä¸º50Â°/sÂ²
+    Servo.servo_set_velocity_base_target_dec(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_velocity_base_target_dec_analysis(receive_data)
@@ -801,8 +960,8 @@ if WRITE_TEST:
         print("servo_set_velocity_base_target_dec is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃ
-    Servo.servo_set_velocity_base_target_position(1, 0, output_buffer, output_buffer_len)
+    # å°†ID1èˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®ä¿®æ”¹ä¸º150Â°
+    Servo.servo_set_velocity_base_target_position(1, 1500, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_velocity_base_target_position_analysis(receive_data)
@@ -810,7 +969,7 @@ if WRITE_TEST:
         print("servo set velocity base target position is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    # è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå…³é—­
     Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -819,7 +978,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
+    # å°†ID1èˆµæœºçš„æ§åˆ¶æ¨¡å¼ä¿®æ”¹ä¸ºæ§æ—¶æ¨¡å¼
     Servo.servo_set_control_mode(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -828,7 +987,7 @@ if WRITE_TEST:
         print("servo_set_control_mode is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
+    # è®¾ç½®ID1èˆµæœºçš„æ‰­çŸ©å¼€å…³ä¸ºå¼€å¯
     Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -837,8 +996,8 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØÊ±Ä¿±ê¼ÓËÙ¶ÈµÈ¼¶
-    Servo.servo_set_time_base_target_acc(1, 0, output_buffer, output_buffer_len)
+    # å°†ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡åŠ é€Ÿåº¦ç­‰çº§ä¿®æ”¹ä¸º5
+    Servo.servo_set_time_base_target_acc(1, 5, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
     ret = Servo.servo_set_time_base_target_acc_analysis(receive_data)
@@ -846,7 +1005,7 @@ if WRITE_TEST:
         print("servo_set_time_base_target_acc is successful")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃºÍÄ¿±êÔËĞĞÊ±¼ä
+    # å°†ID1èˆµæœºçš„æ§æ—¶ç›®æ ‡ä½ç½®å’Œè¿è¡Œæ—¶é—´ï¼Œåˆ†åˆ«ä¿®æ”¹ä¸º300Â°ã€500ms
     Servo.servo_set_time_base_target_position_and_moving_time(1, 3000, 500, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -855,214 +1014,150 @@ if WRITE_TEST:
         print("servo_set_time_base_target_position_and_moving_time is successful")
     time.sleep(1)
 
-# Í¬²½Ğ´²âÊÔ
+# åŒæ­¥å†™æµ‹è¯•
 if SYNC_WRITE:
-    # Í¬²½Ğ´²Ù×÷Á½¸ö¶æ»ú
+    # åŒæ­¥å†™æ“ä½œä¸¤ä¸ªèˆµæœº
     servo_sync_parameter.id_counts = 2
 
-    #µÚÒ»¸ö¶æ»úidÎª1
+    #ç¬¬ä¸€ä¸ªèˆµæœºidä¸º1
     servo_sync_parameter.id[0] = 1
 
-    #µÚÒ»¸ö¶æ»úidÎª2
+    #ç¬¬ä¸€ä¸ªèˆµæœºidä¸º2
     servo_sync_parameter.id[1] = 2
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
+    # å°†ID1ã€ID2èˆµæœºçš„æ‰­çŸ©å¼€å…³çŠ¶æ€ï¼Œåˆ†åˆ«ä¿®æ”¹ä¸ºå…³é—­
+    servo_sync_parameter.torque_switch[0] = 0
+    servo_sync_parameter.torque_switch[1] = 0
+    Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_torque_switch_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_torque_switch is successful")
+    print("Sync Write torque witch successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
-    Servo.servo_set_control_mode(1, 1, output_buffer, output_buffer_len)
+    # å°†ID1ã€ID2èˆµæœºçš„æ§åˆ¶æ¨¡å¼ï¼Œåˆ†åˆ«ä¿®æ”¹ä¸ºæ§é€Ÿæ¨¡å¼
+    servo_sync_parameter.control_mode[0] = 1
+    servo_sync_parameter.control_mode[1] = 1
+    Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_control_mode_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_control_mode is successful")
+    print("Sync Write control mode successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
-    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
-    receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_torque_switch_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_torque_switch is successful")
-    time.sleep(1)
+    # è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§é€Ÿç›®æ ‡åŠ é€Ÿåº¦
 
-    # ÉèÖÃID2¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    Servo.servo_set_torque_switch(2, 0, output_buffer, output_buffer_len)
-    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
-    receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_torque_switch_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_torque_switch is successful")
-    time.sleep(1)
-
-    # ÉèÖÃID2¶æ»úµÄ¿ØÖÆÄ£Ê½
-    Servo.servo_set_control_mode(2, 1, output_buffer, output_buffer_len)
-    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
-    receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_control_mode_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_control_mode is successful")
-    time.sleep(1)
-
-    # ÉèÖÃID2¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    Servo.servo_set_torque_switch(2, 1, output_buffer, output_buffer_len)
-    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
-    receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_torque_switch_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_torque_switch is successful")
-    time.sleep(1)
-
-    # ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±ê¼ÓËÙ¶È
-
-    # idÎª1£¬2µÄ¶æ»ú¼ÓËÙ¶È·Ö±ğÉèÖÃÎª150£¬150£¬ÖµºÍÇ°ÃæµÄidÉèÖÃ¶ÔÓ¦
-    servo_sync_parameter.acc_velocity[0] = 150;          
-    servo_sync_parameter.acc_velocity[1] = 150;  
+    # idä¸º1ï¼Œ2çš„èˆµæœºåŠ é€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º150ï¼Œ150ï¼Œå€¼å’Œå‰é¢çš„idè®¾ç½®å¯¹åº”
+    servo_sync_parameter.acc_velocity[0] = 150      
+    servo_sync_parameter.acc_velocity[1] = 150
 
     Servo.servo_sync_write_velocity_base_target_acc(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    print("Sync Write velocity base target acc successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±ê¼õËÙ¶È
+    # è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§é€Ÿç›®æ ‡å‡é€Ÿåº¦
 
-    # idÎª1£¬2µÄ¶æ»ú¼õËÙ¶È·Ö±ğÉèÖÃÎª150£¬150£¬ÖµºÍÇ°ÃæµÄidÉèÖÃ¶ÔÓ¦
-    servo_sync_parameter.dec_velocity[0] = 150;           
-    servo_sync_parameter.dec_velocity[1] = 150;  
+    # idä¸º1ï¼Œ2çš„èˆµæœºå‡é€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º150ï¼Œ150ï¼Œå€¼å’Œå‰é¢çš„idè®¾ç½®å¯¹åº”
+    servo_sync_parameter.dec_velocity[0] = 150        
+    servo_sync_parameter.dec_velocity[1] = 150
 
     Servo.servo_sync_write_velocity_base_target_dec(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    print("Sync Write velocity base target dec successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±êËÙ¶È
+    # è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§é€Ÿç›®æ ‡é€Ÿåº¦
 
-    # idÎª1£¬2µÄ¶æ»úËÙ¶È·Ö±ğÉèÖÃÎª3600£¬1800£¬ÖµºÍÇ°ÃæµÄidÉèÖÃ¶ÔÓ¦
-    servo_sync_parameter.velocity[0] = 3600;
-    servo_sync_parameter.velocity[1] = 1800;
+    # idä¸º1ï¼Œ2çš„èˆµæœºé€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º3600ï¼Œ1800ï¼Œå€¼å’Œå‰é¢çš„idè®¾ç½®å¯¹åº”
+    servo_sync_parameter.velocity[0] = 3600
+    servo_sync_parameter.velocity[1] = 1800
 
     Servo.servo_sync_write_velocity_base_target_velocity(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    print("Sync Write velocity base target velocity successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃ
+    # è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®
 
-    # idÎª1£¬2µÄ¶æ»úÔË¶¯Î»ÖÃ·Ö±ğÉèÖÃÎª0£¬0£¬ÖµºÍÇ°ÃæµÄidÉèÖÃ¶ÔÓ¦
-    servo_sync_parameter.position[0] = 0;
-    servo_sync_parameter.position[1] = 0;
+    # idä¸º1ï¼Œ2çš„èˆµæœºè¿åŠ¨ä½ç½®åˆ†åˆ«è®¾ç½®ä¸º0ï¼Œ0ï¼Œå€¼å’Œå‰é¢çš„idè®¾ç½®å¯¹åº”
+    servo_sync_parameter.position[0] = 0
+    servo_sync_parameter.position[1] = 0
 
     Servo.servo_sync_write_velocity_base_target_position(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    print("Sync Write velocity base target position successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØËÙÄ¿±êÎ»ÖÃºÍËÙ¶È
+    # è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§é€Ÿç›®æ ‡ä½ç½®å’Œé€Ÿåº¦
 
-    # idÎª1£¬2µÄ¶æ»úËÙ¶È·Ö±ğÉèÖÃÎª1800£¬3600£¬Î»ÖÃ·Ö±ğÉèÖÃÎª3000£¬3000
-    servo_sync_parameter.velocity[0] = 1800;
-    servo_sync_parameter.velocity[1] = 3600;
-    servo_sync_parameter.position[0] = 3000;
-    servo_sync_parameter.position[1] = 3000;
+    # idä¸º1ï¼Œ2çš„èˆµæœºé€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º1800ï¼Œ3600ï¼Œä½ç½®åˆ†åˆ«è®¾ç½®ä¸º3000ï¼Œ3000
+    servo_sync_parameter.velocity[0] = 1800
+    servo_sync_parameter.velocity[1] = 3600
+    servo_sync_parameter.position[0] = 3000
+    servo_sync_parameter.position[1] = 3000
 
     Servo.servo_sync_write_velocity_base_target_position_and_velocity(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    print("Sync Write velocity base target position and velocity successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃ¶à¸ö¶æ»úµÄ¼ÓËÙ¶È£¬¼õËÙ¶È£¬ËÙ¶ÈºÍÎ»ÖÃ
+    # è®¾ç½®å¤šä¸ªèˆµæœºçš„åŠ é€Ÿåº¦ï¼Œå‡é€Ÿåº¦ï¼Œé€Ÿåº¦å’Œä½ç½®
 
-    # idÎª1£¬2µÄ¶æ»úËÙ¶È·Ö±ğÉèÖÃÎª3600£¬3600£¬Î»ÖÃ·Ö±ğÉèÖÃÎª0£¬0,¼ÓËÙ¶È·Ö±ğÉèÖÃÎª100£¬100£¬¼õËÙ¶È·Ö±ğÉèÖÃÎª100£¬100
-    servo_sync_parameter.velocity[0] = 3600;
-    servo_sync_parameter.velocity[1] = 3600;
-    servo_sync_parameter.position[0] = 0;
-    servo_sync_parameter.position[1] = 0;
-    servo_sync_parameter.acc_velocity[0] = 100;
-    servo_sync_parameter.acc_velocity[1] = 100;
-    servo_sync_parameter.dec_velocity[0] = 100;
-    servo_sync_parameter.dec_velocity[1] = 100;
+    # idä¸º1ï¼Œ2çš„èˆµæœºé€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º3600ï¼Œ3600ï¼Œä½ç½®åˆ†åˆ«è®¾ç½®ä¸º0ï¼Œ0,åŠ é€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º100ï¼Œ100ï¼Œå‡é€Ÿåº¦åˆ†åˆ«è®¾ç½®ä¸º100ï¼Œ100
+    servo_sync_parameter.velocity[0] = 3600
+    servo_sync_parameter.velocity[1] = 3600
+    servo_sync_parameter.position[0] = 0
+    servo_sync_parameter.position[1] = 0
+    servo_sync_parameter.acc_velocity[0] = 100
+    servo_sync_parameter.acc_velocity[1] = 100
+    servo_sync_parameter.dec_velocity[0] = 100
+    servo_sync_parameter.dec_velocity[1] = 100
 
     Servo.servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    print("Sync Write velocity base target acc,dec,velocity and position successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
+    # å°†ID1ã€ID2èˆµæœºçš„æ‰­çŸ©å¼€å…³çŠ¶æ€ï¼Œåˆ†åˆ«ä¿®æ”¹ä¸ºå…³é—­
+    servo_sync_parameter.torque_switch[0] = 0
+    servo_sync_parameter.torque_switch[1] = 0
+    Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_torque_switch_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_torque_switch is successful")
+    print("Sync Write torque witch successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄ¿ØÖÆÄ£Ê½
-    Servo.servo_set_control_mode(1, 0, output_buffer, output_buffer_len)
+    # å°†ID1ã€ID2èˆµæœºçš„æ§åˆ¶æ¨¡å¼ï¼Œåˆ†åˆ«ä¿®æ”¹ä¸ºæ§æ—¶æ¨¡å¼
+    servo_sync_parameter.control_mode[0] = 0
+    servo_sync_parameter.control_mode[1] = 0
+    Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_control_mode_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_control_mode is successful")
+    print("Sync Write control mode successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃID1¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
-    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
-    receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_torque_switch_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_torque_switch is successful")
-    time.sleep(1)
+    # è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§æ—¶ç›®æ ‡åŠ é€Ÿåº¦ç­‰çº§
 
-    # ÉèÖÃID2¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    Servo.servo_set_torque_switch(2, 0, output_buffer, output_buffer_len)
-    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
-    receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_torque_switch_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_torque_switch is successful")
-    time.sleep(1)
-
-    # ÉèÖÃID2¶æ»úµÄ¿ØÖÆÄ£Ê½
-    Servo.servo_set_control_mode(2, 0, output_buffer, output_buffer_len)
-    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
-    receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_control_mode_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_control_mode is successful")
-    time.sleep(1)
-
-    # ÉèÖÃID2¶æ»úµÄÅ¤¾Ø¿ª¹Ø
-    Servo.servo_set_torque_switch(2, 1, output_buffer, output_buffer_len)
-    serial.write(bytes(output_buffer[:output_buffer_len[0]]))
-    receive_data = serial.read(MAX_RECEIVE_LEN)
-    ret = Servo.servo_set_torque_switch_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_torque_switch is successful")
-    time.sleep(1)
-
-    # ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØÊ±Ä¿±ê¼ÓËÙ¶ÈµÈ¼¶
-
-    # ÉèÖÃ¶æ»úidÎª1£¬2µÄ¼ÓËÙ¶ÈµÈ¼¶·Ö±ğÎª0£¬0
-    servo_sync_parameter.acc_velocity_grade[0] = 0;
-    servo_sync_parameter.acc_velocity_grade[1] = 0;
+    # è®¾ç½®èˆµæœºidä¸º1ï¼Œ2çš„åŠ é€Ÿåº¦ç­‰çº§åˆ†åˆ«ä¸º0ï¼Œ0
+    servo_sync_parameter.acc_velocity_grade[0] = 0
+    servo_sync_parameter.acc_velocity_grade[1] = 0
 
     Servo.servo_sync_write_time_base_target_acc(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    print("Sync Write time base target acc successfully.\r\n")
     time.sleep(1)
 
-    # ÉèÖÃ¶à¸ö¶æ»úµÄ¿ØÊ±Ä¿±êÎ»ÖÃºÍÔË¶¯Ê±¼ä
+    # è®¾ç½®å¤šä¸ªèˆµæœºçš„æ§æ—¶ç›®æ ‡ä½ç½®å’Œè¿åŠ¨æ—¶é—´
 
-    # ÉèÖÃ¶æ»úidÎª1£¬2µÄÔË¶¯Î»ÖÃÎª3000£¬3000£¬ÔË¶¯Ê±¼äÎª500ms£¬1500ms
-    servo_sync_parameter.position[0] = 3000;
-    servo_sync_parameter.position[1] = 3000;
-    servo_sync_parameter.time[0] = 500;
-    servo_sync_parameter.time[1] = 1500;
+    # è®¾ç½®èˆµæœºidä¸º1ï¼Œ2çš„è¿åŠ¨ä½ç½®ä¸º3000ï¼Œ3000ï¼Œè¿åŠ¨æ—¶é—´ä¸º500msï¼Œ1500ms
+    servo_sync_parameter.position[0] = 3000
+    servo_sync_parameter.position[1] = 3000
+    servo_sync_parameter.time[0] = 500
+    servo_sync_parameter.time[1] = 1500
 
     Servo.servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
+    print("Sync Write time base target position and moving time successfully.\r\n")
     time.sleep(1)
 
-# ¹Ø±Õ´®¿Ú
+# å…³é—­ä¸²å£
 serial.close()

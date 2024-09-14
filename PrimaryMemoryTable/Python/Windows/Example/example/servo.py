@@ -68,6 +68,8 @@ class Servo_Sync_Parameter:
     def __init__(self):
         self.id_counts = 0                    # 同步写操作舵机的数量
         self.id = [0] * 20                    # 同步写操作舵机的id
+        self.torque_switch = [0] * 20         # 舵机扭矩开关状态
+        self.control_mode = [0] * 20          # 舵机控制模式
         self.position = [0] * 20              # 舵机位置
         self.time = [0] * 20                  # 舵机运行时间
         self.velocity = [0] * 20              # 舵机运动速度
@@ -226,7 +228,7 @@ class Servo:
     """
 
     @staticmethod
-    def get_check(buffer: bytearray, length: int) -> int:
+    def get_check(buffer: list, length: int) -> int:
         """
         计算指令包的校验和
         :param buffer: 要计算校验和的缓冲区指针
@@ -311,7 +313,7 @@ class Servo:
         return State.SUCCESS
 
     @staticmethod
-    def servo_unpack(response_packet: bytearray, data_buffer: list) -> int:
+    def servo_unpack(response_packet: list, data_buffer: list) -> int:
         """
         解析应答包
         :param response_packet: 应答包数据
@@ -330,19 +332,19 @@ class Servo:
 
         if status != 0x00:
             if status & State.VOLTAGE_ERROR == State.VOLTAGE_ERROR:
-                print("电压报错1")
+                print("电压报错")
             if status & State.ANGLE_ERROR == State.ANGLE_ERROR:
-                print("角度报错2")
+                print("角度报错")
             if status & State.OVERHEATING_ERROR == State.OVERHEATING_ERROR:
-                print("过热报错4")
+                print("过热报错")
             if status & State.RANGE_ERROR == State.RANGE_ERROR:
-                print("范围报错8")
+                print("范围报错")
             if status & State.CHECKSUM_ERROR == State.CHECKSUM_ERROR:
-                print("校验报错10")
+                print("校验报错")
             if status & State.STALL_ERROR == State.STALL_ERROR:
-                print("堵转报错20")
+                print("堵转报错")
             if status & State.PARSING_ERROR == State.PARSING_ERROR:
-                print("解析报错40")
+                print("解析报错")
             return status
 
         if length > 2:
@@ -353,7 +355,7 @@ class Servo:
 
     @staticmethod
     def sync_write_data(address: int, servo_counts: int, input_buffer: list, output_buffer: list,
-                        output_buffer_len: bytearray) -> int:
+                        output_buffer_len: list) -> int:
         """
         生成同步写指令包
         :param address: 要写入的存储器地址
@@ -466,6 +468,19 @@ class Servo:
         """
 
         Servo.servo_pack(servo_id, Instruction.REBOOT, 0, 0, None, output_buffer, output_buffer_len)
+        return State.SUCCESS
+
+    @staticmethod
+    def servo_read_present_position_and_present_current(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
+        """
+        读取舵机的当前位置和当前电流
+        :param servo_id: 舵机ID
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
+        """
+
+        Servo.servo_read(servo_id, Address.PRESENT_POSITION_L, 4, output_buffer, output_buffer_len)
         return State.SUCCESS
 
     @staticmethod
@@ -1059,6 +1074,24 @@ class Servo:
         if ret != State.SUCCESS:
             return ret
         else:
+            return State.SUCCESS
+
+    @staticmethod
+    def servo_read_present_position_and_present_current_analysis(response_packet, position, current) -> int:
+        """
+        读取舵机的当前位置和当前电流的指令应答包解析
+        :param response_packet: 应答包数据应答包数据
+        :param analysis_data: 解析出来的应答包参数
+        :return: 成功或者错误类型
+        """
+        data_buffer = [0] * 4
+
+        ret = Servo.servo_unpack(response_packet, data_buffer)
+        if ret != State.SUCCESS:
+            return ret
+        else:
+            position[0] = (data_buffer[1] << 8) | data_buffer[0]
+            current[0] = (data_buffer[3] << 8) | data_buffer[2]
             return State.SUCCESS
 
     @staticmethod
@@ -2370,7 +2403,7 @@ class Servo:
         return State.SUCCESS
 
     @staticmethod
-    def servo_set_return_delay_time_analysis(response_packet: bytearray) -> int:
+    def servo_set_return_delay_time_analysis(response_packet: list) -> int:
         """
         设置应答延时时间命令的应答包解析
         :param response_packet: 应答包数据
@@ -2386,7 +2419,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_return_level_analysis(response_packet: bytearray) -> int:
+    def servo_set_return_level_analysis(response_packet: list) -> int:
         """
         恢复状态返回级别命令的应答包解析
         :param response_packet: 应答包数据
@@ -2402,7 +2435,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_baud_rate_analysis(response_packet: bytearray) -> int:
+    def servo_set_baud_rate_analysis(response_packet: list) -> int:
         """
         恢复波特率命令的应答包解析
         :param response_packet: 应答包数据
@@ -2417,7 +2450,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_min_angle_limit_analysis(response_packet: bytearray) -> int:
+    def servo_set_min_angle_limit_analysis(response_packet: list) -> int:
         """
         恢复最小位置限制命令的应答包解析
         :param response_packet: 应答包数据
@@ -2432,7 +2465,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_max_angle_limit_analysis(response_packet: bytearray) -> int:
+    def servo_set_max_angle_limit_analysis(response_packet: list) -> int:
         """
         设置舵机最大未知限制指令的应答包解析
         :param response_packet: 应答包数据
@@ -2447,7 +2480,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_max_temperature_limit_analysis(response_packet: bytearray) -> int:
+    def servo_set_max_temperature_limit_analysis(response_packet: list) -> int:
         """
         设置舵机温度上限指令的应答包解析
         :param response_packet: 应答包数据
@@ -2462,7 +2495,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_max_voltage_limit_analysis(response_packet: bytearray) -> int:
+    def servo_set_max_voltage_limit_analysis(response_packet: list) -> int:
         """
         设置舵机电压上限指令的应答包解析
         :param response_packet: 应答包数据
@@ -2477,7 +2510,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_min_voltage_limit_analysis(response_packet: bytearray) -> int:
+    def servo_set_min_voltage_limit_analysis(response_packet: list) -> int:
         """
         设置舵机电压下限指令的应答包解析
         :param response_packet: 应答包数据
@@ -2492,7 +2525,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_max_pwm_limit_analysis(response_packet: bytearray) -> int:
+    def servo_set_max_pwm_limit_analysis(response_packet: list) -> int:
         """
         设置舵机PWM上限指令的应答包解析
         :param response_packet: 应答包数据
@@ -2507,7 +2540,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_max_current_limit_analysis(response_packet: bytearray) -> int:
+    def servo_set_max_current_limit_analysis(response_packet: list) -> int:
         """
         设置舵机电流上限指令的应答包解析
         :param response_packet: 应答包数据
@@ -2522,7 +2555,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_current_shutdown_time_analysis(response_packet: bytearray) -> int:
+    def servo_set_current_shutdown_time_analysis(response_packet: list) -> int:
         """
         设置舵机电流保护时间指令的应答包解析
         :param response_packet: 应答包数据
@@ -2537,7 +2570,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_cw_deadband_analysis(response_packet: bytearray) -> int:
+    def servo_set_cw_deadband_analysis(response_packet: list) -> int:
         """
         设置舵机正转死区指令的应答包解析
         :param response_packet: 应答包数据
@@ -2552,7 +2585,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_ccw_deadband_analysis(response_packet: bytearray) -> int:
+    def servo_set_ccw_deadband_analysis(response_packet: list) -> int:
         """
         设置舵机反转死区指令的应答包解析
         :param response_packet: 应答包数据
@@ -2567,7 +2600,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_pwm_punch_analysis(response_packet: bytearray) -> int:
+    def servo_set_pwm_punch_analysis(response_packet: list) -> int:
         """
         设置舵机PWM叠加值指令的应答包解析
         :param response_packet: 应答包数据
@@ -2582,7 +2615,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_position_control_p_gain_analysis(response_packet: bytearray) -> int:
+    def servo_set_position_control_p_gain_analysis(response_packet: list) -> int:
         """
         设置舵机位置控制P增益指令的应答包解析
         :param response_packet: 应答包数据
@@ -2597,7 +2630,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_position_control_i_gain_analysis(response_packet: bytearray) -> int:
+    def servo_set_position_control_i_gain_analysis(response_packet: list) -> int:
         """
         设置舵机位置控制I增益指令的应答包解析
         :param response_packet: 应答包数据
@@ -2612,7 +2645,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_position_control_d_gain_analysis(response_packet: bytearray) -> int:
+    def servo_set_position_control_d_gain_analysis(response_packet: list) -> int:
         """
         设置舵机位置控制D增益指令的应答包解析
         :param response_packet: 应答包数据
@@ -2627,7 +2660,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_led_condition_analysis(response_packet: bytearray) -> int:
+    def servo_set_led_condition_analysis(response_packet: list) -> int:
         """
         设置舵机LED报警条件指令的应答包解析
         :param response_packet: 应答包数据
@@ -2642,7 +2675,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_shutdown_conditions_analysis(response_packet: bytearray) -> int:
+    def servo_set_shutdown_conditions_analysis(response_packet: list) -> int:
         """
         设置舵机卸载保护条件指令的应答包解析
         :param response_packet: 应答包数据
@@ -2657,7 +2690,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_control_mode_analysis(response_packet: bytearray) -> int:
+    def servo_set_control_mode_analysis(response_packet: list) -> int:
         """
         设置舵机控制模式指令的应答包解析
         :param response_packet: 应答包数据
@@ -2672,7 +2705,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_flash_switch_analysis(response_packet: bytearray) -> int:
+    def servo_set_flash_switch_analysis(response_packet: list) -> int:
         """
         设置舵机FLASH开关状态指令的应答包解析
         :param response_packet: 应答包数据
@@ -2687,7 +2720,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_led_switch_analysis(response_packet: bytearray) -> int:
+    def servo_set_led_switch_analysis(response_packet: list) -> int:
         """
         设置舵机LED开关状态指令的应答包解析
         :param response_packet: 应答包数据
@@ -2702,7 +2735,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_torque_switch_analysis(response_packet: bytearray) -> int:
+    def servo_set_torque_switch_analysis(response_packet: list) -> int:
         """
         设置舵机扭矩开关状态指令的应答包解析
         :param response_packet: 应答包数据
@@ -2717,7 +2750,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_target_pwm_analysis(response_packet: bytearray) -> int:
+    def servo_set_target_pwm_analysis(response_packet: list) -> int:
         """
         设置舵机目标PWM指令的应答包解析
         :param response_packet: 应答包数据
@@ -2732,7 +2765,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_target_current_analysis(response_packet: bytearray) -> int:
+    def servo_set_target_current_analysis(response_packet: list) -> int:
         """
         设置舵机目标电流指令的应答包解析
         :param response_packet: 应答包数据
@@ -2747,7 +2780,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_velocity_base_target_position_analysis(response_packet: bytearray) -> int:
+    def servo_set_velocity_base_target_position_analysis(response_packet: list) -> int:
         """
         设置舵机控速目标位置指令的应答包解析
         :param response_packet: 应答包数据
@@ -2762,7 +2795,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_velocity_base_target_velocity_analysis(response_packet: bytearray) -> int:
+    def servo_set_velocity_base_target_velocity_analysis(response_packet: list) -> int:
         """
         设置舵机控速目标速度指令的应答包解析
         :param response_packet: 应答包数据
@@ -2777,7 +2810,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_velocity_base_target_acc_analysis(response_packet: bytearray) -> int:
+    def servo_set_velocity_base_target_acc_analysis(response_packet: list) -> int:
         """
         设置舵机控速目标加速度指令的应答包解析
         :param response_packet: 应答包数据
@@ -2792,7 +2825,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_velocity_base_target_dec_analysis(response_packet: bytearray) -> int:
+    def servo_set_velocity_base_target_dec_analysis(response_packet: list) -> int:
         """
         设置舵机控速目标减速度指令的应答包解析
         :param response_packet: 应答包数据
@@ -2807,7 +2840,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_time_base_target_acc_analysis(response_packet: bytearray) -> int:
+    def servo_set_time_base_target_acc_analysis(response_packet: list) -> int:
         """
         设置舵机控时目标加速度指令的应答包解析
         :param response_packet: 应答包数据
@@ -2822,7 +2855,7 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
-    def servo_set_time_base_target_position_and_moving_time_analysis(response_packet: bytearray) -> int:
+    def servo_set_time_base_target_position_and_moving_time_analysis(response_packet: list) -> int:
         """
         设置舵机控时目标位置和运行时间指令的应答包解析
         :param response_packet: 应答包数据
@@ -2837,6 +2870,48 @@ class Servo:
             return State.SUCCESS
 
     @staticmethod
+    def servo_sync_write_torque_switch(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+        """
+        设置多个舵机的扭矩开关
+        :param servo_sync_parameter: 舵机同步写修改类
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
+        """
+        parameter = [0] * (servo_sync_parameter.id_counts * 1 + 2 + servo_sync_parameter.id_counts)
+
+        parameter[0] = Address.TORQUE_SW
+        parameter[1] = 1
+
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i + 2 + i * 1] = servo_sync_parameter.id[i]
+            parameter[i + 3 + i * 1] = servo_sync_parameter.torque_switch[i] & 0xff
+
+        Servo.sync_write_data(Address.TORQUE_SW, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return State.SUCCESS
+
+    @staticmethod
+    def servo_sync_write_control_mode(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+        """
+        设置多个舵机的控制模式
+        :param servo_sync_parameter: 舵机同步写修改类
+        :param output_buffer: 用于存放指令包的输出缓冲区的指针
+        :param output_buffer_len: 指令包的长度
+        :return: 成功或者错误类型
+        """
+        parameter = [0] * (servo_sync_parameter.id_counts * 1 + 2 + servo_sync_parameter.id_counts)
+
+        parameter[0] = Address.CONTROL_MODE
+        parameter[1] = 1
+
+        for i in range(servo_sync_parameter.id_counts):
+            parameter[i + 2 + i * 1] = servo_sync_parameter.id[i]
+            parameter[i + 3 + i * 1] = servo_sync_parameter.control_mode[i] & 0xff
+
+        Servo.sync_write_data(Address.CONTROL_MODE, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return State.SUCCESS
+
+    @staticmethod
     def servo_sync_write_velocity_base_target_position(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控速目标位置
@@ -2845,7 +2920,7 @@ class Servo:
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_sync_parameter.id_counts * 2 + 2 + servo_sync_parameter.id_counts)
+        parameter = [0] * (servo_sync_parameter.id_counts * 2 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
         parameter[1] = 2
@@ -2867,7 +2942,7 @@ class Servo:
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_sync_parameter.id_counts * 4 + 2 + servo_sync_parameter.id_counts)
+        parameter = [0] * (servo_sync_parameter.id_counts * 4 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
         parameter[1] = 4
@@ -2891,7 +2966,7 @@ class Servo:
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_sync_parameter.id_counts * 6 + 2 + servo_sync_parameter.id_counts)
+        parameter = [0] * (servo_sync_parameter.id_counts * 6 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
         parameter[1] = 6
@@ -2917,7 +2992,7 @@ class Servo:
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_sync_parameter.id_counts * 2 + 2 + servo_sync_parameter.id_counts)
+        parameter = [0] * (servo_sync_parameter.id_counts * 2 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_VELOCITY_L
         parameter[1] = 2
@@ -2939,7 +3014,7 @@ class Servo:
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
+        parameter = [0] * (servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_ACC
         parameter[1] = 1
@@ -2960,7 +3035,7 @@ class Servo:
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
+        parameter = [0] * (servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.VELOCITY_BASE_TARGET_DEC
         parameter[1] = 1
@@ -2981,7 +3056,7 @@ class Servo:
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
+        parameter = [0] * (servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.TIME_BASE_TARGET_ACC
         parameter[1] = 1
@@ -2994,7 +3069,7 @@ class Servo:
         return State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: bytearray, output_buffer_len: bytearray) -> int:
+    def servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         设置多个舵机的控时目标位置和运动时间
         :param servo_sync_parameter: 舵机同步写修改类
@@ -3002,7 +3077,7 @@ class Servo:
         :param output_buffer_len: 指令包的长度
         :return: 成功或者错误类型
         """
-        parameter = bytearray(servo_sync_parameter.id_counts * 4 + 2 + servo_sync_parameter.id_counts)
+        parameter = [0] * (servo_sync_parameter.id_counts * 4 + 2 + servo_sync_parameter.id_counts)
 
         parameter[0] = Address.TIME_BASE_TARGET_POSITION_L
         parameter[1] = 4
@@ -3011,8 +3086,8 @@ class Servo:
             parameter[i + 2 + i * 4] = servo_sync_parameter.id[i]
             parameter[i + 3 + i * 4] = servo_sync_parameter.position[i] & 0xff
             parameter[i + 4 + i * 4] = (servo_sync_parameter.position[i] >> 8) & 0xff
-            parameter[i + 5 + i * 4] = servo_sync_parameter.velocity[i] & 0xff
-            parameter[i + 6 + i * 4] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
+            parameter[i + 5 + i * 4] = servo_sync_parameter.time[i] & 0xff
+            parameter[i + 6 + i * 4] = (servo_sync_parameter.time[i] >> 8) & 0xff
 
         Servo.sync_write_data(Address.TIME_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer,
                               output_buffer_len)
