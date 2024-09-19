@@ -3,11 +3,10 @@
 
 uint16_t ms_count;
 
-xdata uint8_t receive_data[20] = {0};
-xdata uint8_t receive_len = 0;          // 接收应答包长度
-xdata uint8_t write_buffer[10] = {0};     //写入内存表数据
+xdata uint8_t receive_data[20] = {0};       //Store the received status packet
+xdata uint8_t receive_len = 0;              //Length of received packet
+xdata uint8_t write_buffer[10] = {0};     //Write data to the memory table
 
-// time0初始化做延时
 void timer0_init()
 {
     TMOD |= 0x01;
@@ -18,14 +17,12 @@ void timer0_init()
     TR0 = 1;
 }
 
-// 延时函数
 void delay_ms(uint16_t ms)
 {
-    ms_count =  2 * ms;   // 因为开了双倍速6T，所以这里延时时间需要乘以2
+    ms_count =  2 * ms;         ////Since double speed 6T is enabled, the delay time here needs to be multiplied by 2.
     while (ms_count);
 }
 
-// 定时器中断函数
 void timer0_isr() interrupt 1 using 1
 {
     TH0 = 0xFC;
@@ -34,39 +31,36 @@ void timer0_isr() interrupt 1 using 1
         ms_count--;
 }
 
-// 串口初始化
 void uart_init()
 {
-	TMOD|=0X20;	   // 8位自动重装载定时器
-	SCON=0X40;	   // 8位UART，波特率可变
-	PCON=0X80;	   // 波特率加倍
-	TH1=0xff;	   // 设置波特率为115200
+	TMOD|=0X20;	   //8-bit automatic reload timer
+	SCON=0X40;	   //8-bit UART with variable baud rate
+	PCON=0X80;	   //Baud rate doubling
+	TH1=0xff;	   //The baud rate is set to 115200
 	TL1=0xff;
-	ES=0;		   // 关闭接收中断
-	EA=1;		   // CPU总中断
-	TR1=1;		   // 开启定时器T1开始计数
+	ES=0;		   //Turn off receive interrupt
+	EA=1;		   //CPU interrupts
+	TR1=1;		   //Timer1 starts counting
 }
 
 void uart_init_recv()
 {
-	TMOD |= 0x20;  // 8位自动重装载定时器
-	SCON = 0x50;   // 8位UART，波特率可变，并开启串行接收
-	PCON = 0x80;   // 波特率加倍
-	TH1 = 0xff;    // 设置波特率为115200
+	TMOD |= 0x20;  //8-bit automatic reload timer
+	SCON = 0x50;   //8-bit UART with variable baud rate and serial reception enabled
+	PCON = 0x80;   //Baud rate doubling
+	TH1 = 0xff;    //The baud rate is set to 115200
 	TL1 = 0xff;
-	ES = 1;        // 开启接收中断
-	EA = 1;        // CPU总中断
-	TR1 = 1;       // 开启定时器T1开始计数
+	ES = 1;        //Turn on receive interrupt
+	EA = 1;        //CPU interrupts
+	TR1 = 1;       //Timer1 starts counting
 }
 
-// 串口发送函数
 void uart_send(uint8_t order_data)
 {
-	SBUF = order_data;      // 将数据写入串口缓冲寄存器开始传输
-	while(!TI);    			// 等待传输完成
-	TI = 0;      			// 清除传输完成标志
+	SBUF = order_data;
+	while(!TI);
+	TI = 0;
 }
-
 
 void uart_send_buffer(uint8_t *buffer, uint16_t length)
 {
@@ -80,28 +74,27 @@ struct servo_sync_parameter servo;
 
 void main()
 {
-	xdata uint8_t order_buffer[20];												                    // 存放生成的指令
-	xdata uint8_t order_buffer_len = 0;										                        // 指令长度
-	xdata uint16_t analysis_data = 0;											                    // 应答包解析出来的数据
+    xdata uint8_t order_buffer[20];							//Store Generated Instructions
+    xdata uint8_t order_buffer_len = 0;						//Instruction Length
+    xdata uint16_t analysis_data = 0;						//Data parsed from the status packet
 
-	timer0_init();
+    timer0_init();
 
 	while(1)
 	{
-    servo.id_counts = 2;            //同步写两个舵机
-    servo.id[0] = 1;                //第一个舵机id为1
-    servo.id[1] = 2;                //第二个舵机id为2
-		
-		// 将ID1、ID2舵机的扭矩开关状态，分别修改为关闭
-    servo.torque_switch[0] = 0;
-    servo.torque_switch[1] = 0;
-    servo_sync_write_torque_switch(servo, order_buffer, &order_buffer_len);
-		
+        servo.id_counts = 2;            //Sync write two servos
+        servo.id[0] = 1;                //Set the ID of the first servo to 1
+        servo.id[1] = 2;                //Set the ID of the second servo to 2
+
+		//Change the torque switch of the servo ID1, ID2 to OFF respectively.
+        servo.torque_switch[0] = 0;
+        servo.torque_switch[1] = 0;
+        servo_sync_write_torque_switch(servo, order_buffer, &order_buffer_len);
 		uart_init();
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 		
-		// 将ID1、ID2舵机的控制模式，分别修改为控时间模式
+		//Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
 		servo.control_mode[0] = 0;
 		servo.control_mode[1] = 0;
 		servo_sync_write_control_mode(servo, order_buffer, &order_buffer_len);
@@ -111,7 +104,7 @@ void main()
 		delay_ms(1000);
 
 		
-		// 在控时模式下，让ID1舵机以500ms运动到300°位置
+		//Change the time base target position, and moving time of servo ID1 to 300掳, and 500ms, respectively.
 		uart_init();
 		servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_buffer_len);
 	
@@ -123,19 +116,19 @@ void main()
 		servo_set_time_base_target_position_and_moving_time_analysis(receive_data);		 
 		delay_ms(1000);
 
-		// 在控时模式下，让ID1舵机以1s匀速运动到0°位置
-		uart_init();
-		servo_set_time_base_target_position_and_moving_time(1, 0, 1000, order_buffer,&order_buffer_len);
-	
-		uart_send_buffer(order_buffer, order_buffer_len);
+        //Change the time base target ACC, position, and moving time of servo ID1 to 0掳, 300掳, and 1s, respectively.
+        write_buffer[0] = 0;
+        write_buffer[1] = 3000 & 0xff;
+        write_buffer[2] = (3000 >> 8) & 0xff;
+        write_buffer[3] = 1000 & 0xff;
+        write_buffer[4] = (1000 >> 8) & 0xff;
 
-		uart_init_recv();
-		delay_ms(10);
-
-		servo_set_time_base_target_position_and_moving_time_analysis(receive_data);		 
-		delay_ms(1000);
+        servo_write(1, 0x3B, 5, write_buffer, order_buffer, &order_len);
+        uart_send_buffer(order_buffer, order_buffer_len);
+        uart_init_recv();
+        delay_ms(1000);
 		
-		// 在控时模式下，让ID1舵机以500ms运动到150°位置，让ID2舵机以1s匀速运动到0°位置
+		//In time base position control mode, let servo ID1 move to the 150掳 position at a velocity of 500ms, and let servo ID2 move to the 0掳 position at a constant velocity of 1s.
 		servo.position[0] = 1500;
 		servo.position[1] = 0;
 		servo.time[0] = 500;
@@ -146,15 +139,25 @@ void main()
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 		
+		//In time base position control mode, let servo ID1 move to the 0掳 position at a velocity of 1s, and let servo ID2 move to the 3000掳 position at a constant velocity of 500ms.
+		servo.position[0] = 0;
+		servo.position[1] = 3000;
+		servo.time[0] = 1000;
+		servo.time[1] = 500;
+		
+		uart_init();
+		servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+		delay_ms(1000);
 	}		
 }
 
 void uart() interrupt 4
 {
-	if(RI)                                          // 检查接收中断标志
+	if(RI)
 	{
-		RI = 0;                                     // 清除接收中断标志
-		receive_data[receive_len++] = SBUF;         // 将接收到的数据存储到缓冲区
+		RI = 0;
+		receive_data[receive_len++] = SBUF;
 	}				
 }
 

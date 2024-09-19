@@ -3,10 +3,9 @@
 
 uint16_t ms_count;
 
-xdata uint8_t receive_data[20] = {0};
-xdata uint8_t receive_len = 0;          // 接收应答包长度
+xdata uint8_t receive_data[20] = {0};       //Store the received status packet
+xdata uint8_t receive_len = 0;              //Length of received packet
 
-// time0初始化做延时
 void timer0_init()
 {
     TMOD |= 0x01;
@@ -17,14 +16,12 @@ void timer0_init()
     TR0 = 1;
 }
 
-// 延时函数
 void delay_ms(uint16_t ms)
 {
-    ms_count =  2 * ms;   // 因为开了双倍速6T，所以这里延时时间需要乘以2
+    ms_count =  2 * ms;                     //Since double speed 6T is enabled, the delay time here needs to be multiplied by 2.
     while (ms_count);
 }
 
-// 定时器中断函数
 void timer0_isr() interrupt 1 using 1
 {
     TH0 = 0xFC;
@@ -33,37 +30,35 @@ void timer0_isr() interrupt 1 using 1
         ms_count--;
 }
 
-// 串口初始化
 void uart_init()
 {
-	TMOD|=0X20;	   // 8位自动重装载定时器
-	SCON=0X40;	   // 8位UART，波特率可变
-	PCON=0X80;	   // 波特率加倍
-	TH1=0xff;	   // 设置波特率为115200
+	TMOD|=0X20;             //8-bit automatic reload timer
+	SCON=0X40;              //8-bit UART with variable baud rate
+	PCON=0X80;              //Baud rate doubling
+	TH1=0xff;               //The baud rate is set to 115200
 	TL1=0xff;
-	ES=0;		   // 关闭接收中断
-	EA=1;		   // CPU总中断
-	TR1=1;		   // 开启定时器T1开始计数
+	ES=0;                   //Turn off receive interrupt
+	EA=1;                   //CPU interrupts
+	TR1=1;                  //Timer1 starts counting
 }
 
 void uart_init_recv()
 {
-	TMOD |= 0x20;  // 8位自动重装载定时器
-	SCON = 0x50;   // 8位UART，波特率可变，并开启串行接收
-	PCON = 0x80;   // 波特率加倍
-	TH1 = 0xff;    // 设置波特率为115200
+	TMOD |= 0x20;               //8-bit automatic reload timer
+	SCON = 0x50;                //8-bit UART with variable baud rate and serial reception enabled
+	PCON = 0x80;                //Baud rate doubling
+	TH1 = 0xff;                 //The baud rate is set to 115200
 	TL1 = 0xff;
-	ES = 1;        // 开启接收中断
-	EA = 1;        // CPU总中断
-	TR1 = 1;       // 开启定时器T1开始计数
+	ES = 1;                     //Turn on receive interrupt
+	EA = 1;                     //CPU interrupts
+	TR1 = 1;                    //Timer1 starts counting
 }
 
-// 串口发送函数
 void uart_send(uint8_t order_data)
 {
-	SBUF = order_data;      // 将数据写入串口缓冲寄存器开始传输
-	while(!TI);    			// 等待传输完成
-	TI = 0;      			// 清除传输完成标志
+	SBUF = order_data;
+	while(!TI);
+	TI = 0;
 }
 
 
@@ -77,15 +72,15 @@ void uart_send_buffer(uint8_t *buffer, uint16_t length)
 
 void main()
 {
-	xdata uint8_t order_buffer[20];												                    // 存放生成的指令
-	xdata uint8_t order_buffer_len = 0;										                        // 指令长度
-	xdata uint16_t analysis_data = 0;											                    // 应答包解析出来的数据
+    xdata uint8_t order_buffer[20];							//Store Generated Instructions
+    xdata uint8_t order_buffer_len = 0;						//Instruction Length
+    xdata uint16_t analysis_data = 0;						//Data parsed from the status packet
 
 	timer0_init();
 
 	while(1)
 	{
-		// 设置舵机的扭矩开关
+		//Change the torque switch of servo ID1 to OFF.
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 
@@ -96,7 +91,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// 设置舵机的控制模式
+		//Change the control mode of servo ID1 to the current control mode.
 		uart_init();
 		servo_set_control_mode(1, 2, order_buffer,&order_buffer_len);
 
@@ -107,7 +102,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	
 		delay_ms(1000);
 
-		// 设置舵机的扭矩开关
+		//Change the torque switch of servo ID1 to ON.
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -118,7 +113,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ?????????
+		//Change the target PWM of servo ID1 to 100mA.
 		uart_init();
 		servo_set_target_current(1, 100, order_buffer,&order_buffer_len);
 
@@ -134,10 +129,10 @@ void main()
 
 void uart() interrupt 4
 {
-	if(RI)                                          // 检查接收中断标志
+	if(RI)
 	{
-		RI = 0;                                     // 清除接收中断标志
-		receive_data[receive_len++] = SBUF;         // 将接收到的数据存储到缓冲区
+		RI = 0;
+		receive_data[receive_len++] = SBUF;
 	}				
 }
 
