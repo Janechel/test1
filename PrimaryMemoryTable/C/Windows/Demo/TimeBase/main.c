@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-//串口初始化
+//uart init
 uint8_t uart_init(HANDLE hSerial)
 {
     if (hSerial == INVALID_HANDLE_VALUE)
@@ -11,7 +11,6 @@ uint8_t uart_init(HANDLE hSerial)
         return FALSE;
     }
 
-    // 配置串口参数
     DCB dcbSerialParams = { 0 };
     dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
 
@@ -22,7 +21,6 @@ uint8_t uart_init(HANDLE hSerial)
         return FALSE;
     }
 
-    //设置串口协议参数
     dcbSerialParams.BaudRate = 1000000;
     dcbSerialParams.ByteSize = 8;
     dcbSerialParams.StopBits = ONESTOPBIT;
@@ -39,13 +37,12 @@ uint8_t uart_init(HANDLE hSerial)
 
 }
 
-//串口发送
+//uart send
 uint8_t order_send(HANDLE hSerial, uint8_t* order_buffer, uint8_t order_len)
 {
-    uint8_t ret;                    //状态标志位
-    DWORD bytesWritten;             //实际写入数据长度
+    uint8_t ret;
+    DWORD bytesWritten;
 
-    //写入串口数据
     ret = WriteFile(hSerial, order_buffer, order_len, &bytesWritten, NULL);
 
     if (ret != 0)
@@ -59,23 +56,21 @@ uint8_t order_send(HANDLE hSerial, uint8_t* order_buffer, uint8_t order_len)
     }
 }
 
-//串口接收数据
+//uart receiver
 uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
 {
-    uint8_t ret;                //状态标志位
-    DWORD bytesRead;            //实际读取数据长度
-    DWORD errors;               //串口error标志位
-    DWORD read_len;             //读取长度
-    COMSTAT comstat;            //描述串口通信的状态信息
+    uint8_t ret;
+    DWORD bytesRead;
+    DWORD errors;
+    DWORD read_len;
+    COMSTAT comstat;
 
     if (!ClearCommError(hSerial, &errors, &comstat)) {
         return FALSE;
     }
 
-    //获取接收缓冲区中可用的字节数
     read_len = comstat.cbInQue;
 
-    //读取串口缓冲区数据
     ret = ReadFile(hSerial, pack, read_len, &bytesRead, NULL);
 
     if (ret != 0)
@@ -99,29 +94,29 @@ uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
 
 int main() {
 
-    uint8_t order_buffer[20] = { 0 };                                                                         //存放生成的指令
-    uint8_t order_len = 0;                                                                                  //指令长度
-    uint8_t pack[20] = { 0 };                                                                                 //存放接收的应答包
-    uint8_t ret;
-    uint8_t write_buffer[20] = { 0 };                                                                         //写入内存表数据
+    uint8_t order_buffer[20] = { 0 };                                                                       //Store Generated Instructions
+    uint8_t order_len = 0;                                                                                  //Instruction Length
+    uint8_t pack[20] = { 0 };                                                                               //Store the received status packet
+    uint8_t ret;                                                                                            //Status Flag
+    uint8_t write_buffer[20] = { 0 };                                                                       //Write data to the memory table
     struct servo_sync_parameter servo;
 
-    // 打开串口
+    //Open Serial
     HANDLE hSerial = CreateFile("\\\\.\\COM16", GENERIC_READ | GENERIC_WRITE, 0, NULL,
         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-    //串口初始化
+    //uart init
     ret = uart_init(hSerial);
     if (ret == FALSE)
     {
         return FALSE;
     }
 
-    servo.id_counts = 2;            //同步写两个舵机
-    servo.id[0] = 1;                //第一个舵机id为1
-    servo.id[1] = 2;                //第二个舵机id为2
+    servo.id_counts = 2;            //Sync write two servos
+    servo.id[0] = 1;                //Set the ID of the first servo to 1
+    servo.id[1] = 2;                //Set the ID of the second servo to 2
 
-    //将ID1、ID2舵机的扭矩开关状态，分别修改为关闭
+    //Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo.torque_switch[0] = 0;
     servo.torque_switch[1] = 0;
     servo_sync_write_torque_switch(servo, order_buffer, &order_len);
@@ -136,7 +131,7 @@ int main() {
     }
     Sleep(80);
 
-    //将ID1、ID2舵机的控制模式，分别修改为控shi模式
+    //Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
     servo.control_mode[0] = 0;
     servo.control_mode[1] = 0;
     servo_sync_write_control_mode(servo, order_buffer, &order_len);
@@ -152,7 +147,7 @@ int main() {
     Sleep(80);
 
 
-    //在控时模式下，让ID1舵机以500ms运动到300°位置
+    //Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
     servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -171,8 +166,14 @@ int main() {
 
     servo_set_time_base_target_position_and_moving_time_analysis(pack);
 
-    //在控时模式下，让ID1舵机以1s匀速运动到0°位置
-    servo_set_time_base_target_position_and_moving_time(1, 0, 1000, order_buffer, &order_len);
+    //Change the time base target ACC, position, and moving time of servo ID1 to 0°, 300°, and 1s, respectively.
+    write_buffer[0] = 0;
+    write_buffer[1] = 3000 & 0xff;
+    write_buffer[2] = (3000 >> 8) & 0xff;
+    write_buffer[3] = 1000 & 0xff;
+    write_buffer[4] = (1000 >> 8) & 0xff;
+
+    servo_write(1, 0x3B, 5, write_buffer, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -186,11 +187,15 @@ int main() {
     {
         return FALSE;
     }
+    PRINTF("servo pack is: ");
+    for (uint8_t i = 0; i < ret; i++)
+    {
+        PRINTF("0x%x ", pack[i]);
+    }
+    PRINTF("\r\n");
     Sleep(1000);
 
-    servo_set_time_base_target_position_and_moving_time_analysis(pack);
-
-    //在控时模式下，让ID1舵机以500ms运动到150°位置，让ID2舵机以1s匀速运动到0°位置
+    //In time base position control mode, let servo ID1 move to the 150° position at a velocity of 500ms, and let servo ID2 move to the 0° position at a constant velocity of 1s.
     servo.position[0] = 1500;
     servo.position[1] = 0;
     servo.time[0] = 500;
@@ -208,7 +213,7 @@ int main() {
     }
     Sleep(1000);
 
-    //在控时模式下，让ID1舵机以1000ms运动到0°位置，让ID2舵机以500ms匀速运动到3000°位置
+    //In time base position control mode, let servo ID1 move to the 0° position at a velocity of 1s, and let servo ID2 move to the 3000° position at a constant velocity of 500ms.
     servo.position[0] = 0;
     servo.position[1] = 3000;
     servo.time[0] = 1000;
@@ -226,7 +231,7 @@ int main() {
     }
     Sleep(1000);
 
-    //关闭串口
+    //Close Serial
     CloseHandle(hSerial);
 
     return 0;

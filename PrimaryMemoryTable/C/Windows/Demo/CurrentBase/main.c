@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-//串口初始化
+//uart init
 uint8_t uart_init(HANDLE hSerial)
 {
     if (hSerial == INVALID_HANDLE_VALUE)
@@ -11,7 +11,6 @@ uint8_t uart_init(HANDLE hSerial)
         return FALSE;
     }
 
-    // 配置串口参数
     DCB dcbSerialParams = { 0 };
     dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
 
@@ -22,7 +21,7 @@ uint8_t uart_init(HANDLE hSerial)
         return FALSE;
     }
 
-    //设置串口协议参数
+    //Set serial port protocol parameters
     dcbSerialParams.BaudRate = 1000000;
     dcbSerialParams.ByteSize = 8;
     dcbSerialParams.StopBits = ONESTOPBIT;
@@ -36,16 +35,14 @@ uint8_t uart_init(HANDLE hSerial)
     }
 
     return TRUE;
-
 }
 
-//串口发送
+//uart send
 uint8_t order_send(HANDLE hSerial, uint8_t *order_buffer,uint8_t order_len)
 {
-    uint8_t ret;                    //状态标志位
-    DWORD bytesWritten;             //实际写入数据长度
+    uint8_t ret;
+    DWORD bytesWritten;
 
-    //写入串口数据
     ret = WriteFile(hSerial, order_buffer, order_len, &bytesWritten, NULL);
 
     if(ret != 0)
@@ -59,23 +56,21 @@ uint8_t order_send(HANDLE hSerial, uint8_t *order_buffer,uint8_t order_len)
     }
 }
 
-//串口接收数据
+//uart receiver
 uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
 {
-    uint8_t ret;                //状态标志位
-    DWORD bytesRead;            //实际读取数据长度
-    DWORD errors;               //串口error标志位
-    DWORD read_len;             //读取长度
-    COMSTAT comstat;            //描述串口通信的状态信息
+    uint8_t ret;
+    DWORD bytesRead;
+    DWORD errors;
+    DWORD read_len;
+    COMSTAT comstat;
 
     if (!ClearCommError(hSerial, &errors, &comstat)) {
         return FALSE;
     }
 
-    //获取接收缓冲区中可用的字节数
     read_len = comstat.cbInQue;
 
-    //读取串口缓冲区数据
     ret = ReadFile(hSerial, pack, read_len, &bytesRead, NULL);
 
     if(ret != 0)
@@ -99,23 +94,23 @@ uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
 
 int main() {
 
-    uint8_t order_buffer[20] = {0};                                                                         //存放生成的指令
-    uint8_t order_len = 0;                                                                                  //指令长度
-    uint8_t pack[20] = {0};                                                                                 //存放接收的应答包
+    uint8_t order_buffer[20] = {0};                                                                         //Store Generated Instructions
+    uint8_t order_len = 0;                                                                                  //Instruction Length
+    uint8_t pack[20] = {0};                                                                                 //Store the received status packet
 
     uint8_t ret;
 
-    // 打开串口
+    //Open Serial
     HANDLE hSerial = CreateFile("COM3", GENERIC_READ | GENERIC_WRITE, 0, NULL,
                                 OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-    //串口初始化
+    //uart init
     ret = uart_init(hSerial);
     if (ret == FALSE) {
         return FALSE;
     }
 
-    //设置舵机的扭矩开关
+    //Change the torque switch of servo ID1 to OFF.
     servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -131,7 +126,7 @@ int main() {
     Sleep(80);
     servo_set_torque_switch_analysis(pack);
 
-    //设置舵机的控制模式
+    //Change the control mode of servo ID1 to the current control mode.
     servo_set_control_mode(1, 2, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -147,7 +142,7 @@ int main() {
     Sleep(80);
     servo_set_control_mode_analysis(pack);
 
-    //设置舵机的扭矩开关
+    //Change the torque switch of servo ID1 to ON.
     servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -163,7 +158,7 @@ int main() {
     Sleep(80);
     servo_set_torque_switch_analysis(pack);
 
-    //设置舵机的目标电流
+    //Change the target PWM of servo ID1 to 100mA.
     servo_set_target_current(1, 100, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -180,7 +175,7 @@ int main() {
 
     servo_set_target_current_analysis(pack);
 
-    //关闭串口
+    //Close Serial
     CloseHandle(hSerial);
 
     return 0;
