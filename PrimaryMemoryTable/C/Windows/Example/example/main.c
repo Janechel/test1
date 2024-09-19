@@ -2,16 +2,16 @@
 #include <windows.h>
 #include <stdio.h>
 
-#define READ_TEST 0                 // 读取舵机数据测试
-#define WRITE_TEST 0                // 写入舵机数据测试
-#define SYNC_WRITE_TEST 0           // 同步写测试
-#define PING_TEST 0                 // PING命令测试
-#define FACTORY_RESET_TEST 0        // 恢复出厂设置测试
-#define PARAMETER_RESET_TEST 0      // 参数重置测试
-#define REBOOT_TEST 0               // 重启测试
-#define CALIBRATION_TEST 0          // 校正偏移值测试
-#define MODIFY_ID 0                 // 修改已知舵机ID测试
-#define MODIFY_UNKNOWN_ID 0         // 修改未知ID舵机ID测试
+#define READ_TEST 0                 //Read Servo Data Test
+#define WRITE_TEST 0                //Write Servo Data Test
+#define SYNC_WRITE_TEST 0           //Sync Write Test
+#define PING_TEST 0                 //PING Instruction Test
+#define FACTORY_RESET_TEST 0        //Factory Reset Test
+#define PARAMETER_RESET_TEST 0      //Parameter Reset Test
+#define REBOOT_TEST 0               //Reboot Test
+#define CALIBRATION_TEST 0          //Calibration Test
+#define MODIFY_ID 0                 //Change Known Servo ID Test
+#define MODIFY_UNKNOWN_ID 0         //Change Unknown Servo ID Test
 
 struct servo_sync_parameter servo;
 
@@ -54,10 +54,9 @@ uint8_t uart_init(HANDLE hSerial)
 //串口发送
 uint8_t order_send(HANDLE hSerial, uint8_t* order_buffer, uint8_t order_len)
 {
-    uint8_t ret;                    //状态标志位
-    DWORD bytesWritten;             //实际写入数据长度
+    uint8_t ret;                    //Status Flag
+    DWORD bytesWritten;             //Actual Data Length Written
 
-    //写入串口数据
     ret = WriteFile(hSerial, order_buffer, order_len, &bytesWritten, NULL);
 
     if (ret != 0)
@@ -74,20 +73,19 @@ uint8_t order_send(HANDLE hSerial, uint8_t* order_buffer, uint8_t order_len)
 //串口接收数据
 uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
 {
-    uint8_t ret;                //状态标志位
-    DWORD bytesRead;            //实际读取数据长度
-    DWORD errors;               //串口error标志位
-    DWORD read_len;             //读取长度
-    COMSTAT comstat;            //描述串口通信的状态信息
+    uint8_t ret;                //Status Flag
+    DWORD bytesRead;            
+    DWORD errors;               
+    DWORD read_len;             
+    COMSTAT comstat;            //Describes the status information of serial port communication
 
     if (!ClearCommError(hSerial, &errors, &comstat)) {
         return FALSE;
     }
 
-    //获取接收缓冲区中可用的字节数
+    //Gets the number of bytes available in the receive buffer
     read_len = comstat.cbInQue;
 
-    //读取串口缓冲区数据
     ret = ReadFile(hSerial, pack, read_len, &bytesRead, NULL);
 
     if (ret != 0)
@@ -119,11 +117,10 @@ int main() {
     uint16_t current = 0;                                                                                   //当前电流
     uint8_t write_buffer[20] = { 0 };                                                                         //写入内存表数据
 
-    // 打开串口
-    HANDLE hSerial = CreateFile("\\\\.\\COM12", GENERIC_READ | GENERIC_WRITE, 0, NULL,
+    //Open the serial port
+    HANDLE hSerial = CreateFile("\\\\.\\COM18", GENERIC_READ | GENERIC_WRITE, 0, NULL,
         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-    //串口初始化
     ret = uart_init(hSerial);
     if (ret == FALSE)
     {
@@ -131,7 +128,7 @@ int main() {
     }
 
 #if PING_TEST
-    //向ID为1的舵机发送PING指令
+    //Query the model number of servo ID1.
     servo_ping(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -154,7 +151,7 @@ int main() {
 #endif
 
 #if CALIBRATION_TEST
-    //校正偏移值
+    //Calibrate the midpoint of the servo.
     servo_calibration(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -177,7 +174,7 @@ int main() {
 #endif
 
 #if FACTORY_RESET_TEST
-    //恢复出厂设置
+    //Reset the servo to the factory default values.
     servo_factory_reset(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -200,7 +197,7 @@ int main() {
 #endif
 
 #if PARAMETER_RESET_TEST
-    //参数重置
+    //Reset the parameter settings of the servo.
     servo_parameter_reset(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -223,7 +220,7 @@ int main() {
 #endif
 
 #if REBOOT_TEST
-    //舵机重启
+    //Reboot the servo.
     servo_reboot(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -242,7 +239,7 @@ int main() {
 #endif
 
 #if MODIFY_ID
-    //修改ID1舵机ID为2
+    //Change the servo ID of servo ID1 to 2.
     servo_modify_known_id(1, 2, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -253,7 +250,7 @@ int main() {
 #endif
 
 #if MODIFY_UNKNOWN_ID
-    //将未知ID舵机的ID编号修改为1
+    //Change the servo ID of the servo with an unknown ID to 1.
     servo_modify_unknown_id(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -264,7 +261,7 @@ int main() {
 #endif
 
 #if READ_TEST
-    //读取ID1舵机的当前电流
+    //Read the present current of servo ID1.
     servo_read_present_current(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -286,7 +283,7 @@ int main() {
         PRINTF("present current is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的当前位置
+    //Read the present position of servo ID1.
     servo_read_present_position(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -307,7 +304,7 @@ int main() {
         PRINTF("present position is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的当前位置和当前电流
+    //Read the present position and present current of servo ID1.
     servo_read_present_position_and_present_current(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -328,7 +325,7 @@ int main() {
         PRINTF("present position is : % d, present current is : % d\r\n", position, current);
     }
 
-    //读取ID1舵机的当前速度
+    //Read the present velocity of servo ID1.
     servo_read_present_velocity(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -349,7 +346,7 @@ int main() {
         PRINTF("present velocity is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的当前的规划位置
+    //Read the present profile position of servo ID1.
     servo_read_present_profile_position(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -371,7 +368,7 @@ int main() {
         PRINTF("present profile position is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的当前规划速度
+    //Read the present profile velocity of servo ID1.
     servo_read_present_profile_velocity(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -392,7 +389,7 @@ int main() {
         PRINTF("present profile velocity is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的当前PWM
+    //Read the present PWM of servo ID1.
     servo_read_present_pwm(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -413,7 +410,7 @@ int main() {
         PRINTF("present pwm analysis is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的当前温度
+    //Read the present temperature of servo ID1.
     servo_read_present_temperature(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -434,7 +431,7 @@ int main() {
         PRINTF("present temperature is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的当前输入电压
+    //Read the present voltage of servo ID1.
     servo_read_present_voltage(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -455,7 +452,7 @@ int main() {
         PRINTF("present voltage is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的控时目标运行时间
+    //Read the time base target moving time of servo ID1.
     servo_read_time_base_target_moving_time(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -476,7 +473,7 @@ int main() {
         PRINTF("present time base target moving time is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的控时目标位置
+    //Read the time base target position of servo ID1.
     servo_read_time_base_target_position(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -497,7 +494,7 @@ int main() {
         PRINTF("present time base target position is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的控时加速度等级
+    //Read the time base target ACC of servo ID1.
     servo_read_time_base_target_acc(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -518,7 +515,7 @@ int main() {
         PRINTF("present time base target acc is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的控时目标位置和运行时间
+    //Read the time base target position and moving time of servo ID1.
     servo_read(1, 0x3C, 4, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -540,7 +537,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //读取ID1舵机的控时目标加速度等级、位置和运行时间
+    //Read the time base target ACC, position and moving time of servo ID1.
     servo_read(1, 0x3B, 5, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -562,7 +559,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //读取ID1舵机的控速目标减速度
+    //Read the velocity base target DEC of servo ID1.
     servo_read_velocity_base_target_dec(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -583,7 +580,7 @@ int main() {
         PRINTF("present velocity base target dec is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的控速目标加速度
+    //Read the velocity base target ACC of servo ID1.
     servo_read_velocity_base_target_acc(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -604,7 +601,7 @@ int main() {
         PRINTF("present velocity base target acc is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的控速目标速度
+    //Read the velocity base target velocity of servo ID1.
     servo_read_velocity_base_target_velocity(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -625,7 +622,7 @@ int main() {
         PRINTF("present velocity base target velocity is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的控速目标位置
+    //Read the velocity base target position of servo ID1.
     servo_read_velocity_base_target_position(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -646,7 +643,7 @@ int main() {
         PRINTF("present velocity base target position is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的控速目标位置和速度
+    //Read the velocity base target position and velocity of servo ID1.
     servo_read(1, 0x35, 4, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -668,7 +665,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //读取ID1舵机的控速目标位置、速度和加减速度
+    //Read the velocity base target position, velocity, ACC, and DEC of servo ID1.
     servo_read(1, 0x35, 6, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -690,7 +687,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //读取ID1舵机的目标电流
+    //Read the target current of servo ID1.
     servo_read_target_current(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -711,7 +708,7 @@ int main() {
         PRINTF("target current is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的目标PWM
+    //Read the target PWM of servo ID1.
     servo_read_target_pwm(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -732,7 +729,7 @@ int main() {
         PRINTF("target pwm is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的扭矩开关
+    //Read the torque switch of servo ID1.
     servo_read_torque_switch(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -753,7 +750,7 @@ int main() {
         PRINTF("torque switch is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的LED开关
+    //Read the LED switch of servo ID1.
     servo_read_led_switch(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -774,7 +771,7 @@ int main() {
         PRINTF("led switch is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的Flash开关
+    //Read the Flash switch of servo ID1.
     servo_read_flash_switch(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -795,7 +792,7 @@ int main() {
         PRINTF("flash switch is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的电流校正值
+    //Read the current offset of servo ID1.
     servo_read_current_offset(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -816,7 +813,7 @@ int main() {
         PRINTF("current offset is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的中位校正值
+    //Read the calibration of servo ID1.
     servo_read_calibration(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -837,7 +834,7 @@ int main() {
         PRINTF("calibration is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的控制模式
+    //Read the control mode of servo ID1.
     servo_read_control_mode(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -858,7 +855,7 @@ int main() {
         PRINTF("control mode is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的卸载保护条件
+    //Read the shutdown condition of servo ID1.
     servo_read_shutdown_condition(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -879,7 +876,7 @@ int main() {
         PRINTF("shutdown condition is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的LED报警条件
+    //Read the LED condition of servo ID1.
     servo_read_led_condition(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -900,7 +897,7 @@ int main() {
         PRINTF("led condition is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的位置控制D增益
+    //Read the position control D gain of servo ID1.
     servo_read_position_control_d_gain(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -921,7 +918,7 @@ int main() {
         PRINTF("position control d gain is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的位置控制I增益
+    //Read the position control I gain of servo ID1.
     servo_read_position_control_i_gain(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -942,7 +939,7 @@ int main() {
         PRINTF("position control i gain is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的位置控制P增益
+    //Read the position control P gain of servo ID1.
     servo_read_position_control_p_gain(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -963,7 +960,7 @@ int main() {
         PRINTF("position control p gain is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的位置控制PID增益
+    //Read the position control PID gain of servo ID1.
     servo_read(1, 0x1B, 6, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -985,7 +982,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //读取ID1舵机的PWM叠加值
+    //Read the PWM punch of servo ID1.
     servo_read_pwm_punch(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1006,7 +1003,7 @@ int main() {
         PRINTF("pwm punch is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的反转死区
+    //Read the ccw deadband range of servo ID1.
     servo_read_ccw_deadband(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1027,7 +1024,7 @@ int main() {
         PRINTF("ccw deadband is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的正转死区
+    //Read the cw deadband range of servo ID1.
     servo_read_cw_deadband(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1048,7 +1045,7 @@ int main() {
         PRINTF("cw deadband is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的电流保护时间
+    //Read the current shutdown time of servo ID1.
     servo_read_current_shutdown_time(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1069,7 +1066,7 @@ int main() {
         PRINTF("current shutdown time is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的电流上限
+    //Read the max current limit of servo ID1.
     servo_read_max_current_limit(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1090,7 +1087,7 @@ int main() {
         PRINTF("max current limit is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的PWM上限
+    //Read the max PWM limit of servo ID1.
     servo_read_max_pwm_limit(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1111,7 +1108,7 @@ int main() {
         PRINTF("max pwm limit is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的电压上限
+    //Read the max voltage limit of servo ID1.
     servo_read_max_voltage_limit(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1132,7 +1129,7 @@ int main() {
         PRINTF("max voltage limit is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的电压下限
+    //Read the min voltage limit of servo ID1.
     servo_read_min_voltage_limit(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1153,7 +1150,7 @@ int main() {
         PRINTF("min voltage limit is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的电压限制
+    //Read the voltage limit of servo ID1.
     servo_read(1, 0x10, 2, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1175,7 +1172,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //读取ID1舵机的温度上限
+    //Read the max temperature limit of servo ID1.
     servo_read_max_temperature_limit(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1196,7 +1193,7 @@ int main() {
         PRINTF("max temperature limit is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的最大位置限制
+    //Read the max angle limit of servo ID1.
     servo_read_max_angle_limit(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1217,7 +1214,7 @@ int main() {
         PRINTF("max angle limit is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的最小位置限制
+    //Read the min angle limit of servo ID1.
     servo_read_min_angle_limit(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1238,7 +1235,7 @@ int main() {
         PRINTF("min angle limit is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的位置限制
+    //Read the angle limit of servo ID1.
     servo_read(1, 0x0B, 4, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1260,7 +1257,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //读取ID1舵机的状态返回级别
+    //Read the return level of servo ID1.
     servo_read_return_level(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1281,7 +1278,7 @@ int main() {
         PRINTF("return level is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的应答延时时间
+    //Read the return delay time of servo ID1.
     servo_read_return_delay_time(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1302,7 +1299,7 @@ int main() {
         PRINTF("return delay time is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的波特率
+    //Read the baud rate of servo ID1.
     servo_read_baud_rate(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1323,7 +1320,7 @@ int main() {
         PRINTF("baud rate is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的出厂编号
+    //Read the model information of servo ID1.
     servo_read_model_information(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1344,7 +1341,7 @@ int main() {
         PRINTF("model information is %d\r\n", analysis_data);
     }
 
-    //读取ID1舵机的固件版本号
+    //Read the firmware version of servo ID1.
     servo_read_firmware_version(1, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -1367,7 +1364,7 @@ int main() {
 #endif
 
 #if WRITE_TEST
-    //将ID1舵机的应答延迟时间修改为500us
+    //Change the return delay time of servo ID1 to 500us.
     servo_set_return_delay_time(1, 250, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1388,7 +1385,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set return delay time successfully.\r\n");
 
-    //将ID1舵机的状态返回级别修改为应答所有指令
+    //Change the return level of servo ID1 to respond to all instruction.
     servo_set_return_level(1, 2, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1409,7 +1406,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set return level successfully.\r\n");
 
-    //设置ID1舵机的波特率为1000000
+    //Change the baud rate of servo ID1 to 1000000.
     servo_set_baud_rate(1, 7, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1430,7 +1427,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set baud rate successfully.\r\n");
 
-    //将舵机ID1的最小位置限制修改为0°
+    //Change the min angle limit of servo ID1 to 0°.
     servo_set_min_angle_limit(1, 0, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1451,7 +1448,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set min angle limit successfully.\r\n");
 
-    //将舵机ID1的最大位置限制修改为300°
+    //Change the max angle limit of servo ID1 to 300°.
     servo_set_max_angle_limit(1, 3000, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1472,7 +1469,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set max angle limit successfully.\r\n");
 
-    //将舵机ID1的位置限制修改为0°~300°
+    //Change the angle limit of servo ID1 to 0°~300°.
     write_buffer[0] = 0 & 0xff;
     write_buffer[1] = (0 >> 8) & 0xff;
     write_buffer[2] = 3000 & 0xff;
@@ -1500,7 +1497,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //将ID1舵机的温度上限修改为65℃
+    //Change the max temperature limit of servo ID1 to 65℃.
     servo_set_max_temperature_limit(1, 65, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1521,7 +1518,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set max temperature limit successfully.\r\n");
 
-    //将ID1舵机的电压上限修改为8.4V
+    //Change the max voltage limit of servo ID1 to 8.4V.
     servo_set_max_voltage_limit(1, 84, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1542,7 +1539,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set max voltage limit successfully.\r\n");
 
-    //将ID1舵机的电压下限修改为3.5V
+    //Change the min voltage limit of servo ID1 to 3.5V.
     servo_set_min_voltage_limit(1, 35, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1563,7 +1560,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set min voltage limit successfully.\r\n");
 
-    //将ID1舵机的电压限制修改为3.5V~8.4V
+    //Change the voltage limit of servo ID1 to 3.5~8.4V.
     write_buffer[0] = 84 & 0xff;
     write_buffer[1] = 35 & 0xff;
 
@@ -1589,7 +1586,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //将ID1舵机的PWM上限修改为90%
+    //Change the max PWM limit of servo ID1 to 90%.
     servo_set_max_pwm_limit(1, 900, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1610,7 +1607,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set max pwm limit successfully.\r\n");
 
-    //将ID1舵机的电流上限修改为900mA
+    //Change the max current limit of servo ID1 to 900mA.
     servo_set_max_current_limit(1, 900, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1631,7 +1628,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set max current limit successfully.\r\n");
 
-    //将ID1舵机的电流保护时间修改为500ms
+    //Change the current shutdown time of servo ID1 to 500ms.
     servo_set_current_shutdown_time(1, 500, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1652,7 +1649,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set current shutdown time successfully.\r\n");
 
-    //将ID1舵机的正转死区修改为0.2°
+    //Change the CW deadband of servo ID1 to 0.2°.
     servo_set_cw_deadband(1, 2, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1673,7 +1670,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set cw deadband successfully.\r\n");
 
-    //将ID1舵机的反转死区修改为0.2°
+    //Change the CCW deadband of servo ID1 to 0.2°.
     servo_set_ccw_deadband(1, 2, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1694,7 +1691,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set ccw deadband successfully.\r\n");
 
-    //将ID1舵机的正反转死区修改为0.2°
+    //Change the CW and CCW deadband of servo ID1 to 0.2°.
     write_buffer[0] = 2 & 0xff;
     write_buffer[1] = 2 & 0xff;
 
@@ -1720,7 +1717,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //将ID1舵机的PWM叠加值修改为1%
+    //Change the PWM punch of servo ID1 to 1%.
     servo_set_pwm_punch(1, 10, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1741,7 +1738,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set pwm punch successfully.\r\n");
 
-    //将ID1舵机的位置控制P增益修改为5995
+    //Change the position control P gain of servo ID1 to 5995.
     servo_set_position_control_p_gain(1, 5995, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1762,7 +1759,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set position control p gain successfully.\r\n");
 
-    //将ID1舵机的位置控制I增益修改为5
+    //Change the position control I gain of servo ID1 to 5.
     servo_set_position_control_i_gain(1, 5, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1783,7 +1780,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set position control i gain successfully.\r\n");
 
-    //将ID1舵机的位置控制D增益修改为145
+    //Change the position control D gain of servo ID1 to 145.
     servo_set_position_control_d_gain(1, 145, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1804,13 +1801,13 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set position control d gain successfully.\r\n");
 
-    //将ID1舵机的位置控制PID增益，分别修改为5500、100、250
-    write_buffer[0] = 5500 & 0xff;
-    write_buffer[1] = (5500 >> 8) & 0xff;
-    write_buffer[2] = 100 & 0xff;
-    write_buffer[3] = (100 >> 8) & 0xff;
-    write_buffer[4] = 250 & 0xff;
-    write_buffer[5] = (250 >> 8) & 0xff;
+    //Change the position control PID gain of servo ID1 to 5995, 5, and 145 respectively.
+    write_buffer[0] = 5995 & 0xff;
+    write_buffer[1] = (5995 >> 8) & 0xff;
+    write_buffer[2] = 5 & 0xff;
+    write_buffer[3] = (5 >> 8) & 0xff;
+    write_buffer[4] = 145 & 0xff;
+    write_buffer[5] = (145 >> 8) & 0xff;
 
     servo_write(1, 0x1B, 6, write_buffer, order_buffer, &order_len);
 
@@ -1834,7 +1831,7 @@ int main() {
     }
     PRINTF("\r\n");
 
-    //将ID1舵机的LED报警条件修改为开启堵转报错、过热报错和角度报错
+    //Change the LED condition of servo ID1 to turn on stall error, overheating error, and angle error.
     servo_set_led_condition(1, 38, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1855,7 +1852,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set led condition successfully.\r\n");
 
-    //将ID1舵机的卸载保护条件修改为开启堵转报错、过热报错、电压报错和角度报错
+    //Change the shutdown condition of servo ID1 to turn on stall error, overheating error, voltage error, and angle error.
     servo_set_shutdown_conditions(1, 39, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1876,7 +1873,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set shutdown conditions successfully.\r\n");
 
-    //将ID1舵机的Flash开关状态修改为打开
+    //Change the Flash switch of servo ID1 to ON.
     servo_set_flash_switch(1, 1, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1897,7 +1894,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set flash switch successfully.\r\n");
 
-    //将ID1舵机的Flash开关状态修改为关闭
+    //Change the Flash switch of servo ID1 to OFF.
     servo_set_flash_switch(1, 0, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1918,7 +1915,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set flash switch successfully.\r\n");
 
-    //将ID1舵机的LED开关状态修改为打开
+    //Change the LED switch of servo ID1 to ON.
     servo_set_led_switch(1, 1, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1939,7 +1936,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set led switch successfully.\r\n");
 
-    //将ID1舵机的LED开关状态修改为关闭
+    //Change the LED switch of servo ID1 to OFF.
     servo_set_led_switch(1, 0, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1960,7 +1957,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set led switch successfully.\r\n");
 
-    //设置ID1舵机的扭矩开关为关闭
+    //Change the torque switch of servo ID1 to OFF.
     servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -1980,7 +1977,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set torque switch successfully.\r\n");
 
-    //将ID1舵机的控制模式修改为PWM输出控制模式
+    //Change the control mode of servo ID1 to the PWM control mode.
     servo_set_control_mode(1, 3, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2000,7 +1997,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set control mode successfully.\r\n");
 
-    //设置ID1舵机的扭矩开关为开启
+    //Change the torque switch of servo ID1 to ON.
     servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2020,7 +2017,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set torque switch successfully.\r\n");
 
-    //将ID1舵机的目标PWM修改为-50%
+    //Change the target PWM of servo ID1 to -50%.
     servo_set_target_pwm(1, -500, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2041,7 +2038,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set target pwm successfully.\r\n");
 
-    //设置ID1舵机的扭矩开关为关闭
+    //Change the torque switch of servo ID1 to OFF.
     servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2061,7 +2058,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set torque switch successfully.\r\n");
 
-    //将ID1舵机的控制模式修改为电流控制模式
+    //Change the control mode of servo ID1 to the current control mode.
     servo_set_control_mode(1, 2, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2081,7 +2078,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set control mode successfully.\r\n");
 
-    //设置ID1舵机的扭矩开关为开启
+    //Change the torque switch of servo ID1 to ON.
     servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2101,7 +2098,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set torque switch successfully.\r\n");
 
-    //将ID1舵机的目标电流修改为-400mA
+    //Change the target current of servo ID1 to -400mA.
     servo_set_target_current(1, -400, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2122,7 +2119,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set target current successfully.\r\n");
 
-    //设置ID1舵机的扭矩开关为关闭
+    //Change the torque switch of servo ID1 to OFF.
     servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2142,7 +2139,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set torque switch successfully.\r\n");
 
-    //将ID1舵机的控制模式修改为控速模式
+    //Change the control mode of servo ID1 to the velocity base position control mode.
     servo_set_control_mode(1, 1, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2162,7 +2159,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set control mode successfully.\r\n");
 
-    //设置ID1舵机的扭矩开关为开启
+    //Change the torque switch of servo ID1 to ON.
     servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2182,7 +2179,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set torque switch successfully.\r\n");
 
-    //将ID1舵机的控速目标速度修改为360°/s
+    //Change the velocity base target velocity of servo ID1 to 360°/s.
     servo_set_velocity_base_target_velocity(1, 3600, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2203,7 +2200,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set velocity base target velocity successfully.\r\n");
 
-    //将ID1舵机的控速目标加速度修改为500°/s²
+    //Change the velocity base target ACC of servo ID1 to 500°/s².
     servo_set_velocity_base_target_acc(1, 10, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2224,7 +2221,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set velocity base target acc successfully.\r\n");
 
-    //将ID1舵机的控速目标减速度修改为50°/s²
+    //Change the velocity base target DEC of servo ID1 to 50°/s².
     servo_set_velocity_base_target_dec(1, 1, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2245,7 +2242,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set velocity base target dec successfully.\r\n");
 
-    //将ID1舵机的控速目标位置修改为150°
+    //Change the velocity base target position of servo ID1 to 150°.
     servo_set_velocity_base_target_position(1, 1500, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2266,7 +2263,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set velocity base target position successfully.\r\n");
 
-    //设置ID1舵机的扭矩开关为关闭
+    //Change the torque switch of servo ID1 to OFF.
     servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2286,7 +2283,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set torque switch successfully.\r\n");
 
-    //将ID1舵机的控制模式修改为控时模式
+    //Change the control mode of servo ID1 to the time base position control mode.
     servo_set_control_mode(1, 0, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2306,7 +2303,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set control mode successfully.\r\n");
 
-    //设置ID1舵机的扭矩开关为开启
+    //Change the torque switch of servo ID1 to ON.
     servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2326,7 +2323,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set torque switch successfully.\r\n");
 
-    //将ID1舵机的控时目标加速度等级修改为5
+    //Change the time base target ACC of servo ID1 to 5.
     servo_set_time_base_target_acc(1, 5, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -2346,7 +2343,7 @@ int main() {
     if (ret == SUCCESS)
         PRINTF("servo set time base target acc successfully.\r\n");
 
-    //将ID1舵机的控时目标位置和运行时间，分别修改为300°、500ms
+    //Change the time base target position and moving time of servo ID1 to 300°, 500ms respectively.
     servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2370,11 +2367,11 @@ int main() {
 #endif
 
 #if SYNC_WRITE_TEST
-    servo.id_counts = 2;            //同步写两个舵机
-    servo.id[0] = 1;                //第一个舵机id为1
-    servo.id[1] = 2;                //第二个舵机id为2
+    servo.id_counts = 2;            //Sync write two servos
+    servo.id[0] = 1;                //Set the ID of the first servo to 1
+    servo.id[1] = 2;                //Set the ID of the second servo to 2
 
-    //将ID1、ID2舵机的扭矩开关状态，分别修改为关闭
+    //Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo.torque_switch[0] = 0;
     servo.torque_switch[1] = 0;
     servo_sync_write_torque_switch(servo, order_buffer, &order_len);
@@ -2389,7 +2386,7 @@ int main() {
     }
     Sleep(80);
 
-    //将ID1、ID2舵机的控制模式，分别修改为控速模式
+    //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
     servo.control_mode[0] = 1;
     servo.control_mode[1] = 1;
     servo_sync_write_control_mode(servo, order_buffer, &order_len);
@@ -2404,11 +2401,10 @@ int main() {
     }
     Sleep(80);
 
-    //设置多个舵机的控速目标加速度   
-
-    //id为1，2的舵机加速度分别设置为150，150，值和前面的id设置对应
-    servo.acc_velocity[0] = 150;
-    servo.acc_velocity[1] = 150;
+    //Change the velocity base target ACC of servo ID1, ID2 to 500°/s² and 50°/s², respectively.  
+    //Set the acceleration of servo ID1 and ID2 to 10 and 1, respectively, corresponding to the previous ID settings.
+    servo.acc_velocity[0] = 10;
+    servo.acc_velocity[1] = 1;
 
     servo_sync_write_velocity_base_target_acc(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2422,11 +2418,10 @@ int main() {
     }
     Sleep(80);
 
-    //设置多个舵机的控速目标减速度
-
-    //id为1，2的舵机减速度分别设置为150，150，值和前面的id设置对应
-    servo.dec_velocity[0] = 150;
-    servo.dec_velocity[1] = 150;
+    //Change the velocity base target DEC of servo ID1, ID2 to 50°/s² and 500°/s², respectively.
+    //Set the deceleration of servo ID1 and ID2 to 1 and 10, respectively, corresponding to the previous ID settings.
+    servo.dec_velocity[0] = 1;
+    servo.dec_velocity[1] = 10;
 
     servo_sync_write_velocity_base_target_dec(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2440,11 +2435,10 @@ int main() {
     }
     Sleep(80);
 
-    //设置多个舵机的控速目标速度
-
-    //id为1，2的舵机速度分别设置为3600，1800，值和前面的id设置对应
+    //Change the velocity base target velocity of the servo ID1, ID2 to 360°/s² and 720°/s², respectively.
+    //Set the velocity of servo ID1 and ID2 to 3600 and 7200, respectively, corresponding to the previous ID settings.
     servo.velocity[0] = 3600;
-    servo.velocity[1] = 1800;
+    servo.velocity[1] = 7200;
 
     servo_sync_write_velocity_base_target_velocity(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2458,10 +2452,9 @@ int main() {
     }
     Sleep(80);
 
-    //设置多个舵机的控速目标位置
-
-    //id为1，2的舵机运动位置分别设置为0，0，值和前面的id设置对应
-    servo.position[0] = 0;
+    //Change the velocity base target velocity of the servo ID1, ID2 to 150° midpoint and 0° position, respectively.
+    //Set the position of servo ID1 and ID2 to 1500 and 0, respectively, corresponding to the previous ID settings.
+    servo.position[0] = 1500;
     servo.position[1] = 0;
 
     servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
@@ -2476,9 +2469,7 @@ int main() {
     }
     Sleep(1000);
 
-    //设置多个舵机的控速目标位置和速度
-
-    //id为1，2的舵机速度分别设置为1800，3600，位置分别设置为3000，3000
+    //Change the velocity base target velocity of servo ID1 ,ID2 to 1800 and 3600, and the position to 3000 and 3000, respectively
     servo.velocity[0] = 1800;
     servo.velocity[1] = 3600;
     servo.position[0] = 3000;
@@ -2496,9 +2487,7 @@ int main() {
     }
     Sleep(1000);
 
-    //设置多个舵机的加速度，减速度，速度和位置
-
-    //id为1，2的舵机速度分别设置为3600，3600，位置分别设置为0，0,加速度分别设置为100，100，减速度分别设置为100，100
+    //SChange the velocity base target velocity of servo ID1 ,ID2 to 3600 and 3600, position to 0,0, acceleration to 100, 100, deceleration to 100, 100, respectively
     servo.velocity[0] = 3600;
     servo.velocity[1] = 3600;
     servo.position[0] = 0;
@@ -2520,7 +2509,7 @@ int main() {
     }
     Sleep(1000);
 
-    //将ID1、ID2舵机的扭矩开关状态，分别修改为关闭
+    //Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo.torque_switch[0] = 0;
     servo.torque_switch[1] = 0;
     servo_sync_write_torque_switch(servo, order_buffer, &order_len);
@@ -2535,7 +2524,7 @@ int main() {
     }
     Sleep(80);
 
-    //将ID1、ID2舵机的控制模式，分别修改为控时模式
+    //Change the control mode of servo ID1, ID2 to time base position control mode respectively.
     servo.control_mode[0] = 0;
     servo.control_mode[1] = 0;
     servo_sync_write_control_mode(servo, order_buffer, &order_len);
@@ -2550,11 +2539,9 @@ int main() {
     }
     Sleep(80);
 
-    //设置多个舵机的控时目标加速度等级
-
-    //设置舵机id为1，2的加速度等级分别为0，0
-    servo.acc_velocity_grade[0] = 0;
-    servo.acc_velocity_grade[1] = 0;
+    //Change the time base target ACC of servo ID1 to 1 and 5 respectively
+    servo.acc_velocity_grade[0] = 1;
+    servo.acc_velocity_grade[1] = 5;
 
     servo_sync_write_time_base_target_acc(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2568,13 +2555,11 @@ int main() {
     }
     Sleep(80);
 
-    //设置多个舵机的控时目标位置和运动时间
-
-    //设置舵机id为1，2的运动位置为3000，3000，运动时间为500ms，1500ms
-    servo.position[0] = 3000;
-    servo.position[1] = 3000;
-    servo.time[0] = 500;
-    servo.time[1] = 1500;
+    //Change the time base target position and moving time of servo ID1 to 150° midpoint and 1s, 0° and 500ms respectively.
+    servo.position[0] = 1500;
+    servo.position[1] = 0;
+    servo.time[0] = 1000;
+    servo.time[1] = 500;
 
     servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
@@ -2589,7 +2574,7 @@ int main() {
     Sleep(1000);
 #endif
 
-    //关闭串口
+    //Close the serial port
     CloseHandle(hSerial);
 
     return 0;
