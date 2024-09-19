@@ -4,10 +4,9 @@
 #include "stm32f10x_usart.h"
 #include <stdio.h>
 
-//数据接收
-uint8_t receive_data[20];
-uint8_t receive_len;
-uint8_t ret;
+uint8_t receive_data[20];               //Store the received status packet
+uint8_t receive_len;                    //received Length
+uint8_t ret;                            //Status Flag
 
 extern __IO uint32_t TimingDelay;
 
@@ -19,7 +18,7 @@ void USART1_Send(uint8_t *data, uint8_t data_len);
 void SysTick_Configuration(void);
 void Delay(__IO uint32_t nTime);
 
-//重定向printf
+//Redirect printf
 int fputc(int ch, FILE *f)
 {
   USART_SendData(USART2, (uint8_t) ch);
@@ -32,29 +31,20 @@ int fputc(int ch, FILE *f)
 
 int main(void)
 {
-	//串口发送数据以及长度
-	uint8_t order_buffer[20];
-	uint8_t order_len;
-	
-	//解析应答包得到的数据
-	uint16_t analysis_data;
-	
-	//系统配置
+	uint8_t order_buffer[20];       //Store Generated Instructions
+	uint8_t order_len;              //Instruction Length
+
+	uint16_t analysis_data;         //Data parsed from the status packet
+
 	SysTick_Configuration();
-	
-	//RCC时钟配置
 	RCC_Configuration();
-	
-	//GPIO配置
 	GPIO_Configuration();
-	
-	//与舵机通信串口初始化
 	USART1_Init();
-	
-	//信息打印串口初始化
+
+    //Information print serial port initialization
 	USART2_Init();
 
-	//设置舵机的扭矩开关
+	//Change the torque switch of servo ID1 to OFF.
 	servo_set_torque_switch(1, 0, order_buffer,&order_len);
 	USART1_Send(order_buffer, order_len);
 
@@ -68,7 +58,7 @@ int main(void)
 		PRINTF("servo set torque switch success");
 	Delay(1000);
 
-	//设置舵机的控制模式
+	//Change the control mode of servo ID1 to the current control mode.
 	servo_set_control_mode(1, 2, order_buffer,&order_len);
 	USART1_Send(order_buffer, order_len);
 
@@ -82,7 +72,7 @@ int main(void)
 		PRINTF("servo set control mode success");
 	Delay(1000);
 
-	//设置舵机的扭矩开关
+	//Change the torque switch of servo ID1 to ON.
 	servo_set_torque_switch(1, 1, order_buffer,&order_len);
 	USART1_Send(order_buffer, order_len);
 
@@ -96,7 +86,7 @@ int main(void)
 		PRINTF("servo set torque switch success");
 	Delay(1000);
 	
-	//设置舵机的目标电流
+	//Change the target PWM of servo ID1 to 100mA.
 	servo_set_target_current(1, 100, order_buffer,&order_len);
 	USART1_Send(order_buffer, order_len);
 
@@ -129,15 +119,15 @@ void GPIO_Configuration(void)
   GPIO_Init(GPIOA, &GPIO_InitStructure);  
 	
   //USART2_TX   PA.2
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2; //PA.2
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//复用推挽输出
-	GPIO_Init(GPIOA, &GPIO_InitStructure); //初始化PA2
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
  
 	//USART2_RX	  PA.3
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;//浮空输入
-	GPIO_Init(GPIOA, &GPIO_InitStructure);  //初始化PA3
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
 void USART1_Init()
@@ -153,41 +143,38 @@ void USART1_Init()
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
   USART_Init(USART1, &USART_InitStructure);
-	
-	// 配置中断优先级
+
 	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 
-	// 启动中断向量表
 	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
 
-	// 使能USART1的半双工模式
+	//Enable USART1 half-duplex mode
   USART_HalfDuplexCmd(USART1, ENABLE);
 
-  // 使能USART1
+  //Enable USART1
   USART_Cmd(USART1, ENABLE);
 }
 
 void USART2_Init()
 {
-	USART_InitTypeDef USART_InitStructure;
-	
-	USART_DeInit(USART2);  //复位串口2
- 
-	//USART 初始化设置
-	USART_InitStructure.USART_BaudRate = 1000000;//默认设置为1000000;
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;//字长为8位数据格式
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;//一个停止位
-	USART_InitStructure.USART_Parity = USART_Parity_No;//无奇偶校验位
-	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//无硬件数据流控制
-	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	//收发模式
- 
-	USART_Init(USART2, &USART_InitStructure); //初始化串口
-	
-	USART_Cmd(USART2, ENABLE);                    //使能串口 
+    USART_InitTypeDef USART_InitStructure;
+
+    USART_DeInit(USART2);
+
+    USART_InitStructure.USART_BaudRate = 1000000;
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;
+    USART_InitStructure.USART_Parity = USART_Parity_No;
+    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+
+    USART_Init(USART2, &USART_InitStructure);
+
+    USART_Cmd(USART2, ENABLE);
 }
 
 void USART1_Send(uint8_t *data, uint8_t data_len)
@@ -195,8 +182,6 @@ void USART1_Send(uint8_t *data, uint8_t data_len)
   for(uint8_t i = 0; i < data_len; i++)
 	{
 		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
-
-		// 发送数据
 		USART_SendData(USART1, data[i]);
 	}
 	while(USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
