@@ -14,9 +14,9 @@
 
 uint16_t ms_count;
 
-xdata uint8_t receive_data[20] = {0};
-xdata uint8_t receive_len = 0;         
-xdata uint8_t write_buffer[20] = { 0 }; 
+xdata uint8_t receive_data[20] = {0};				//Store the received status packet
+xdata uint8_t receive_len = 0;         					//received Length
+xdata uint8_t write_buffer[20] = { 0 }; 			//Write data to the memory table
 
 void timer0_init()
 {
