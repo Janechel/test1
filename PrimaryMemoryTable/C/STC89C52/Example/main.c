@@ -1,23 +1,23 @@
 #include "reg52.h"
 #include "servo.c"
 
-#define READ_TEST 0                 // ?¨¢¨¨????¨²¨ºy?Y2a¨º?
-#define WRITE_TEST 1                // D¡ä¨¨????¨²¨ºy?Y2a¨º?
-#define SYNC_WRITE_TEST 0           // ¨ª?2?D¡ä2a¨º?
-#define PING_TEST 0                 // PING?¨¹¨¢?2a¨º?
-#define FACTORY_RESET_TEST 0        // ???¡ä3?3¡ì¨¦¨¨??2a¨º?
-#define PARAMETER_RESET_TEST 0      // 2?¨ºy????2a¨º?
-#define REBOOT_TEST 0               // ????2a¨º?
-#define CALIBRATION_TEST 0          // D¡ê?y??¨°??¦Ì2a¨º?
-#define MODIFY_ID_TEST 0            // DT?????¨²ID2a¨º?
-#define MODIFY_UNKNOWN_ID_TEST 0    // DT???¡ä?aID???¨²ID2a¨º?
+#define READ_TEST 0                								//Read Servo Data Test
+#define WRITE_TEST 0                							//Write Servo Data Test
+#define SYNC_WRITE_TEST 0           					//Sync Write Test
+#define PING_TEST 0                 								//PING Instruction Test
+#define FACTORY_RESET_TEST 0        				//Factory Reset Test
+#define PARAMETER_RESET_TEST 0      			//Parameter Reset Test
+#define REBOOT_TEST 0               						//Reboot Test
+#define CALIBRATION_TEST 0          					//Calibration Test
+#define MODIFY_ID_TEST 0            						//Change Known Servo ID Test
+#define MODIFY_UNKNOWN_ID_TEST 0    //Change Unknown Servo ID Test
 
 uint16_t ms_count;
 
 xdata uint8_t receive_data[20] = {0};
-xdata uint8_t receive_len = 0;          // ?¨®¨º?¨®|¡äe¡ã¨¹3¡è?¨¨
+xdata uint8_t receive_len = 0;         
+xdata uint8_t write_buffer[20] = { 0 }; 
 
-// time03?¨º??¡¥¡Á??¨®¨º¡À
 void timer0_init()
 {
     TMOD |= 0x01;
@@ -28,14 +28,12 @@ void timer0_init()
     TR0 = 1;
 }
 
-// ?¨®¨º¡Ào¡¥¨ºy
 void delay_ms(uint16_t ms)
 {
-    ms_count =  2 * ms;   // ¨°¨°?a?a¨¢???¡À??¨´6T¡ê??¨´¨°??a¨¤??¨®¨º¡À¨º¡À??D¨¨¨°a3?¨°?2
+    ms_count =  2 * ms; 
     while (ms_count);
 }
 
-// ?¡§¨º¡À?¡Â?D??o¡¥¨ºy
 void timer0_isr() interrupt 1 using 1
 {
     TH0 = 0xFC;
@@ -44,37 +42,35 @@ void timer0_isr() interrupt 1 using 1
         ms_count--;
 }
 
-// ¡ä??¨²3?¨º??¡¥
 void uart_init()
 {
-	TMOD|=0X20;	   // 8??¡Á??¡¥??¡Á¡ã???¡§¨º¡À?¡Â
-	SCON=0X40;	   // 8??UART¡ê?2¡§¨¬??¨º?¨¦¡À?
-	PCON=0X80;	   // 2¡§¨¬??¨º?¨®¡À?
-	TH1=0xff;	   // ¨¦¨¨??2¡§¨¬??¨º?a115200
+	TMOD|=0X20;             //8-bit automatic reload timer
+	SCON=0X40;	            //8-bit UART with variable baud rate
+	PCON=0X80;              //Baud rate doubling
+	TH1=0xff;	            //The baud rate is set to 115200
 	TL1=0xff;
-    ES=0;		   // 1?¡À??¨®¨º??D??
-    EA=1;		   // CPU¡Á¨¹?D??
-    TR1=1;		   // ?a???¡§¨º¡À?¡ÂT1?a¨º???¨ºy
+    ES=0;		            //Turn off receive interrupt
+    EA=1;	                //CPU interrupts
+    TR1=1;		            //Timer1 starts counting
 }
 
 void uart_init_recv()
 {
-    TMOD |= 0x20;  // 8??¡Á??¡¥??¡Á¡ã???¡§¨º¡À?¡Â
-    SCON = 0x50;   // 8??UART¡ê?2¡§¨¬??¨º?¨¦¡À?¡ê?2¡é?a??¡ä?DD?¨®¨º?
-    PCON = 0x80;   // 2¡§¨¬??¨º?¨®¡À?
-    TH1 = 0xff;    // ¨¦¨¨??2¡§¨¬??¨º?a115200
+    TMOD |= 0x20;            //8-bit automatic reload timer
+    SCON = 0x50;             //8-bit UART with variable baud rate and serial reception enabled
+    PCON = 0x80;             //Baud rate doubling
+    TH1 = 0xff;              //The baud rate is set to 11520
     TL1 = 0xff;
-    ES = 1;        // ?a???¨®¨º??D??
-    EA = 1;        // CPU¡Á¨¹?D??
-    TR1 = 1;       // ?a???¡§¨º¡À?¡ÂT1?a¨º???¨ºy
+    ES = 1;                  //Turn on receive interrupt
+    EA = 1;                  //CPU interrupts
+    TR1 = 1;                 //Timer1 starts counting
 }
 
-// ¡ä??¨²¡¤¡é?¨ªo¡¥¨ºy
 void uart_send(uint8_t order_data)
 {
-    SBUF = order_data;      // ??¨ºy?YD¡ä¨¨?¡ä??¨²?o3???¡ä??¡Â?a¨º?¡ä?¨º?
-    while(!TI);    			// ¦Ì¨¨¡äy¡ä?¨º?¨ª¨º3¨¦
-    TI = 0;      			// ??3y¡ä?¨º?¨ª¨º3¨¦¡À¨º??
+    SBUF = order_data;      
+    while(!TI);    			
+    TI = 0;      		
 }
 
 
@@ -89,22 +85,18 @@ void uart_send_buffer(uint8_t *buffer, uint16_t length)
 
 void main()
 {
-	xdata uint8_t order_buffer[20];												                    // ¡ä?¡¤?¨¦¨²3¨¦¦Ì???¨¢?
-	xdata uint8_t order_buffer_len = 0;										                        // ??¨¢?3¡è?¨¨
-	xdata uint16_t analysis_data = 0;											                    // ¨®|¡äe¡ã¨¹?a??3?¨¤¡ä¦Ì?¨ºy?Y
-	xdata uint16_t sync_write_velocity_base_target_position[4] = {1, 0, 2, 0};                       // ¨ª?2?D¡ä?¨¤?????¨²???¨´??¡À¨º????
-	xdata uint16_t sync_write_velocity_base_target_velocity[5] = {1, 3600, 2, 3600};                 // ¨ª?2?D¡ä?¨¤?????¨²???¨´??¡À¨º?¨´?¨¨
-	xdata uint16_t sync_write_velocity_base_target_acc[5] = {1, 150, 2, 150};                        // ¨ª?2?D¡ä?¨¤?????¨²???¨´??¡À¨º?¨®?¨´?¨¨
-	xdata uint16_t sync_write_velocity_base_target_dec[5] = {1, 150, 2, 150};                        // ¨ª?2?D¡ä?¨¤?????¨²???¨´??¡À¨º???¨´?¨¨
-	xdata uint16_t sync_write_time_base_target_acc[5] = {1, 0, 2, 0};                                // ¨ª?2?D¡ä?¨¤?????¨²??¨º¡À??¡À¨º?¨®?¨´?¨¨
-	xdata uint16_t sync_write_time_base_target_position_and_moving_time[10] = {1, 3000, 500, 2, 3000, 500};           // ¨ª?2?D¡ä?¨¤?????¨²??¨º¡À??¡À¨º???¡¥????o¨ª???¡¥¨º¡À??
+	xdata uint8_t order_buffer[40];												                    //Store Generated Instructions
+	xdata uint8_t order_buffer_len = 0;										                  //Instruction Length
+	xdata uint16_t analysis_data = 0;											                    //Data parsed from the status packet
 
+	struct servo_sync_parameter servo;
+	
 	timer0_init();
 
 	while(1)
 	{
 #if FACTORY_RESET_TEST
-		// ???¡ä3?3¡ì¨¦¨¨??
+    //Reset the servo to the factory default values.
 		uart_init();
 		servo_factory_reset(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -116,7 +108,7 @@ void main()
 #endif			
 		
 #if PARAMETER_RESET_TEST
-        // 2?¨ºy????
+    //Reset the parameter settings of the servo.
 		uart_init();
 		servo_parameter_reset(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -128,7 +120,7 @@ void main()
 #endif			
 
 #if CALIBRATION_TEST
-        // D¡ê?y??¨°??¦Ì
+    //Calibrate the midpoint of the servo.
 		uart_init();
 		servo_calibration(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -140,7 +132,7 @@ void main()
 #endif				
 		
 #if REBOOT_TEST
-        // ???¨²????
+    //Reboot the servo.
 		uart_init();
 		servo_reboot(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -149,7 +141,7 @@ void main()
 #endif		
 
 #if PING_TEST
-		// ?¨°ID?a1¦Ì????¨²¡¤¡é?¨ªPING??¨¢?
+    //Query the model number of servo ID1.
 		uart_init();
 		servo_ping(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -161,7 +153,7 @@ void main()
 #endif	
 
 #if MODIFY_ID_TEST
-        // DT?????¨²ID2a¨º?
+    //Change the servo ID of servo ID1 to 2.
 		uart_init();
 		servo_modify_known_id(1, 2, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -173,7 +165,7 @@ void main()
 #endif
 
 #if MODIFY_UNKNOWN_ID_TEST
-        // DT???¡ä?aID???¨²ID2a¨º?
+    //Change the servo ID of the servo with an unknown ID to 1.
 		uart_init();
 		servo_modify_unknown_id(2, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -185,7 +177,7 @@ void main()
 #endif
 
 #if READ_TEST
-        // ?¨¢¨¨????¨²¦Ì?¦Ì¡À?¡ã¦Ì?¨¢¡Â
+    //Read the present current of servo ID1.
 		uart_init();
 		servo_read_present_current(1, order_buffer, &order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -195,7 +187,7 @@ void main()
 		servo_read_present_current_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì¡À?¡ã????
+    //Read the present position of servo ID1.
 		uart_init();
 		servo_read_present_position(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -204,8 +196,18 @@ void main()
 		delay_ms(10);
 		servo_read_present_position_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
+		
+    //Read the present position and present current of servo ID1.
+		uart_init();
+    servo_read_present_position_and_present_current(1, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì¡À?¡ã?¨´?¨¨
+		uart_init_recv();
+		delay_ms(10);
+		servo_read_present_position_and_present_current_analysis(receive_data, &analysis_data);
+		delay_ms(1000);
+
+    //Read the present velocity of servo ID1.
 		uart_init();
 		servo_read_present_velocity(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -215,7 +217,7 @@ void main()
 		servo_read_present_velocity_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 		
-		// ?¨¢¨¨????¨²¦Ì?¦Ì¡À?¡ã¦Ì?1???????
+    //Read the present profile position of servo ID1.
 		uart_init();
 		servo_read_present_profile_position(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -226,7 +228,7 @@ void main()
 		servo_read_present_profile_position_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì¡À?¡ã1????¨´?¨¨
+    //Read the present profile velocity of servo ID1.
 		uart_init();
 		servo_read_present_profile_velocity(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -236,7 +238,7 @@ void main()
 		servo_read_present_profile_velocity_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì¡À?¡ãPWM
+    //Read the present PWM of servo ID1.
 		uart_init();
 		servo_read_present_pwm(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -246,7 +248,7 @@ void main()
 		servo_read_present_pwm_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì¡À?¡ã???¨¨
+    //Read the present temperature of servo ID1.
 		uart_init();
 		servo_read_present_temperature(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -256,7 +258,7 @@ void main()
 		servo_read_present_temperature_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì¡À?¡ã¨º?¨¨?¦Ì??1
+    //Read the present voltage of servo ID1.
 		uart_init();
 		servo_read_present_voltage(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -266,7 +268,7 @@ void main()
 		servo_read_present_voltage_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì???¨º¡À??¡À¨º??DD¨º¡À??
+    //Read the time base target moving time of servo ID1.
 		uart_init();
 		servo_read_time_base_target_moving_time(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -276,7 +278,7 @@ void main()
 		servo_read_time_base_target_moving_time_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì???¨º¡À??¡À¨º????
+    //Read the time base target position of servo ID1.
 		uart_init();
 		servo_read_time_base_target_position(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -286,7 +288,7 @@ void main()
 		servo_read_time_base_target_position_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì???¨º¡À?¨®?¨´?¨¨¦Ì¨¨??
+    //Read the time base target ACC of servo ID1.
 		uart_init();
 		servo_read_time_base_target_acc(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -295,8 +297,24 @@ void main()
 		delay_ms(10);
 		servo_read_time_base_target_acc_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
+		
+		//Read the time base target position and moving time of servo ID1.
+	  uart_init();
+    servo_read(1, 0x3C, 4, order_buffer, &order_buffer_len);
+    uart_send_buffer(order_buffer, order_buffer_len);
+		
+		uart_init_recv();
+		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì????¨´??¡À¨º???¨´?¨¨
+    //Read the time base target ACC, position and moving time of servo ID1.
+    uart_init();
+    servo_read(1, 0x3B, 5, order_buffer, &order_buffer_len);
+    uart_send_buffer(order_buffer, order_buffer_len);
+		
+		uart_init_recv();
+		delay_ms(1000);
+
+    //Read the velocity base target DEC of servo ID1.
 		uart_init();
 		servo_read_velocity_base_target_dec(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -306,7 +324,7 @@ void main()
 		servo_read_velocity_base_target_dec_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì????¨´??¡À¨º?¨®?¨´?¨¨
+    //Read the velocity base target ACC of servo ID1.
 		uart_init();
 		servo_read_velocity_base_target_acc(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -316,7 +334,7 @@ void main()
 		servo_read_velocity_base_target_acc_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì????¨´??¡À¨º?¨´?¨¨
+    //Read the velocity base target velocity of servo ID1.
 		uart_init();
 		servo_read_velocity_base_target_velocity(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -326,7 +344,7 @@ void main()
 		servo_read_velocity_base_target_velocity_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì????¨´??¡À¨º????
+    //Read the velocity base target position of servo ID1.
 		uart_init();
 		servo_read_velocity_base_target_position(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -335,8 +353,22 @@ void main()
 		delay_ms(10);
 		servo_read_velocity_base_target_position_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
+		
+	 //Read the velocity base target position and velocity of servo ID1.
+		uart_init();
+    servo_read(1, 0x35, 4, order_buffer, &order_buffer_len);
+    uart_send_buffer(order_buffer, order_buffer_len);
+	  uart_init_recv();
+		delay_ms(1000);
+		
+    //Read the velocity base target position, velocity, ACC, and DEC of servo ID1.
+		uart_init();
+    servo_read(1, 0x35, 6, order_buffer, &order_buffer_len);
+    uart_send_buffer(order_buffer, order_buffer_len);
+	  uart_init_recv();
+		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì???¡À¨º¦Ì?¨¢¡Â
+    //Read the target current of servo ID1.
 		uart_init();
 		servo_read_target_current(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -346,7 +378,7 @@ void main()
 		servo_read_target_current_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì???¡À¨ºPWM
+    //Read the target PWM of servo ID1.
 		uart_init();
 		servo_read_target_pwm(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -356,7 +388,7 @@ void main()
 		servo_read_target_pwm_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì??¡è???a1?
+    //Read the torque switch of servo ID1.
 		uart_init();
 		servo_read_torque_switch(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -366,7 +398,7 @@ void main()
 		servo_read_torque_switch_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?LED?a1?
+    //Read the LED switch of servo ID1.
 		uart_init();
 		servo_read_led_switch(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -376,7 +408,7 @@ void main()
 		servo_read_led_switch_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?Flash?a1?
+    //Read the Flash switch of servo ID1.
 		uart_init();
 		servo_read_flash_switch(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -386,7 +418,7 @@ void main()
 		servo_read_flash_switch_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì?¨¢¡ÂD¡ê?y?¦Ì
+    //Read the current offset of servo ID1.
 		uart_init();
 		servo_read_current_offset(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -396,7 +428,7 @@ void main()
 		servo_read_current_offset_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì??D??D¡ê?y?¦Ì
+    //Read the calibration of servo ID1.
 		uart_init();
 		servo_read_calibration(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -406,7 +438,7 @@ void main()
 		servo_read_calibration_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì??????¡ê¨º?
+    //Read the control mode of servo ID1.
 		uart_init();
 		servo_read_control_mode(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -416,7 +448,7 @@ void main()
 		servo_read_control_mode_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?D???¡À¡ê?¡è¨¬??t
+    //Read the shutdown condition of servo ID1.
 		uart_init();
 		servo_read_shutdown_condition(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -426,7 +458,7 @@ void main()
 		servo_read_shutdown_condition_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?LED¡À¡§?¡¥¨¬??t
+    //Read the LED condition of servo ID1.
 		uart_init();
 		servo_read_led_condition(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -436,7 +468,7 @@ void main()
 		servo_read_led_condition_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?????????D??¨°?
+    //Read the position control D gain of servo ID1.
 		uart_init();
 		servo_read_position_control_d_gain(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -446,7 +478,7 @@ void main()
 		servo_read_position_control_d_gain_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?????????I??¨°?
+    //Read the position control I gain of servo ID1.
 		uart_init();
 		servo_read_position_control_i_gain(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -456,7 +488,7 @@ void main()
 		servo_read_position_control_i_gain_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?????????P??¨°?
+    //Read the position control P gain of servo ID1.
 		uart_init();
 		servo_read_position_control_p_gain(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -465,8 +497,16 @@ void main()
 		delay_ms(10);
 		servo_read_position_control_p_gain_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
+		
+		//Read the position control PID gain of servo ID1.
+		uart_init();
+    servo_read(1, 0x1B, 6, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
 
-		// ?¨¢¨¨????¨²¦Ì?PWM¦Ìt?¨®?¦Ì
+		uart_init_recv();
+		delay_ms(1000);
+
+    //Read the PWM punch of servo ID1.
 		uart_init();
 		servo_read_pwm_punch(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -476,7 +516,7 @@ void main()
 		servo_read_pwm_punch_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¡¤¡ä¡Áa?¨¤??
+    //Read the ccw deadband range of servo ID1.
 		uart_init();
 		servo_read_ccw_deadband(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -486,7 +526,7 @@ void main()
 		servo_read_ccw_deadband_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì??y¡Áa?¨¤??
+    //Read the cw deadband range of servo ID1.
 		uart_init();
 		servo_read_cw_deadband(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -496,7 +536,7 @@ void main()
 		servo_read_cw_deadband_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì?¨¢¡Â¡À¡ê?¡è¨º¡À??
+    //Read the current shutdown time of servo ID1.
 		uart_init();
 		servo_read_current_shutdown_time(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -506,7 +546,7 @@ void main()
 		servo_read_current_shutdown_time_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì?¨¢¡Â¨¦??T
+    //Read the max current limit of servo ID1.
 		uart_init();
 		servo_read_max_current_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -516,7 +556,7 @@ void main()
 		servo_read_max_current_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?PWM¨¦??T
+    //Read the max PWM limit of servo ID1.
 		uart_init();
 		servo_read_max_pwm_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -526,7 +566,7 @@ void main()
 		servo_read_max_pwm_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì??1¨¦??T
+    //Read the max voltage limit of servo ID1.
 		uart_init();
 		servo_read_max_voltage_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -536,7 +576,7 @@ void main()
 		servo_read_max_voltage_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¦Ì??1???T
+    //Read the min voltage limit of servo ID1.
 		uart_init();
 		servo_read_min_voltage_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -545,8 +585,16 @@ void main()
 		delay_ms(10);
 		servo_read_min_voltage_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
+		
+		//Read the voltage limit of servo ID1.
+		uart_init();
+    servo_read(1, 0x10, 2, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
 
-		// ?¨¢¨¨????¨²¦Ì????¨¨¨¦??T
+		uart_init_recv();
+		delay_ms(1000);
+		
+    //Read the max temperature limit of servo ID1.
 		uart_init();
 		servo_read_max_temperature_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -556,7 +604,7 @@ void main()
 		servo_read_max_temperature_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¡Á?¡ä¨®?????T??
+    //Read the max angle limit of servo ID1.
 		uart_init();
 		servo_read_max_angle_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -566,7 +614,7 @@ void main()
 		servo_read_max_angle_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¡Á?D??????T??
+    //Read the min angle limit of servo ID1.
 		uart_init();
 		servo_read_min_angle_limit(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -575,8 +623,16 @@ void main()
 		delay_ms(10);
 		servo_read_min_angle_limit_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
+		
+		//Read the angle limit of servo ID1.
+		uart_init();
+    servo_read(1, 0x0B, 4, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
 
-		// ?¨¢¨¨????¨²¦Ì?¡Á¡ä¨¬?¡¤¦Ì????¡Àe
+		uart_init_recv();
+		delay_ms(1000);
+
+    //Read the return level of servo ID1.
 		uart_init();
 		servo_read_return_level(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -586,7 +642,7 @@ void main()
 		servo_read_return_level_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?¨®|¡äe?¨®¨º¡À¨º¡À??
+    //Read the return delay time of servo ID1.
 		uart_init();
 		servo_read_return_delay_time(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -596,7 +652,7 @@ void main()
 		servo_read_return_delay_time_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?2¡§¨¬??¨º
+    //Read the baud rate of servo ID1.
 		uart_init();
 		servo_read_baud_rate(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -606,7 +662,7 @@ void main()
 		servo_read_baud_rate_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?3?3¡ì¡À¨¤o?
+    //Read the model information of servo ID1.
 		uart_init();
 		servo_read_model_information(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -616,7 +672,7 @@ void main()
 		servo_read_model_information_analysis(receive_data, &analysis_data);
 		delay_ms(1000);
 
-		// ?¨¢¨¨????¨²¦Ì?1¨¬?t¡ã?¡À?o?
+    //Read the firmware version of servo ID1.
 		uart_init();
 		servo_read_firmware_version(1, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
@@ -628,18 +684,7 @@ void main()
 #endif
 
 #if WRITE_TEST
-        // ¨¦¨¨?????¨²¦Ì?Flash?a1?
-		uart_init();
-		servo_set_flash_switch(1, 1, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-
-		servo_set_flash_switch_analysis(receive_data);
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì?¨®|¡äe?¨®¨º¡À¨º¡À??
+    //Change the return delay time of servo ID1 to 500us.
 		uart_init();
 		servo_set_return_delay_time(1, 250,order_buffer,&order_buffer_len);
 
@@ -651,7 +696,7 @@ void main()
 		servo_set_return_delay_time_analysis(receive_data);	 
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?¡Á¡ä¨¬?¡¤¦Ì????¡Àe
+    //Change the return level of servo ID1 to respond to all instruction.
 		uart_init();
 		servo_set_return_level(1, 2, order_buffer,&order_buffer_len);
 
@@ -663,7 +708,7 @@ void main()
 		servo_set_return_level_analysis(receive_data);	   
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?2¡§¨¬??¨º
+    //Change the baud rate of servo ID1 to 115200.
 		uart_init();
 		servo_set_baud_rate(1, 3, order_buffer,&order_buffer_len);
 
@@ -675,7 +720,7 @@ void main()
 		servo_set_baud_rate_analysis(receive_data);		 
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?¡Á?D??????T??
+    //Change the min angle limit of servo ID1 to 0¢X.
 		uart_init();
 		servo_set_min_angle_limit(1, 0, order_buffer,&order_buffer_len);
 
@@ -687,7 +732,7 @@ void main()
 		servo_set_min_angle_limit_analysis(receive_data);	 
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?¡Á?¡ä¨®?????T??
+    //Change the max angle limit of servo ID1 to 300¢X.
 		uart_init();
 		servo_set_max_angle_limit(1, 3000, order_buffer,&order_buffer_len);
 
@@ -699,9 +744,22 @@ void main()
 		servo_set_max_angle_limit_analysis(receive_data);	 
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì????¨¨¨¦??T
+	  //Change the angle limit of servo ID1 to 0¢X~300¢X.
+    write_buffer[0] = 0 & 0xff;
+    write_buffer[1] = (0 >> 8) & 0xff;
+    write_buffer[2] = 3000 & 0xff;
+    write_buffer[3] = (3000 >> 8) & 0xff;
+		
 		uart_init();
-		servo_set_max_temperature_limit(1, 100, order_buffer,&order_buffer_len);
+    servo_write(1, 0x0B, 4, write_buffer, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+
+		uart_init_recv();
+		delay_ms(1000);
+
+    //Change the max temperature limit of servo ID1 to 65¢J.
+		uart_init();
+		servo_set_max_temperature_limit(1, 65, order_buffer,&order_buffer_len);
 
 		uart_send_buffer(order_buffer, order_buffer_len);
 
@@ -711,9 +769,9 @@ void main()
 		servo_set_max_temperature_limit_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?¦Ì??1¨¦??T
+    //Change the max voltage limit of servo ID1 to 8.4V.
 		uart_init();
-		servo_set_max_voltage_limit(1,90, order_buffer,&order_buffer_len);
+		servo_set_max_voltage_limit(1,84, order_buffer,&order_buffer_len);
 
 		uart_send_buffer(order_buffer, order_buffer_len);
 
@@ -723,9 +781,9 @@ void main()
 		servo_set_max_voltage_limit_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?¦Ì??1???T
+    //Change the min voltage limit of servo ID1 to 3.5V.
 		uart_init();
-		servo_set_min_voltage_limit(1, 33, order_buffer,&order_buffer_len);
+		servo_set_min_voltage_limit(1, 35, order_buffer,&order_buffer_len);
 
 		uart_send_buffer(order_buffer, order_buffer_len);
 
@@ -734,10 +792,21 @@ void main()
 
 		servo_set_min_voltage_limit_analysis(receive_data);	  
 		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì?PWM¨¦??T
+		
+		//Change the voltage limit of servo ID1 to 3.5~8.4V.
+    write_buffer[0] = 84 & 0xff;
+    write_buffer[1] = 35 & 0xff;
 		uart_init();
-		servo_set_max_pwm_limit(1, 1000, order_buffer,&order_buffer_len);
+    servo_write(1, 0x10, 2, write_buffer, order_buffer, &order_buffer_len);
+		
+		uart_send_buffer(order_buffer, order_buffer_len);
+
+		uart_init_recv();
+		delay_ms(1000);
+
+    //Change the max PWM limit of servo ID1 to 90%.
+		uart_init();
+		servo_set_max_pwm_limit(1, 900, order_buffer,&order_buffer_len);
 
 		uart_send_buffer(order_buffer, order_buffer_len);
 
@@ -747,7 +816,7 @@ void main()
 		servo_set_max_pwm_limit_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?¦Ì?¨¢¡Â¨¦??T
+    //Change the max current limit of servo ID1 to 900mA.
 		uart_init();
 		servo_set_max_current_limit(1, 400, order_buffer,&order_buffer_len);
 
@@ -759,7 +828,7 @@ void main()
 		servo_set_max_current_limit_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?¦Ì?¨¢¡Â¡À¡ê?¡è¨º¡À??
+    //Change the current shutdown time of servo ID1 to 500ms.
 		uart_init();
 		servo_set_current_shutdown_time(1, 1000, order_buffer,&order_buffer_len);
 
@@ -771,7 +840,7 @@ void main()
 		servo_set_current_shutdown_time_analysis(receive_data);	
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??y¡Áa?¨¤??
+    //Change the CW deadband of servo ID1 to 0.2¢X.
 		uart_init();
 		servo_set_cw_deadband(1, 1, order_buffer,&order_buffer_len);
 
@@ -783,7 +852,7 @@ void main()
 		servo_set_cw_deadband_analysis(receive_data);		
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?¡¤¡ä¡Áa?¨¤??
+    //Change the CCW deadband of servo ID1 to 0.2¢X.
 		uart_init();
 		servo_set_ccw_deadband(1, 1, order_buffer,&order_buffer_len);
 
@@ -794,8 +863,19 @@ void main()
 
 		servo_set_ccw_deadband_analysis(receive_data); 
 		delay_ms(1000);
+		
+		//Change the CW and CCW deadband of servo ID1 to 0.2¢X.
+    write_buffer[0] = 2 & 0xff;
+    write_buffer[1] = 2 & 0xff;
+		
+		uart_init();
+    servo_write(1, 0x18, 2, write_buffer, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
 
-		// ¨¦¨¨?????¨²¦Ì?PWM¦Ìt?¨®?¦Ì
+		uart_init_recv();	 
+		delay_ms(1000);
+
+    //Change the PWM punch of servo ID1 to 1%.
 		uart_init();
 		servo_set_pwm_punch(1, 1, order_buffer,&order_buffer_len);
 
@@ -807,7 +887,7 @@ void main()
 		servo_set_pwm_punch_analysis(receive_data);		 
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?????????P??¨°?
+    //Change the position control P gain of servo ID1 to 5995.
 		uart_init();
 		servo_set_position_control_p_gain(1, 6000, order_buffer,&order_buffer_len);
 
@@ -819,7 +899,7 @@ void main()
 		servo_set_position_control_p_gain_analysis(receive_data); 
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?????????I??¨°?
+    //Change the position control I gain of servo ID1 to 5.
 		uart_init();
 		servo_set_position_control_i_gain(1, 1, order_buffer,&order_buffer_len);
 
@@ -831,7 +911,7 @@ void main()
 		servo_set_position_control_i_gain_analysis(receive_data);  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?????????D??¨°?
+    //Change the position control D gain of servo ID1 to 145.
 		uart_init();
 		servo_set_position_control_d_gain(1, 151, order_buffer,&order_buffer_len);
 
@@ -842,8 +922,23 @@ void main()
 
 		servo_set_position_control_d_gain_analysis(receive_data); 
 		delay_ms(1000);
+		
+		//Change the position control PID gain of servo ID1 to 5995, 5, and 145 respectively.
+    write_buffer[0] = 5995 & 0xff;
+    write_buffer[1] = (5995 >> 8) & 0xff;
+    write_buffer[2] = 5 & 0xff;
+    write_buffer[3] = (5 >> 8) & 0xff;
+    write_buffer[4] = 145 & 0xff;
+    write_buffer[5] = (145 >> 8) & 0xff;
 
-		// ¨¦¨¨?????¨²¦Ì?LED¡À¡§?¡¥¨¬??t
+		uart_init();
+    servo_write(1, 0x1B, 6, write_buffer, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+
+		uart_init_recv();
+		delay_ms(1000);
+
+    //Change the LED condition of servo ID1 to turn on stall error, overheating error, and angle error.
 		uart_init();
 		servo_set_led_condition(1, 36, order_buffer,&order_buffer_len);
 
@@ -855,7 +950,7 @@ void main()
 		servo_set_led_condition_analysis(receive_data);		   
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?D???¡À¡ê?¡è¨¬??t
+    //Change the shutdown condition of servo ID1 to turn on stall error, overheating error, voltage error, and angle error.
 		uart_init();
 		servo_set_shutdown_conditions(1, 36, order_buffer,&order_buffer_len);
 
@@ -867,7 +962,7 @@ void main()
 		servo_set_shutdown_conditions_analysis(receive_data);	
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì?LED?a1?
+    //Change the LED switch of servo ID1 to ON.
 		uart_init();
 		servo_set_led_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -879,7 +974,7 @@ void main()
 		servo_set_led_switch_analysis(receive_data);	 
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
+    //Change the torque switch of servo ID1 to OFF.
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 
@@ -890,7 +985,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??????¡ê¨º?
+    //Change the control mode of servo ID1 to the PWM control mode.
 		uart_init();
 		servo_set_control_mode(1, 3, order_buffer,&order_buffer_len);
 
@@ -901,7 +996,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
+    //Change the torque switch of servo ID1 to ON.
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -912,9 +1007,9 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì???¡À¨ºPWM
+    //Change the target PWM of servo ID1 to -50%.
 		uart_init();
-		servo_set_target_pwm(1, 1000, order_buffer,&order_buffer_len);
+		servo_set_target_pwm(1, -500, order_buffer,&order_buffer_len);
 
 		uart_send_buffer(order_buffer, order_buffer_len);
 
@@ -924,7 +1019,7 @@ void main()
 		servo_set_target_pwm_analysis(receive_data);  
 		delay_ms(3000);
 
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
+    //Change the torque switch of servo ID1 to OFF.
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 
@@ -935,7 +1030,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??????¡ê¨º?
+    //Change the control mode of servo ID1 to the current control mode.
 		uart_init();
 		servo_set_control_mode(1, 2, order_buffer,&order_buffer_len);
 
@@ -946,7 +1041,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
+    //Change the torque switch of servo ID1 to ON.
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -957,9 +1052,9 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì???¡À¨º¦Ì?¨¢¡Â
+    //Change the target current of servo ID1 to -400mA.
 		uart_init();
-		servo_set_target_current(1, -1000, order_buffer,&order_buffer_len);
+		servo_set_target_current(1, -400, order_buffer,&order_buffer_len);
 
 		uart_send_buffer(order_buffer, order_buffer_len);
 
@@ -969,7 +1064,7 @@ void main()
 		servo_set_target_current_analysis(receive_data);   
 		delay_ms(3000);
 
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
+    //Change the torque switch of servo ID1 to OFF.
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 
@@ -980,7 +1075,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??????¡ê¨º?
+    //Change the control mode of servo ID1 to the velocity base position control mode.
 		uart_init();
 		servo_set_control_mode(1, 1, order_buffer,&order_buffer_len);
 
@@ -991,7 +1086,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
+    //Change the torque switch of servo ID1 to ON.
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -1002,7 +1097,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì????¨´??¡À¨º?¨´?¨¨
+    //Change the velocity base target velocity of servo ID1 to 360¢X/s.
 		uart_init();
 		servo_set_velocity_base_target_velocity(1, 3600, order_buffer,&order_buffer_len);
 
@@ -1014,7 +1109,7 @@ void main()
 		servo_set_velocity_base_target_velocity_analysis(receive_data);	
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì????¨´??¡À¨º?¨®?¨´?¨¨
+    //Change the velocity base target ACC of servo ID1 to 500¢X/s2.
 		uart_init();
 		servo_set_velocity_base_target_acc(1, 150, order_buffer,&order_buffer_len);
 
@@ -1026,7 +1121,7 @@ void main()
 		servo_set_velocity_base_target_acc_analysis(receive_data);	
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì????¨´??¡À¨º???¨´?¨¨
+    //Change the velocity base target DEC of servo ID1 to 50¢X/s2.
 		uart_init();
 		servo_set_velocity_base_target_dec(1, 150, order_buffer,&order_buffer_len);
 
@@ -1038,7 +1133,7 @@ void main()
 		servo_set_velocity_base_target_dec_analysis(receive_data);	
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì????¨´??¡À¨º????
+    //Change the velocity base target position of servo ID1 to 150¢X.
 		uart_init();
 		servo_set_velocity_base_target_position(1, 0, order_buffer,&order_buffer_len);
 
@@ -1049,7 +1144,7 @@ void main()
 		servo_set_velocity_base_target_position_analysis(receive_data);	  
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
+    //Change the torque switch of servo ID1 to OFF.
 		uart_init();
 		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 
@@ -1060,7 +1155,7 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);		
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??????¡ê¨º?
+    //Change the control mode of servo ID1 to the time base position control mode.
 		uart_init();
 		servo_set_control_mode(1, 0, order_buffer,&order_buffer_len);
 
@@ -1071,7 +1166,7 @@ void main()
 		servo_set_control_mode_analysis(receive_data);	
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
+    //Change the torque switch of servo ID1 to ON.
 		uart_init();
 		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 
@@ -1082,9 +1177,9 @@ void main()
 		servo_set_torque_switch_analysis(receive_data);		 
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì???¨º¡À??¡À¨º?¨®?¨´?¨¨¦Ì¨¨??
+    //Change the time base target ACC of servo ID1 to 5.
 		uart_init();
-		servo_set_time_base_target_acc(1, 0, order_buffer,&order_buffer_len);
+		servo_set_time_base_target_acc(1, 5, order_buffer,&order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 
 		uart_init_recv();
@@ -1093,7 +1188,7 @@ void main()
 		servo_set_time_base_target_acc_analysis(receive_data);	 
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì???¨º¡À??¡À¨º????o¨ª??¡À¨º??DD¨º¡À??
+    //Change the time base target position and moving time of servo ID1 to 300¢X, 500ms respectively.
 		uart_init();
 		servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_buffer_len);
 
@@ -1107,173 +1202,129 @@ void main()
 #endif
 
 #if SYNC_WRITE_TEST
-        // ¨¦¨¨?????¨²¦Ì??¡è???a1?
+		servo.id_counts = 2;         //Sync write two servos
+		servo.id[0] = 1;                //Set the ID of the first servo to 1
+		servo.id[1] = 2;                //Set the ID of the second servo to 2
+		
+		//Change the torque switch of the servo ID1, ID2 to OFF respectively.
+		servo.torque_switch[0] = 0;
+		servo.torque_switch[1] = 0;
 		uart_init();
-		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_torque_switch_analysis(receive_data);	  
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì??????¡ê¨º?
-		uart_init();
-		servo_set_control_mode(1, 1, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_control_mode_analysis(receive_data);	  
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
-		uart_init();
-		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_torque_switch_analysis(receive_data);	   
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
-		uart_init();
-		servo_set_torque_switch(2, 0, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_torque_switch_analysis(receive_data);		
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì??????¡ê¨º?
-		uart_init();
-		servo_set_control_mode(2, 1, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_control_mode_analysis(receive_data);	   
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
-		uart_init();
-		servo_set_torque_switch(2, 1, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_torque_switch_analysis(receive_data);		
-		delay_ms(1000);
-
-		// ¨¦¨¨???¨¤?????¨²¦Ì????¨´??¡À¨º?¨®?¨´?¨¨
-		uart_init();
-		servo_sync_write_velocity_base_target_acc(2, sync_write_velocity_base_target_acc, order_buffer,&order_buffer_len);
+		servo_sync_write_torque_switch(servo, order_buffer, &order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
-		// ¨¦¨¨???¨¤?????¨²¦Ì????¨´??¡À¨º???¨´?¨¨
+    //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
+    servo.control_mode[0] = 1;
+    servo.control_mode[1] = 1;
 		uart_init();
-		servo_sync_write_velocity_base_target_dec(2, sync_write_velocity_base_target_dec, order_buffer,&order_buffer_len);
+    servo_sync_write_control_mode(servo, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+		delay_ms(1000);
+		
+		//Change the velocity base target ACC of servo ID1, ID2 to 500¢X/s2 and 50¢X/s2, respectively.  
+    //Set the acceleration of servo ID1 and ID2 to 10 and 1, respectively, corresponding to the previous ID settings.
+    servo.acc_velocity[0] = 10;
+    servo.acc_velocity[1] = 1;
+		uart_init();
+		servo_sync_write_velocity_base_target_acc(servo, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+		delay_ms(1000);
+		
+		//Change the velocity base target DEC of servo ID1, ID2 to 50¢X/s2 and 500¢X/s2, respectively.
+    //Set the deceleration of servo ID1 and ID2 to 1 and 10, respectively, corresponding to the previous ID settings.
+    servo.dec_velocity[0] = 1;
+    servo.dec_velocity[1] = 10;
+		uart_init();
+    servo_sync_write_velocity_base_target_dec(servo, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+		delay_ms(1000);
+		
+	 //Change the velocity base target velocity of the servo ID1, ID2 to 360¢X/s2 and 720¢X/s2, respectively.
+    //Set the velocity of servo ID1 and ID2 to 3600 and 7200, respectively, corresponding to the previous ID settings.
+    servo.velocity[0] = 3600;
+    servo.velocity[1] = 7200;
+		uart_init();
+    servo_sync_write_velocity_base_target_velocity(servo, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+		delay_ms(1000);
+		
+		//Change the velocity base target velocity of the servo ID1, ID2 to 150¢X midpoint and 0¢X position, respectively.
+    //Set the position of servo ID1 and ID2 to 1500 and 0, respectively, corresponding to the previous ID settings.
+    servo.position[0] = 1500;
+    servo.position[1] = 0;
+		uart_init();
+    servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+		delay_ms(1000);
+		
+		//Change the velocity base target velocity of servo ID1 ,ID2 to 1800 and 3600, and the position to 3000 and 3000, respectively
+    servo.velocity[0] = 1800;
+    servo.velocity[1] = 3600;
+    servo.position[0] = 3000;
+    servo.position[1] = 3000;
+		uart_init();
+    servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+		delay_ms(1000);
+		
+		//Set the velocity of servo ID1 and ID2 to 3600 and 3600, set their positions to 0 and 0, set their accelerations to 100 and 100, and their decelerations to 100 and 100, respectively.
+    servo.velocity[0] = 3600;
+    servo.velocity[1] = 3600;
+    servo.position[0] = 0;
+    servo.position[1] = 0;
+    servo.acc_velocity[0] = 100;
+    servo.acc_velocity[1] = 100;
+    servo.dec_velocity[0] = 100;
+    servo.dec_velocity[1] = 100;
+		uart_init();
+    servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_buffer_len);
+		uart_send_buffer(order_buffer, order_buffer_len);
+		delay_ms(1000);
+		
+		//Change the torque switch of the servo ID1, ID2 to OFF respectively.
+		servo.torque_switch[0] = 0;
+		servo.torque_switch[1] = 0;
+		uart_init();
+		servo_sync_write_torque_switch(servo, order_buffer, &order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
-		// ¨¦¨¨???¨¤?????¨²¦Ì????¨´??¡À¨º?¨´?¨¨
+		//Change the control mode of servo ID1, ID2 to time base position control mode respectively.
+		servo.control_mode[0] = 0;
+		servo.control_mode[1] = 0;
 		uart_init();
-		servo_sync_write_velocity_base_target_velocity(2, sync_write_velocity_base_target_velocity, order_buffer,&order_buffer_len);
+		servo_sync_write_control_mode(servo, order_buffer, &order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
-		// ¨¦¨¨???¨¤?????¨²¦Ì????¨´??¡À¨º????
+		//Change the time base target ACC of servo ID1 to 1 and 5 respectively
+		servo.acc_velocity_grade[0] = 1;
+		servo.acc_velocity_grade[1] = 5;
 		uart_init();
-		servo_sync_write_velocity_base_target_position(2, sync_write_velocity_base_target_position, order_buffer,&order_buffer_len);
+		servo_sync_write_time_base_target_acc(servo, order_buffer, &order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
+		//Change the time base target position and moving time of servo ID1 to 150¢X midpoint and 1s, 0¢X and 500ms respectively.
+		servo.position[0] = 1500;
+		servo.position[1] = 0;
+		servo.time[0] = 1000;
+		servo.time[1] = 500;
 		uart_init();
-		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_torque_switch_analysis(receive_data);	   
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì??????¡ê¨º?
-		uart_init();
-		servo_set_control_mode(1, 0, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_control_mode_analysis(receive_data);	  
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
-		uart_init();
-		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_torque_switch_analysis(receive_data);	  
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
-		uart_init();
-		servo_set_torque_switch(2, 0, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_torque_switch_analysis(receive_data);	   
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì??????¡ê¨º?
-		uart_init();
-		servo_set_control_mode(2, 0, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_control_mode_analysis(receive_data);	
-		delay_ms(1000);
-
-		// ¨¦¨¨?????¨²¦Ì??¡è???a1?
-		uart_init();
-		servo_set_torque_switch(2, 1, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-
-		uart_init_recv();
-		delay_ms(10);
-		servo_set_torque_switch_analysis(receive_data);	
-		delay_ms(1000);
-
-		// ¨¦¨¨???¨¤?????¨²¦Ì???¨º¡À??¡À¨º?¨®?¨´?¨¨¦Ì¨¨??
-		uart_init();
-		servo_sync_write_time_base_target_acc(1,sync_write_time_base_target_acc, order_buffer,&order_buffer_len);
-		uart_send_buffer(order_buffer, order_buffer_len);
-		delay_ms(1000);
-
-		// ¨¦¨¨???¨¤?????¨²¦Ì???¨º¡À??¡À¨º????o¨ª???¡¥¨º¡À??
-		uart_init();
-		servo_sync_write_time_base_target_position_and_moving_time(2, sync_write_time_base_target_position_and_moving_time, order_buffer,&order_buffer_len);
+		servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 #endif
-
-
 	}		
 }
 
 void uart() interrupt 4
 {
-	if(RI)                                          // ?¨¬2¨¦?¨®¨º??D??¡À¨º??
+	if(RI)                                       
 	{
-		RI = 0;                                     // ??3y?¨®¨º??D??¡À¨º??
-		receive_data[receive_len++] = SBUF;         // ???¨®¨º?¦Ì?¦Ì?¨ºy?Y¡ä?¡ä¡é¦Ì??o3???
+		RI = 0;                                
+		receive_data[receive_len++] = SBUF;    
 	}				
 }
 
