@@ -51,7 +51,7 @@ uint8_t uart_init(HANDLE hSerial)
 
 }
 
-//串口发送
+//uaer send
 uint8_t order_send(HANDLE hSerial, uint8_t* order_buffer, uint8_t order_len)
 {
     uint8_t ret;                    //Status Flag
@@ -70,7 +70,7 @@ uint8_t order_send(HANDLE hSerial, uint8_t* order_buffer, uint8_t order_len)
     }
 }
 
-//串口接收数据
+//uart receiver
 uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
 {
     uint8_t ret;                //Status Flag
@@ -108,14 +108,14 @@ uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
 }
 
 int main() {
-    uint8_t ret = 0;                                                                                        //错误检验标志
-    uint8_t order_buffer[50] = { 0 };                                                                       //存放生成的指令
-    uint8_t order_len = 0;                                                                                  //指令长度
-    uint8_t pack[20] = { 0 };                                                                               //存放接收的应答包
-    uint16_t analysis_data = 0;                                                                             //应答包解析出来的数据
-    uint16_t position = 0;                                                                                  //当前位置
-    uint16_t current = 0;                                                                                   //当前电流
-    uint8_t write_buffer[20] = { 0 };                                                                         //写入内存表数据
+    uint8_t ret = 0;                                                                                        //Status Flag
+    uint8_t order_buffer[50] = { 0 };                                                                       //Store Generated Instructions
+    uint8_t order_len = 0;                                                                                  //Instruction Length
+    uint8_t pack[20] = { 0 };                                                                               //Store the received status packet
+    uint16_t analysis_data = 0;                                                                             //Data parsed from the status packet
+    uint16_t position = 0;                                                                                  //present position
+    uint16_t current = 0;                                                                                   //present current
+    uint8_t write_buffer[20] = { 0 };                                                                         //Write data to the memory table
 
     //Open the serial port
     HANDLE hSerial = CreateFile("\\\\.\\COM18", GENERIC_READ | GENERIC_WRITE, 0, NULL,
@@ -2487,15 +2487,15 @@ int main() {
     }
     Sleep(1000);
 
-    //SChange the velocity base target velocity of servo ID1 ,ID2 to 3600 and 3600, position to 0,0, acceleration to 100, 100, deceleration to 100, 100, respectively
+    //SChange the velocity base target velocity of servo ID1 ,ID2 to 3600 and 3600, position to 0,0, acceleration to 500°/s², 500°/s², deceleration to 500°/s², 500°/s², respectively
     servo.velocity[0] = 3600;
     servo.velocity[1] = 3600;
     servo.position[0] = 0;
     servo.position[1] = 0;
-    servo.acc_velocity[0] = 100;
-    servo.acc_velocity[1] = 100;
-    servo.dec_velocity[0] = 100;
-    servo.dec_velocity[1] = 100;
+    servo.acc_velocity[0] = 10;
+    servo.acc_velocity[1] = 10;
+    servo.dec_velocity[0] = 10;
+    servo.dec_velocity[1] = 10;
 
     servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
