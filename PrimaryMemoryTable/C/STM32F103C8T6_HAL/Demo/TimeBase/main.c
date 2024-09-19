@@ -58,12 +58,13 @@ void SystemClock_Config(void);
 #include "servo.h"
 #include <stdio.h>
 
-uint8_t order_buffer[20];
-uint8_t order_len;
-uint8_t receive[20];
-uint16_t analysis_data;
-uint8_t ret; 
-uint8_t write_buffer[20] = {0};         //写入内存表数据
+uint8_t order_buffer[20];								//Store Generated Instructions
+uint8_t order_len;										//Instruction Length
+uint8_t receive[20];									//Store the received status packet
+uint8_t receive_len;									//packet Length
+uint16_t analysis_data;									//Data parsed from the status packet
+uint8_t ret;											//Status Flag
+uint8_t write_buffer[20] = {0};                         //Write data to the memory table
 
 void initTransmitMode(UART_HandleTypeDef *huart);
 void initReceiveMode(UART_HandleTypeDef *huart);
@@ -112,10 +113,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	
 	struct servo_sync_parameter servo;
-	
-	servo.id_counts = 2;            //同步写两个舵机
-  servo.id[0] = 1;                //第一个舵机id为1
-  servo.id[1] = 2;                //第二个舵机id为2
+
+    servo.id_counts = 2;            //Sync write two servos
+    servo.id[0] = 1;                //Set the ID of the first servo to 1
+    servo.id[1] = 2;                //Set the ID of the second servo to 2
 	
   /* USER CODE END 2 */
 
@@ -126,7 +127,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    //将ID1、ID2舵机的扭矩开关状态，分别修改为关闭
+    //Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo.torque_switch[0] = 0;
     servo.torque_switch[1] = 0;
     servo_sync_write_torque_switch(servo, order_buffer, &order_len);
@@ -136,7 +137,7 @@ int main(void)
 		PRINTF("Sync Write torque witch successfully.\r\n");
 		HAL_Delay(1000);
 		
-		//将ID1、ID2舵机的控制模式，分别修改为控shi模式
+		//Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
     servo.control_mode[0] = 0;
     servo.control_mode[1] = 0;
     servo_sync_write_control_mode(servo, order_buffer, &order_len);
@@ -146,7 +147,7 @@ int main(void)
 		PRINTF("Sync Write control mode successfully.\r\n");
 		HAL_Delay(1000);
 		
-		//在控时模式下，让ID1舵机以500ms运动到300°位置
+		//Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
     servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_len);
    
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -161,22 +162,33 @@ int main(void)
 
 		HAL_Delay(1000);
 
-		//在控时模式下，让ID1舵机以1s匀速运动到0°位置
-    servo_set_time_base_target_position_and_moving_time(1, 0, 1000, order_buffer,&order_len);
-   
-    HAL_HalfDuplex_EnableTransmitter(&huart1);
-    HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
+      //Change the time base target ACC, position, and moving time of servo ID1 to 0°, 300°, and 1s, respectively.
+      write_buffer[0] = 0;
+      write_buffer[1] = 3000 & 0xff;
+      write_buffer[2] = (3000 >> 8) & 0xff;
+      write_buffer[3] = 1000 & 0xff;
+      write_buffer[4] = (1000 >> 8) & 0xff;
 
-    HAL_HalfDuplex_EnableReceiver(&huart1);
-		HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
-		
-		HAL_Delay(10);
+      servo_write(1, 0x3B, 5, write_buffer, order_buffer, &order_len);
 
-    servo_set_time_base_target_position_and_moving_time_analysis(receive);
+      HAL_HalfDuplex_EnableTransmitter(&huart1);
+      HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 
-		HAL_Delay(1000);
-		
-		//在控时模式下，让ID1舵机以500ms运动到150°位置，让ID2舵机以1s匀速运动到0°位置
+      HAL_HalfDuplex_EnableReceiver(&huart1);
+      HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
+
+      PRINTF("the pack is: ");
+      for (uint8_t i = 0; i < receive_len; i++)
+      {
+          PRINTF("0x%x ", receive[i]);
+      }
+      PRINTF("\r\n");
+
+      HAL_Delay(1000);
+
+
+		//In time base position control mode, let servo ID1 move to the 150° position at a velocity of 500ms,
+        //and let servo ID2 move to the 0° position at a constant velocity of 1s.
     servo.position[0] = 1500;
     servo.position[1] = 0;
     servo.time[0] = 500;
@@ -189,7 +201,8 @@ int main(void)
 
 		HAL_Delay(1000);
 		
-		//在控时模式下，让ID1舵机以1000ms运动到0°位置，让ID2舵机以1s匀速运动到3000°位置
+		//In time base position control mode, let servo ID1 move to the 0° position at a velocity of 1s,
+        //and let servo ID2 move to the 3000° position at a constant velocity of 500ms.
     servo.position[0] = 0;
     servo.position[1] = 3000;
     servo.time[0] = 1000;
@@ -250,7 +263,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	if(huart->Instance==USART1)
 	{
-		//再次 ?启空闲中断接收，不然只会接收 ?次数 ?
+        receive_len = Size;
 		HAL_UARTEx_ReceiveToIdle_IT(&huart1,receive,50);
 	}
 }

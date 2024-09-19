@@ -58,11 +58,11 @@ void SystemClock_Config(void);
 #include "servo.h"
 #include <stdio.h>
 
-uint8_t order_buffer[20];
-uint8_t order_len;
-uint8_t receive[20];
-uint16_t analysis_data;
-uint8_t ret; 
+uint8_t order_buffer[20];								//Store Generated Instructions
+uint8_t order_len;											//Instruction Length
+uint8_t receive[20];										//Store the received status packet
+uint16_t analysis_data;									//Data parsed from the status packet
+uint8_t ret;														//Status Flag
 
 void initTransmitMode(UART_HandleTypeDef *huart);
 void initReceiveMode(UART_HandleTypeDef *huart);
@@ -120,7 +120,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-		//设置舵机的扭矩开关
+		//Change the torque switch of servo ID1 to OFF.
     servo_set_torque_switch(1, 0, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -135,7 +135,7 @@ int main(void)
 
 		HAL_Delay(1000);
 
-		//设置舵机的控制模式
+		//Change the control mode of servo ID1 to the PWM control mode.
     servo_set_control_mode(1, 3, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -150,7 +150,7 @@ int main(void)
 
 		HAL_Delay(1000);
 
-		//设置舵机的控制模式
+		//Change the torque switch of servo ID1 to ON.
     servo_set_torque_switch(1, 1, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -165,8 +165,8 @@ int main(void)
 
 		HAL_Delay(1000);
 
-		//设置舵机的目标PWM
-    servo_set_target_pwm(1, 500, order_buffer,&order_len);
+		//Change the target PWM of servo ID1 to -50%.
+    servo_set_target_pwm(1, -500, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
     HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
@@ -228,7 +228,6 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	if(huart->Instance==USART1)
 	{
-		//再次 ?启空闲中断接收，不然只会接收 ?次数 ?
 		HAL_UARTEx_ReceiveToIdle_IT(&huart1,receive,50);
 	}
 }

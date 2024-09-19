@@ -58,13 +58,13 @@ void SystemClock_Config(void);
 #include "servo.h"
 #include <stdio.h>
 
-uint8_t order_buffer[20];
-uint8_t order_len;
-uint8_t receive[20];
-uint8_t receive_len;										//应答包长度
-uint16_t analysis_data;
-uint8_t ret; 
-uint8_t write_buffer[20] = {0};         //写入内存表数据
+uint8_t order_buffer[20];								//Store Generated Instructions
+uint8_t order_len;										//Instruction Length
+uint8_t receive[20];									//Store the received status packet
+uint8_t receive_len;									//packet Length
+uint16_t analysis_data;									//Data parsed from the status packet
+uint8_t ret;											//Status Flag
+uint8_t write_buffer[20] = {0};                         //Write data to the memory table
 
 void initTransmitMode(UART_HandleTypeDef *huart);
 void initReceiveMode(UART_HandleTypeDef *huart);
@@ -113,10 +113,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	
 	struct servo_sync_parameter servo;
-	
-	servo.id_counts = 2;            //同步写两个舵机
-  servo.id[0] = 1;                //第一个舵机id为1
-  servo.id[1] = 2;                //第二个舵机id为2
+
+    servo.id_counts = 2;            //Sync write two servos
+    servo.id[0] = 1;                //Set the ID of the first servo to 1
+    servo.id[1] = 2;                //Set the ID of the second servo to 2
 
   /* USER CODE END 2 */
 
@@ -128,7 +128,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		
-    //将ID1、ID2舵机的扭矩开关状态，分别修改为关闭
+    //Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo.torque_switch[0] = 0;
     servo.torque_switch[1] = 0;
     servo_sync_write_torque_switch(servo, order_buffer, &order_len);
@@ -138,7 +138,7 @@ int main(void)
 		PRINTF("Sync Write torque witch successfully.\r\n");
 		HAL_Delay(1000);
 
-    //将ID1、ID2舵机的控制模式，分别修改为控速模式
+    //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
     servo.control_mode[0] = 1;
     servo.control_mode[1] = 1;
     servo_sync_write_control_mode(servo, order_buffer, &order_len);
@@ -148,7 +148,7 @@ int main(void)
 		PRINTF("Sync Write control mode successfully.\r\n");
 		HAL_Delay(1000);
 
-	  //设置舵机的控速目标位置
+	  //Change the velocity base target position of servo ID1 to 150°.
     servo_set_velocity_base_target_position(1, 1500, order_buffer,&order_len);
    
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -163,7 +163,7 @@ int main(void)
 
 		HAL_Delay(1000);
 		
-		//在控速模式下，让ID1以360°/s的控速目标速度运动到300°位置
+		//In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s.
 		write_buffer[0] = 3000 & 0xff;
 		write_buffer[1] = (3000 >> 8) & 0xff;
 		write_buffer[2] = 3600 & 0xff;
@@ -186,7 +186,7 @@ int main(void)
 
 		HAL_Delay(1000);
 		
-		//在控速模式下，让ID1舵机以360°/s的控速目标速度、500°/s²的控速目标加速度、50°/s²的控速目标减速度运动到0°位置
+		//Change the velocity base target position, velocity base target velocity, velocity base target ACC, and velocity base target DEC of servo ID1 to 0° position, 360°/s, 500°/s², and 50°/s², respectively.
 		write_buffer[0] = 0 & 0xff;
 		write_buffer[1] = (0 >> 8) & 0xff;
 		write_buffer[2] = 3600 & 0xff;
@@ -211,9 +211,7 @@ int main(void)
 
 		HAL_Delay(1000);
 		
-		//在控速模式下，让ID1舵机运动到150中位°，让ID2舵机运动到0°位置
-
-		//id为1，2的舵机运动位置分别设置为1500，0，值和前面的id设置对应
+		//In velocity base position control mode, let servo ID1 move to the 150° midpoint and let servo ID2 move to the 0° position.
 		servo.position[0] = 1500;
 		servo.position[1] = 0;
 
@@ -224,9 +222,8 @@ int main(void)
 		
 		HAL_Delay(1000);
 		
-		//在控速模式下，让ID1以360°/s的控速目标速度运动到300°位置，让ID2以720°/s的控速目标速度运动到150°位置
-
-		//id为1，2的舵机速度分别设置为3600，7200，位置分别设置为3000，1500
+		//In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s,
+        //and let servo ID2 move to the 150° position at a velocity base target velocity of 720°/s.
 		servo.velocity[0] = 3600;
 		servo.velocity[1] = 7200;
 		servo.position[0] = 3000;
@@ -239,9 +236,8 @@ int main(void)
 		
 		HAL_Delay(1000);
 			
-		//在控速模式下，让ID1舵机以720°/s的控速目标速度、500°/s²的控速目标加速度、50°/s²的控速目标减速度运动到0°位置，让ID2舵机以360°/s的控速目标速度、50°/s²的控速目标加速度、500°/s²的控速目标减速度运动到300°位置
-
-		//id为1，2的舵机速度分别设置为7200，3600，位置分别设置为0，3000,加速度分别设置为10，1，减速度分别设置为1，10
+		//In velocity base position control mode, let servo ID1 move to the 0° position at a velocity base target velocity of 720°/s, a velocity base target ACC of 500°/s², and a velocity base target DEC of 50°/s².
+        //Let servo ID2 move to the 300° position at a velocity base target velocity of 360°/s, a velocity base target ACC of 50°/s², and a velocity base target DEC of 500°/s².
 		servo.velocity[0] = 7200;
 		servo.velocity[1] = 3600;
 		servo.position[0] = 0;
@@ -307,7 +303,6 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	if(huart->Instance==USART1)
 	{
-		//再次 ?启空闲中断接收，不然只会接收 ?次数 ?
 		receive_len = Size;
 		HAL_UARTEx_ReceiveToIdle_IT(&huart1,receive,50);
 	}
