@@ -16,7 +16,6 @@ CSerialPort::~CSerialPort()
     Close();
 }
 
-// 打开串口
 bool CSerialPort::Open(
         int nComm,
         DWORD dwBaudRate/* = CBR_115200*/,
@@ -40,9 +39,8 @@ bool CSerialPort::Open(
     return true;
 }
 
-// 打开串口
 bool CSerialPort::Open(
-        const _tstring& strName/* = _T("COM1")*/,               //串口名
+        const _tstring& strName/* = _T("COM1")*/,           
         DWORD dwBaudRate/* = CBR_115200*/,
         BYTE bByteSize/* = 8*/,
         BYTE bParity/* = NOPARITY*/,
@@ -108,7 +106,6 @@ bool CSerialPort::SetState(LPDCB lpDcb)
     return ::SetCommState(m_hComm, lpDcb);
 }
 
-// 设置缓冲区大小
 bool CSerialPort::SetupComm(
         DWORD dwInQueue/* = 14*/,
         DWORD dwOutQueue/* = 16*/
@@ -215,16 +212,15 @@ bool CSerialPort::OpenComm(int nComm)
     TCHAR szBuf[MAX_PATH];
     (void)::StringCchPrintf(szBuf, _countof(szBuf), _T(R"(\\.\COM%d)"), nComm);
 
-    // 关闭前一个已打开的串口
     this->Close();
 
     m_hComm = ::CreateFile(
             szBuf,
-            GENERIC_READ | GENERIC_WRITE,   //读写串口
-            0,                              //独占打开
+            GENERIC_READ | GENERIC_WRITE,   
+            0,                             
             nullptr,
-            OPEN_EXISTING,                  //必须存在
-            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,           //重叠操作
+            OPEN_EXISTING,                  
+            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,          
             nullptr
     );
 
@@ -255,16 +251,15 @@ bool CSerialPort::OpenComm(const _tstring& strName)
     TCHAR szBuf[MAX_PATH];
     (void)::StringCchPrintf(szBuf, _countof(szBuf), _T(R"(\\.\%s)"), strName.c_str());
 
-    // 关闭前一个已打开的串口
     this->Close();
 
     m_hComm = ::CreateFile(
             szBuf,
-            GENERIC_READ | GENERIC_WRITE,   //读写串口
-            0,                              //独占打开
+            GENERIC_READ | GENERIC_WRITE,   
+            0,                              
             nullptr,
-            OPEN_EXISTING,                  //必须存在
-            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,           //重叠操作
+            OPEN_EXISTING,                  
+            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,           
             nullptr
     );
 
@@ -390,9 +385,9 @@ bool CSerialPort::Read(
         DWORD nTimeOut/* = 3000*/
 )
 {
-    DWORD errors;               //串口error标志位
-    DWORD read_len;             //读取长度
-    COMSTAT comstat;            //描述串口通信的状态信息
+    DWORD errors;               
+    DWORD read_len;             
+    COMSTAT comstat;            
 
     if (INVALID_HANDLE_VALUE == m_hComm ||
         nullptr == lpData ||
@@ -405,7 +400,6 @@ bool CSerialPort::Read(
         return FALSE;
     }
 
-    //获取接收缓冲区中可用的字节数
     read_len = comstat.cbInQue;
 
     OVERLAPPED ov = { 0 };

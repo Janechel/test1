@@ -4,10 +4,10 @@
 #include "servo.h"
 
 /**
- * @brief 计算指令包的校验和
- * @param buffer 要计算校验和的缓冲区指针
- * @param length 缓冲区长度
- * @return 计算得到的校验和
+ * @brief Calculate the checksum of the instruction packet.
+ * @param buffer: Pointer for the buffer to calculate the checksum.
+ * @param length: Buffer Length.
+ * @return Calculated Checksum.
  */
 uint8_t get_check(const uint8_t* buffer, uint8_t length)
 {
@@ -21,15 +21,15 @@ uint8_t get_check(const uint8_t* buffer, uint8_t length)
 }
 
 /**
- * @brief 生成指令数据
- * @param id 指令包的ID
- * @param instruction 指令包指令类型
- * @param address 要读写舵机内存表的首地址
- * @param byte_length 字节长度标志
- * @param input_buffer 指令包参数数据
- * @param output_buffer 用于存储生成的指令数据包的缓冲区指针
- * @param output_length 指令长度
- * @return 成功或者失败
+ * @brief Package servo control command data.
+ * @param id: ServoID.
+ * @param instruction: Servo instruction.
+ * @param address: The address to operate on.
+ * @param byte_length: Byte length.
+ * @param input_buffer: Instruction package parameter data.
+ * @param output_buffer: Pointer for the buffer that is used to store the generated instruction packet.
+ * @param output_length: Buffer Length.
+ * @return success or error flag.
  */
 uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byte_length, uint8_t* input_buffer,uint8_t* output_buffer, uint8_t* output_length)
 {
@@ -86,10 +86,10 @@ uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byt
 }
 
 /**
- * @brief 解析应答包
- * @param response_packet 应答包数据的首地址
- * @param data_buffer 应答包解析出来的数据
- * @return 舵机的状态
+ * @brief Parsing reply packet.
+ * @param response_packet: packet data of the steering gear.
+ * @param data_buffer: Data parsed from the status packet.
+ * @return success or error flag.
  */
 uint8_t servo_unpack(uint8_t* response_packet, uint8_t** data_buffer)
 {
@@ -112,31 +112,31 @@ uint8_t servo_unpack(uint8_t* response_packet, uint8_t** data_buffer)
     {
         if ((status & VOLTAGE_ERROR) == VOLTAGE_ERROR)
         {
-            std::cout << "电压报错" << std::endl;
+            std::cout << "Voltage Error" << std::endl;
         }
         if ((status & ANGLE_ERROR) == ANGLE_ERROR)
         {
-            std::cout << "角度报错" << std::endl;
+            std::cout << "Angle Error" << std::endl;
         }
         if ((status & OVERHEATING_ERROR) == OVERHEATING_ERROR)
         {
-            std::cout << "过热报错" << std::endl;
+            std::cout << "Overheating Error" << std::endl;
         }
         if ((status & RANGE_ERROR) == RANGE_ERROR)
         {
-            std::cout << "范围报错" << std::endl;
+            std::cout << "Range Error" << std::endl;
         }
         if ((status & CHECKSUM_ERROR) == CHECKSUM_ERROR)
         {
-            std::cout << "校验报错" << std::endl;
+            std::cout << "CheckSum Error" << std::endl;
         }
         if ((status & STALL_ERROR) == STALL_ERROR)
         {
-            std::cout << "堵转报错" << std::endl;
+            std::cout << "Stall Error" << std::endl;
         }
         if ((status & PARSING_ERROR) == PARSING_ERROR)
         {
-            std::cout << "解析报错" << std::endl;
+            std::cout << "Parsing Error" << std::endl;
         }
         return status;
     }
@@ -149,11 +149,11 @@ uint8_t servo_unpack(uint8_t* response_packet, uint8_t** data_buffer)
 }
 
 /**
- * @brief 生成PING指令的指令包
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Generate the PING instruction package.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_ping(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -163,13 +163,13 @@ uint8_t servo_ping(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_le
 }
 
 /**
- * @brief 读取指令包的生成
- * @param id 舵机ID
- * @param address 要读取的存储器地址
- * @param read_data_len 要读取的数据长度
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Generate instructions to read memory table data.
+ * @param id: ServoID.
+ * @param address: The address of the memory table to read.
+ * @param read_data_len: The size of the bytes to read.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read(uint8_t id, uint8_t address, uint8_t read_data_len, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -179,14 +179,14 @@ uint8_t servo_read(uint8_t id, uint8_t address, uint8_t read_data_len, uint8_t* 
 }
 
 /**
- * @brief 写指令包的生成
- * @param id 舵机ID
- * @param address 要写入的存储器地址
- * @param write_data_len 要写的数据长度
- * @param input_buffer 写入的数据
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Generate instructions to write memory table data.
+ * @param id: ServoID.
+ * @param address: The address of the memory table to write data to.
+ * @param write_data_len: The length of the data to be written.
+ * @param input_buffer: Written data.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_write(uint8_t id, uint8_t address, uint8_t write_data_len, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -196,13 +196,13 @@ uint8_t servo_write(uint8_t id, uint8_t address, uint8_t write_data_len, uint8_t
 }
 
 /**
- * @brief 生成同步写指令包
- * @param address 要写入的存储器地址
- * @param servo_counts 要操作的舵机数量
- * @param input_buffer 写入的数据参数
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Generate sync write instructions to write memory table data.
+ * @param address: The address of the memory table to write data to.
+ * @param servo_counts: The number of servos operated by sync write instructions.
+ * @param input_buffer: Written data.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t sync_write_data(uint8_t address, uint8_t servo_counts, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -212,11 +212,11 @@ uint8_t sync_write_data(uint8_t address, uint8_t servo_counts, uint8_t* input_bu
 }
 
 /**
- * @brief 生成恢复出厂设置指令
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Reset the servo to the factory default values.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_factory_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -226,11 +226,11 @@ uint8_t servo_factory_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_
 }
 
 /**
- * @brief 生成参数重置指令
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Reset the parameter settings of the servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_parameter_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -240,11 +240,11 @@ uint8_t servo_parameter_reset(uint8_t id, uint8_t* output_buffer, uint8_t* outpu
 }
 
 /**
- * @brief 生成校正偏移值的指令
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Calibrate the midpoint of the servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -254,11 +254,11 @@ uint8_t servo_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_bu
 }
 
 /**
- * @brief 生成舵机重启指令
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Reboot the servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_reboot(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -268,12 +268,12 @@ uint8_t servo_reboot(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_
 }
 
 /**
- * @brief 修改目标舵机的ID
- * @param id 舵机ID
- * @param new_id 修改后的ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Change the servo ID.
+ * @param id: ServoID.
+ * @param new_id The modified ID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_modify_known_id(uint8_t id, uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -283,11 +283,11 @@ uint8_t servo_modify_known_id(uint8_t id, uint8_t new_id, uint8_t* output_buffer
 }
 
 /**
- * @brief 修改位置舵机ID的ID
- * @param new_id 修改后的ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the servo ID of the servo with an unknown ID.
+ * @param new_id The modified ID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_modify_unknown_id(uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -297,12 +297,12 @@ uint8_t servo_modify_unknown_id(uint8_t new_id, uint8_t* output_buffer, uint8_t*
 }
 
 /**
- * @brief 设置舵机的应答延时时间
- * @param id 舵机ID
- * @param response_delay_time 舵机应答返回数据包的延时时间，取值范围0~255，单位是2微妙
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the return delay time of the servo.
+ * @param id: ServoID.
+ * @param response_delay_time: Response Delay Time for servo return to packet，Value range is:0~255，unit is 2μs.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_return_delay_time(uint8_t id, uint8_t response_delay_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -312,12 +312,12 @@ uint8_t servo_set_return_delay_time(uint8_t id, uint8_t response_delay_time, uin
 }
 
 /**
- * @brief 设置舵机的状态返回级别
- * @param id 舵机ID
- * @param return_level 舵机应答返回的级别，取值为0 1 2
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the return level of servo.
+ * @param id: ServoID.
+ * @param return_level Returned level of servo status，Value range is:0 1 2.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_return_level(uint8_t id, uint8_t return_level, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -327,12 +327,12 @@ uint8_t servo_set_return_level(uint8_t id, uint8_t return_level, uint8_t* output
 }
 
 /**
- * @brief 设置舵机的波特率
- * @param id 舵机ID
- * @param baud_rate_number 舵机波特率编号，取值范围为0~7
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the baud rate of servo.
+ * @param id: ServoID.
+ * @param baud_rate_number Baud Rate Number 7 is 1Mbps，Value range is:1~7.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_baud_rate(uint8_t id, uint8_t baud_rate_number, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -342,12 +342,12 @@ uint8_t servo_set_baud_rate(uint8_t id, uint8_t baud_rate_number, uint8_t* outpu
 }
 
 /**
- * @brief 设置舵机的最小位置限制
- * @param id 舵机ID
- * @param min_angle_limit 舵机转动的最小位置限制，取值范围为0~3000，单位为0.1°
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the min angle limit of servo.
+ * @param id: ServoID.
+ * @param min_angle_limit Min Angle Limit for servo rotation，Value range is:0~3000，unit is 0.1°.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_min_angle_limit(uint8_t id, uint16_t min_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -362,12 +362,12 @@ uint8_t servo_set_min_angle_limit(uint8_t id, uint16_t min_angle_limit, uint8_t*
 }
 
 /**
- * @brief 设置舵机的最大位置限制
- * @param id 舵机ID
- * @param max_angle_limit 舵机转动的最大位置限制，取值范围为0~3000，单位为0.1°
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the max angle limit of servo.
+ * @param id: ServoID.
+ * @param max_angle_limit Max Angle Limit for servo rotation，Value range is:0~3000，unit is 0.1°.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_max_angle_limit(uint8_t id, uint16_t max_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -381,12 +381,12 @@ uint8_t servo_set_max_angle_limit(uint8_t id, uint16_t max_angle_limit, uint8_t*
 }
 
 /**
- * @brief 设置舵机的温度上限
- * @param id 舵机ID
- * @param max_temperature_limit 舵机工作的温度上限，取值范围为0~127，单位为1℃
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the max temperature limit of servo.
+ * @param id: ServoID.
+ * @param max_temperature_limit: Max Temperature Limit for operating servo，Value range is:0~127，unit is 1℃.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_max_temperature_limit(uint8_t id, uint8_t max_temperature_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -395,12 +395,12 @@ uint8_t servo_set_max_temperature_limit(uint8_t id, uint8_t max_temperature_limi
 }
 
 /**
- * @brief 设置舵机的电压上限
- * @param id 舵机ID
- * @param max_voltage_limit 舵机工作的电压上限，取值范围为33~90，单位为0.1V
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the max voltage limit of servo.
+ * @param id: ServoID.
+ * @param max_voltage_limit Max Voltage Limit for operating Servo，Value range is:33~90，unit is 0.1V.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_max_voltage_limit(uint8_t id, uint8_t max_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -409,12 +409,12 @@ uint8_t servo_set_max_voltage_limit(uint8_t id, uint8_t max_voltage_limit, uint8
 }
 
 /**
- * @brief 设置舵机的电压下限
- * @param id 舵机ID
- * @param min_voltage_limit 舵机工作的电压下限，取值范围为33~90，单位为0.1V
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the min voltage limit of servo.
+ * @param id: ServoID.
+ * @param min_voltage_limit Min Voltage Limit for operating Servo，Value range is:33~90，unit is 0.1V.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_min_voltage_limit(uint8_t id, uint8_t min_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -423,12 +423,12 @@ uint8_t servo_set_min_voltage_limit(uint8_t id, uint8_t min_voltage_limit, uint8
 }
 
 /**
- * @brief 设置舵机的PWM上限
- * @param id 舵机ID
- * @param max_pwm_limit 舵机输出的PWM上限，取值范围为0~1000，单位为0.1%
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the max PWM limit of servo.
+ * @param id: ServoID.
+ * @param max_pwm_limit Max PWM Limit Limit of servo，Value range is:0~1000，unit is 0.1%.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_max_pwm_limit(uint8_t id, uint16_t max_pwm_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -442,12 +442,12 @@ uint8_t servo_set_max_pwm_limit(uint8_t id, uint16_t max_pwm_limit, uint8_t* out
 }
 
 /**
- * @brief 设置舵机的电流上限
- * @param id 舵机ID
- * @param max_current_limit 舵机工作的电流上限，取值范围为0~1500，单位为1mA
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the max current limit of servo.
+ * @param id: ServoID.
+ * @param max_current_limit Max Current Limit for operating servo，Value range is:0~1500，unit is 1mA.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_max_current_limit(uint8_t id, uint16_t max_current_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -461,12 +461,12 @@ uint8_t servo_set_max_current_limit(uint8_t id, uint16_t max_current_limit, uint
 }
 
 /**
- * @brief 设置舵机的电流保护时间
- * @param id 舵机ID
- * @param current_shutdown_time 舵机达到电流上限后开启过载保护的触发时间，取值范围为0~65536，单位为1ms
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the current shutdown time of servo.
+ * @param id: ServoID.
+ * @param current_shutdown_time Trigger Time for overload protection activation after reaching current limit，Value range is:0~65536，unit is 1ms.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_current_shutdown_time(uint8_t id, uint16_t current_shutdown_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -480,12 +480,12 @@ uint8_t servo_set_current_shutdown_time(uint8_t id, uint16_t current_shutdown_ti
 }
 
 /**
- * @brief 设置舵机的正转死区
- * @param id 舵机ID
- * @param cw_deadband 正转方向的死区，取值范围为0~255，单位为0.1°
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the CW deadband of servo.
+ * @param id: ServoID.
+ * @param cw_deadband Dead Band for clockwise direction，Value range is:0~255，unit is 0.1°.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_cw_deadband(uint8_t id, uint8_t cw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -494,12 +494,12 @@ uint8_t servo_set_cw_deadband(uint8_t id, uint8_t cw_deadband, uint8_t* output_b
 }
 
 /**
- * @brief 设置舵机的反转死区
- * @param id 舵机ID
- * @param ccw_deadband 反转方向的死区，取值范围为0~255，单位为0.1°
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the CCW deadband of servo.
+ * @param id: ServoID.
+ * @param ccw_deadband Dead Band for counterclockwise direction，Value range is:0~255，unit is 0.1°.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_ccw_deadband(uint8_t id, uint8_t ccw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -508,12 +508,12 @@ uint8_t servo_set_ccw_deadband(uint8_t id, uint8_t ccw_deadband, uint8_t* output
 }
 
 /**
- * @brief 设置舵机的PWM叠加值
- * @param id 舵机ID
- * @param pwm_punch 舵机输出PWM的叠加值，取值范围为0~255，单位为0.1%
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the PWM punch of servo.
+ * @param id: ServoID.
+ * @param pwm_punch PWM punch of the servo output.，Value range is:0~255，unit is 0.1%.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_pwm_punch(uint8_t id, uint8_t pwm_punch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -522,12 +522,12 @@ uint8_t servo_set_pwm_punch(uint8_t id, uint8_t pwm_punch, uint8_t* output_buffe
 }
 
 /**
- * @brief 设置舵机的位置控制P增益
- * @param id 舵机ID
- * @param position_control_P_gain 舵机位置控制PID的比例项，取值范围为0~65535，Kp = 该值/1000
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the position control P gain of servo.
+ * @param id: ServoID.
+ * @param position_control_P_gain Gain Proportion (P) of Servo's PID Control，Value range is:0~65535，Kp = Value/1000.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_position_control_p_gain(uint8_t id, uint16_t position_control_P_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -541,12 +541,12 @@ uint8_t servo_set_position_control_p_gain(uint8_t id, uint16_t position_control_
 }
 
 /**
- * @brief 设置舵机的位置控制I增益
- * @param id 舵机ID
- * @param position_control_I_gain 舵机位置控制PID的积分项，取值范围为0~65535，Ki = 该值/10000
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the position control I gain of servo.
+ * @param id: ServoID.
+ * @param position_control_I_gain Gain Integration (I) of Servo's PID Control，Value range is:0~65535，Ki = Value/10000.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_position_control_i_gain(uint8_t id, uint16_t position_control_I_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -560,12 +560,12 @@ uint8_t servo_set_position_control_i_gain(uint8_t id, uint16_t position_control_
 }
 
 /**
- * @brief 设置舵机的位置控制D增益
- * @param id 舵机ID
- * @param position_control_D_gain 舵机位置控制PID的微分项，取值范围为0~65535，Ki = 该值/100
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the position control D gain of servo.
+ * @param id: ServoID.
+ * @param position_control_D_gain Gain Differential (D) of Servo's PID Control，Value range is:0~65535，Ki = Value/100.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_position_control_d_gain(uint8_t id, uint16_t position_control_D_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -579,12 +579,12 @@ uint8_t servo_set_position_control_d_gain(uint8_t id, uint16_t position_control_
 }
 
 /**
- * @brief 设置舵机的LED报警条件
- * @param id 舵机ID
- * @param led_condition LED报警的条件设置，取值范围为0~255
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the LED condition of servo.
+ * @param id: ServoID.
+ * @param led_condition Conditions for Alarm LED，Value range is:0~255.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_led_condition(uint8_t id, uint8_t led_condition, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -593,12 +593,12 @@ uint8_t servo_set_led_condition(uint8_t id, uint8_t led_condition, uint8_t* outp
 }
 
 /**
- * @brief 设置舵机的卸载保护条件
- * @param id 舵机ID
- * @param shutdown_conditions 卸载扭矩的条件设置，取值范围为0~255
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the shutdown condition of servo.
+ * @param id: ServoID.
+ * @param shutdown_conditions Conditions for torque unloading，Value range is:0~255.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_shutdown_conditions(uint8_t id, uint8_t shutdown_conditions, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -607,12 +607,12 @@ uint8_t servo_set_shutdown_conditions(uint8_t id, uint8_t shutdown_conditions, u
 }
 
 /**
- * @brief 设置舵机的控制模式
- * @param id 舵机ID
- * @param control_mode 取值为0控时 1控速 2电流 3PWM
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the control mode of servo.
+ * @param id: ServoID.
+ * @param control_mode: Servo Control Mode: 0 Time Base Position Control, 1 Velocity Base Position Control, 2 Current, 3 PWM.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_control_mode(uint8_t id, uint8_t control_mode, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -621,12 +621,12 @@ uint8_t servo_set_control_mode(uint8_t id, uint8_t control_mode, uint8_t* output
 }
 
 /**
- * @brief 设置舵机的Flash开关
- * @param id 舵机ID
- * @param flash_switch Flash区域写入开关：0关闭写入 1开启写入
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the Flash switch of servo.
+ * @param id: ServoID.
+ * @param flash_switch: Flash area write switch: 0 for write disabled, 1 for write enabled.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_flash_switch(uint8_t id, uint8_t flash_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -635,12 +635,12 @@ uint8_t servo_set_flash_switch(uint8_t id, uint8_t flash_switch, uint8_t* output
 }
 
 /**
- * @brief 设置舵机的LED开关
- * @param id 舵机ID
- * @param led_switch 舵机指示灯开关，0关闭 1开启
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the LED switch of servo.
+ * @param id: ServoID.
+ * @param led_switch: Servo indicator light switch: 0 for off, 1 for on.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_led_switch(uint8_t id, uint8_t led_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -649,12 +649,12 @@ uint8_t servo_set_led_switch(uint8_t id, uint8_t led_switch, uint8_t* output_buf
 }
 
 /**
- * @brief 设置舵机的扭矩开关
- * @param id 舵机ID
- * @param torque_switch 舵机扭矩使能开关：0关闭 1开启 2刹车模式
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the torque switch of servo.
+ * @param id: ServoID.
+ * @param torque_switch: Servo torque switch: 0 for torque disabled, 1 for torque enabled, 2 for brake mode.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_torque_switch(uint8_t id, uint8_t torque_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -663,12 +663,12 @@ uint8_t servo_set_torque_switch(uint8_t id, uint8_t torque_switch, uint8_t* outp
 }
 
 /**
- * @brief 设置舵机的目标PWM
- * @param id 舵机ID
- * @param target_pwm 对点击输出的PWM直接控制，取值范围为-1000~1000，单位为0.1%
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the target PWM of servo.
+ * @param id: ServoID.
+ * @param target_pwm Direct control of PWM output to the motor.，Value range is:-1000~1000，unit is 0.1%.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_target_pwm(uint8_t id, int16_t target_pwm, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -682,12 +682,12 @@ uint8_t servo_set_target_pwm(uint8_t id, int16_t target_pwm, uint8_t* output_buf
 }
 
 /**
- * @brief 设置舵机的目标电流
- * @param id 舵机ID
- * @param target_current 舵机工作的目标电流，取值范围为-1000~1000，单位为1mA
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the target current of servo.
+ * @param id: ServoID.
+ * @param target_current Target current for servo operation, by default, equal to the default value of the max current limit.，Value range is:-1000~1000，unit is 1mA.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_target_current(uint8_t id, int16_t target_current, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -701,12 +701,12 @@ uint8_t servo_set_target_current(uint8_t id, int16_t target_current, uint8_t* ou
 }
 
 /**
- * @brief 设置舵机的控速目标位置
- * @param id 舵机ID
- * @param target_position 取值范围为0~3000，单位为0.1°
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the velocity base target position of servo.
+ * @param id: ServoID.
+ * @param target_position: Used in Velocity Base Position Control Mode.Value range is:0~3000，unit is 0.1°.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_velocity_base_target_position(uint8_t id, uint16_t target_position, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -720,12 +720,12 @@ uint8_t servo_set_velocity_base_target_position(uint8_t id, uint16_t target_posi
 }
 
 /**
- * @brief 设置舵机的控速目标速度
- * @param id 舵机ID
- * @param target_velocity 取值范围为0~65535，单位为0.1°/s
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the velocity base target velocity of servo.
+ * @param id: ServoID.
+ * @param target_velocity Value range is:0~65535，unit is 0.1°/s.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_velocity_base_target_velocity(uint8_t id, uint16_t target_velocity, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -739,12 +739,12 @@ uint8_t servo_set_velocity_base_target_velocity(uint8_t id, uint16_t target_velo
 }
 
 /**
- * @brief 设置舵机的控速目标加速度
- * @param id 舵机ID
- * @param target_acc 取值范围为0~255，单位为50°/s²
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the velocity base target ACC of servo.
+ * @param id: ServoID.
+ * @param target_acc Value range is:0~255，unit is 50°/s².
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_velocity_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -753,12 +753,12 @@ uint8_t servo_set_velocity_base_target_acc(uint8_t id, uint8_t target_acc, uint8
 }
 
 /**
- * @brief 设置舵机的控速目标减速度
- * @param id 舵机ID
- * @param target_dec 取值范围为0~255，单位为单位为50°/s²
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the velocity base target DEC of servo.
+ * @param id: ServoID.
+ * @param target_dec Value range is:0~255，unit is unit is 50°/s².
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_velocity_base_target_dec(uint8_t id, uint8_t target_dec, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -767,12 +767,12 @@ uint8_t servo_set_velocity_base_target_dec(uint8_t id, uint8_t target_dec, uint8
 }
 
 /**
- * @brief 设置舵机的控时目标加速度等级
- * @param id 舵机ID
- * @param target_acc 取值范围为0~5
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the time base target ACC of servo.
+ * @param id: ServoID.
+ * @param target_acc Value range is:0~5.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -781,13 +781,13 @@ uint8_t servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* 
 }
 
 /**
- * @brief 设置舵机的控时目标位置和目标运行时间
- * @param id 舵机ID
- * @param target_position 运动目标位置，取值范围为0~3000，单位为0.1°
- * @param moving_time 目标运动时间，取值范围为0~65535，单位为1ms
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the time base target position and moving time of servo.
+ * @param id: ServoID.
+ * @param target_position: Value range is:0~3000，unit is 0.1°.
+ * @param moving_time: Value range is:0~65535，unit is 1ms.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t target_position, uint16_t moving_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -804,11 +804,11 @@ uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t
 }
 
 /**
- * @brief 读取舵机的当前电流
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the present current of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -818,11 +818,11 @@ uint8_t servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* 
 }
 
 /**
- * @brief 读取舵机的当前位置和当前电流
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the present position and present current of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_position_and_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -832,11 +832,11 @@ uint8_t servo_read_present_position_and_present_current(uint8_t id, uint8_t* out
 }
 
 /**
- * @brief 读取舵机的当前位置
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the present position of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -846,11 +846,11 @@ uint8_t servo_read_present_position(uint8_t id, uint8_t* output_buffer, uint8_t*
 }
 
 /**
- * @brief 读取舵机的当前速度
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the present velocity of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -860,11 +860,11 @@ uint8_t servo_read_present_velocity(uint8_t id, uint8_t* output_buffer, uint8_t*
 }
 
 /**
- * @brief 读取舵机的当前的规划位置
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the present profile position of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_profile_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -874,11 +874,11 @@ uint8_t servo_read_present_profile_position(uint8_t id, uint8_t* output_buffer, 
 }
 
 /**
- * @brief 读取舵机的当前规划速度
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the present profile velocity of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_profile_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -889,11 +889,11 @@ uint8_t servo_read_present_profile_velocity(uint8_t id, uint8_t* output_buffer, 
 }
 
 /**
- * @brief 读取舵机的当前PWM
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the present PWM of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -904,11 +904,11 @@ uint8_t servo_read_present_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* outp
 }
 
 /**
- * @brief 读取舵机的当前温度
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the present temperature of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_temperature(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -919,11 +919,11 @@ uint8_t servo_read_present_temperature(uint8_t id, uint8_t* output_buffer, uint8
 }
 
 /**
- * @brief 读取舵机的当前输入电压
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the present voltage of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_voltage(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -934,11 +934,11 @@ uint8_t servo_read_present_voltage(uint8_t id, uint8_t* output_buffer, uint8_t* 
 }
 
 /**
- * @brief 读取舵机的控时目标运行时间
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the time base target moving time of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_time_base_target_moving_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -949,11 +949,11 @@ uint8_t servo_read_time_base_target_moving_time(uint8_t id, uint8_t* output_buff
 }
 
 /**
- * @brief 读取舵机的控时目标位置
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the time base target position of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_time_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -964,11 +964,11 @@ uint8_t servo_read_time_base_target_position(uint8_t id, uint8_t* output_buffer,
 }
 
 /**
- * @brief 读取舵机的控时加速度等级
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the time base target ACC of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_time_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -979,11 +979,11 @@ uint8_t servo_read_time_base_target_acc(uint8_t id, uint8_t* output_buffer, uint
 }
 
 /**
- * @brief 读取舵机的控速目标减速度
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the velocity base target DEC of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_velocity_base_target_dec(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -994,11 +994,11 @@ uint8_t servo_read_velocity_base_target_dec(uint8_t id, uint8_t* output_buffer, 
 }
 
 /**
- * @brief 读取舵机的控速目标加速度
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the velocity base target ACC of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_velocity_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1009,11 +1009,11 @@ uint8_t servo_read_velocity_base_target_acc(uint8_t id, uint8_t* output_buffer, 
 }
 
 /**
- * @brief 读取舵机的控速目标速度
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the velocity base target velocity of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_velocity_base_target_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1024,11 +1024,11 @@ uint8_t servo_read_velocity_base_target_velocity(uint8_t id, uint8_t* output_buf
 }
 
 /**
- * @brief 读取舵机的控速目标位置
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the velocity base target position of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_velocity_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1039,11 +1039,11 @@ uint8_t servo_read_velocity_base_target_position(uint8_t id, uint8_t* output_buf
 }
 
 /**
- * @brief 读取舵机的目标电流
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the target current of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_target_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1054,11 +1054,11 @@ uint8_t servo_read_target_current(uint8_t id, uint8_t* output_buffer, uint8_t* o
 }
 
 /**
- * @brief 读取舵机的目标PWM
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the target PWM of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_target_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1069,11 +1069,11 @@ uint8_t servo_read_target_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* outpu
 }
 
 /**
- * @brief 读取舵机的扭矩开关
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the torque switch of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_torque_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1084,11 +1084,11 @@ uint8_t servo_read_torque_switch(uint8_t id, uint8_t* output_buffer, uint8_t* ou
 }
 
 /**
- * @brief 读取舵机的LED开关
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the LED switch of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_led_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1099,11 +1099,11 @@ uint8_t servo_read_led_switch(uint8_t id, uint8_t* output_buffer, uint8_t* outpu
 }
 
 /**
- * @brief 读取舵机的Flash开关
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the Flash switch of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_flash_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1114,11 +1114,11 @@ uint8_t servo_read_flash_switch(uint8_t id, uint8_t* output_buffer, uint8_t* out
 }
 
 /**
- * @brief 读取舵机的电流校正值
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the current offset of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_current_offset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1129,11 +1129,11 @@ uint8_t servo_read_current_offset(uint8_t id, uint8_t* output_buffer, uint8_t* o
 }
 
 /**
- * @brief 读取舵机的中位校正值
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the calibration of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1144,11 +1144,11 @@ uint8_t servo_read_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* outp
 }
 
 /**
- * @brief 读取舵机的控制模式
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the control mode of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_control_mode(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1159,11 +1159,11 @@ uint8_t servo_read_control_mode(uint8_t id, uint8_t* output_buffer, uint8_t* out
 }
 
 /**
- * @brief 读取舵机的卸载保护条件
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the shutdown condition of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_shutdown_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1174,11 +1174,11 @@ uint8_t servo_read_shutdown_condition(uint8_t id, uint8_t* output_buffer, uint8_
 }
 
 /**
- * @brief 读取舵机的LED报警条件
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the LED condition of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_led_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1189,11 +1189,11 @@ uint8_t servo_read_led_condition(uint8_t id, uint8_t* output_buffer, uint8_t* ou
 }
 
 /**
- * @brief 读取舵机的位置控制D增益
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the position control D gain of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_position_control_d_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1204,11 +1204,11 @@ uint8_t servo_read_position_control_d_gain(uint8_t id, uint8_t* output_buffer, u
 }
 
 /**
- * @brief 读取舵机的位置控制I增益
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the position control I gain of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_position_control_i_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1219,11 +1219,11 @@ uint8_t servo_read_position_control_i_gain(uint8_t id, uint8_t* output_buffer, u
 }
 
 /**
- * @brief 读取舵机的位置控制P增益
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the position control P gain of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_position_control_p_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1234,11 +1234,11 @@ uint8_t servo_read_position_control_p_gain(uint8_t id, uint8_t* output_buffer, u
 }
 
 /**
- * @brief 读取舵机的PWM叠加值
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the PWM punch of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_pwm_punch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1249,11 +1249,11 @@ uint8_t servo_read_pwm_punch(uint8_t id, uint8_t* output_buffer, uint8_t* output
 }
 
 /**
- * @brief 读取舵机的反转死区
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the CCW deadband of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_ccw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1264,11 +1264,11 @@ uint8_t servo_read_ccw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* out
 }
 
 /**
- * @brief 读取舵机的正转死区
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the CW deadband of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_cw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1279,11 +1279,11 @@ uint8_t servo_read_cw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* outp
 }
 
 /**
- * @brief 读取舵机的电流保护时间
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the current shutdown time of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_current_shutdown_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1294,11 +1294,11 @@ uint8_t servo_read_current_shutdown_time(uint8_t id, uint8_t* output_buffer, uin
 }
 
 /**
- * @brief 读取舵机的电流上限
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the max current limit of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_max_current_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1309,11 +1309,11 @@ uint8_t servo_read_max_current_limit(uint8_t id, uint8_t* output_buffer, uint8_t
 }
 
 /**
- * @brief 读取舵机的PWM上限
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the max PWM limit of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_max_pwm_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1324,11 +1324,11 @@ uint8_t servo_read_max_pwm_limit(uint8_t id, uint8_t* output_buffer, uint8_t* ou
 }
 
 /**
- * @brief 读取舵机的电压上限
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the max voltage limit of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_max_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1339,11 +1339,11 @@ uint8_t servo_read_max_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t
 }
 
 /**
- * @brief 读取舵机的电压下限
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the min voltage limit of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_min_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1354,11 +1354,11 @@ uint8_t servo_read_min_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t
 }
 
 /**
- * @brief 读取舵机的温度上限
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the max temperature limit of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_max_temperature_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1369,11 +1369,11 @@ uint8_t servo_read_max_temperature_limit(uint8_t id, uint8_t* output_buffer, uin
 }
 
 /**
- * @brief 读取舵机的最大位置限制
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the max angle limit of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_max_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1384,11 +1384,11 @@ uint8_t servo_read_max_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* 
 }
 
 /**
- * @brief 读取舵机的最小位置限制
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the min angle limit of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_min_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1399,11 +1399,11 @@ uint8_t servo_read_min_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* 
 }
 
 /**
- * @brief 读取舵机的状态返回级别
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the return level of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_return_level(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1414,11 +1414,11 @@ uint8_t servo_read_return_level(uint8_t id, uint8_t* output_buffer, uint8_t* out
 }
 
 /**
- * @brief 读取舵机的应答延时时间
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the return delay time of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_return_delay_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1429,11 +1429,11 @@ uint8_t servo_read_return_delay_time(uint8_t id, uint8_t* output_buffer, uint8_t
 }
 
 /**
- * @brief 读取舵机的波特率
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the baud rate of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_baud_rate(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1444,11 +1444,11 @@ uint8_t servo_read_baud_rate(uint8_t id, uint8_t* output_buffer, uint8_t* output
 }
 
 /**
- * @brief 读取舵机的出厂编号
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the model information of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_model_information(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1459,11 +1459,11 @@ uint8_t servo_read_model_information(uint8_t id, uint8_t* output_buffer, uint8_t
 }
 
 /**
- * @brief 读取舵机的固件版本号
- * @param id 舵机ID
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Read the firmware version of servo.
+ * @param id: ServoID.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_firmware_version(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1474,11 +1474,11 @@ uint8_t servo_read_firmware_version(uint8_t id, uint8_t* output_buffer, uint8_t*
 }
 
 /**
- * @brief 设置多个舵机的控速目标位置
- * @param servo 舵机同步写控制参数结构体
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set torque switches for multiple servos.
+ * @param servo: Structure for storing servo sync write parameters.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_sync_write_velocity_base_target_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1503,11 +1503,11 @@ uint8_t servo_sync_write_velocity_base_target_position(struct servo_sync_paramet
 }
 
 /**
- * @brief 设置多个舵机的控速目标位置和速度
- * @param servo 舵机同步写控制参数结构体
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the control mode for multiple servos.
+ * @param servo: Structure for storing servo sync write parameters.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_sync_write_velocity_base_target_position_and_velocity(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1534,11 +1534,11 @@ uint8_t servo_sync_write_velocity_base_target_position_and_velocity(struct servo
 }
 
 /**
- * @brief 设置多个舵机的扭矩开关
- * @param servo 舵机同步写控制参数结构体
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the target acceleration, deceleration, speed, and position for multiple servos.
+ * @param servo: Structure for storing servo sync write parameters.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_sync_write_torque_switch(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1558,11 +1558,11 @@ uint8_t servo_sync_write_torque_switch(struct servo_sync_parameter servo, uint8_
 }
 
 /**
- * @brief 设置多个舵机的控制模式
- * @param servo 舵机同步写控制参数结构体
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Change the velocity base target position for multiple servos
+ * @param servo: Structure for storing servo sync write parameters.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_sync_write_control_mode(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1582,11 +1582,11 @@ uint8_t servo_sync_write_control_mode(struct servo_sync_parameter servo, uint8_t
 }
 
 /**
- * @brief 设置多个舵机的控速目标加速度、减速度、速度和位置
- * @param servo 舵机同步写控制参数结构体
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Change the velocity base target velocity for multiple servos.
+ * @param servo: Structure for storing servo sync write parameters.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1611,11 +1611,11 @@ uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(stru
 }
 
 /**
- * @brief 设置多个舵机的控速目标速度
- * @param servo 舵机同步写控制参数结构体
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the target position and speed for multiple servos.
+ * @param servo: Structure for storing servo sync write parameters.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_sync_write_velocity_base_target_velocity(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1640,11 +1640,11 @@ uint8_t servo_sync_write_velocity_base_target_velocity(struct servo_sync_paramet
 }
 
 /**
- * @brief 设置多个舵机的控速目标加速度
- * @param servo 舵机同步写控制参数结构体
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the target acceleration for multiple servos.
+ * @param servo: Structure for storing servo sync write parameters.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_sync_write_velocity_base_target_acc(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1668,11 +1668,11 @@ uint8_t servo_sync_write_velocity_base_target_acc(struct servo_sync_parameter se
 }
 
 /**
- * @brief 设置多个舵机的控速目标减速度
- * @param servo 舵机同步写控制参数结构体
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Set the target deceleration for multiple servos.
+ * @param servo: Structure for storing servo sync write parameters.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_sync_write_velocity_base_target_dec(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1696,11 +1696,11 @@ uint8_t servo_sync_write_velocity_base_target_dec(struct servo_sync_parameter se
 }
 
 /**
- * @brief 设置多个舵机的控时目标加速度等级
- * @param servo 舵机同步写控制参数结构体
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Change the time base target ACC for multiple servos.
+ * @param servo: Structure for storing servo sync write parameters.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_sync_write_time_base_target_acc(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1722,11 +1722,11 @@ uint8_t servo_sync_write_time_base_target_acc(struct servo_sync_parameter servo,
 }
 
 /**
- * @brief 设置多个舵机的控时目标位置和运动时间
- * @param servo 舵机同步写控制参数结构体
- * @param output_buffer 用于存放指令包的输出缓冲区的指针
- * @param output_buffer_len 指令包的长度
- * @return 执行结果，成功或者错误标志
+ * @brief Change the time base target position and moving time for multiple servos.
+ * @param servo: Structure for storing servo sync write parameters.
+ * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
+ * @param output_buffer_len: The length of the instruction packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_sync_write_time_base_target_position_and_moving_time(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
@@ -1751,10 +1751,10 @@ uint8_t servo_sync_write_time_base_target_position_and_moving_time(struct servo_
 }
 
 /**
- * @brief PING命令应答包的解析
- * @param response_packet 应答包数据
- * @param data 解析出来的应答包参数
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the PING command.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_ping_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -1776,9 +1776,9 @@ uint8_t servo_ping_analysis(uint8_t* response_packet, uint16_t* data)
 }
 
 /**
- * @brief 恢复出厂设置命令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the factory reset command.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_factory_reset_analysis(uint8_t* response_packet)
 {
@@ -1796,9 +1796,9 @@ uint8_t servo_factory_reset_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 参数重置命令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the parameter reset command.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_parameter_reset_analysis(uint8_t* response_packet)
 {
@@ -1816,9 +1816,9 @@ uint8_t servo_parameter_reset_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 校正偏移指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the calibration command.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_calibration_analysis(uint8_t* response_packet)
 {
@@ -1836,9 +1836,9 @@ uint8_t servo_calibration_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置应答延时时间命令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_return_delay_time_analysis(uint8_t* response_packet)
 {
@@ -1856,9 +1856,9 @@ uint8_t servo_set_return_delay_time_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 恢复状态返回级别命令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_return_level_analysis(uint8_t* response_packet)
 {
@@ -1876,9 +1876,9 @@ uint8_t servo_set_return_level_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 恢复波特率命令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_baud_rate_analysis(uint8_t* response_packet)
 {
@@ -1896,9 +1896,9 @@ uint8_t servo_set_baud_rate_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 恢复最小位置限制命令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_min_angle_limit_analysis(uint8_t* response_packet)
 {
@@ -1916,9 +1916,9 @@ uint8_t servo_set_min_angle_limit_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机最大未知限制指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_max_angle_limit_analysis(uint8_t* response_packet)
 {
@@ -1936,9 +1936,9 @@ uint8_t servo_set_max_angle_limit_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机温度上限指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_max_temperature_limit_analysis(uint8_t* response_packet)
 {
@@ -1956,9 +1956,9 @@ uint8_t servo_set_max_temperature_limit_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机电压上限指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_max_voltage_limit_analysis(uint8_t* response_packet)
 {
@@ -1976,9 +1976,9 @@ uint8_t servo_set_max_voltage_limit_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机电压下限指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag
  */
 uint8_t servo_set_min_voltage_limit_analysis(uint8_t* response_packet)
 {
@@ -1996,9 +1996,9 @@ uint8_t servo_set_min_voltage_limit_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机PWM上限指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_max_pwm_limit_analysis(uint8_t* response_packet)
 {
@@ -2016,9 +2016,9 @@ uint8_t servo_set_max_pwm_limit_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机电流上限指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_max_current_limit_analysis(uint8_t* response_packet)
 {
@@ -2036,9 +2036,9 @@ uint8_t servo_set_max_current_limit_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机电流保护时间指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_current_shutdown_time_analysis(uint8_t* response_packet)
 {
@@ -2056,9 +2056,9 @@ uint8_t servo_set_current_shutdown_time_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机正转死区指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_cw_deadband_analysis(uint8_t* response_packet)
 {
@@ -2076,9 +2076,9 @@ uint8_t servo_set_cw_deadband_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机反转死区指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_ccw_deadband_analysis(uint8_t* response_packet)
 {
@@ -2096,9 +2096,9 @@ uint8_t servo_set_ccw_deadband_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机PWM叠加值指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_pwm_punch_analysis(uint8_t* response_packet)
 {
@@ -2116,9 +2116,9 @@ uint8_t servo_set_pwm_punch_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机位置控制P增益指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_position_control_p_gain_analysis(uint8_t* response_packet)
 {
@@ -2136,9 +2136,9 @@ uint8_t servo_set_position_control_p_gain_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机位置控制I增益指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_position_control_i_gain_analysis(uint8_t* response_packet)
 {
@@ -2156,9 +2156,9 @@ uint8_t servo_set_position_control_i_gain_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机位置控制D增益指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_position_control_d_gain_analysis(uint8_t* response_packet)
 {
@@ -2176,9 +2176,9 @@ uint8_t servo_set_position_control_d_gain_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机LED报警条件指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_led_condition_analysis(uint8_t* response_packet)
 {
@@ -2196,9 +2196,9 @@ uint8_t servo_set_led_condition_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机卸载保护条件指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_shutdown_conditions_analysis(uint8_t* response_packet)
 {
@@ -2216,9 +2216,9 @@ uint8_t servo_set_shutdown_conditions_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机控制模式指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_control_mode_analysis(uint8_t* response_packet)
 {
@@ -2236,9 +2236,9 @@ uint8_t servo_set_control_mode_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机FLASH开关状态指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_flash_switch_analysis(uint8_t* response_packet)
 {
@@ -2256,9 +2256,9 @@ uint8_t servo_set_flash_switch_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机LED开关状态指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_led_switch_analysis(uint8_t* response_packet)
 {
@@ -2276,9 +2276,9 @@ uint8_t servo_set_led_switch_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机扭矩开关状态指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_torque_switch_analysis(uint8_t* response_packet)
 {
@@ -2296,9 +2296,9 @@ uint8_t servo_set_torque_switch_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机目标PWM指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_target_pwm_analysis(uint8_t* response_packet)
 {
@@ -2316,9 +2316,9 @@ uint8_t servo_set_target_pwm_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机目标电流指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_target_current_analysis(uint8_t* response_packet)
 {
@@ -2336,9 +2336,9 @@ uint8_t servo_set_target_current_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机控速目标位置指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_velocity_base_target_position_analysis(uint8_t* response_packet)
 {
@@ -2356,9 +2356,9 @@ uint8_t servo_set_velocity_base_target_position_analysis(uint8_t* response_packe
 }
 
 /**
- * @brief 设置舵机控速目标速度指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_velocity_base_target_velocity_analysis(uint8_t* response_packet)
 {
@@ -2376,9 +2376,9 @@ uint8_t servo_set_velocity_base_target_velocity_analysis(uint8_t* response_packe
 }
 
 /**
- * @brief 设置舵机控速目标加速度指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_velocity_base_target_acc_analysis(uint8_t* response_packet)
 {
@@ -2396,9 +2396,9 @@ uint8_t servo_set_velocity_base_target_acc_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机控速目标减速度指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_velocity_base_target_dec_analysis(uint8_t* response_packet)
 {
@@ -2416,9 +2416,9 @@ uint8_t servo_set_velocity_base_target_dec_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机控时目标加速度指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_time_base_target_acc_analysis(uint8_t* response_packet)
 {
@@ -2436,9 +2436,9 @@ uint8_t servo_set_time_base_target_acc_analysis(uint8_t* response_packet)
 }
 
 /**
- * @brief 设置舵机控时目标位置和运行时间指令的应答包解析
- * @param response_packet 应答包数据
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet.
+ * @param response_packet: Servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_set_time_base_target_position_and_moving_time_analysis(uint8_t* response_packet)
 {
@@ -2456,10 +2456,10 @@ uint8_t servo_set_time_base_target_position_and_moving_time_analysis(uint8_t* re
 }
 
 /**
- * @brief 读取舵机的当前电流的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the present current.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2481,10 +2481,10 @@ uint8_t servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* 
 }
 
 /**
- * @brief 读取舵机的当前位置的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the present position.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_position_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2506,10 +2506,11 @@ uint8_t servo_read_present_position_analysis(uint8_t* response_packet, uint16_t*
 }
 
 /**
- * @brief 读取舵机的当前位置和当前电流的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the present position and current.
+ * @param response_packet: Servo response packet.
+ * @param position: present position.
+ * @param current: present current.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_position_and_present_current_analysis(uint8_t* response_packet, uint16_t* position, uint16_t* current)
 {
@@ -2534,10 +2535,10 @@ uint8_t servo_read_present_position_and_present_current_analysis(uint8_t* respon
 }
 
 /**
- * @brief 读取舵机的当前速度的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the present velocity.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2559,10 +2560,10 @@ uint8_t servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t*
 }
 
 /**
- * @brief 读取舵机的当前规划位置的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the present profile position.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_profile_position_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2584,10 +2585,10 @@ uint8_t servo_read_present_profile_position_analysis(uint8_t* response_packet, u
 }
 
 /**
- * @brief 读取舵机的当前规划速度的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the present profile velocity.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_profile_velocity_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2609,10 +2610,10 @@ uint8_t servo_read_present_profile_velocity_analysis(uint8_t* response_packet, u
 }
 
 /**
- * @brief 读取舵机的当前PWM的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the present pwm.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2634,10 +2635,10 @@ uint8_t servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* data
 }
 
 /**
- * @brief 读取舵机的当前温度的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the present temperature.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_temperature_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2657,10 +2658,10 @@ uint8_t servo_read_present_temperature_analysis(uint8_t* response_packet, uint16
 }
 
 /**
- * @brief 读取舵机的当前输入电压的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the present voltage.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_present_voltage_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2680,10 +2681,10 @@ uint8_t servo_read_present_voltage_analysis(uint8_t* response_packet, uint16_t* 
 }
 
 /**
- * @brief 读取舵机的控时目标运行时间的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the time base target moving time.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_time_base_target_moving_time_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2705,10 +2706,10 @@ uint8_t servo_read_time_base_target_moving_time_analysis(uint8_t* response_packe
 }
 
 /**
- * @brief 读取舵机的控时目标位置的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the time base target position.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_time_base_target_position_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2730,10 +2731,10 @@ uint8_t servo_read_time_base_target_position_analysis(uint8_t* response_packet, 
 }
 
 /**
- * @brief 读取舵机的控时目标加速度等级的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the time base target accelerated speed.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2754,10 +2755,10 @@ uint8_t servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint1
 }
 
 /**
- * @brief 读取舵机的控速目标减速度的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the velocity base target deceleration.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2777,10 +2778,10 @@ uint8_t servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, u
 }
 
 /**
- * @brief 读取舵机的控速目标加速度的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the velocity base target accelerated speed.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2800,10 +2801,10 @@ uint8_t servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, u
 }
 
 /**
- * @brief 读取舵机的控速目标速度的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the velocity base target velocity.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_velocity_base_target_velocity_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2825,10 +2826,10 @@ uint8_t servo_read_velocity_base_target_velocity_analysis(uint8_t* response_pack
 }
 
 /**
- * @brief 读取舵机的控速目标位置的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the velocity base target position.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_velocity_base_target_position_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2850,10 +2851,10 @@ uint8_t servo_read_velocity_base_target_position_analysis(uint8_t* response_pack
 }
 
 /**
- * @brief 读取舵机的目标电流的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the target current.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2875,10 +2876,10 @@ uint8_t servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* d
 }
 
 /**
- * @brief 读取舵机的目标PWM的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the target pwm.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2900,10 +2901,10 @@ uint8_t servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* data)
 }
 
 /**
- * @brief 读取舵机的扭矩开关状态的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the torque switch.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_torque_switch_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2923,10 +2924,10 @@ uint8_t servo_read_torque_switch_analysis(uint8_t* response_packet, uint16_t* da
 }
 
 /**
- * @brief 读取舵机的LED开关状态的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the led switch.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_led_switch_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2946,10 +2947,10 @@ uint8_t servo_read_led_switch_analysis(uint8_t* response_packet, uint16_t* data)
 }
 
 /**
- * @brief 读取舵机的FLASH开关状态的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the flash switch.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_flash_switch_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2969,10 +2970,10 @@ uint8_t servo_read_flash_switch_analysis(uint8_t* response_packet, uint16_t* dat
 }
 
 /**
- * @brief 读取舵机的电流校正值的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the current offset.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_current_offset_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -2992,10 +2993,10 @@ uint8_t servo_read_current_offset_analysis(uint8_t* response_packet, uint16_t* d
 }
 
 /**
- * @brief 读取舵机的中位校正值的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the calibration.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3017,10 +3018,10 @@ uint8_t servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* data
 }
 
 /**
- * @brief 读取舵机的控制模式的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the control mode.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_control_mode_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3040,10 +3041,10 @@ uint8_t servo_read_control_mode_analysis(uint8_t* response_packet, uint16_t* dat
 }
 
 /**
- * @brief 读取舵机的卸载保护条件的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the shutdown condition.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3063,10 +3064,10 @@ uint8_t servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint16_
 }
 
 /**
- * @brief 读取舵机的LED报警条件的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the led condition.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_led_condition_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3086,10 +3087,10 @@ uint8_t servo_read_led_condition_analysis(uint8_t* response_packet, uint16_t* da
 }
 
 /**
- * @brief 读取舵机的位置控制D增益的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the position control d gain.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_position_control_d_gain_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3111,10 +3112,10 @@ uint8_t servo_read_position_control_d_gain_analysis(uint8_t* response_packet, ui
 }
 
 /**
- * @brief 读取舵机的位置控制I增益的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the position control i gain.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_position_control_i_gain_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3136,10 +3137,10 @@ uint8_t servo_read_position_control_i_gain_analysis(uint8_t* response_packet, ui
 }
 
 /**
- * @brief 读取舵机的位置控制P增益的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the position control p gain.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_position_control_p_gain_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3161,10 +3162,10 @@ uint8_t servo_read_position_control_p_gain_analysis(uint8_t* response_packet, ui
 }
 
 /**
- * @brief 读取舵机的PWM叠加值的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the pwm punch.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3184,10 +3185,10 @@ uint8_t servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t* data)
 }
 
 /**
- * @brief 读取舵机的反转死区的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the ccw deadband.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3207,10 +3208,10 @@ uint8_t servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint16_t* dat
 }
 
 /**
- * @brief 读取舵机的正转死区的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the cw deadband.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3230,10 +3231,10 @@ uint8_t servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16_t* data
 }
 
 /**
- * @brief 读取舵机的电流保护时间的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the current shutdown time.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3255,10 +3256,10 @@ uint8_t servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint
 }
 
 /**
- * @brief 读取舵机的电流上限的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the max current limit.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3280,10 +3281,10 @@ uint8_t servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t
 }
 
 /**
- * @brief 读取舵机的PWM上限的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the max pwm limit.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3305,10 +3306,10 @@ uint8_t servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* da
 }
 
 /**
- * @brief 读取舵机的电压上限的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the max voltage limit.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3328,10 +3329,10 @@ uint8_t servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint16_t
 }
 
 /**
- * @brief 读取舵机的电压下限的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the min voltage limit.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3351,10 +3352,10 @@ uint8_t servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint16_t
 }
 
 /**
- * @brief 读取舵机的温度上限的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the max temperature limit.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3374,10 +3375,10 @@ uint8_t servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint
 }
 
 /**
- * @brief 读取舵机的最大位置限制的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the max angle limit.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3399,10 +3400,10 @@ uint8_t servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* 
 }
 
 /**
- * @brief 读取舵机的最小位置限制的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the min angle limit.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3424,10 +3425,10 @@ uint8_t servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* 
 }
 
 /**
- * @brief 读取舵机的状态返回级别的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the return level.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_return_level_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3447,10 +3448,10 @@ uint8_t servo_read_return_level_analysis(uint8_t* response_packet, uint16_t* dat
 }
 
 /**
- * @brief 读取舵机的应答延迟时间的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the return delay time.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_return_delay_time_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3470,10 +3471,10 @@ uint8_t servo_read_return_delay_time_analysis(uint8_t* response_packet, uint16_t
 }
 
 /**
- * @brief 读取舵机的波特率编号的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the baud rate.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3493,10 +3494,10 @@ uint8_t servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t* data)
 }
 
 /**
- * @brief 读取舵机的出厂编号的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the model information.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_model_information_analysis(uint8_t* response_packet, uint16_t* data)
 {
@@ -3516,10 +3517,10 @@ uint8_t servo_read_model_information_analysis(uint8_t* response_packet, uint16_t
 }
 
 /**
- * @brief 读取舵机的固件版本号的指令应答包解析
- * @param response_packet 应答包数据
- * @param data
- * @return 执行结果，成功或者错误标志
+ * @brief Parsing the servo response packet for the firmware version.
+ * @param response_packet: Servo response packet.
+ * @param analysis_data: The data parsed from the servo response packet.
+ * @return Function execution result, success or error flag.
  */
 uint8_t servo_read_firmware_version_analysis(uint8_t* response_packet, uint16_t* data)
 {

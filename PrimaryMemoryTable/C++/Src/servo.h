@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#define PRINTF_ENABLE 1
+#define PRINTF_ENABLE 1             //Print output enable.
 
 #if PRINTF_ENABLE
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -12,639 +12,622 @@
 #endif
 
 //Basic instruction types
-#define PING                0x01    //Used to obtain Status Packet.
-#define READ_DATA           0x02    //Read data from the memory table.
-#define WRITE_DATA          0x03    //Write data on the memory table.
-#define SYNC_WRITE          0X83    //Simultaneously write instructions on multiple servos.
-#define FACTORY_RESET       0x06    //Resets the servo's value in the memory table to its initial factory default settings.
-#define PARAMETER_RESET     0x10    //Resets the values of certain parameters of the servo to its initial factory default settings.
-#define CALIBRATION         0x15    //Calibrate the servo's offset value.
-#define REBOOT              0x64    //Reboot the servo
+#define PING                0x01    //Used to query the servo. The servo will return the present status and the model number of the servo.
+#define READ_DATA           0x02    //Read data from the servo's memory table
+#define WRITE_DATA          0x03    //Write data on the Servo Memory Table.
+#define SYNC_WRITE          0X83    //A single Sync Write Instruction allows data to be written in memory tables of multiple servos simultaneously.
+#define FACTORY_RESET       0x06    //Reset the entire memory table of the servo to the factory default values.
+#define PARAMETER_RESET     0x10    //Reset the parameter settings in the servo's memory table to the factory default values.
+#define CALIBRATION         0x15    //Calibrate the offset value of the servo midpoint (150 ° position).
+#define REBOOT              0x64    //Used to reboot servo.
 
-//error state
-#define SUCCESS               0     //No errors occurred
-#define ID_ERROR              1     //ID number exceeds the range of values
-#define INPUT_DATA_ERROR      2     //Input data cannot be empty
-#define DATA_LENGTH_ERROR     3     //The length of input data cannot be 0
-#define QUANTITY_ERROR        4     //The number of servos cannot be 0
-#define STATUS_ERROR          5     //Errors that occur during instruction package processing.
-#define HEADER_ERROR          6     //There is an error in the header.
-#define FAILURE               7     //Parsing failed
+#define SUCCESS             0x00     //No errors
+#define FAILURE             0x01     //Instruction types error
 
-//servo error
-#define VOLTAGE_ERROR           0x01
-#define ANGLE_ERROR             0x02
-#define OVERHEATING_ERROR       0x04
-#define RANGE_ERROR             0x08
-#define CHECKSUM_ERROR          0x10
-#define STALL_ERROR             0x20
-#define PARSING_ERROR           0x40
-#define UNPACK_ERROR            0x80
-
-#ifndef EM_ADDRESS
-#define EM_ADDRESS
+#define VOLTAGE_ERROR           0x01    //Input voltage of the servo is out of range for the operating voltage set in the memory table.
+#define ANGLE_ERROR             0x02    //Target position of the servo is out of range for the maximum and minimum target positions set in the memory table.
+#define OVERHEATING_ERROR       0x04    //Internal temperature of the servo is over the upper limit set in the Memory Table.
+#define RANGE_ERROR             0x08    //Length of Instruction Packet out of range for the specified length.
+#define CHECKSUM_ERROR          0x10    //CheckSum of the Instruction Packet is parsed incorrectly.
+#define STALL_ERROR             0x20    //Servo occurs in a stall due to overcurrent or overload etc.
+#define PARSING_ERROR           0x40    //Instruction Packet does not comply with the protocol format, resulting in a parsing error.
+#define UNPACK_ERROR            0x80    //This is not a complete response package
 
 //Memory address
-#define MODEL_NUMBER                0x00    //Servo Model Number
-#define FIRMWARE_VERSION            0x02    //Firmware Version Number
-#define MODEL_INFORMATION           0x03    //Factory Serial Number
+#define MODEL_NUMBER                0x00    //S/N Code
+#define FIRMWARE_VERSION            0x02    //S/N Code
+#define MODEL_INFORMATION           0x03    //S/N Code
 #define SERVO_ID                    0x07    //Servo ID
-#define BAUD_RATE                   0x08    //Baud Rate fixed at 1Mbps
+#define BAUD_RATE                   0x08    //Baud Rate Number 7 is 1Mbps
 #define RETURN_DELAY_TIME           0x09    //Response Delay Time for servo return to packet
 #define RETURN_LEVEL                0x0A    //Returned level of servo status.
-#define MIN_ANGLE_LIMIT_L           0x0B    //Minimum Angle Limit for servo rotation
-#define MAX_ANGLE_LIMIT_L           0x0D    //Maximum Angle Limit for servo rotation
+#define MIN_ANGLE_LIMIT_L           0x0B    //Min Angle Limit for servo rotation
+#define MAX_ANGLE_LIMIT_L           0x0D    //Max Voltage Limit for operating Servo
 #define MAX_TEMPERATURE_LIMIT       0x0F    //Maximum Temperature Limit for operating servo
 #define MAX_VOLTAGE_LIMIT           0x10    //Maximum Voltage Limit for operating Servo
 #define MIN_VOLTAGE_LIMIT           0x11    //Minimum Voltage Limit for operating Servo
-#define MAX_PWM_LIMIT_L             0x12    //Maximum PWM Output Limit of servo
-#define MAX_CURRENT_LIMIT_L         0x14    //Maximum Current Limit for operating servo
+#define MAX_PWM_LIMIT_L             0x12    //Max PWM Limit Limit of servo
+#define MAX_CURRENT_LIMIT_L         0x14    //Max Current Limit for operating servo
 #define CURRENT_TIME_L              0x16    //Trigger Time for overload protection activation after reaching current limit
 #define CW_DEADBAND                 0x18    //Dead Band for clockwise direction
 #define CCW_DEADBAND                0x19    //Dead Band for counterclockwise direction
-#define PWM_PUNCH                   0x1A    //Minimum PWM Value for driving the motor
+#define PWM_PUNCH                   0x1A    //PWM punch of the servo output.
 #define POSITION_P_L                0x1B    //Gain Proportion (P) of Servo's PID Control
-#define POSITION_I_L                0x1D    //Gain Integration (I)  of Servo's PID Control
-#define POSITION_D_L                0x1F    //Gain Differential (D)  of Servo's PID Control
+#define POSITION_I_L                0x1D    //Gain Integration (I) of Servo's PID Control
+#define POSITION_D_L                0x1F    //Gain Differential (D) of Servo's PID Control
 #define LED_CONDITION               0x21    //Conditions for Alarm LED
 #define SHUTDOWN_CONDITION          0x22    //Conditions for torque unloading
-#define CONTROL_MODE                0x23    //Servo Control Mode: 0 Time-based Position Control, 1 Acceleration, 2 Current, 3 PWM
-#define CALIBRATION_L               0x24    //Offset Value for midpoint Calibration of Servo
+#define CONTROL_MODE                0x23    //Servo Control Mode: 0 Time Base Position Control, 1 Velocity Base Position Control, 2 Current, 3 PWM
+#define CALIBRATION_L               0x24    //Offset Value for midpoint Calibration of Servo.This bit is triggered by the Calibration instruction, and the value cannot be directly written.
 #define CURRENT_OFFSET              0x26    //Offset Value for motor current sampling.
 #define FLASH_SW                    0x2E    //Flash area write switch: 0 for write disabled, 1 for write enabled.
 #define LED_SW                      0x2F    //Servo indicator light switch: 0 for off, 1 for on.
 #define TORQUE_SW                   0x30    //Servo torque switch: 0 for torque disabled, 1 for torque enabled, 2 for brake mode.
 #define TARGET_PWM_L                0x31    //Direct control of PWM output to the motor.
-#define TARGET_CURRENT_L            0x33    //Aim current for servo operation.
-#define VELOCITY_BASE_TARGET_POSITION_L     0x35    //Used in Velocity-based Position Control Mode,Plan Profile Position.
-#define VELOCITY_BASE_TARGET_VELOCITY_L     0x37    //Used in Velocity-based Position Control Mode,Plan Profile Velocity.
-#define VELOCITY_BASE_TARGET_ACC            0x39    //Used in Velocity-based Position Control Mode,Plan Profile Acceleration.
-#define VELOCITY_BASE_TARGET_DEC            0x3A    //Used in Velocity-based Position Control Mode,Plan Profile Deceleration.
-#define TIME_BASE_TARGET_ACC               0x3B    //Acceleration level in Time-based Position Control Mode.
-#define TIME_BASE_TARGET_POSITION_L        0x3C    //Plan position and moving time must be written into the data simultaneously.
-#define TIME_BASE_TARGET_MOVINGTIME_L      0x3E    //Plan position and moving time must be written into the data simultaneously.
+#define TARGET_CURRENT_L            0x33    //Target current for servo operation, by default, equal to the default value of the max current limit.
+#define VELOCITY_BASE_TARGET_POSITION_L     0x35    //Used in Velocity Base Position Control Mode.
+#define VELOCITY_BASE_TARGET_VELOCITY_L     0x37    //Used in Velocity Base Position Control Mode.
+#define VELOCITY_BASE_TARGET_ACC            0x39    //Used in Velocity Base Position Control Mode.
+#define VELOCITY_BASE_TARGET_DEC            0x3A    //Used in Velocity Base Position Control Mode.
+#define TIME_BASE_TARGET_ACC               0x3B    //Used in Time Base Position Control Mode. Target position and moving time must be written simultaneously.
+#define TIME_BASE_TARGET_POSITION_L        0x3C    //Used in Time Base Position Control Mode. Target position and moving time must be written simultaneously.
+#define TIME_BASE_TARGET_MOVINGTIME_L      0x3E    //Used in Time Base Position Control Mode. Target position and moving time must be written simultaneously.
 #define PRESENT_VOLTAGE             0x40    //Actual voltage at which the servo is currently operating.
 #define PRESENT_TEMPERATURE         0x41    //Actual internal temperature of the servo.
 #define PRESENT_PWM_L               0x42    //Present PWM value being output by the servo.
 #define PRESENT_PROFILE_VELOCITY_L  0x44    //Present profile velocity of the Profile Planner.
 #define PRESENT_PROFILE_POSITION_L  0x46    //Present profile position of the Profile Planner.
-#define PRESENT_VELOCITY_L          0x48    //Present actual velocity of the Servo.
-#define PRESENT_POSITION_L          0x4A    //Present actual position of the Servo.
-#define PRESENT_CURRENT_L           0x4C    //Present actual current of the Servo.
-#endif
+#define PRESENT_VELOCITY_L          0x48    //Present actual velocity of the Servo
+#define PRESENT_POSITION_L          0x4A    //Present actual position of the Servo
+#define PRESENT_CURRENT_L           0x4C    //Present actual current of the Servo
 
 struct servo_sync_parameter
 {
-    uint8_t id_counts;                  //同步写操作舵机的数量
-    uint8_t id[20];                     //同步写操作舵机的id
-    uint8_t torque_switch[20];          //舵机扭矩开关状态
-    uint8_t control_mode[20];           //舵机控制模式
-    uint16_t position[20];              //舵机位置
-    uint16_t time[20];                  //舵机运行时间
-    uint16_t velocity[20];              //舵机运动速度
-    uint16_t acc_velocity[20];          //舵机运动加速度
-    uint16_t dec_velocity[20];          //舵机运动减速度
-    uint16_t acc_velocity_grade[20];    //舵机控时下的加速度等级
+    uint8_t id_counts;                  //Number of servos for sync write.
+    uint8_t id[20];                     //Ids of servos for sync write.
+    uint8_t torque_switch[20];          //Torque Switch
+    uint8_t control_mode[20];           //Control Mode
+    uint16_t position[20];              //Target Position
+    uint16_t time[20];                  //Time Base Run Time
+    uint16_t velocity[20];              //Target Velocity
+    uint16_t acc_velocity[20];          //Target ACC
+    uint16_t dec_velocity[20];          //Target DEC
+    uint16_t acc_velocity_grade[20];    //Time Base Target ACC
 };
 
-//命令打包
+//Command packaging
 uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byte_length, const uint8_t* input_buffer,
     uint8_t* output_buffer, uint8_t* output_length);
 
-//应答包解析
+//Reply packet unpack
 uint8_t servo_unpack(uint8_t* response_packet, uint8_t** data_buffer);
 
 //PING
 uint8_t servo_ping(uint8_t id, uint8_t* output_buffer, uint8_t* len);
 
-//读命令
+//Read instruction
 uint8_t servo_read(uint8_t id, uint8_t address, uint8_t read_data_len, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//写命令
+//Write instruction
 uint8_t servo_write(uint8_t id, uint8_t address, uint8_t write_data_len, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//同步写
+//Sync write instruction
 uint8_t sync_write_data(uint8_t address, uint8_t servo_counts, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//恢复出厂设置
+//Factory reset instruction
 uint8_t servo_factory_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//参数重置
+//Parameter reset instruction
 uint8_t servo_parameter_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//校正偏移值
+//Calibration instruction
 uint8_t servo_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//重启
+//Reboot instruction
 uint8_t servo_reboot(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//修改指定舵机ID
+//Change the servo ID
 uint8_t servo_modify_known_id(uint8_t id, uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//修改未知舵机ID
+//Set the servo ID of the servo with an unknown ID
 uint8_t servo_modify_unknown_id(uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的应答延时时间
+//Set the return delay time of the servo
 uint8_t servo_set_return_delay_time(uint8_t id, uint8_t response_delay_time, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的状态返回级别
+//Set the return level of servo
 uint8_t servo_set_return_level(uint8_t id, uint8_t return_level, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的波特率
+//Set the baud rate of servo
 uint8_t servo_set_baud_rate(uint8_t id, uint8_t baud_rate_number, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的最小位置限制
+//Set the min angle limit of servo
 uint8_t servo_set_min_angle_limit(uint8_t id, uint16_t min_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的最大位置限制
+//Set the max angle limit of servo
 uint8_t servo_set_max_angle_limit(uint8_t id, uint16_t max_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的温度上限
+//Set the max temperature limit of servo
 uint8_t servo_set_max_temperature_limit(uint8_t id, uint8_t max_temperature_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的电压上限
+//Set the max voltage limit of servo
 uint8_t servo_set_max_voltage_limit(uint8_t id, uint8_t max_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的电压下限
+//Set the min voltage limit of servo
 uint8_t servo_set_min_voltage_limit(uint8_t id, uint8_t min_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的PWM上限
+//Set the max PWM limit of servo
 uint8_t servo_set_max_pwm_limit(uint8_t id, uint16_t max_pwm_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的电流上限
+//Set the max current limit of servo
 uint8_t servo_set_max_current_limit(uint8_t id, uint16_t max_current_limit, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的电流保护时间
+//Set the current shutdown time of servo
 uint8_t servo_set_current_shutdown_time(uint8_t id, uint16_t current_shutdown_time, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的正转死区
+//Set the CW deadband of servo
 uint8_t servo_set_cw_deadband(uint8_t id, uint8_t cw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的反转死区
+//Set the CCW deadband of servo
 uint8_t servo_set_ccw_deadband(uint8_t id, uint8_t ccw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的PWM叠加值
+//Set the PWM punch of servo
 uint8_t servo_set_pwm_punch(uint8_t id, uint8_t pwm_punch, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的位置控制P增益
+//Set the position control P gain of servo
 uint8_t servo_set_position_control_p_gain(uint8_t id, uint16_t position_control_P_gain, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的位置控制I增益
+//Set the position control I gain of servo
 uint8_t servo_set_position_control_i_gain(uint8_t id, uint16_t position_control_I_gain, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的位置控制D增益
+//Set the position control D gain of servo
 uint8_t servo_set_position_control_d_gain(uint8_t id, uint16_t position_control_D_gain, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的LED报警条件
+//Set the LED condition of servo
 uint8_t servo_set_led_condition(uint8_t id, uint8_t led_condition, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的卸载保护条件
+//Set the shutdown condition of servo
 uint8_t servo_set_shutdown_conditions(uint8_t id, uint8_t shutdown_conditions, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的控制模式
+//Set the control mode of servo
 uint8_t servo_set_control_mode(uint8_t id, uint8_t control_mode, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的Flash开关
+//Set the Flash switch of servo
 uint8_t servo_set_flash_switch(uint8_t id, uint8_t flash_switch, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的LED开关
+//Set the LED switch of servo
 uint8_t servo_set_led_switch(uint8_t id, uint8_t led_switch, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的扭矩开关
+//Set the torque switch of servo
 uint8_t servo_set_torque_switch(uint8_t id, uint8_t torque_switch, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的目标PWM
+//Set the target PWM of servo
 uint8_t servo_set_target_pwm(uint8_t id, int16_t target_pwm, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的目标电流
+//Set the target current of servo
 uint8_t servo_set_target_current(uint8_t id, int16_t target_current, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的控速目标位置
+//Set the velocity base target position of servo
 uint8_t servo_set_velocity_base_target_position(uint8_t id, uint16_t target_position, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的控速目标速度
+//Set the velocity base target velocity of servo
 uint8_t servo_set_velocity_base_target_velocity(uint8_t id, uint16_t target_velocity, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的控速目标加速度
+//Set the velocity base target ACC of servo
 uint8_t servo_set_velocity_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的控速目标减速度
+//Set the velocity base target DEC of servo
 uint8_t servo_set_velocity_base_target_dec(uint8_t id, uint8_t target_dec, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//brief设置舵机的控时目标加速度等级
+//Set the time base target ACC of servo
 uint8_t servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置舵机的控时目标位置和目标运行时间
+//Set the time base target position and moving time of servo
 uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t target_position, uint16_t moving_time, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的当前位置和当前电流
+//Read the present position and present current of servo
 uint8_t servo_read_present_position_and_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的当前电流
+//Read the present current of servo
 uint8_t servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的当前位置
-
+//Read the present position of servo
 uint8_t servo_read_present_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的当前速度
+//Read the present velocity of servo
 uint8_t servo_read_present_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的当前规划位置
+//Read the present profile position of servo
 uint8_t servo_read_present_profile_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的当前规划速度
+//Read the present profile velocity of servo
 uint8_t servo_read_present_profile_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的当前PWM
+//Read the present PWM of servo
 uint8_t servo_read_present_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的当前温度
+//Read the present temperature of servo
 uint8_t servo_read_present_temperature(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的当前输入电压
+//Read the present voltage of servo
 uint8_t servo_read_present_voltage(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的控时目标运行时间
+//Read the time base target moving time of servo
 uint8_t servo_read_time_base_target_moving_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的控时目标位置
+//Read the time base target position of servo
 uint8_t servo_read_time_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的控时目标加速度等级
+//Read the time base target ACC of servo
 uint8_t servo_read_time_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的控速目标减速度
+//Read the velocity base target DEC of servo
 uint8_t servo_read_velocity_base_target_dec(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的控速目标加速度
+//Read the velocity base target ACC of servo
 uint8_t servo_read_velocity_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的控速目标速度
+//Read the velocity base target velocity of servo
 uint8_t servo_read_velocity_base_target_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的控速目标位置
+//Read the velocity base target position of servo
 uint8_t servo_read_velocity_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的目标电流
+//Read the target current of servo
 uint8_t servo_read_target_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的目标PWM
+//Read the target PWM of servo
 uint8_t servo_read_target_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的扭矩开关状态
+//Read the torque switch of servo
 uint8_t servo_read_torque_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的LED开关状态
+//Read the LED switch of servo
 uint8_t servo_read_led_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的FLASH开关状态
+//Read the Flash switch of servo
 uint8_t servo_read_flash_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的电流校正值
+//Read the current offset of servo
 uint8_t servo_read_current_offset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的中位校正值
+//Read the calibration of servo
 uint8_t servo_read_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的控制模式
+//Read the control mode of servo
 uint8_t servo_read_control_mode(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的卸载保护条件
+//Read the shutdown condition of servo
 uint8_t servo_read_shutdown_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的LED报警条件
+//Read the LED condition of servo
 uint8_t servo_read_led_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的位置控制D增益
+//Read the position control D gain of servo
 uint8_t servo_read_position_control_d_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的位置控制I增益
+//Read the position control I gain of servo
 uint8_t servo_read_position_control_i_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的位置控制P增益
+//Read the position control P gain of servo
 uint8_t servo_read_position_control_p_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的PWM叠加值
+//Read the PWM punch of servo
 uint8_t servo_read_pwm_punch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的反转死区
+//Read the CCW deadband of servo
 uint8_t servo_read_ccw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的正转死区
+//Read the CW deadband of servo
 uint8_t servo_read_cw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的电流保护时间
+//Read the current shutdown time of servo
 uint8_t servo_read_current_shutdown_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的电流上限
+//Read the max current limit of servo
 uint8_t servo_read_max_current_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的PWM上限
+//Read the max PWM limit of servo
 uint8_t servo_read_max_pwm_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的电压上限
+//Read the max voltage limit of servo
 uint8_t servo_read_max_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的电压下限
+//Read the min voltage limit of servo
 uint8_t servo_read_min_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的温度上限
+//Read the max temperature limit of servo
 uint8_t servo_read_max_temperature_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的最大位置限制
+//Read the max angle limit of servo
 uint8_t servo_read_max_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的最小位置限制
+//Read the min angle limit of servo
 uint8_t servo_read_min_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的状态返回级别
+//Read the return level of servo
 uint8_t servo_read_return_level(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的应答延迟时间
+//Read the return delay time of servo
 uint8_t servo_read_return_delay_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的波特率编号
+//Read the baud rate of servo
 uint8_t servo_read_baud_rate(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的出厂编号
+//Read the model information of servo
 uint8_t servo_read_model_information(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//读取舵机的固件版本号
+//Read the firmware version of servo
 uint8_t servo_read_firmware_version(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置多个舵机的扭矩开关
+//Set torque switches for multiple servos
 uint8_t servo_sync_write_torque_switch(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置多个舵机的控制模式
+//Set the control mode for multiple servos
 uint8_t servo_sync_write_control_mode(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置多个舵机的控速目标加速度、减速度、速度和位置
+//Set the target acceleration, deceleration, speed, and position for multiple servos.
 uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置多个舵机的控速目标位置
+//Change the velocity base target position for multiple servos
 uint8_t servo_sync_write_velocity_base_target_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置多个舵机的控速目标速度
+//Change the velocity base target velocity for multiple servos
 uint8_t servo_sync_write_velocity_base_target_velocity(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置多个舵机的控速目标位置和速度
+//Set the target position and speed for multiple servos
 uint8_t servo_sync_write_velocity_base_target_position_and_velocity(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置多个舵机的控速目标加速度
+//Set the target acceleration for multiple servos
 uint8_t servo_sync_write_velocity_base_target_acc(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置多个舵机的控速目标减速度
+//Set the target deceleration for multiple servos
 uint8_t servo_sync_write_velocity_base_target_dec(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置多个舵机的控时目标加速度等级
+//Change the time base target ACC for multiple servos
 uint8_t servo_sync_write_time_base_target_acc(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//设置多个舵机的控时目标位置和运行时间
+//Change the time base target position and moving time for multiple servos
 uint8_t servo_sync_write_time_base_target_position_and_moving_time(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
-//ping命令包的应答包解析
+//Parsing the servo response packet for the PING command
 uint8_t servo_ping_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//恢复出厂设置指令的应答包解析
+//Parsing the servo response packet for the factory reset command
 uint8_t servo_factory_reset_analysis(uint8_t* response_packet);
 
-//参数重置指令的应答包解析
+//Parsing the servo response packet for the parameter reset command
 uint8_t servo_parameter_reset_analysis(uint8_t* response_packet);
 
-//校准偏移值指令的应答包解析
+//Parsing the servo response packet for the calibration command
 uint8_t servo_calibration_analysis(uint8_t* response_packet);
 
-//重启指令的应答包解析
-uint8_t servo_reboot_analysis(uint8_t* response_packet);
-
-//设置舵机的应答延迟时间指令的应答包解析
+//Parsing the servo response packet for the return delay time
 uint8_t servo_set_return_delay_time_analysis(uint8_t* response_packet);
 
-//设置舵机状态返回级别指令的应答包解析
+//Parsing the servo response packet for the return level
 uint8_t servo_set_return_level_analysis(uint8_t* response_packet);
 
-//设置舵机波特率编号指令的应答包解析
+//Parsing the servo response packet for the baud rate
 uint8_t servo_set_baud_rate_analysis(uint8_t* response_packet);
 
-//设置舵机最小未知限制指令的应答包解析
+//Parsing the servo response packet for the min angle limit
 uint8_t servo_set_min_angle_limit_analysis(uint8_t* response_packet);
 
-//设置舵机最大未知限制指令的应答包解析
+//Parsing the servo response packet for the max limit analysis
 uint8_t servo_set_max_angle_limit_analysis(uint8_t* response_packet);
 
-//设置舵机温度上限指令的应答包解析
+//Parsing the servo response packet for the max temperature limit
 uint8_t servo_set_max_temperature_limit_analysis(uint8_t* response_packet);
 
-//设置舵机电压上限指令的应答包解析
+//Parsing the servo response packet for the max voltage limit
 uint8_t servo_set_max_voltage_limit_analysis(uint8_t* response_packet);
 
-//设置舵机电压下限指令的应答包解析
+//Parsing the servo response packet for the min voltage limit
 uint8_t servo_set_min_voltage_limit_analysis(uint8_t* response_packet);
 
-//设置舵机PWM上限指令的应答包解析
+//Parsing the servo response packet for the max pwm limit
 uint8_t servo_set_max_pwm_limit_analysis(uint8_t* response_packet);
 
-//设置舵机电流上限指令的应答包解析
+//Parsing the servo response packet for the max current limit
 uint8_t servo_set_max_current_limit_analysis(uint8_t* response_packet);
 
-//设置舵机电流保护时间指令的应答包解析
+//Parsing the servo response packet for the current shutdown time
 uint8_t servo_set_current_shutdown_time_analysis(uint8_t* response_packet);
 
-//设置舵机正转死区指令的应答包解析
+//Parsing the servo response packet for the cw deadband
 uint8_t servo_set_cw_deadband_analysis(uint8_t* response_packet);
 
-//设置舵机反转死区指令的应答包解析
+//Parsing the servo response packet for the ccw deadband
 uint8_t servo_set_ccw_deadband_analysis(uint8_t* response_packet);
 
-//设置舵机PWM叠加值指令的应答包解析
+//Parsing the servo response packet for the pwm punch
 uint8_t servo_set_pwm_punch_analysis(uint8_t* response_packet);
 
-//设置舵机位置控制P增益指令的应答包解析
+//Parsing the servo response packet for the position control p gain
 uint8_t servo_set_position_control_p_gain_analysis(uint8_t* response_packet);
 
-//设置舵机位置控制I增益指令的应答包解析
+//Parsing the servo response packet for the position control i gain
 uint8_t servo_set_position_control_i_gain_analysis(uint8_t* response_packet);
 
-//设置舵机位置控制D增益指令的应答包解析
+//Parsing the servo response packet for the position control d gain
 uint8_t servo_set_position_control_d_gain_analysis(uint8_t* response_packet);
 
-//设置舵机LED报警条件指令的应答包解析
+//Parsing the servo response packet for the led condition
 uint8_t servo_set_led_condition_analysis(uint8_t* response_packet);
 
-//设置舵机卸载保护条件指令的应答包解析
+//Parsing the servo response packet for the shutdown conditions
 uint8_t servo_set_shutdown_conditions_analysis(uint8_t* response_packet);
 
-//设置舵机控制模式指令的应答包解析
+//Parsing the servo response packet for the control mode
 uint8_t servo_set_control_mode_analysis(uint8_t* response_packet);
 
-//设置舵机FLASH开关状态指令的应答包解析
+//Parsing the servo response packet for the flash switch
 uint8_t servo_set_flash_switch_analysis(uint8_t* response_packet);
 
-//设置舵机LED开关状态指令的应答包解析
+//Parsing the servo response packet for the led switch
 uint8_t servo_set_led_switch_analysis(uint8_t* response_packet);
 
-//设置舵机扭矩开关状态指令的应答包解析
+//Parsing the servo response packet for the torque switch
 uint8_t servo_set_torque_switch_analysis(uint8_t* response_packet);
 
-//设置舵机目标PWM指令的应答包解析
+//Parsing the servo response packet for the target pwm
 uint8_t servo_set_target_pwm_analysis(uint8_t* response_packet);
 
-//设置舵机目标电流指令的应答包解析
+//Parsing the servo response packet for the target current
 uint8_t servo_set_target_current_analysis(uint8_t* response_packet);
 
-//设置舵机控速目标位置指令的应答包解析
+//Parsing the servo response packet for the velocity base target position
 uint8_t servo_set_velocity_base_target_position_analysis(uint8_t* response_packet);
 
-//设置舵机控速目标速度指令的应答包解析
+//Parsing the servo response packet for the velocity base target velocity
 uint8_t servo_set_velocity_base_target_velocity_analysis(uint8_t* response_packet);
 
-//设置舵机控速目标加速度指令的应答包解析
+//Parsing the servo response packet for the velocity base target accelerated speed
 uint8_t servo_set_velocity_base_target_acc_analysis(uint8_t* response_packet);
 
-//设置舵机控速目标减速度指令的应答包解析
+//Parsing the servo response packet for the velocity base target deceleration
 uint8_t servo_set_velocity_base_target_dec_analysis(uint8_t* response_packet);
 
-//设置舵机控时目标加速度指令的应答包解析
+//Parsing the servo response packet for the time base target accelerated speed
 uint8_t servo_set_time_base_target_acc_analysis(uint8_t* response_packet);
 
-//设置舵机控时目标位置和运行时间指令的应答包解析
+//Parsing the servo response packet for the time base target position and moving time
 uint8_t servo_set_time_base_target_position_and_moving_time_analysis(uint8_t* response_packet);
 
-//读取舵机的当前位置和当前电流的指令应答包解析
+//Parsing the servo response packet for the present current
 uint8_t servo_read_present_position_and_present_current_analysis(uint8_t* response_packet, uint16_t* position, uint16_t* current);
 
-//读取舵机的当前电流的指令应答包解析
+//Parsing the servo response packet for the present position
 uint8_t servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的当前位置的指令应答包解析
+//Parsing the servo response packet for the present position and current
 uint8_t servo_read_present_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的当前速度的指令应答包解析
+//Parsing the servo response packet for the present velocity
 uint8_t servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的当前规划位置的指令应答包解析
+//Parsing the servo response packet for the present profile position
 uint8_t servo_read_present_profile_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的当前规划速度的指令应答包解析
+//Parsing the servo response packet for the present profile velocity
 uint8_t servo_read_present_profile_velocity_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的当前PWM的指令应答包解析
+//Parsing the servo response packet for the present pwm
 uint8_t servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的当前温度的指令应答包解析
+//Parsing the servo response packet for the present temperature
 uint8_t servo_read_present_temperature_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的当前输入电压的指令应答包解析
+//Parsing the servo response packet for the present voltage
 uint8_t servo_read_present_voltage_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的控时目标运行时间的指令应答包解析
+//Parsing the servo response packet for the time base target moving time
 uint8_t servo_read_time_base_target_moving_time_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的控时目标位置的指令应答包解析
+//Parsing the servo response packet for the time base target position
 uint8_t servo_read_time_base_target_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的控时目标加速度等级的指令应答包解析
+//Parsing the servo response packet for the time base target accelerated speed
 uint8_t servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的控速目标减速度的指令应答包解析
+//Parsing the servo response packet for the velocity base target deceleration
 uint8_t servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的控速目标加速度的指令应答包解析
+//Parsing the servo response packet for the velocity base target accelerated speed
 uint8_t servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的控速目标速度的指令应答包解析
+//Parsing the servo response packet for the velocity base target velocity
 uint8_t servo_read_velocity_base_target_velocity_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的控速目标位置的指令应答包解析
+//Parsing the servo response packet for the velocity base target position
 uint8_t servo_read_velocity_base_target_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的目标电流的指令应答包解析
+//Parsing the servo response packet for the target current
 uint8_t servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的目标PWM的指令应答包解析
+//Parsing the servo response packet for the target pwm
 uint8_t servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的扭矩开关状态的指令应答包解析
+//Parsing the servo response packet for the torque switch
 uint8_t servo_read_torque_switch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的LED开关状态的指令应答包解析
+//Parsing the servo response packet for the led switch
 uint8_t servo_read_led_switch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的FLASH开关状态的指令应答包解析
+//Parsing the servo response packet for the flash switch
 uint8_t servo_read_flash_switch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的电流校正值的指令应答包解析
+//Parsing the servo response packet for the current offset
 uint8_t servo_read_current_offset_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的中位校正值的指令应答包解析
+//Parsing the servo response packet for the calibration
 uint8_t servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的控制模式的指令应答包解析
+//Parsing the servo response packet for the control mode
 uint8_t servo_read_control_mode_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的卸载保护条件的指令应答包解析
+//Parsing the servo response packet for the shutdown condition
 uint8_t servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的LED报警条件的指令应答包解析
+//Parsing the servo response packet for the led condition
 uint8_t servo_read_led_condition_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的位置控制D增益的指令应答包解析
+//Parsing the servo response packet for the position control d gain
 uint8_t servo_read_position_control_d_gain_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的位置控制I增益的指令应答包解析
+//Parsing the servo response packet for the position control i gain
 uint8_t servo_read_position_control_i_gain_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的位置控制P增益的指令应答包解析
+//Parsing the servo response packet for the position control p gain
 uint8_t servo_read_position_control_p_gain_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的PWM叠加值的指令应答包解析
+//Parsing the servo response packet for the pwm punch
 uint8_t servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的反转死区的指令应答包解析
+//Parsing the servo response packet for the ccw deadband
 uint8_t servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的正转死区的指令应答包解析
+//Parsing the servo response packet for the cw deadband
 uint8_t servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的电流保护时间的指令应答包解析
+//Parsing the servo response packet for the current shutdown time
 uint8_t servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的电流上限的指令应答包解析
+//Parsing the servo response packet for the max current limit
 uint8_t servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的PWM上限的指令应答包解析
+//Parsing the servo response packet for the max pwm limit
 uint8_t servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的电压上限的指令应答包解析
+//Parsing the servo response packet for the max voltage limit
 uint8_t servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的电压下限的指令应答包解析
+//Parsing the servo response packet for the min voltage limit
 uint8_t servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的温度上限的指令应答包解析
+//Parsing the servo response packet for the max temperature limit
 uint8_t servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的最大位置限制的指令应答包解析
+//Parsing the servo response packet for the max angle limit
 uint8_t servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的最小位置限制的指令应答包解析
+//Parsing the servo response packet for the min angle limit
 uint8_t servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的状态返回级别的指令应答包解析
+//Parsing the servo response packet for the return level
 uint8_t servo_read_return_level_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的应答延迟时间的指令应答包解析
+//Parsing the servo response packet for the return delay time
 uint8_t servo_read_return_delay_time_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的波特率编号的指令应答包解析
+//Parsing the servo response packet for the baud rate
 uint8_t servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的出厂编号的指令应答包解析
+//Parsing the servo response packet for the model information
 uint8_t servo_read_model_information_analysis(uint8_t* response_packet, uint16_t* analysis_data);
 
-//读取舵机的固件版本号的指令应答包解析
+//Parsing the servo response packet for the firmware version
 uint8_t servo_read_firmware_version_analysis(uint8_t* response_packet, uint16_t* analysis_data);
-
 
 #endif
