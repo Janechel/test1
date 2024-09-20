@@ -228,14 +228,6 @@ int main() {
         return FALSE;
     }
     Sleep(1);
-
-    ret = order_receive(hSerial, pack);
-    if (ret == FALSE)
-    {
-        return FALSE;
-    }
-    Sleep(80);
-    servo_reboot_analysis(pack);
 #endif
 
 #if MODIFY_ID
