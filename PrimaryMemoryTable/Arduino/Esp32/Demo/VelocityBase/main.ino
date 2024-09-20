@@ -1,12 +1,19 @@
 #include <Arduino.h>
 #include "servo.h"
 
-uint8_t ret;                              //错误检验标志
-uint8_t order_buffer[20];                 //存放生成的指令
-uint8_t order_len;                        //指令长度
-uint8_t pack[20];                         //存放接收的应答包
-uint8_t pack_len;                         //应答包长度
-uint16_t analysis_data;                   //应答包解析出来的数据
+uint8_t ret;                              //Change Unknown Servo ID Test
+uint8_t order_buffer[40];                 //Store Generated Instructions
+uint8_t order_len;                        //Instruction Length
+uint8_t pack[40];                         //Store the received status packet
+uint8_t pack_len;                         //Response packet length.
+uint16_t analysis_data;                   //Data parsed from the status packet
+uint8_t write_buffer[20];                 //Write data to the memory table
+
+struct servo_sync_parameter servo;
+
+servo.id_counts = 2;            //Sync write two servos
+servo.id[0] = 1;                //Set the ID of the first servo to 1
+servo.id[1] = 2;                //Set the ID of the second servo to 2
 
 void setup() {
   // put your setup code here, to run once:
@@ -14,227 +21,185 @@ void setup() {
 }
 
 void loop() {
-  //参数重置
-  servo_parameter_reset(1,order_buffer, &order_len);
+    //Change the torque switch of the servo ID1, ID2 to OFF respectively.
+    servo.torque_switch[0] = 0;
+    servo.torque_switch[1] = 0;
 
-  if (order_len == Serial2.write(order_buffer, order_len)) 
-  {
-    PRINTF("servo parameter reset!\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to send data.\r\n");
-  }
-  delay(1000);
+    servo_sync_write_torque_switch(servo, order_buffer,&order_len);
 
-  //设置舵机的扭矩开关
-  servo_set_torque_switch(1, 0, order_buffer,&order_len);
+    if (order_len == Serial2.write(order_buffer, order_len))
+    {
+        PRINTF("Sync Write torque witch successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to send data.\r\n");
+    }
+    delay(1000);
 
-  if (order_len == Serial2.write(order_buffer, order_len)) 
-  {
-    PRINTF("Write successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to send data.\r\n");
-  }
-  delay(1);
+    //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
+    servo.control_mode[0] = 1;
+    servo.control_mode[1] = 1;
+    servo_sync_write_control_mode(servo, order_buffer,&order_len);
 
-  if (Serial2.available()>0) 
-  {
-    pack_len = Serial2.available();
-    Serial2.read(pack, pack_len);
-    ret = servo_set_torque_switch_analysis(pack);
-    if(ret == SUCCESS)
-      PRINTF("servo set torque switch successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to read data.\r\n");
-  }
-  delay(1000);
+    if (order_len == Serial2.write(order_buffer, order_len))
+    {
+        PRINTF("Sync Write control mode successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to send data.\r\n");
+    }
+    delay(1);
 
-  //设置舵机的控制模式
-  servo_set_control_mode(1, 1, order_buffer,&order_len);
+    //Change the velocity base target position of servo ID1 to 150°.
+    servo_set_velocity_base_target_position(1, 1500, order_buffer,&order_len);
+    if (order_len == Serial2.write(order_buffer, order_len)) {
+        PRINTF("Write successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to send data.\r\n");
+    }
+    delay(1);
 
-  if (order_len == Serial2.write(order_buffer, order_len)) 
-  {
-    PRINTF("Write successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to send data.\r\n");
-  }
-  delay(1);
+    if (Serial2.available()>0)
+    {
+        pack_len = Serial2.available();
+        Serial2.read(pack, pack_len);
+        ret = servo_set_velocity_base_target_position_analysis(pack);
+        if(ret == SUCCESS)
+            PRINTF("servo set velocity base target position successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to read data.\r\n");
+    }
+    delay(1000);
 
-  if (Serial2.available()>0) 
-  {
-    pack_len = Serial2.available();
-    Serial2.read(pack, pack_len);
-    ret = servo_set_control_mode_analysis(pack);
-    if(ret == SUCCESS)
-      PRINTF("servo set control mode successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to read data.\r\n");
-  }
-  delay(1000);
+    //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s.
+    write_buffer[0] = 3000 & 0xff;
+    write_buffer[1] = (3000 >> 8) & 0xff;
+    write_buffer[2] = 3600 & 0xff;
+    write_buffer[3] = (3600 >> 8) & 0xff;
 
-  //设置舵机的扭矩开关
-  servo_set_torque_switch(1, 1, order_buffer,&order_len);
+    servo_write(1, 0x35, 4, write_buffer, order_buffer, &order_len);
+    if (order_len == Serial2.write(order_buffer, order_len))
+    {
+        PRINTF("Write successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to send data.\r\n");
+    }
+    delay(1);
 
-  if (order_len == Serial2.write(order_buffer, order_len)) {
-    PRINTF("Write successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to send data.\r\n");
-  }
-  delay(1);
+    if (Serial2.available()>0)
+    {
+        pack_len = Serial2.available();
+        Serial2.read(pack, pack_len);
+        PRINTF("servo pack is: ");
+        for(uint8_t i = 0; i < pack_len; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to read data.\r\n");
+    }
+    delay(1000);
 
-  if (Serial2.available()>0) 
-  {
-    pack_len = Serial2.available();
-    Serial2.read(pack, pack_len);
-    ret = servo_set_torque_switch_analysis(pack);
-    if(ret == SUCCESS)
-      PRINTF("servo set torque switch successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to read data.\r\n");
-  }
-  delay(1000);
+    //Change the velocity base target position, velocity base target velocity, velocity base target ACC,
+    //and velocity base target DEC of servo ID1 to 0° position, 360°/s, 500°/s², and 50°/s², respectively.
+    write_buffer[0] = 0 & 0xff;
+    write_buffer[1] = (0 >> 8) & 0xff;
+    write_buffer[2] = 3600 & 0xff;
+    write_buffer[3] = (3600 >> 8) & 0xff;
+    write_buffer[4] = 10 & 0xff;
+    write_buffer[5] = 1 & 0xff;
 
-  //设置舵机的控速目标位置
-  servo_set_velocity_base_target_position(1, 1500, order_buffer,&order_len);
-  if (order_len == Serial2.write(order_buffer, order_len)) {
-    PRINTF("Write successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to send data.\r\n");
-  }
-  delay(1);
+    servo_write(1, 0x35, 6, write_buffer, order_buffer, &order_len);
+    if (order_len == Serial2.write(order_buffer, order_len))
+    {
+        PRINTF("Write successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to send data.\r\n");
+    }
+    delay(1);
 
-  if (Serial2.available()>0) 
-  {
-    pack_len = Serial2.available();
-    Serial2.read(pack, pack_len);
-    ret = servo_set_velocity_base_target_position_analysis(pack);
-    if(ret == SUCCESS)
-      PRINTF("servo set velocity base target position successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to read data.\r\n");
-  }
-  delay(1000);
+    if (Serial2.available()>0)
+    {
+        pack_len = Serial2.available();
+        Serial2.read(pack, pack_len);
+        PRINTF("servo pack is: ");
+        for(uint8_t i = 0; i < pack_len; i++)
+        {
+            PRINTF("0x%x ", pack[i]);
+        }
+        PRINTF("\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to read data.\r\n");
+    }
+    delay(1000);
 
-  //设置舵机的控速目标速度
-  servo_set_velocity_base_target_velocity(1, 3600, order_buffer,&order_len);
+    //In velocity base position control mode, let servo ID1 move to the 150° midpoint and let servo ID2 move to the 0° position.
+    servo.position[0] = 1500;
+    servo.position[1] = 0;
 
-  if (order_len == Serial2.write(order_buffer, order_len)) 
-  { 
-    PRINTF("Write successfully.\r\n");
-  } 
-  else 
-  { 
-    PRINTF("Failed to send data.\r\n");
-  }
-  delay(1);
+    servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
+    if (order_len == Serial2.write(order_buffer, order_len))
+    {
+        PRINTF("Sync Write velocity base target position successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to send data.\r\n");
+    }
+    delay(1000);
 
-  if (Serial2.available()>0) 
-  {
-    pack_len = Serial2.available();
-    Serial2.read(pack, pack_len);
-    ret = servo_set_velocity_base_target_velocity_analysis(pack);
-    if(ret == SUCCESS)
-      PRINTF("servo set velocity base target velocity successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to read data.\r\n");
-  }
-  delay(1000);
+    //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s,
+    //and let servo ID2 move to the 150° position at a velocity base target velocity of 720°/s.
+    servo.velocity[0] = 3600;
+    servo.velocity[1] = 7200;
+    servo.position[0] = 3000;
+    servo.position[1] = 1500;
 
-  //设置舵机的控速目标加速度
-  servo_set_velocity_base_target_acc(1, 10, order_buffer,&order_len);
+    servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
+    if (order_len == Serial2.write(order_buffer, order_len))
+    {
+        PRINTF("Sync Write velocity base target position and velocity successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to send data.\r\n");
+    }
+    delay(1000);
 
-  if (order_len == Serial2.write(order_buffer, order_len)) 
-  { 
-    PRINTF("Write successfully.\r\n");
-  } 
-  else 
-  { 
-    PRINTF("Failed to send data.\r\n");
-  }
-  delay(1);
+    //let servo ID1 move to the 0° position at a velocity base target velocity of 720°/s, a velocity base target ACC of 500°/s², and a velocity base target DEC of 50°/s².
+    //Let servo ID2 move to the 300° position at a velocity base target velocity of 360°/s, a velocity base target ACC of 50°/s², and a velocity base target DEC of 500°/s².
+    servo.velocity[0] = 7200;
+    servo.velocity[1] = 3600;
+    servo.position[0] = 0;
+    servo.position[1] = 3000;
+    servo.acc_velocity[0] = 10;
+    servo.acc_velocity[1] = 1;
+    servo.dec_velocity[0] = 1;
+    servo.dec_velocity[1] = 10;
 
-  if (Serial2.available()>0) 
-  {
-    pack_len = Serial2.available();
-    Serial2.read(pack, pack_len);
-    ret = servo_set_velocity_base_target_acc_analysis(pack);
-    if(ret == SUCCESS)
-      PRINTF("servo set velocity base target acc successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to read data.\r\n");
-  }
-  delay(1000);
-
-  //设置舵机的控速目标减速度
-  servo_set_velocity_base_target_dec(1, 1, order_buffer,&order_len);
-
-  if (order_len == Serial2.write(order_buffer, order_len)) 
-  { 
-    PRINTF("Write successfully.\r\n");
-  } 
-  else 
-  { 
-    PRINTF("Failed to send data.\r\n");
-  }
-  delay(1);
-
-  if (Serial2.available()>0) 
-  {
-    pack_len = Serial2.available();
-    Serial2.read(pack, pack_len);
-    ret = servo_set_velocity_base_target_dec_analysis(pack);
-    if(ret == SUCCESS)
-      PRINTF("servo set velocity base target dec successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to read data.\r\n");
-  }
-  delay(1000);
-
-  //设置舵机的控速目标位置
-  servo_set_velocity_base_target_position(1, 0, order_buffer,&order_len);
-  if (order_len == Serial2.write(order_buffer, order_len)) {
-    PRINTF("Write successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to send data.\r\n");
-  }
-  delay(1);
-
-  if (Serial2.available()>0) 
-  {
-    pack_len = Serial2.available();
-    Serial2.read(pack, pack_len);
-    ret = servo_set_velocity_base_target_position_analysis(pack);
-    if(ret == SUCCESS)
-      PRINTF("servo set velocity base target position successfully.\r\n");
-  } 
-  else 
-  {
-    PRINTF("Failed to read data.\r\n");
-  }
-  delay(1000);
+    servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
+    if (order_len == Serial2.write(order_buffer, order_len))
+    {
+        PRINTF("Sync Write velocity base target acc,dec,velocity and position successfully.\r\n");
+    }
+    else
+    {
+        PRINTF("Failed to send data.\r\n");
+    }
+    delay(1000);
 }
