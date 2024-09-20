@@ -1,13 +1,14 @@
 #ifndef C_SERVO_H
 #define C_SERVO_H
 
-#define MAX_SERVERS 2              //最大同步写舵机数量
-#define PRINTF_ENABLE 0             //打印输出使能
+#define MAX_SERVERS 2               //Maximum number of servos for sync write.
+#define PRINTF_ENABLE 0             //Print output enable.
 
 #if PRINTF_ENABLE
 #define PRINTF printf
 #else
 #define PRINTF
+#endif
 
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
@@ -15,16 +16,16 @@ typedef short int16_t;
 
 struct servo_sync_parameter
 {
-    uint8_t id_counts;                  //同步写操作舵机的数量
-    uint8_t id[MAX_SERVERS];                     //同步写操作舵机的id
-    uint8_t torque_switch[MAX_SERVERS];          //舵机扭矩开关状态
-    uint8_t control_mode[MAX_SERVERS];           //舵机控制模式
-    uint16_t position[MAX_SERVERS];              //舵机位置
-    uint16_t time[MAX_SERVERS];                  //舵机运行时间
-    uint16_t velocity[MAX_SERVERS];              //舵机运动速度
-    uint16_t acc_velocity[MAX_SERVERS];          //舵机运动加速度
-    uint16_t dec_velocity[MAX_SERVERS];          //舵机运动减速度
-    uint16_t acc_velocity_grade[MAX_SERVERS];    //舵机控时下的加速度等级
+    uint8_t id_counts;                           //Number of servos for sync write.
+    uint8_t id[MAX_SERVERS];                     //Ids of servos for sync write.
+    uint8_t torque_switch[MAX_SERVERS];          //Torque Switch
+    uint8_t control_mode[MAX_SERVERS];           //Control Mode
+    uint16_t position[MAX_SERVERS];              //Target Position
+    uint16_t time[MAX_SERVERS];                  //Time Base Run Time
+    uint16_t velocity[MAX_SERVERS];              //Target Velocity
+    uint16_t acc_velocity[MAX_SERVERS];          //Target ACC
+    uint16_t dec_velocity[MAX_SERVERS];          //Target DEC
+    uint16_t acc_velocity_grade[MAX_SERVERS];    //Time Base Target ACC
 };
 
 //Basic instruction types
@@ -96,7 +97,6 @@ struct servo_sync_parameter
 #define PRESENT_VELOCITY_L          0x48    //Present actual velocity of the Servo
 #define PRESENT_POSITION_L          0x4A    //Present actual position of the Servo
 #define PRESENT_CURRENT_L           0x4C    //Present actual current of the Servo
-#endif
 
 //Command packaging
 uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byte_length, const uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_length);
@@ -403,9 +403,6 @@ uint8_t servo_parameter_reset_analysis(uint8_t* response_packet);
 
 //Parsing the servo response packet for the calibration command
 uint8_t servo_calibration_analysis(uint8_t* response_packet);
-
-//Parsing the servo response packet for the reboot command
-uint8_t servo_reboot_analysis(uint8_t* response_packet);
 
 //Parsing the servo response packet for the return delay time
 uint8_t servo_set_return_delay_time_analysis(uint8_t* response_packet);

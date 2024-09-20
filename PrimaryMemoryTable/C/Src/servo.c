@@ -1539,7 +1539,7 @@ uint8_t servo_sync_write_velocity_base_target_position(struct servo_sync_paramet
 }
 
 /**
- * @brief Change the velocity base target velocity for multiple servos.
+ * @brief Set the velocity base target velocity for multiple servos.
  * @param servo: Structure for storing servo sync write parameters.
  * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
  * @param output_buffer_len: The length of the instruction packet.
@@ -1766,26 +1766,6 @@ uint8_t servo_parameter_reset_analysis(uint8_t* response_packet)
  * @return Function execution result, success or error flag.
  */
 uint8_t servo_calibration_analysis(uint8_t* response_packet)
-{
-    uint8_t ret;
-    uint8_t* data_buffer = NULL;
-
-    ret = servo_unpack(response_packet, &data_buffer);
-
-    if (ret != SUCCESS) {
-        return ret;
-    }
-    else {
-        return SUCCESS;
-    }
-}
-
-/**
- * @brief Parsing the servo response packet for the reboot command.
- * @param response_packet: Servo response packet.
- * @return Function execution result, success or error flag.
- */
-uint8_t servo_reboot_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = NULL;
