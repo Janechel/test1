@@ -1,82 +1,50 @@
 #include "servo.h"
 
-uint8_t ret;               //错误检验标志
-uint8_t order_buffer[20];  //存放生成的指令
-uint8_t order_len;         //指令长度
-uint8_t pack[20];          //存放接收的应答包
-uint8_t pack_len;          //应答包长度
-uint16_t analysis_data;    //应答包解析出来的数据
+uint8_t ret;                              //Change Unknown Servo ID Test
+uint8_t order_buffer[40];                 //Store Generated Instructions
+uint8_t order_len;                        //Instruction Length
+uint8_t pack[40];                         //Store the received status packet
+uint8_t pack_len;                         //Response packet length.
+uint16_t analysis_data;                   //Data parsed from the status packet
+uint8_t write_buffer[20];                 //Write data to the memory table
+
+struct servo_sync_parameter servo;
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(1000000);
+
+  servo.id_counts = 2;  //Sync write two servos
+  servo.id[0] = 1;      //Set the ID of the first servo to 1
+  servo.id[1] = 2;      //Set the ID of the second servo to 2
 }
 
 void loop() {
-  //设置ID1舵机的扭矩开关
-  servo_set_torque_switch(1, 0, order_buffer, &order_len);
+  //Change the torque switch of the servo ID1, ID2 to OFF respectively.
+  servo.torque_switch[0] = 0;
+  servo.torque_switch[1] = 0;
+  servo_sync_write_torque_switch(servo, order_buffer, &order_len);
 
   if (order_len == Serial.write(order_buffer, order_len)) {
     Serial.print("Write successfully.");
   } else {
     Serial.print("Failed to send data.");
   }
-  delay(1);
-
-  if (Serial.available() > 0) {
-    pack_len = Serial.available();
-    Serial.readBytes(pack, pack_len);
-    ret = servo_set_torque_switch_analysis(pack);
-    if (ret == SUCCESS)
-      Serial.print("servo set torque switch successfully.\r\n");
-  } else {
-    Serial.print("Failed to readBytes data.\r\n");
-  }
   delay(1000);
 
-  //设置ID1舵机的控制模式
-  servo_set_control_mode(1, 0, order_buffer, &order_len);
+  //Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
+  servo.control_mode[0] = 0;
+  servo.control_mode[1] = 0;
+  servo_sync_write_control_mode(servo, order_buffer, &order_len);
 
   if (order_len == Serial.write(order_buffer, order_len)) {
     Serial.print("Write successfully.");
   } else {
     Serial.print("Failed to send data.");
   }
-  delay(1);
-
-  if (Serial.available() > 0) {
-    pack_len = Serial.available();
-    Serial.readBytes(pack, pack_len);
-    ret = servo_set_control_mode_analysis(pack);
-    if (ret == SUCCESS)
-      Serial.print("servo set control mode successfully.\r\n");
-  } else {
-    Serial.print("Failed to readBytes data.\r\n");
-  }
   delay(1000);
 
-  //设置ID1舵机的扭矩开关
-  servo_set_torque_switch(1, 1, order_buffer, &order_len);
-
-  if (order_len == Serial.write(order_buffer, order_len)) {
-    Serial.print("Write successfully.");
-  } else {
-    Serial.print("Failed to send data.");
-  }
-  delay(1);
-
-  if (Serial.available() > 0) {
-    pack_len = Serial.available();
-    Serial.readBytes(pack, pack_len);
-    ret = servo_set_torque_switch_analysis(pack);
-    if (ret == SUCCESS)
-      Serial.print("servo set torque switch successfully.\r\n");
-  } else {
-    Serial.print("Failed to readBytes data.\r\n");
-  }
-  delay(1000);
-
-  //设置舵机的控时目标位置和目标运行时间
+  //Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
   servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer, &order_len);
 
   if (order_len == Serial.write(order_buffer, order_len)) {
@@ -97,9 +65,14 @@ void loop() {
   }
   delay(1000);
 
-  //设置舵机的控时目标加速度等级
-  servo_set_time_base_target_acc(1, 0, order_buffer, &order_len);
+  //Change the time base target ACC, position, and moving time of servo ID1 to 0°, 300°, and 1s, respectively.
+  write_buffer[0] = 0;
+  write_buffer[1] = 3000 & 0xff;
+  write_buffer[2] = (3000 >> 8) & 0xff;
+  write_buffer[3] = 1000 & 0xff;
+  write_buffer[4] = (1000 >> 8) & 0xff;
 
+  servo_write(1, 0x3B, 5, write_buffer, order_buffer, &order_len);
   if (order_len == Serial.write(order_buffer, order_len)) {
     Serial.print("Write successfully.");
   } else {
@@ -110,31 +83,44 @@ void loop() {
   if (Serial.available() > 0) {
     pack_len = Serial.available();
     Serial.readBytes(pack, pack_len);
-    ret = servo_set_time_base_target_acc_analysis(pack);
-    if (ret == SUCCESS)
-      Serial.print("servo set time base target acc successfully.\r\n");
+    Serial.print("servo pack is: ");
+    for(uint8_t i = 0; i < pack_len; i++)
+    {
+      Serial.print("0x%x ", pack[i]);
+    }
+    Serial.print("\r\n");
   } else {
-    Serial.print("Failed to read data.\r\n");
+    Serial.print("Failed to readBytes data.\r\n");
   }
   delay(1000);
 
-  //设置舵机的控时目标位置和目标运行时间
-  servo_set_time_base_target_position_and_moving_time(1, 0, 1000, order_buffer, &order_len);
-  if (order_len == Serial.write(order_buffer, order_len)) {
-    Serial.print("Write successfully.");
-  } else {
-    Serial.print("Failed to send data.");
-  }
-  delay(1);
+  //In time base position control mode, let servo ID1 move to the 150° position at a velocity of 500ms,
+  //and let servo ID2 move to the 0° position at a constant velocity of 1s.
+  servo.position[0] = 1500;
+  servo.position[1] = 0;
+  servo.time[0] = 500;
+  servo.time[1] = 1000;
 
-  if (Serial.available() > 0) {
-    pack_len = Serial.available();
-    Serial.readBytes(pack, pack_len);
-    ret = servo_set_time_base_target_position_and_moving_time_analysis(pack);
-    if (ret == SUCCESS)
-      Serial.print("servo set time base target position and moving time successfully.\r\n");
+  servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
+  if (order_len == Serial.write(order_buffer, order_len)) {
+    Serial.print("Sync Write successfully.\r\n");
   } else {
-    Serial.print("Failed to read data.\r\n");
+    Serial.print("Failed to send data.\r\n");
+  }
+  delay(1000);
+
+  //In time base position control mode, let servo ID1 move to the 0° position at a velocity of 1s,
+  //and let servo ID2 move to the 3000° position at a constant velocity of 500ms.
+  servo.position[0] = 0;
+  servo.position[1] = 3000;
+  servo.time[0] = 1000;
+  servo.time[1] = 500;
+
+  servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
+  if (order_len == Serial.write(order_buffer, order_len)) {
+    Serial.print("Sync Write successfully.\r\n");
+  } else {
+    Serial.print("Failed to send data.\r\n");
   }
   delay(1000);
 }

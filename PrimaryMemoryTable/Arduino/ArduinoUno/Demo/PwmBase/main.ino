@@ -1,11 +1,11 @@
 #include "servo.h"
 
-uint8_t ret;               //错误检验标志
-uint8_t order_buffer[20];  //存放生成的指令
-uint8_t order_len;         //指令长度
-uint8_t pack[20];          //存放接收的应答包
-uint8_t pack_len;          //应答包长度
-uint16_t analysis_data;    //应答包解析出来的数据
+uint8_t ret;                              //Change Unknown Servo ID Test
+uint8_t order_buffer[20];                 //Store Generated Instructions
+uint8_t order_len;                        //Instruction Length
+uint8_t pack[20];                         //Store the received status packet
+uint8_t pack_len;                         //Response packet length.
+uint16_t analysis_data;                   //Data parsed from the status packet
 
 void setup() {
   // put your setup code here, to run once:
@@ -13,7 +13,7 @@ void setup() {
 }
 
 void loop() {
-  //设置ID1舵机的扭矩开关
+  //Change the torque switch of servo ID1 to OFF.
   servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
   if (order_len == Serial.write(order_buffer, order_len)) {
@@ -34,7 +34,7 @@ void loop() {
   }
   delay(1000);
 
-  //设置ID1舵机的控制模式
+  //Change the control mode of servo ID1 to the PWM control mode.
   servo_set_control_mode(1, 3, order_buffer, &order_len);
 
   if (order_len == Serial.write(order_buffer, order_len)) {
@@ -55,7 +55,7 @@ void loop() {
   }
   delay(1000);
 
-  //设置ID1舵机的扭矩开关
+  //Change the torque switch of servo ID1 to ON.
   servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
   if (order_len == Serial.write(order_buffer, order_len)) {
@@ -76,8 +76,8 @@ void loop() {
   }
   delay(1000);
 
-  //设置ID1舵机的目标PWM
-  servo_set_target_pwm(1, 500, order_buffer, &order_len);
+  //Change the target PWM of servo ID1 to -50%.
+  servo_set_target_pwm(1, -500, order_buffer, &order_len);
 
   if (order_len == Serial.write(order_buffer, order_len)) {
     Serial.print("Write successfully.");
