@@ -2,37 +2,37 @@
 import serial
 import time
 
-PING_TEST = 0  # PING指令测试
-READ_TEST = 0  # 读取舵机数据测试
-FACTORY_RESET_TEST = 0  # 恢复出厂设置测试
-PARAMETER_RESET_TEST = 0  # 参数重置测试
-CALIBRATION_TEST = 0  # 校正偏移值测试
-REBOOT_TEST = 0  # 重启测试
-WRITE_TEST = 0  # 写入舵机数据测试
-SYNC_WRITE = 0  # 同步写测试
-MODIFY_ID = 0  # 修改已知舵机ID测试
-MODIFY_UNKNOWN_ID = 0  # 修改未知ID舵机ID测试
+PING_TEST = 0  # PING Instruction Test
+READ_TEST = 0  # Read Servo Data Test
+FACTORY_RESET_TEST = 0  # Factory Reset Test
+PARAMETER_RESET_TEST = 0  # Parameter Reset Test
+CALIBRATION_TEST = 0  # Calibration Test
+REBOOT_TEST = 0  # Reboot Test
+WRITE_TEST = 0  # Write Servo Data Test
+SYNC_WRITE = 0  # Sync Write Test
+MODIFY_ID = 0  # Change Known Servo ID Test
+MODIFY_UNKNOWN_ID = 0  # Change Unknown Servo ID Test
 
-MAX_RECEIVE_LEN = 30  # 读取串口最大数据长度
+MAX_RECEIVE_LEN = 30  # Read the maximum data length from the serial port.
 
-serial = serial.Serial('COM12', 1000000, timeout=0.01)  # 打开指定串口，并设置超时
+serial = serial.Serial('COM12', 1000000, timeout=0.01)  # Open the specified serial port and set the timeout.
 if serial.isOpen():
     print("open success")
 else:
     print("open failed")
 
-ret = 0   # 错误检验标志
-output_buffer = [0] * 40    # 存放生成的指令
-output_buffer_len = [0]    # 指令长度
-receive_data = [0] * 40    # 存放接收的应答包
-analysis_data = [0]    # 应答包解析出来的数据
-position = [0]    # 当前位置
-current = [0]    # 当前电流
-write_buffer = [0] * 20    # 写入内存表数据
+ret = 0   # Status Flag
+output_buffer = [0] * 40    # Store Generated Instructions
+output_buffer_len = [0]    # Instruction Length
+receive_data = [0] * 40    # Store the received status packet
+analysis_data = [0]    # Data parsed from the status packet
+position = [0]    # Present position of the servo
+current = [0]    # Present current of the servo
+write_buffer = [0] * 20    # Write data to the memory table
 
-servo_sync_parameter = Servo_Sync_Parameter()  # 创建同步写内存表类
+servo_sync_parameter = Servo_Sync_Parameter()  # Create sync write memory table class.
 
-# 恢复出厂设置
+# Reset the servo to the factory default values.
 if FACTORY_RESET_TEST:
     Servo.servo_factory_reset(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -42,7 +42,7 @@ if FACTORY_RESET_TEST:
         print("FACTORY RESET SUCCESS")
     time.sleep(1)
 
-# 参数重置
+# Reset the parameter settings of the servo.
 if PARAMETER_RESET_TEST:
     Servo.servo_parameter_reset(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -52,7 +52,7 @@ if PARAMETER_RESET_TEST:
         print("PARAMETER RESET SUCCESS")
     time.sleep(1)
 
-# 校正偏移值
+# Calibrate the midpoint of the servo.
 if CALIBRATION_TEST:
     Servo.servo_calibration(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -62,25 +62,25 @@ if CALIBRATION_TEST:
         print("CALIBRATION SUCCESS")
     time.sleep(1)
 
-# 重启舵机
+# Reboot the servo.
 if REBOOT_TEST:
     Servo.servo_reboot(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep(1)
 
-# 将舵机ID1改为2
+# Change the servo ID of servo ID1 to 2.
 if MODIFY_ID:
     Servo.servo_modify_known_id(1, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep(1)
 
-# 将未知ID舵机的ID编号修改为1
+# Change the servo ID of the servo with an unknown ID to 1.
 if MODIFY_UNKNOWN_ID:
     Servo.servo_modify_unknown_id(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep(1)
 
-# 向id为1的舵机发出ping指令
+# Query the model number of servo ID1.
 if PING_TEST:
     Servo.servo_ping(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -90,9 +90,9 @@ if PING_TEST:
         print("the servo model number is", analysis_data[0])
     time.sleep(1)
 
-# 读取舵机数据
+# Read the servo data.
 if READ_TEST:
-    # 读取ID1舵机的当前电流
+    # Read the present current of servo ID1.
     Servo.servo_read_present_current(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -101,7 +101,7 @@ if READ_TEST:
         print("the present current is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的当前位置
+    # Read the present position of servo ID1.
     Servo.servo_read_present_position(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -110,7 +110,7 @@ if READ_TEST:
         print("the present position is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的当前位置和当前电流
+    # Read the present position and present current of servo ID1.
     Servo.servo_read_present_position_and_present_current(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -119,7 +119,7 @@ if READ_TEST:
         print(f"present position is: {position[0]}, present current is: {current[0]}")
     time.sleep(1)
 
-    # 读取ID1舵机的当前速度
+    # Read the present velocity of servo ID1.
     Servo.servo_read_present_velocity(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -128,7 +128,7 @@ if READ_TEST:
         print("the present velocity is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的当前的规划位置
+    # Read the present profile position of servo ID1.
     Servo.servo_read_present_profile_position(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -137,7 +137,7 @@ if READ_TEST:
         print("the present profile position is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的当前规划速度
+    # Read the present profile velocity of servo ID1.
     Servo.servo_read_present_profile_velocity(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -146,7 +146,7 @@ if READ_TEST:
         print("the present profile velocity is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的当前PWM
+    # Read the present PWM of servo ID1.
     Servo.servo_read_present_pwm(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -155,7 +155,7 @@ if READ_TEST:
         print("the present pwm is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的当前温度
+    # Read the present temperature of servo ID1.
     Servo.servo_read_present_temperature(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -164,7 +164,7 @@ if READ_TEST:
         print("the present temperature is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的当前输入电压
+    # Read the present voltage of servo ID1.
     Servo.servo_read_present_voltage(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -173,7 +173,7 @@ if READ_TEST:
         print("the present voltage is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的控时目标运行时间
+    # Read the time base target moving time of servo ID1.
     Servo.servo_read_time_base_target_moving_time(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -182,7 +182,7 @@ if READ_TEST:
         print("the present time base target moving time is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的控时目标位置
+    # Read the time base target position of servo ID1.
     Servo.servo_read_time_base_target_position(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -191,7 +191,7 @@ if READ_TEST:
         print("the present time base target position is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的控时加速度等级
+    # Read the time base target ACC of servo ID1.
     Servo.servo_read_time_base_target_acc(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -200,7 +200,7 @@ if READ_TEST:
         print("the present time base target acc is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的控时目标位置和运行时间
+    # Read the time base target position and moving time of servo ID1.
     Servo.servo_read(1, 0x3C, 4, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -210,7 +210,7 @@ if READ_TEST:
     print("\r\n")
     time.sleep(1)
 
-    # 读取ID1舵机的控时目标加速度等级、位置和运行时间
+    # Read the time base target ACC, position and moving time of servo ID1.
     Servo.servo_read(1, 0x3B, 5, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -220,7 +220,7 @@ if READ_TEST:
     print("\r\n")
     time.sleep(1)
 
-    # 读取ID1舵机的控速目标减速度
+    # Read the velocity base target DEC of servo ID1.
     Servo.servo_read_velocity_base_target_dec(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -229,7 +229,7 @@ if READ_TEST:
         print("the present velocity base target dec is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的控速目标加速度
+    # Read the velocity base target ACC of servo ID1.
     Servo.servo_read_velocity_base_target_acc(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -238,7 +238,7 @@ if READ_TEST:
         print("the present velocity base target acc is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的控速目标速度
+    # Read the velocity base target velocity of servo ID1.
     Servo.servo_read_velocity_base_target_velocity(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -247,7 +247,7 @@ if READ_TEST:
         print("the present velocity base target velocity is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的控速目标位置
+    # Read the velocity base target position of servo ID1.
     Servo.servo_read_velocity_base_target_position(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -256,7 +256,7 @@ if READ_TEST:
         print("the present velocity base target position is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的控速目标位置和速度
+    # Read the velocity base target position and velocity of servo ID1.
     Servo.servo_read(1, 0x35, 4, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -266,7 +266,7 @@ if READ_TEST:
     print("\r\n")
     time.sleep(1)
 
-    # 读取ID1舵机的控速目标位置、速度和加减速度
+    # Read the velocity base target position, velocity, ACC, and DEC of servo ID1.
     Servo.servo_read(1, 0x35, 6, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -276,7 +276,7 @@ if READ_TEST:
     print("\r\n")
     time.sleep(1)
 
-    # 读取ID1舵机的目标电流
+    # Read the target current of servo ID1.
     Servo.servo_read_target_current(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -285,7 +285,7 @@ if READ_TEST:
         print("the present target current is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的目标PWM
+    # Read the target PWM of servo ID1.
     Servo.servo_read_target_pwm(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -294,7 +294,7 @@ if READ_TEST:
         print("the present target pwm is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的扭矩开关
+    # Read the torque switch of servo ID1.
     Servo.servo_read_torque_switch(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -303,7 +303,7 @@ if READ_TEST:
         print("the present torque switch is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的LED开关
+    # Read the LED switch of servo ID1.
     Servo.servo_read_led_switch(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -312,7 +312,7 @@ if READ_TEST:
         print("the present led switch is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的Flash开关
+    # Read the Flash switch of servo ID1.
     Servo.servo_read_flash_switch(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -321,7 +321,7 @@ if READ_TEST:
         print("the present flash switch is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的电流校正值
+    # Read the current offset of servo ID1.
     Servo.servo_read_current_offset(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -330,7 +330,7 @@ if READ_TEST:
         print("the present current offset is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的中位校正值
+    # Read the calibration of servo ID1.
     Servo.servo_read_calibration(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -339,7 +339,7 @@ if READ_TEST:
         print("the present calibration is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的控制模式
+    # Read the control mode of servo ID1.
     Servo.servo_read_control_mode(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -348,7 +348,7 @@ if READ_TEST:
         print("the present control mode is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的卸载保护条件
+    # Read the shutdown condition of servo ID1.
     Servo.servo_read_shutdown_condition(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -357,7 +357,7 @@ if READ_TEST:
         print("the present shutdown condition is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的LED报警条件
+    # Read the LED condition of servo ID1.
     Servo.servo_read_led_condition(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -366,7 +366,7 @@ if READ_TEST:
         print("the present led condition is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的位置控制D增益
+    # Read the position control D gain of servo ID1.
     Servo.servo_read_position_control_d_gain(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -375,7 +375,7 @@ if READ_TEST:
         print("the present position control d gain is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的位置控制I增益
+    # Read the position control I gain of servo ID1.
     Servo.servo_read_position_control_i_gain(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -384,7 +384,7 @@ if READ_TEST:
         print("the present position control I gain is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的位置控制P增益
+    # Read the position control P gain of servo ID1.
     Servo.servo_read_position_control_p_gain(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -393,7 +393,7 @@ if READ_TEST:
         print("the present position control P gain is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的位置控制PID增益
+    # Read the position control PID gain of servo ID1.
     Servo.servo_read(1, 0x1B, 6, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -403,7 +403,7 @@ if READ_TEST:
     print("\r\n")
     time.sleep(1)
 
-    # 读取ID1舵机的PWM叠加值
+    # Read the PWM punch of servo ID1.
     Servo.servo_read_pwm_punch(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -412,7 +412,7 @@ if READ_TEST:
         print("the present pwm punch is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的反转死区
+    # Read the ccw deadband of servo ID1.
     Servo.servo_read_ccw_deadband(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -421,7 +421,7 @@ if READ_TEST:
         print("the present ccw deadband is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的正转死区
+    # Read the cw deadband of servo ID1.
     Servo.servo_read_cw_deadband(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -430,7 +430,7 @@ if READ_TEST:
         print("the present cw deadband is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的电流保护时间
+    # Read the current shutdown time of servo ID1.
     Servo.servo_read_current_shutdown_time(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -439,7 +439,7 @@ if READ_TEST:
         print("the present current shutdown time is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的电流上限
+    # Read the max current limit of servo ID1.
     Servo.servo_read_max_current_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -448,7 +448,7 @@ if READ_TEST:
         print("the present max current limit is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的PWM上限
+    # Read the max PWM limit of servo ID1.
     Servo.servo_read_max_pwm_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -457,7 +457,7 @@ if READ_TEST:
         print("the present max pwm limit is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的电压上限
+    # Read the max voltage limit of servo ID1.
     Servo.servo_read_max_voltage_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -466,7 +466,7 @@ if READ_TEST:
         print("the present max voltage limit is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的电压下限
+    # Read the min voltage limit of servo ID1.
     Servo.servo_read_min_voltage_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -475,7 +475,7 @@ if READ_TEST:
         print("the present min voltage limit is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的电压限制
+    # Read the voltage limit of servo ID1.
     Servo.servo_read(1, 0x10, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -485,7 +485,7 @@ if READ_TEST:
     print("\r\n")
     time.sleep(1)
 
-    # 读取ID1舵机的温度上限
+    # Read the max temperature limit of servo ID1.
     Servo.servo_read_max_temperature_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -494,7 +494,7 @@ if READ_TEST:
         print("the present max temperature limit is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的最大位置限制
+    # Read the max angle limit of servo ID1.
     Servo.servo_read_max_angle_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -503,7 +503,7 @@ if READ_TEST:
         print("the present max angle limit is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的最小位置限制
+    # Read the min angle limit of servo ID1.
     Servo.servo_read_min_angle_limit(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -512,7 +512,7 @@ if READ_TEST:
         print("the present min angle limit is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的位置限制
+    # Read the angle limit of servo ID1.
     Servo.servo_read(1, 0x0B, 4, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -522,7 +522,7 @@ if READ_TEST:
     print("\r\n")
     time.sleep(1)
 
-    # 读取ID1舵机的状态返回级别
+    # Read the return level of servo ID1.
     Servo.servo_read_return_level(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -531,7 +531,7 @@ if READ_TEST:
         print("the present return level is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的应答延时时间
+    # Read the return delay time of servo ID1.
     Servo.servo_read_return_delay_time(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -540,7 +540,7 @@ if READ_TEST:
         print("the present return delay time is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的波特率
+    # Read the baud rate of servo ID1.
     Servo.servo_read_baud_rate(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -549,7 +549,7 @@ if READ_TEST:
         print("the present baud rate is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的出厂编号
+    # Read the model information of servo ID1.
     Servo.servo_read_model_information(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -558,7 +558,7 @@ if READ_TEST:
         print("the present model information is", analysis_data[0])
     time.sleep(1)
 
-    # 读取ID1舵机的固件版本号
+    # Read the firmware version of servo ID1.
     Servo.servo_read_firmware_version(1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -567,10 +567,9 @@ if READ_TEST:
         print("the present firmware version is", analysis_data[0])
     time.sleep(1)
 
-    #
-# 写入舵机数据
+# Write the servo data.
 if WRITE_TEST:
-    # 将ID1舵机的应答延迟时间修改为500us
+    # Change the return delay time of servo ID1 to 500us.
     Servo.servo_set_return_delay_time(1, 250, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -579,7 +578,7 @@ if WRITE_TEST:
         print("servo set return delay time is successful")
     time.sleep(1)
     
-    # 将ID1舵机的状态返回级别修改为应答所有指令
+    # Change the return level of servo ID1 to respond to all instruction.
     Servo.servo_set_return_level(1, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -588,7 +587,7 @@ if WRITE_TEST:
         print("servo set return level is successful")
     time.sleep(1)
     
-    # 设置ID1舵机的波特率为1000000
+    # Change the baud rate of servo ID1 to 1000000.
     Servo.servo_set_baud_rate(1, 7, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -597,7 +596,7 @@ if WRITE_TEST:
         print("servo set baud rate is successful")
     time.sleep(1)
     
-    # 将舵机ID1的最小位置限制修改为0°
+    # Change the min angle limit of servo ID1 to 0°.
     Servo.servo_set_min_angle_limit(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -606,7 +605,7 @@ if WRITE_TEST:
         print("servo set min angle limit is successful")
     time.sleep(1)
     
-    # 将舵机ID1的最大位置限制修改为300°
+    # Change the max angle limit of servo ID1 to 300°.
     Servo.servo_set_max_angle_limit(1, 3000, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -615,7 +614,7 @@ if WRITE_TEST:
         print("servo set max angle limit is successful")
     time.sleep(1)
 
-    # 将舵机ID1的位置限制修改为0°~300°
+    # Change the angle limit of servo ID1 to 0°~300°.
     write_buffer[0] = 0 & 0xff
     write_buffer[1] = (0 >> 8) & 0xff
     write_buffer[2] = 3000 & 0xff
@@ -630,7 +629,7 @@ if WRITE_TEST:
     print("\r\n")
     time.sleep(1)
     
-    # 将ID1舵机的温度上限修改为65℃
+    # Change the max temperature limit of servo ID1 to 65℃.
     Servo.servo_set_max_temperature_limit(1, 65, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -639,7 +638,7 @@ if WRITE_TEST:
         print("servo set max temperature limit is successful")
     time.sleep(1)
     
-    # 将ID1舵机的电压上限修改为8.4V
+    # Change the max voltage limit of servo ID1 to 8.4V.
     Servo.servo_set_max_voltage_limit(1, 84, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -648,7 +647,7 @@ if WRITE_TEST:
         print("servo_set_max_voltage_limit is successful")
     time.sleep(1)
     
-    # 将ID1舵机的电压下限修改为3.5V
+    # Change the min voltage limit of servo ID1 to 3.5V.
     Servo.servo_set_min_voltage_limit(1, 35, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -657,7 +656,7 @@ if WRITE_TEST:
         print("servo_set_min_voltage_limit is successful")
     time.sleep(1)
 
-    # 将ID1舵机的电压限制修改为3.5V~8.4V
+    # Change the voltage limit of servo ID1 to 3.5~8.4V.
     write_buffer[0] = 84 & 0xff
     write_buffer[1] = 35 & 0xff
 
@@ -670,7 +669,7 @@ if WRITE_TEST:
     print("\r\n")
     time.sleep(1)
     
-    # 将ID1舵机的PWM上限修改为90%
+    # Change the max PWM limit of servo ID1 to 90%.
     Servo.servo_set_max_pwm_limit(1, 900, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -679,7 +678,7 @@ if WRITE_TEST:
         print("servo_set_max_pwm_limit is successful")
     time.sleep(1)
     
-    # 将ID1舵机的电流上限修改为900mA
+    # Change the max current limit of servo ID1 to 900mA.
     Servo.servo_set_max_current_limit(1, 900, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -688,7 +687,7 @@ if WRITE_TEST:
         print("servo_set_max_current_limit is successful")
     time.sleep(1)
     
-    # 将ID1舵机的电流保护时间修改为500ms
+    # Change the current shutdown time of servo ID1 to 500ms.
     Servo.servo_set_current_shutdown_time(1, 500, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -697,7 +696,7 @@ if WRITE_TEST:
         print("servo_set_current_shutdown_time is successful")
     time.sleep(1)
     
-    # 将ID1舵机的正转死区修改为0.2°
+    # Change the CW deadband of servo ID1 to 0.2°.
     Servo.servo_set_cw_deadband(1, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -706,7 +705,7 @@ if WRITE_TEST:
         print("servo_set_cw_deadband is successful")
     time.sleep(1)
     
-    # 将ID1舵机的反转死区修改为0.2°
+    # Change the CCW deadband of servo ID1 to 0.2°.
     Servo.servo_set_ccw_deadband(1, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -715,7 +714,7 @@ if WRITE_TEST:
         print("servo_set_ccw_deadband is successful")
     time.sleep(1)
 
-    # 将ID1舵机的正反转死区修改为0.2°
+    # Change the CW and CCW deadband of servo ID1 to 0.2°.
     write_buffer[0] = 2 & 0xff
     write_buffer[1] = 2 & 0xff
 
@@ -727,7 +726,7 @@ if WRITE_TEST:
         print(f"0x{receive_data[i]:02x}", end=' ')
     print("\r\n")
     
-    # 将ID1舵机的PWM叠加值修改为1%
+    # Change the PWM punch of servo ID1 to 1%.
     Servo.servo_set_pwm_punch(1, 10, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -736,7 +735,7 @@ if WRITE_TEST:
         print("servo_set_pwm_punch is successful")
     time.sleep(1)
     
-    # 将ID1舵机的位置控制P增益修改为5995
+    # Change the position control P gain of servo ID1 to 5995.
     Servo.servo_set_position_control_p_gain(1, 5995, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -745,7 +744,7 @@ if WRITE_TEST:
         print("servo_set_position_control_p_gain is successful")
     time.sleep(1)
     
-    # 将ID1舵机的位置控制I增益修改为5
+    # Change the position control D gain of servo ID1 to 5.
     Servo.servo_set_position_control_i_gain(1, 5, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -754,7 +753,7 @@ if WRITE_TEST:
         print("servo_set_position_control_i_gain is successful")
     time.sleep(1)
     
-    # 将ID1舵机的位置控制D增益修改为145
+    # Change the position control D gain of servo ID1 to 145.
     Servo.servo_set_position_control_d_gain(1, 145, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -763,13 +762,13 @@ if WRITE_TEST:
         print("servo_set_position_control_d_gain is successful")
     time.sleep(1)
 
-    # 将ID1舵机的位置控制PID增益，分别修改为5500、100、250
-    write_buffer[0] = 5500 & 0xff
-    write_buffer[1] = (5500 >> 8) & 0xff
-    write_buffer[2] = 100 & 0xff
-    write_buffer[3] = (100 >> 8) & 0xff
-    write_buffer[4] = 250 & 0xff
-    write_buffer[5] = (250 >> 8) & 0xff
+    # Change the position control PID gain of servo ID1 to 5995, 5, and 145 respectively.
+    write_buffer[0] = 5995 & 0xff
+    write_buffer[1] = (5995 >> 8) & 0xff
+    write_buffer[2] = 5 & 0xff
+    write_buffer[3] = (5 >> 8) & 0xff
+    write_buffer[4] = 145 & 0xff
+    write_buffer[5] = (145 >> 8) & 0xff
 
     Servo.servo_write(1, 0x1B, 6, write_buffer, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
@@ -780,7 +779,7 @@ if WRITE_TEST:
     print("\r\n")
     time.sleep(1)
 
-    # 将ID1舵机的LED报警条件修改为开启堵转报错、过热报错和角度报错
+    # Change the LED condition of servo ID1 to turn on stall error, overheating error, and angle error.
     Servo.servo_set_led_condition(1, 38, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -789,7 +788,7 @@ if WRITE_TEST:
         print("servo_set_led_condition is successful")
     time.sleep(1)
 
-    # 将ID1舵机的卸载保护条件修改为开启堵转报错、过热报错、电压报错和角度报错
+    # Change the shutdown condition of servo ID1 to turn on stall error, overheating error, voltage error, and angle error.
     Servo.servo_set_shutdown_conditions(1, 39, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -798,7 +797,7 @@ if WRITE_TEST:
         print("servo_set_shutdown_conditions is successful")
     time.sleep(1)
 
-    # 将ID1舵机的Flash开关状态修改为打开
+    # Change the Flash switch of servo ID1 to ON.
     Servo.servo_set_flash_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -807,7 +806,7 @@ if WRITE_TEST:
         print("servo_set_flash_switch is successful")
     time.sleep(1)
 
-    # 将ID1舵机的Flash开关状态修改为关闭
+    # Change the Flash switch of servo ID1 to OFF.
     Servo.servo_set_flash_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -816,7 +815,7 @@ if WRITE_TEST:
         print("servo_set_flash_switch is successful")
     time.sleep(1)
 
-    # 将ID1舵机的LED开关状态修改为打开
+    # Change the LED switch of servo ID1 to ON.
     Servo.servo_set_led_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -825,7 +824,7 @@ if WRITE_TEST:
         print("servo_set_led_switch is successful")
     time.sleep(1)
     
-    # 将ID1舵机的LED开关状态修改为关闭
+    # Change the LED switch of servo ID1 to OFF.
     Servo.servo_set_led_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -834,7 +833,7 @@ if WRITE_TEST:
         print("servo_set_led_switch is successful")
     time.sleep(1)
 
-    # 设置ID1舵机的扭矩开关为关闭
+    # Change the torque switch of servo ID1 to OFF.
     Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -843,7 +842,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # 将ID1舵机的控制模式修改为PWM输出控制模式
+    # Change the control mode of servo ID1 to the PWM control mode.
     Servo.servo_set_control_mode(1, 3, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -852,7 +851,7 @@ if WRITE_TEST:
         print("servo_set_control_mode is successful")
     time.sleep(1)
 
-    # 设置ID1舵机的扭矩开关为开启
+    # Change the torque switch of servo ID1 to ON.
     Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -861,7 +860,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # 将ID1舵机的目标PWM修改为-50%
+    # Change the target PWM of servo ID1 to -50%.
     Servo.servo_set_target_pwm(1, -500, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -870,7 +869,7 @@ if WRITE_TEST:
         print("servo_set_target_pwm is successful")
     time.sleep(3)
 
-    # 设置ID1舵机的扭矩开关为关闭
+    # Change the torque switch of servo ID1 to OFF.
     Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -879,7 +878,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # 将ID1舵机的控制模式修改为电流控制模式
+    # Change the control mode of servo ID1 to the current control mode.
     Servo.servo_set_control_mode(1, 2, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -888,7 +887,7 @@ if WRITE_TEST:
         print("servo_set_control_mode is successful")
     time.sleep(1)
 
-    # 设置ID1舵机的扭矩开关为开启
+    # Change the torque switch of servo ID1 to ON.
     Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -897,7 +896,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # 将ID1舵机的目标电流修改为-400mA
+    # Change the target current of servo ID1 to -400mA.
     Servo.servo_set_target_current(1, -400, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -906,7 +905,7 @@ if WRITE_TEST:
         print("servo_set_target_current is successful")
     time.sleep(3)
 
-    # 设置ID1舵机的扭矩开关为关闭
+    # Change the torque switch of servo ID1 to OFF.
     Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -915,7 +914,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # 将ID1舵机的控制模式修改为控速模式
+    # Change the control mode of servo ID1 to the velocity base position control mode.
     Servo.servo_set_control_mode(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -924,7 +923,7 @@ if WRITE_TEST:
         print("servo_set_control_mode is successful")
     time.sleep(1)
 
-    # 设置ID1舵机的扭矩开关为开启
+    # Change the torque switch of servo ID1 to ON.
     Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -933,7 +932,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # 将ID1舵机的控速目标速度修改为360°/s
+    # Change the velocity base target velocity of servo ID1 to 360°/s.
     Servo.servo_set_velocity_base_target_velocity(1, 3600, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -942,7 +941,7 @@ if WRITE_TEST:
         print("servo_set_velocity_base_target_velocity is successful")
     time.sleep(1)
 
-    # 将ID1舵机的控速目标加速度修改为500°/s²
+    # Change the velocity base target ACC of servo ID1 to 500°/s².
     Servo.servo_set_velocity_base_target_acc(1, 10, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -951,7 +950,7 @@ if WRITE_TEST:
         print("servo_set_velocity_base_target_acc is successful")
     time.sleep(1)
 
-    # 将ID1舵机的控速目标减速度修改为50°/s²
+    # Change the velocity base target DEC of servo ID1 to 50°/s².
     Servo.servo_set_velocity_base_target_dec(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -960,7 +959,7 @@ if WRITE_TEST:
         print("servo_set_velocity_base_target_dec is successful")
     time.sleep(1)
 
-    # 将ID1舵机的控速目标位置修改为150°
+    # Change the velocity base target position of servo ID1 to 150°.
     Servo.servo_set_velocity_base_target_position(1, 1500, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -969,7 +968,7 @@ if WRITE_TEST:
         print("servo set velocity base target position is successful")
     time.sleep(1)
 
-    # 设置ID1舵机的扭矩开关为关闭
+    # Change the torque switch of servo ID1 to OFF.
     Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -978,7 +977,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # 将ID1舵机的控制模式修改为控时模式
+    # Change the control mode of servo ID1 to the time base position control mode.
     Servo.servo_set_control_mode(1, 0, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -987,7 +986,7 @@ if WRITE_TEST:
         print("servo_set_control_mode is successful")
     time.sleep(1)
 
-    # 设置ID1舵机的扭矩开关为开启
+    # Change the torque switch of servo ID1 to ON.
     Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -996,7 +995,7 @@ if WRITE_TEST:
         print("servo_set_torque_switch is successful")
     time.sleep(1)
 
-    # 将ID1舵机的控时目标加速度等级修改为5
+    # Change the time base target ACC of servo ID1 to 5.
     Servo.servo_set_time_base_target_acc(1, 5, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -1005,7 +1004,7 @@ if WRITE_TEST:
         print("servo_set_time_base_target_acc is successful")
     time.sleep(1)
 
-    # 将ID1舵机的控时目标位置和运行时间，分别修改为300°、500ms
+    # Change the time base target position and moving time of servo ID1 to 300°, 500ms respectively.
     Servo.servo_set_time_base_target_position_and_moving_time(1, 3000, 500, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     receive_data = serial.read(MAX_RECEIVE_LEN)
@@ -1014,18 +1013,18 @@ if WRITE_TEST:
         print("servo_set_time_base_target_position_and_moving_time is successful")
     time.sleep(1)
 
-# 同步写测试
+# Sync Write Test
 if SYNC_WRITE:
-    # 同步写操作两个舵机
+    # Sync write two servos
     servo_sync_parameter.id_counts = 2
 
-    #第一个舵机id为1
+    # Set the ID of the first servo to 1
     servo_sync_parameter.id[0] = 1
 
-    #第一个舵机id为2
+    # Set the ID of the second servo to 2
     servo_sync_parameter.id[1] = 2
 
-    # 将ID1、ID2舵机的扭矩开关状态，分别修改为关闭
+    # Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo_sync_parameter.torque_switch[0] = 0
     servo_sync_parameter.torque_switch[1] = 0
     Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
@@ -1034,7 +1033,7 @@ if SYNC_WRITE:
     print("Sync Write torque witch successfully.\r\n")
     time.sleep(1)
 
-    # 将ID1、ID2舵机的控制模式，分别修改为控速模式
+    # Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
     servo_sync_parameter.control_mode[0] = 1
     servo_sync_parameter.control_mode[1] = 1
     Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
@@ -1043,43 +1042,35 @@ if SYNC_WRITE:
     print("Sync Write control mode successfully.\r\n")
     time.sleep(1)
 
-    # 设置多个舵机的控速目标加速度
-
-    # id为1，2的舵机加速度分别设置为150，150，值和前面的id设置对应
-    servo_sync_parameter.acc_velocity[0] = 150      
-    servo_sync_parameter.acc_velocity[1] = 150
+    # Change the velocity base target ACC of servo ID1, ID2 to 500°/s² and 50°/s², respectively.
+    servo_sync_parameter.acc_velocity[0] = 10      
+    servo_sync_parameter.acc_velocity[1] = 1
 
     Servo.servo_sync_write_velocity_base_target_acc(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("Sync Write velocity base target acc successfully.\r\n")
     time.sleep(1)
 
-    # 设置多个舵机的控速目标减速度
-
-    # id为1，2的舵机减速度分别设置为150，150，值和前面的id设置对应
-    servo_sync_parameter.dec_velocity[0] = 150        
-    servo_sync_parameter.dec_velocity[1] = 150
+    # Change the velocity base target DEC of servo ID1, ID2 to 50°/s² and 500°/s², respectively.
+    servo_sync_parameter.dec_velocity[0] = 1      
+    servo_sync_parameter.dec_velocity[1] = 10
 
     Servo.servo_sync_write_velocity_base_target_dec(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("Sync Write velocity base target dec successfully.\r\n")
     time.sleep(1)
 
-    # 设置多个舵机的控速目标速度
-
-    # id为1，2的舵机速度分别设置为3600，1800，值和前面的id设置对应
+    # Change the velocity base target velocity of the servo ID1, ID2 to 360°/s² and 720°/s², respectively.
     servo_sync_parameter.velocity[0] = 3600
-    servo_sync_parameter.velocity[1] = 1800
+    servo_sync_parameter.velocity[1] = 7200
 
     Servo.servo_sync_write_velocity_base_target_velocity(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("Sync Write velocity base target velocity successfully.\r\n")
     time.sleep(1)
 
-    # 设置多个舵机的控速目标位置
-
-    # id为1，2的舵机运动位置分别设置为0，0，值和前面的id设置对应
-    servo_sync_parameter.position[0] = 0
+    # Change the velocity base target velocity of the servo ID1, ID2 to 150° midpoint and 0° position, respectively.
+    servo_sync_parameter.position[0] = 1500
     servo_sync_parameter.position[1] = 0
 
     Servo.servo_sync_write_velocity_base_target_position(servo_sync_parameter, output_buffer, output_buffer_len)
@@ -1087,9 +1078,7 @@ if SYNC_WRITE:
     print("Sync Write velocity base target position successfully.\r\n")
     time.sleep(1)
 
-    # 设置多个舵机的控速目标位置和速度
-
-    # id为1，2的舵机速度分别设置为1800，3600，位置分别设置为3000，3000
+    # Change the velocity base target velocity of servo ID1 ,ID2 to 1800 and 3600, and the position to 3000 and 3000, respectively
     servo_sync_parameter.velocity[0] = 1800
     servo_sync_parameter.velocity[1] = 3600
     servo_sync_parameter.position[0] = 3000
@@ -1100,24 +1089,22 @@ if SYNC_WRITE:
     print("Sync Write velocity base target position and velocity successfully.\r\n")
     time.sleep(1)
 
-    # 设置多个舵机的加速度，减速度，速度和位置
-
-    # id为1，2的舵机速度分别设置为3600，3600，位置分别设置为0，0,加速度分别设置为100，100，减速度分别设置为100，100
+    # Change the velocity base target velocity of servo ID1 ,ID2 to 3600 and 3600, position to 0,0, acceleration to 500°/s², 500°/s², deceleration to 500°/s², 500°/s², respectively
     servo_sync_parameter.velocity[0] = 3600
     servo_sync_parameter.velocity[1] = 3600
     servo_sync_parameter.position[0] = 0
     servo_sync_parameter.position[1] = 0
-    servo_sync_parameter.acc_velocity[0] = 100
-    servo_sync_parameter.acc_velocity[1] = 100
-    servo_sync_parameter.dec_velocity[0] = 100
-    servo_sync_parameter.dec_velocity[1] = 100
+    servo_sync_parameter.acc_velocity[0] = 10
+    servo_sync_parameter.acc_velocity[1] = 10
+    servo_sync_parameter.dec_velocity[0] = 10
+    servo_sync_parameter.dec_velocity[1] = 10
 
     Servo.servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("Sync Write velocity base target acc,dec,velocity and position successfully.\r\n")
     time.sleep(1)
 
-    # 将ID1、ID2舵机的扭矩开关状态，分别修改为关闭
+    # Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo_sync_parameter.torque_switch[0] = 0
     servo_sync_parameter.torque_switch[1] = 0
     Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
@@ -1126,7 +1113,7 @@ if SYNC_WRITE:
     print("Sync Write torque witch successfully.\r\n")
     time.sleep(1)
 
-    # 将ID1、ID2舵机的控制模式，分别修改为控时模式
+    # Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
     servo_sync_parameter.control_mode[0] = 0
     servo_sync_parameter.control_mode[1] = 0
     Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
@@ -1135,29 +1122,24 @@ if SYNC_WRITE:
     print("Sync Write control mode successfully.\r\n")
     time.sleep(1)
 
-    # 设置多个舵机的控时目标加速度等级
-
-    # 设置舵机id为1，2的加速度等级分别为0，0
-    servo_sync_parameter.acc_velocity_grade[0] = 0
-    servo_sync_parameter.acc_velocity_grade[1] = 0
+    # Change the time base target ACC of servo ID1 to 1 and 5 respectively.
+    servo_sync_parameter.acc_velocity_grade[0] = 1
+    servo_sync_parameter.acc_velocity_grade[1] = 5
 
     Servo.servo_sync_write_time_base_target_acc(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("Sync Write time base target acc successfully.\r\n")
     time.sleep(1)
 
-    # 设置多个舵机的控时目标位置和运动时间
-
-    # 设置舵机id为1，2的运动位置为3000，3000，运动时间为500ms，1500ms
-    servo_sync_parameter.position[0] = 3000
-    servo_sync_parameter.position[1] = 3000
-    servo_sync_parameter.time[0] = 500
-    servo_sync_parameter.time[1] = 1500
+    # Change the time base target position and moving time of servo ID1 to 150° midpoint and 1s, 0° and 500ms respectively.
+    servo_sync_parameter.position[0] = 1500
+    servo_sync_parameter.position[1] = 0
+    servo_sync_parameter.time[0] = 1000
+    servo_sync_parameter.time[1] = 500
 
     Servo.servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter, output_buffer, output_buffer_len)
     serial.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("Sync Write time base target position and moving time successfully.\r\n")
     time.sleep(1)
 
-# 关闭串口
 serial.close()
