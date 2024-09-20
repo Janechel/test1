@@ -1,20 +1,20 @@
 # ServoSDK
 ---
-欢迎使用ServoSDK，这是专为EnergizeLab Servo设计的开源软件开发工具包。本SDK提供了多语言、多平台的舵机使用Example和运动控制Demo，旨在帮助用户轻松、快捷地掌握EM-2030等各型号舵机的使用。强烈推荐结合所使用舵机对应的内存表参数解析来理解和验证。
-- 支持的协议：Energize Lab舵机通讯协议
-- 支持的内存表：初级内存表
-- 支持的舵机：EM系列、EH-3030
-- 支持的编程语言：
-  - C：包含基础库，基于Windows、STC89C52、STM32F103C8T6的Example和Demo
-  - C++：包含基础库，基于Windows的Example和Demo
-  - Python：包含基础库，基于Windows的Example和Demo
-  - MicroPython：包含基础库，基于Esp32的Example和Demo
-  - Arduino：包含基础库，基于Esp32、Arduino Uno的Example和Demo
-- 文件结构：ServoSDK -> 内存表 -> 编程语言 -> Scr & 开发环境(-> Example & Demo)
-- 文件说明：
-  - Src：基础库，包含Servo整个内存表的指令生成和解析。
-  - Example：演示Ping指令、读指令、写指令、同步写指令、恢复参数指令、恢复出厂指令、重启指令的使用。
-  - Demo：演示舵机在不同控制模式的运动。
-  - FAQ：基于本项目的FAQ、基于各平台的FAQ
+Welcome to ServoSDK, an open-source software development kit designed specifically for the EnergizeLab Servo. This SDK provides multi-language, multi-platform examples and motion control demos for servo usage, aimed at helping users easily and quickly master the use of various models, including the EM-2030. It is strongly recommended to refer to the corresponding memory table parameter for understanding and verification.
+- Supported Protocols:Energize Lab Servo Communication Protocol
+- Supported Memory Tables:Basic Memory Table
+- Supported Servos:EM Series, EH-3030
+- Supported Programming Languages:
+  - C:Includes basic libraries，Includes basic libraries, with Example and Demo based on Windows, STC89C52, and STM32F103C8T6.
+  - C++:Includes basic libraries, with Example and Demo based on Windows.
+  - Python:Includes basic libraries, with Example and Demo based on Windows.
+  - MicroPython:Includes basic libraries, with Example and Demo based on ESP32.
+  - Arduino:Includes basic libraries, with Example and Demo based on ESP32 and Arduino Uno.
+- File Structure:ServoSDK -> Memory Table -> Programming Language -> Src & Development Environment (-> Example & Demo)
+- File Description:
+  - Src:Basic libraries, including instruction generation and parsing for the entire servo memory table.
+  - Example:Demonstrates the use of Ping instruction, read data instruction, write data instruction, sync write instruction, parameter reset instruction, factory reset instruction, and reboot instruction.
+  - Demo:Demonstrates servo motion in different control modes.
+  - FAQ:FAQs related to this project and platform-specific FAQs.
 
 
