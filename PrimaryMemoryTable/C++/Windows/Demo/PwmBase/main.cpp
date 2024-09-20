@@ -4,18 +4,15 @@
 
 int main()
 {
-    uint8_t ret;
-    uint8_t order_buffer[20] = {0};                                                                         //存放生成的指令
-    uint8_t order_len = 0;                                                                                  //指令长度
-    uint8_t pack[20] = {0};                                                                                 //存放接收的应答包
+    uint8_t ret;                        //Status Flag
+    uint8_t order_buffer[20] = {0};     //Store Generated Instructions
+    uint8_t order_len = 0;              //Instruction Length
+    uint8_t pack[20] = {0};             //Store the received status packet
 
-    //创建串口的控制类
-    CSerialPort serialPort;
+    CSerialPort serialPort;             //Create a serial port class.
 
-    //实际串口读取到的字节数
-    DWORD bytesRead;
-    //实际串口写入的字节数
-    DWORD bytesWritten;
+    DWORD bytesRead;                    //The actual number of bytes read from the serial port.
+    DWORD bytesWritten;                 //The actual number of bytes written to the serial port.
 
     if (serialPort.Open(14, 1000000))
     {
@@ -23,12 +20,11 @@ int main()
     }
     else
     {
-        // 串口打开失败
         PRINTF("\r\nFailed to open serial port.");
         return -1;
     }
 
-    //设置舵机的扭矩开关
+    //Change the torque switch of servo ID1 to OFF.
     servo_set_torque_switch(1, 0, order_buffer,&order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -52,7 +48,7 @@ int main()
     }
     Sleep(20);
 
-    //设置舵机的控制模式
+    //Change the control mode of servo ID1 to the PWM control mode.
     servo_set_control_mode(1, 3, order_buffer,&order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -76,7 +72,7 @@ int main()
     }
     Sleep(20);
 
-    //设置舵机的扭矩开关
+    //Change the torque switch of servo ID1 to ON.
     servo_set_torque_switch(1, 1, order_buffer,&order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) {
@@ -100,8 +96,8 @@ int main()
     }
     Sleep(20);
 
-    //设置舵机的目标PWM
-    servo_set_target_pwm(1, 500, order_buffer,&order_len);
+    //Change the target PWM of servo ID1 to -50%.
+    servo_set_target_pwm(1, -500, order_buffer,&order_len);
 
     if (serialPort.Write(order_buffer, order_len, &bytesWritten)) 
     { 
@@ -125,7 +121,6 @@ int main()
     }
     Sleep(3000);
 
-    // 关闭串口
     serialPort.Close();
 
     return 0;
