@@ -1,15 +1,15 @@
-# 1. 运动控制
+# 1. Motion Control
 
 ---
-## Q1：怎么同时控制多个舵机？
-A：利用同步写指令，一条Sync Write的指令可一次同时向多个舵机的内存表里写数据，向多个舵机同时写入的数据长度和数据的起始地址必须相同，但是写入的数据可以不一样。
+## Q1: How to control multiple servos simultaneously?
+A: By using the Sync Write Instruction, you can write data to the memory tables of multiple servos at once. The length of the data and the starting address for the data written on multiple servos must be the same, but the data itself can differ.
 
-# 2. 指令并行
+# 2. Servo Control Instruction
 
 ---
-## Q1：在控时模式下，运动到一半发送新指令会执行新指令吗？
-A：分情况讨论：
-- 如果新指令不影响其运动则舵机会继续运动，比如读取位置或者读取温度。
-- 如果是影响其运动的指令，比如运动指令：
-    - 这个位置和上条运动位置相等则不会执行这条指令。
-    - 这个位置和上条运动位置不相等则会立马打断现在的指令去执行新的指令。
+## Q1: Under the time base position control mode, if a new instruction is sent while the servo is in motion, will the new instruction be executed?
+A: This depends on the situation:
+- If the new instruction does not affect its motion,e.g., reading position or temperature, the servo will continue its current motion.
+- If the new instruction affects its motion,e.g., a motion instruction.:
+    - If the new position is the same as the previous motion position, the instruction will not be executed.
+    - If the new position is different from the previous motion position, the current instruction will be interrupted immediately to execute the new instruction.

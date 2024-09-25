@@ -1,25 +1,23 @@
-欢迎您考虑为 _ServoSDK_ 开源项目贡献您的力量！通过您的贡献，我们可以共同改进和完善这个项目，使其更加强大和有用。
+Welcome to consider contributing to _ServoSDK_ open-source project! We can collectively improve and enhance this project through your contributions, making it more powerful and useful.
 
-# 如何贡献？
+# How to Contribute?
 ---
 
-## Issue提交
-- 报告问题：如果您发现了Bug或有功能建议，请先确保在 _Issues_ 中搜索是否有类似的问题或建议。如果没有，请提交一个新的 _Issue_ 。
-- 解决问题：您可以从现有的 _Issues_ 中选择一个来解决。请确保在评论中表明您打算处理该问题，以避免多人重复劳动。
+## Submit Issue
+- Report Issues: If you find a bug or have a feature suggestion, please first search _Issues_ to see if a similar issue or suggestion already exists. If not, submit a new _Issue_.
+- Resolve Issues: You can choose an existing issue to work on. Please indicate in the comments that you intend to handle that issue to avoid duplicate efforts.
 
-## Pull Request提交
-- 选择任务：浏览 _Issues_ 或者 _ProjectBacklog_ ，找到您感兴趣并且能够解决的任务。如果您想要添加新功能，请先提出 _Issue_ 讨论。
-- 分支创建：从 _main_ 分支创建一个新的分支，名称应该清晰描述您正在做的工作。例如： _feature_ /新增功能 或者  _bugfix_ /修复问题。
-- 提交更改：在分支上进行修改和开发。请确保遵循项目的编码规范和提交信息规范。
-- 测试：如有可能，请添加相关的测试，确保您的更改不会破坏现有的功能。 
-- 提交 _Pull Request_ ：当您完成了更改，请提交一个 _Pull Request_ 到 _main_ 分支。请在描述中简要说明您的更改内容和解决的问题。
+## Submit Pull Request
+- Choose a Task: Browse the _Issues_ or the _ProjectBacklog_ to find a task that interests you and that you can address. If you want to add a new feature, please first propose an _Issue_ for discussion.
+- Create a Branch: Create a new branch from the _main_ branch, with a name that clearly describes the work you are doing. For example: _feature_/_newfeature_ or _bugfix_/_fix-issue_.
+- Submit a Change: Make changes and developments on the branch. Please ensure that you follow the project's coding standards and commit message guidelines.
+- Testing: If possible, add relevant tests and ensure your changes do not break existing functionality. 
+- Submit _Pull Request_: When you’ve completed your changes, submit a _Pull Request_ to the _main_ branch. Please provide a brief description of your changes and the issues addressed in the description.
 
-## 文档更新
-- 改进文档：我们非常重视文档的完整性和清晰性。如果您发现文档有误或者有改进的空间，请随时提交 _Pull Request_ 。
+## Update Document
+- Improve Document: We highly value the completeness and clarity of our documentation. If you an inaccuracy or need for improvement, please feel free to submit a _Pull Request_.
 
-
-
-# 致谢
+# Acknowledgement
 ---
-- 所有贡献的内容将会在经过审查和测试后合并到主分支 _main_ 中。我们会定期发布新版本，您的贡献将会包含在下一个版本的发布中。
-- 我们非常感谢所有为 _ServoSDK_ 项目做出贡献的人员。您的时间和努力使得这个项目变得更好，我们将永远感激不尽。如果您有任何疑问或者需要帮助，请随时在 _Issues_ 中提出，我们会尽力帮助您。感谢您的参与！
+- All contributions will be merged into the _main_ branch after review and testing. We will regularly release new versions, and your contributions will be included in the next release.
+- We are very grateful to everyone who contributes to _ServoSDK_ project. Your time and effort make this project better, and we will always appreciate it. If you have any questions or need assistance, please feel free to raise them in the _Issues_, and we will do our best to help you. Thank you for your participation!

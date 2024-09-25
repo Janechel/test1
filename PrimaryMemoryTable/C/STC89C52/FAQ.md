@@ -1,4 +1,4 @@
-## Q1：运行一半卡死
-A: 由于51的硬件限制只有一个串口，所以需要将舵机库文件servo.h里面的输出使能关闭。
-## Q2：51成功发送数据，但是没有数据或者数据出错
-A:检查硬件连接，并且在实验前是否将舵机的波特率等级改为3，即为115200。由于硬件关系此款51波特率达不到1000000，故需要使用PZ_ISP开启双倍速6T达到能采取的最高波特率115200。
+## Q1: Stuck Mid-Operation
+A: Due to hardware limitations of the 51, which has only one serial port, you need to disable the output in the servo library file servo. h.
+## Q2: 51 sent data successfully, but there was no data or the data was wrong
+A: Check the hardware connections and ensure that the servo's baud rate is set to level 3, which is 115200. Due to hardware limitations, this 51 cannot reach a baud rate of 1,000,000, so you need to use PZ_ISP to enable double speed at 6T to achieve the maximum baud rate of 115200.

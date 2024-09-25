@@ -1,16 +1,16 @@
-以下为本开源项目的计划列表，敬请期待！如果您对其中某项计划内容感兴趣，并且有信心能够参与到开发中，请通过 _Contributing_ 文档中所述的方法加入我们!
+Below is a list of plans for this open-source project—stay tuned! If you are interested in any of the planned items and feel confident about contributing to the development, please join us using the methods described in the _Contributing_ document!
 
-# 中高级内存表
+# Intermediate Memory Table and Advanced Memory Table
 ---
-- 未来将新增中级内存表相应内容。
-- 未来将新增高级内存表相应内容。
+- Corresponding content for the intermediate memory table will be added in the future.
+- Corresponding content for the advanced memory table will be added in the future.
 
-# 舵机使用示例
+# Servo Usage Example
 ---
-- 未来将新增更多编程语言的应用示例。（例如，图形化编程等）
-- 未来将新增更多平台或硬件环境的应用示例。（例如，MacOS、树莓派开发板等）
+- More application examples in various programming languages will be added in the future (e.g., graphical programming, etc.).
+- More application examples for different platforms or hardware environments will be added in the future (e.g., MacOS, Raspberry Pi Demoboard etc.).
 
-# 舵机应用实例
+# Servo Application Example
 ---
-- 未来将新增更多舵机玩法Demo。（例如，结合3D打印零件，精准控制舵机之间运动等）
+- More servo gameplay demos will be added in the future. (e.g., integrating 3D-printed parts, precise control of servo movements, etc.).
 
