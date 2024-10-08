@@ -1,8 +1,8 @@
 #ifndef _PRIMARYSERVO_H_
 #define _PRIMARYSERVO_H_
 
-#define MAX_SERVERS 20               //Maximum number of servos for sync write.
-#define PRINTF_ENABLE 1             //Print output enable.
+#define MAX_SERVERS 20               	//Maximum number of servos for sync write.
+#define PRINTF_ENABLE 1             	//Print output enable.
 
 #if PRINTF_ENABLE
 #define PRINTF printf
@@ -12,7 +12,7 @@
 
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
-typedef unsigned long int uint32_t;
+typedef unsigned int uint32_t;
 typedef short int16_t;
 
 struct primary_servo_sync_parameter
