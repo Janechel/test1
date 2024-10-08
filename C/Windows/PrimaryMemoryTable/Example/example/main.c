@@ -169,7 +169,7 @@ int main() {
     ret = primary_servo_calibration_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
     {
-        PRINTF("calibration successfully!\r\n");
+        PRINTF("calibration successful!\r\n");
     }
 #endif
 
@@ -192,7 +192,7 @@ int main() {
     ret = primary_servo_factory_reset_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
     {
-        PRINTF("factory reset successfully!\r\n");
+        PRINTF("factory reset successful!\r\n");
     }
 #endif
 
@@ -215,7 +215,7 @@ int main() {
     ret = primary_servo_parameter_reset_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
     {
-        PRINTF("parameter reset successfully!\r\n");
+        PRINTF("parameter reset successful!\r\n");
     }
 #endif
 
@@ -1354,7 +1354,7 @@ int main() {
 
     ret = primary_servo_set_return_delay_time_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set return delay time successfully.\r\n");
+        PRINTF("set return delay time successful.\r\n");
 
     //Change the return level of servo ID1 to respond to all instruction.
     primary_servo_set_return_level(1, 2, order_buffer, &order_len);
@@ -1375,7 +1375,7 @@ int main() {
 
     ret = primary_servo_set_return_level_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set return level successfully.\r\n");
+        PRINTF("set return level successful.\r\n");
 
     //Change the baud rate of servo ID1 to 1000000.
     primary_servo_set_baud_rate(1, 7, order_buffer, &order_len);
@@ -1396,7 +1396,7 @@ int main() {
 
     ret = primary_servo_set_baud_rate_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set baud rate successfully.\r\n");
+        PRINTF("set baud rate successful.\r\n");
 
     //Change the min angle limit of servo ID1 to 0°.
     primary_servo_set_min_angle_limit(1, 0, order_buffer, &order_len);
@@ -1417,7 +1417,7 @@ int main() {
 
     ret = primary_servo_set_min_angle_limit_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set min angle limit successfully.\r\n");
+        PRINTF("set min angle limit successful.\r\n");
 
     //Change the max angle limit of servo ID1 to 300°.
     primary_servo_set_max_angle_limit(1, 3000, order_buffer, &order_len);
@@ -1438,7 +1438,7 @@ int main() {
 
     ret = primary_servo_set_max_angle_limit_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set max angle limit successfully.\r\n");
+        PRINTF("set max angle limit successful.\r\n");
 
     //Change the angle limit of servo ID1 to 0°~300°.
     write_buffer[0] = 0 & 0xff;
@@ -1487,7 +1487,7 @@ int main() {
 
     ret = primary_servo_set_max_temperature_limit_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set max temperature limit successfully.\r\n");
+        PRINTF("set max temperature limit successful.\r\n");
 
     //Change the max voltage limit of servo ID1 to 8.4V.
     primary_servo_set_max_voltage_limit(1, 84, order_buffer, &order_len);
@@ -1508,7 +1508,7 @@ int main() {
 
     ret = primary_servo_set_max_voltage_limit_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set max voltage limit successfully.\r\n");
+        PRINTF("set max voltage limit successful.\r\n");
 
     //Change the min voltage limit of servo ID1 to 3.5V.
     primary_servo_set_min_voltage_limit(1, 35, order_buffer, &order_len);
@@ -1529,7 +1529,7 @@ int main() {
 
     ret = primary_servo_set_min_voltage_limit_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set min voltage limit successfully.\r\n");
+        PRINTF("set min voltage limit successful.\r\n");
 
     //Change the voltage limit of servo ID1 to 3.5~8.4V.
     write_buffer[0] = 84 & 0xff;
@@ -1576,7 +1576,7 @@ int main() {
 
     ret = primary_servo_set_max_pwm_limit_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set max pwm limit successfully.\r\n");
+        PRINTF("set max pwm limit successful.\r\n");
 
     //Change the max current limit of servo ID1 to 900mA.
     primary_servo_set_max_current_limit(1, 900, order_buffer, &order_len);
@@ -1597,7 +1597,7 @@ int main() {
 
     ret = primary_servo_set_max_current_limit_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set max current limit successfully.\r\n");
+        PRINTF("set max current limit successful.\r\n");
 
     //Change the current shutdown time of servo ID1 to 500ms.
     primary_servo_set_current_shutdown_time(1, 500, order_buffer, &order_len);
@@ -1618,7 +1618,7 @@ int main() {
 
     ret = primary_servo_set_current_shutdown_time_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set current shutdown time successfully.\r\n");
+        PRINTF("set current shutdown time successful.\r\n");
 
     //Change the CW deadband of servo ID1 to 0.2°.
     primary_servo_set_cw_deadband(1, 2, order_buffer, &order_len);
@@ -1639,7 +1639,7 @@ int main() {
 
     ret = primary_servo_set_cw_deadband_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set cw deadband successfully.\r\n");
+        PRINTF("set cw deadband successful.\r\n");
 
     //Change the CCW deadband of servo ID1 to 0.2°.
     primary_servo_set_ccw_deadband(1, 2, order_buffer, &order_len);
@@ -1660,7 +1660,7 @@ int main() {
 
     ret = primary_servo_set_ccw_deadband_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set ccw deadband successfully.\r\n");
+        PRINTF("set ccw deadband successful.\r\n");
 
     //Change the CW and CCW deadband of servo ID1 to 0.2°.
     write_buffer[0] = 2 & 0xff;
@@ -1707,7 +1707,7 @@ int main() {
 
     ret = primary_servo_set_pwm_punch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set pwm punch successfully.\r\n");
+        PRINTF("set pwm punch successful.\r\n");
 
     //Change the position control P gain of servo ID1 to 5995.
     primary_servo_set_position_control_p_gain(1, 5995, order_buffer, &order_len);
@@ -1728,7 +1728,7 @@ int main() {
 
     ret = primary_servo_set_position_control_p_gain_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set position control p gain successfully.\r\n");
+        PRINTF("set position control p gain successful.\r\n");
 
     //Change the position control I gain of servo ID1 to 5.
     primary_servo_set_position_control_i_gain(1, 5, order_buffer, &order_len);
@@ -1749,7 +1749,7 @@ int main() {
 
     ret = primary_servo_set_position_control_i_gain_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set position control i gain successfully.\r\n");
+        PRINTF("set position control i gain successful.\r\n");
 
     //Change the position control D gain of servo ID1 to 145.
     primary_servo_set_position_control_d_gain(1, 145, order_buffer, &order_len);
@@ -1770,7 +1770,7 @@ int main() {
 
     ret = primary_servo_set_position_control_d_gain_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set position control d gain successfully.\r\n");
+        PRINTF("set position control d gain successful.\r\n");
 
     //Change the position control PID gain of servo ID1 to 5995, 5, and 145 respectively.
     write_buffer[0] = 5995 & 0xff;
@@ -1821,7 +1821,7 @@ int main() {
 
     ret = primary_servo_set_led_condition_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set led condition successfully.\r\n");
+        PRINTF("set led condition successful.\r\n");
 
     //Change the shutdown condition of servo ID1 to turn on stall error, overheating error, voltage error, and angle error.
     primary_servo_set_shutdown_conditions(1, 39, order_buffer, &order_len);
@@ -1842,7 +1842,7 @@ int main() {
 
     ret = primary_servo_set_shutdown_conditions_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set shutdown conditions successfully.\r\n");
+        PRINTF("set shutdown conditions successful.\r\n");
 
     //Change the Flash switch of servo ID1 to ON.
     primary_servo_set_flash_switch(1, 1, order_buffer, &order_len);
@@ -1863,7 +1863,7 @@ int main() {
 
     ret = primary_servo_set_flash_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set flash switch successfully.\r\n");
+        PRINTF("set flash switch successful.\r\n");
 
     //Change the Flash switch of servo ID1 to OFF.
     primary_servo_set_flash_switch(1, 0, order_buffer, &order_len);
@@ -1884,7 +1884,7 @@ int main() {
 
     ret = primary_servo_set_flash_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set flash switch successfully.\r\n");
+        PRINTF("set flash switch successful.\r\n");
 
     //Change the LED switch of servo ID1 to ON.
     primary_servo_set_led_switch(1, 1, order_buffer, &order_len);
@@ -1905,7 +1905,7 @@ int main() {
 
     ret = primary_servo_set_led_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set led switch successfully.\r\n");
+        PRINTF("set led switch successful.\r\n");
 
     //Change the LED switch of servo ID1 to OFF.
     primary_servo_set_led_switch(1, 0, order_buffer, &order_len);
@@ -1926,7 +1926,7 @@ int main() {
 
     ret = primary_servo_set_led_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set led switch successfully.\r\n");
+        PRINTF("set led switch successful.\r\n");
 
     //Change the torque switch of servo ID1 to OFF.
     primary_servo_set_torque_switch(1, 0, order_buffer, &order_len);
@@ -1946,7 +1946,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set torque switch successfully.\r\n");
+        PRINTF("set torque switch successful.\r\n");
 
     //Change the control mode of servo ID1 to the PWM control mode.
     primary_servo_set_control_mode(1, 3, order_buffer, &order_len);
@@ -1966,7 +1966,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_control_mode_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set control mode successfully.\r\n");
+        PRINTF("set control mode successful.\r\n");
 
     //Change the torque switch of servo ID1 to ON.
     primary_servo_set_torque_switch(1, 1, order_buffer, &order_len);
@@ -1986,7 +1986,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set torque switch successfully.\r\n");
+        PRINTF("set torque switch successful.\r\n");
 
     //Change the target PWM of servo ID1 to -50%.
     primary_servo_set_target_pwm(1, -500, order_buffer, &order_len);
@@ -2007,7 +2007,7 @@ int main() {
 
     ret = primary_servo_set_target_pwm_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set target pwm successfully.\r\n");
+        PRINTF("set target pwm successful.\r\n");
 
     //Change the torque switch of servo ID1 to OFF.
     primary_servo_set_torque_switch(1, 0, order_buffer, &order_len);
@@ -2027,7 +2027,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set torque switch successfully.\r\n");
+        PRINTF("set torque switch successful.\r\n");
 
     //Change the control mode of servo ID1 to the current control mode.
     primary_servo_set_control_mode(1, 2, order_buffer, &order_len);
@@ -2047,7 +2047,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_control_mode_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set control mode successfully.\r\n");
+        PRINTF("set control mode successful.\r\n");
 
     //Change the torque switch of servo ID1 to ON.
     primary_servo_set_torque_switch(1, 1, order_buffer, &order_len);
@@ -2067,7 +2067,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set torque switch successfully.\r\n");
+        PRINTF("set torque switch successful.\r\n");
 
     //Change the target current of servo ID1 to -400mA.
     primary_servo_set_target_current(1, -400, order_buffer, &order_len);
@@ -2088,7 +2088,7 @@ int main() {
 
     ret = primary_servo_set_target_current_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set target current successfully.\r\n");
+        PRINTF("set target current successful.\r\n");
 
     //Change the torque switch of servo ID1 to OFF.
     primary_servo_set_torque_switch(1, 0, order_buffer, &order_len);
@@ -2108,7 +2108,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set torque switch successfully.\r\n");
+        PRINTF("set torque switch successful.\r\n");
 
     //Change the control mode of servo ID1 to the velocity base position control mode.
     primary_servo_set_control_mode(1, 1, order_buffer, &order_len);
@@ -2128,7 +2128,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_control_mode_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set control mode successfully.\r\n");
+        PRINTF("set control mode successful.\r\n");
 
     //Change the torque switch of servo ID1 to ON.
     primary_servo_set_torque_switch(1, 1, order_buffer, &order_len);
@@ -2148,7 +2148,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set torque switch successfully.\r\n");
+        PRINTF("set torque switch successful.\r\n");
 
     //Change the velocity base target velocity of servo ID1 to 360°/s.
     primary_servo_set_velocity_base_target_velocity(1, 3600, order_buffer, &order_len);
@@ -2169,7 +2169,7 @@ int main() {
 
     ret = primary_servo_set_velocity_base_target_velocity_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set velocity base target velocity successfully.\r\n");
+        PRINTF("set velocity base target velocity successful.\r\n");
 
     //Change the velocity base target ACC of servo ID1 to 500°/s².
     primary_servo_set_velocity_base_target_acc(1, 10, order_buffer, &order_len);
@@ -2190,7 +2190,7 @@ int main() {
 
     ret = primary_servo_set_velocity_base_target_acc_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set velocity base target acc successfully.\r\n");
+        PRINTF("set velocity base target acc successful.\r\n");
 
     //Change the velocity base target DEC of servo ID1 to 50°/s².
     primary_servo_set_velocity_base_target_dec(1, 1, order_buffer, &order_len);
@@ -2211,7 +2211,7 @@ int main() {
 
     ret = primary_servo_set_velocity_base_target_dec_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set velocity base target dec successfully.\r\n");
+        PRINTF("set velocity base target dec successful.\r\n");
 
     //Change the velocity base target position of servo ID1 to 150°.
     primary_servo_set_velocity_base_target_position(1, 1500, order_buffer, &order_len);
@@ -2232,7 +2232,7 @@ int main() {
 
     ret = primary_servo_set_velocity_base_target_position_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set velocity base target position successfully.\r\n");
+        PRINTF("set velocity base target position successful.\r\n");
 
     //Change the torque switch of servo ID1 to OFF.
     primary_servo_set_torque_switch(1, 0, order_buffer, &order_len);
@@ -2252,7 +2252,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set torque switch successfully.\r\n");
+        PRINTF("set torque switch successful.\r\n");
 
     //Change the control mode of servo ID1 to the time base position control mode.
     primary_servo_set_control_mode(1, 0, order_buffer, &order_len);
@@ -2272,7 +2272,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_control_mode_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set control mode successfully.\r\n");
+        PRINTF("set control mode successful.\r\n");
 
     //Change the torque switch of servo ID1 to ON.
     primary_servo_set_torque_switch(1, 1, order_buffer, &order_len);
@@ -2292,7 +2292,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set torque switch successfully.\r\n");
+        PRINTF("set torque switch successful.\r\n");
 
     //Change the time base target ACC of servo ID1 to 5.
     primary_servo_set_time_base_target_acc(1, 5, order_buffer, &order_len);
@@ -2312,7 +2312,7 @@ int main() {
 
     ret = primary_servo_set_time_base_target_acc_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set time base target acc successfully.\r\n");
+        PRINTF("set time base target acc successful.\r\n");
 
     //Change the time base target position and moving time of servo ID1 to 300°, 500ms respectively.
     primary_servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer, &order_len);
@@ -2333,7 +2333,7 @@ int main() {
 
     ret = primary_servo_set_time_base_target_position_and_moving_time_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set time base target position and moving time successfully.\r\n");
+        PRINTF("set time base target position and moving time successful.\r\n");
 
 #endif
 
@@ -2353,7 +2353,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write torque witch successfully.\r\n");
+        PRINTF("sync write torque witch successful.\r\n");
     }
     Sleep(80);
 
@@ -2368,7 +2368,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write control mode successfully.\r\n");
+        PRINTF("sync write control mode successful.\r\n");
     }
     Sleep(80);
 
@@ -2385,7 +2385,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write velocity base target acc successfully.\r\n");
+        PRINTF("sync write velocity base target acc successful.\r\n");
     }
     Sleep(80);
 
@@ -2402,7 +2402,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write velocity base target dec successfully.\r\n");
+        PRINTF("sync write velocity base target dec successful.\r\n");
     }
     Sleep(80);
 
@@ -2419,7 +2419,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write velocity base target velocity successfully.\r\n");
+        PRINTF("sync write velocity base target velocity successful.\r\n");
     }
     Sleep(80);
 
@@ -2436,7 +2436,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write velocity base target position successfully.\r\n");
+        PRINTF("sync write velocity base target position successful.\r\n");
     }
     Sleep(1000);
 
@@ -2454,7 +2454,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write velocity base target position and velocity successfully.\r\n");
+        PRINTF("sync write velocity base target position and velocity successful.\r\n");
     }
     Sleep(1000);
 
@@ -2476,7 +2476,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write velocity base target acc,dec,velocity and position successfully.\r\n");
+        PRINTF("sync write velocity base target acc,dec,velocity and position successful.\r\n");
     }
     Sleep(1000);
 
@@ -2491,7 +2491,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write torque witch successfully.\r\n");
+        PRINTF("sync write torque witch successful.\r\n");
     }
     Sleep(80);
 
@@ -2506,7 +2506,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write control mode successfully.\r\n");
+        PRINTF("sync write control mode successful.\r\n");
     }
     Sleep(80);
 
@@ -2522,7 +2522,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write time base target acc successfully.\r\n");
+        PRINTF("sync write time base target acc successful.\r\n");
     }
     Sleep(80);
 
@@ -2540,7 +2540,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write time base target position and moving time successfully.\r\n");
+        PRINTF("sync write time base target position and moving time successful.\r\n");
     }
     Sleep(1000);
 #endif
