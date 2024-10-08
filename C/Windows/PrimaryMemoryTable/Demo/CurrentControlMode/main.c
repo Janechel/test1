@@ -111,7 +111,7 @@ int main() {
     }
 
     //Change the torque switch of servo ID1 to OFF.
-    servo_set_torque_switch(1, 0, order_buffer, &order_len);
+    primary_servo_set_torque_switch(1, 0, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE) {
@@ -124,10 +124,12 @@ int main() {
         return FALSE;
     }
     Sleep(80);
-    servo_set_torque_switch_analysis(pack);
+    ret = primary_servo_set_torque_switch_analysis(pack);
+    if (ret == PRIMARY_SUCCESS)
+        PRINTF("set torque switch successfully.\r\n");
 
     //Change the control mode of servo ID1 to the current control mode.
-    servo_set_control_mode(1, 2, order_buffer, &order_len);
+    primary_servo_set_control_mode(1, 2, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE) {
@@ -140,10 +142,12 @@ int main() {
         return FALSE;
     }
     Sleep(80);
-    servo_set_control_mode_analysis(pack);
+    ret = primary_servo_set_control_mode_analysis(pack);
+    if (ret == PRIMARY_SUCCESS)
+        PRINTF("set control mode successfully.\r\n");
 
     //Change the torque switch of servo ID1 to ON.
-    servo_set_torque_switch(1, 1, order_buffer, &order_len);
+    primary_servo_set_torque_switch(1, 1, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE) {
@@ -156,10 +160,12 @@ int main() {
         return FALSE;
     }
     Sleep(80);
-    servo_set_torque_switch_analysis(pack);
+    ret = primary_servo_set_torque_switch_analysis(pack);
+    if (ret == PRIMARY_SUCCESS)
+        PRINTF("set torque switch successfully.\r\n");
 
     //Change the target PWM of servo ID1 to 100mA.
-    servo_set_target_current(1, 100, order_buffer, &order_len);
+    primary_servo_set_target_current(1, 100, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE) {
@@ -171,9 +177,11 @@ int main() {
     if (ret == FALSE) {
         return FALSE;
     }
-    Sleep(3000);
+    Sleep(80);
 
-    servo_set_target_current_analysis(pack);
+    ret = primary_servo_set_target_current_analysis(pack);
+    if (ret == PRIMARY_SUCCESS)
+        PRINTF("set target current successfully.\r\n");
 
     //Close Serial
     CloseHandle(hSerial);

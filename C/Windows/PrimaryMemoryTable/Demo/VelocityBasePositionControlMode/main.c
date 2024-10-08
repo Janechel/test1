@@ -99,16 +99,16 @@ int main() {
     uint8_t pack[20] = { 0 };                                              //Store the received status packet
     uint8_t ret;                                                           //Status Flag
     uint8_t write_buffer[20] = { 0 };                                      //Write data to the memory table
-    
-    struct servo_sync_parameter servo;
+
+    struct primary_servo_sync_parameter servo;
 
     servo.id_counts = 2;            //Sync write two servos
     servo.id[0] = 1;                //Set the ID of the first servo to 1
     servo.id[1] = 2;                //Set the ID of the second servo to 2
 
     //Open serial
-    HANDLE hSerial = CreateFile("\\\\.\\COM16", GENERIC_READ | GENERIC_WRITE, 0, NULL,
-        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hSerial = CreateFile("COM3", GENERIC_READ | GENERIC_WRITE, 0, NULL,
+                                OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     //uart init
     ret = uart_init(hSerial);
@@ -120,7 +120,7 @@ int main() {
     //Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo.torque_switch[0] = 0;
     servo.torque_switch[1] = 0;
-    servo_sync_write_torque_switch(servo, order_buffer, &order_len);
+    primary_servo_sync_write_torque_switch(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
     {
@@ -128,14 +128,14 @@ int main() {
     }
     else
     {
-        PRINTF("Sync Write torque witch successfully.\r\n");
+        PRINTF("sync write torque witch successfully.\r\n");
     }
     Sleep(80);
 
     //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
     servo.control_mode[0] = 1;
     servo.control_mode[1] = 1;
-    servo_sync_write_control_mode(servo, order_buffer, &order_len);
+    primary_servo_sync_write_control_mode(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
     {
@@ -143,12 +143,12 @@ int main() {
     }
     else
     {
-        PRINTF("Sync Write control mode successfully.\r\n");
+        PRINTF("sync write control mode successfully.\r\n");
     }
     Sleep(80);
 
     //Change the velocity base target position of servo ID1 to 150°.
-    servo_set_velocity_base_target_position(1, 1500, order_buffer, &order_len);
+    primary_servo_set_velocity_base_target_position(1, 1500, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -164,7 +164,9 @@ int main() {
     }
     Sleep(1000);
 
-    servo_set_velocity_base_target_position_analysis(pack);
+    ret = primary_servo_set_velocity_base_target_position_analysis(pack);
+    if (ret == PRIMARY_SUCCESS)
+        PRINTF("set velocity base target position successfully.\r\n");
 
     //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s.
     write_buffer[0] = 3000 & 0xff;
@@ -172,7 +174,7 @@ int main() {
     write_buffer[2] = 3600 & 0xff;
     write_buffer[3] = (3600 >> 8) & 0xff;
 
-    servo_write(1, 0x35, 4, write_buffer, order_buffer, &order_len);
+    primary_servo_write(1, 0x35, 4, write_buffer, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -189,7 +191,7 @@ int main() {
     PRINTF("servo pack is: ");
     for (uint8_t i = 0; i < ret; i++)
     {
-        PRINTF("0x%x ", pack[i]);
+        PRINTF("0x%02x ", pack[i]);
     }
     PRINTF("\r\n");
     Sleep(1000);
@@ -202,7 +204,7 @@ int main() {
     write_buffer[4] = 10 & 0xff;
     write_buffer[5] = 1 & 0xff;
 
-    servo_write(1, 0x35, 6, write_buffer, order_buffer, &order_len);
+    primary_servo_write(1, 0x35, 6, write_buffer, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -219,7 +221,7 @@ int main() {
     PRINTF("servo pack is: ");
     for (uint8_t i = 0; i < ret; i++)
     {
-        PRINTF("0x%x ", pack[i]);
+        PRINTF("0x%02x ", pack[i]);
     }
     PRINTF("\r\n");
     Sleep(1000);
@@ -228,7 +230,7 @@ int main() {
     servo.position[0] = 1500;
     servo.position[1] = 0;
 
-    servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
+    primary_servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
     {
@@ -236,7 +238,7 @@ int main() {
     }
     else
     {
-        PRINTF("Sync Write velocity base target position successfully.\r\n");
+        PRINTF("sync write velocity base target position successfully.\r\n");
     }
     Sleep(1000);
 
@@ -247,7 +249,7 @@ int main() {
     servo.position[0] = 3000;
     servo.position[1] = 1500;
 
-    servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
+    primary_servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -256,7 +258,7 @@ int main() {
     }
     else
     {
-        PRINTF("Sync Write velocity base target position and velocity successfully.\r\n");
+        PRINTF("sync write velocity base target position and velocity successfully.\r\n");
     }
     Sleep(1000);
 
@@ -271,7 +273,7 @@ int main() {
     servo.dec_velocity[0] = 1;
     servo.dec_velocity[1] = 10;
 
-    servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
+    primary_servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)

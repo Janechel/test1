@@ -77,7 +77,7 @@ uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
     {
         if (bytesRead > 0)
         {
-            return TRUE;
+            return bytesRead;
         }
         else
         {
@@ -99,11 +99,11 @@ int main() {
     uint8_t pack[20] = { 0 };                                                                               //Store the received status packet
     uint8_t ret;                                                                                            //Status Flag
     uint8_t write_buffer[20] = { 0 };                                                                       //Write data to the memory table
-    struct servo_sync_parameter servo;
+    struct primary_servo_sync_parameter servo;
 
     //Open Serial
-    HANDLE hSerial = CreateFile("\\\\.\\COM16", GENERIC_READ | GENERIC_WRITE, 0, NULL,
-        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hSerial = CreateFile("COM3", GENERIC_READ | GENERIC_WRITE, 0, NULL,
+                                OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     //uart init
     ret = uart_init(hSerial);
@@ -119,7 +119,7 @@ int main() {
     //Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo.torque_switch[0] = 0;
     servo.torque_switch[1] = 0;
-    servo_sync_write_torque_switch(servo, order_buffer, &order_len);
+    primary_servo_sync_write_torque_switch(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
     {
@@ -127,14 +127,14 @@ int main() {
     }
     else
     {
-        PRINTF("Sync Write torque witch successfully.\r\n");
+        PRINTF("sync write torque witch successfully.\r\n");
     }
     Sleep(80);
 
     //Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
     servo.control_mode[0] = 0;
     servo.control_mode[1] = 0;
-    servo_sync_write_control_mode(servo, order_buffer, &order_len);
+    primary_servo_sync_write_control_mode(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
     {
@@ -142,13 +142,13 @@ int main() {
     }
     else
     {
-        PRINTF("Sync Write control mode successfully.\r\n");
+        PRINTF("sync write control mode successfully.\r\n");
     }
     Sleep(80);
 
 
     //Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
-    servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer, &order_len);
+    primary_servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -164,7 +164,7 @@ int main() {
     }
     Sleep(1000);
 
-    servo_set_time_base_target_position_and_moving_time_analysis(pack);
+    primary_servo_set_time_base_target_position_and_moving_time_analysis(pack);
 
     //Change the time base target ACC, position, and moving time of servo ID1 to 0°, 300°, and 1s, respectively.
     write_buffer[0] = 0;
@@ -173,7 +173,7 @@ int main() {
     write_buffer[3] = 1000 & 0xff;
     write_buffer[4] = (1000 >> 8) & 0xff;
 
-    servo_write(1, 0x3B, 5, write_buffer, order_buffer, &order_len);
+    primary_servo_write(1, 0x3B, 5, write_buffer, order_buffer, &order_len);
 
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
@@ -190,7 +190,7 @@ int main() {
     PRINTF("servo pack is: ");
     for (uint8_t i = 0; i < ret; i++)
     {
-        PRINTF("0x%x ", pack[i]);
+        PRINTF("0x%02x ", pack[i]);
     }
     PRINTF("\r\n");
     Sleep(1000);
@@ -201,7 +201,7 @@ int main() {
     servo.time[0] = 500;
     servo.time[1] = 1000;
 
-    servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
+    primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
     {
@@ -209,7 +209,7 @@ int main() {
     }
     else
     {
-        PRINTF("Sync Write time base target position and moving time successfully.\r\n");
+        PRINTF("sync write time base target position and moving time successfully.\r\n");
     }
     Sleep(1000);
 
@@ -219,7 +219,7 @@ int main() {
     servo.time[0] = 1000;
     servo.time[1] = 500;
 
-    servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
+    primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
     ret = order_send(hSerial, order_buffer, order_len);
     if (ret == FALSE)
     {
@@ -227,7 +227,7 @@ int main() {
     }
     else
     {
-        PRINTF("Sync Write time base target position and moving time successfully.\r\n");
+        PRINTF("sync write time base target position and moving time successfully.\r\n");
     }
     Sleep(1000);
 
