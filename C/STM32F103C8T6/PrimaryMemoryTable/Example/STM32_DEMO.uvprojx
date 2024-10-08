@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Library;.\Start;.\User;..\..\..\C;..\..\src</IncludePath>
+              <IncludePath>.\Library;.\Start;.\User;..\..\..\C;..\..\..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -675,14 +675,14 @@
           <GroupName>servo</GroupName>
           <Files>
             <File>
-              <FileName>servo.c</FileName>
+              <FileName>PrimaryServo.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\src\servo.c</FilePath>
+              <FilePath>..\..\..\Src\PrimaryServo.c</FilePath>
             </File>
             <File>
-              <FileName>servo.h</FileName>
+              <FileName>PrimaryServo.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\src\servo.h</FilePath>
+              <FilePath>..\..\..\Src\PrimaryServo.h</FilePath>
             </File>
           </Files>
         </Group>
