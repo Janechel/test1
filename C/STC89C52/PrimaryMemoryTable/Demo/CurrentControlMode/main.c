@@ -82,47 +82,47 @@ void main()
 	{
 		//Change the torque switch of servo ID1 to OFF.
 		uart_init();
-		servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
+        primary_servo_set_torque_switch(1, 0, order_buffer,&order_buffer_len);
 
 		uart_send_buffer(order_buffer, order_buffer_len);
 
 		uart_init_recv();
 		delay_ms(10);
-		servo_set_torque_switch_analysis(receive_data);	  
+        primary_servo_set_torque_switch_analysis(receive_data);
 		delay_ms(1000);
 
 		//Change the control mode of servo ID1 to the current control mode.
 		uart_init();
-		servo_set_control_mode(1, 2, order_buffer,&order_buffer_len);
+        primary_servo_set_control_mode(1, 2, order_buffer,&order_buffer_len);
 
 		uart_send_buffer(order_buffer, order_buffer_len);
 
 		uart_init_recv();
 		delay_ms(10);
-		servo_set_control_mode_analysis(receive_data);	
+        primary_servo_set_control_mode_analysis(receive_data);
 		delay_ms(1000);
 
 		//Change the torque switch of servo ID1 to ON.
 		uart_init();
-		servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
+        primary_servo_set_torque_switch(1, 1, order_buffer,&order_buffer_len);
 
 		uart_send_buffer(order_buffer, order_buffer_len);
 
 		uart_init_recv();
 		delay_ms(10);
-		servo_set_torque_switch_analysis(receive_data);	  
+        primary_servo_set_torque_switch_analysis(receive_data);
 		delay_ms(1000);
 
 		//Change the target PWM of servo ID1 to 100mA.
 		uart_init();
-		servo_set_target_current(1, 100, order_buffer,&order_buffer_len);
+        primary_servo_set_target_current(1, 100, order_buffer,&order_buffer_len);
 
 		uart_send_buffer(order_buffer, order_buffer_len);
 
 		uart_init_recv();
 		delay_ms(10);
 
-		servo_set_target_current_analysis(receive_data);   
+        primary_servo_set_target_current_analysis(receive_data);
 		delay_ms(3000);
 	}		
 }
