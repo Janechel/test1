@@ -324,7 +324,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>D:\STC89C52_SDK;.\.idea;D:\STC89C52_SDK;..\..\Src</IncludePath>
+              <IncludePath>D:\STC89C52_SDK;.\.idea;D:\STC89C52_SDK;..\..\Src;..\..\..\Src</IncludePath>
             </VariousControls>
           </C51>
           <Ax51>
