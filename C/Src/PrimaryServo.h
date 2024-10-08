@@ -495,138 +495,138 @@ uint8_t primary_servo_set_time_base_target_acc_analysis(uint8_t* response_packet
 uint8_t primary_servo_set_time_base_target_position_and_moving_time_analysis(uint8_t* response_packet);
 
 //Parsing the servo response packet for the present current
-uint8_t primary_servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_present_current_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the present position
-uint8_t primary_servo_read_present_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_present_position_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the present position and current
 uint8_t primary_servo_read_present_position_and_present_current_analysis(uint8_t* response_packet, uint16_t* position, uint16_t* current);
 
 //Parsing the servo response packet for the present velocity
-uint8_t primary_servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_present_velocity_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the present profile position
-uint8_t primary_servo_read_present_profile_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_present_profile_position_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the present profile velocity
-uint8_t primary_servo_read_present_profile_velocity_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_present_profile_velocity_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the present pwm
-uint8_t primary_servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_present_pwm_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the present temperature
-uint8_t primary_servo_read_present_temperature_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_present_temperature_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the present voltage
-uint8_t primary_servo_read_present_voltage_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_present_voltage_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the time base target moving time
-uint8_t primary_servo_read_time_base_target_moving_time_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_time_base_target_moving_time_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the time base target position
-uint8_t primary_servo_read_time_base_target_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_time_base_target_position_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the time base target accelerated speed
-uint8_t primary_servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the velocity base target deceleration
-uint8_t primary_servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the velocity base target accelerated speed
-uint8_t primary_servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the velocity base target velocity
-uint8_t primary_servo_read_velocity_base_target_velocity_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_velocity_base_target_velocity_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the velocity base target position
-uint8_t primary_servo_read_velocity_base_target_position_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_velocity_base_target_position_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the target current
-uint8_t primary_servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_target_current_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the target pwm
-uint8_t primary_servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_target_pwm_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the torque switch
-uint8_t primary_servo_read_torque_switch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_torque_switch_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the led switch
-uint8_t primary_servo_read_led_switch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_led_switch_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the flash switch
-uint8_t primary_servo_read_flash_switch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_flash_switch_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the current offset
-uint8_t primary_servo_read_current_offset_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_current_offset_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the calibration
-uint8_t primary_servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_calibration_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the control mode
-uint8_t primary_servo_read_control_mode_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_control_mode_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the shutdown condition
-uint8_t primary_servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the led condition
-uint8_t primary_servo_read_led_condition_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_led_condition_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the position control d gain
-uint8_t primary_servo_read_position_control_d_gain_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_position_control_d_gain_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the position control i gain
-uint8_t primary_servo_read_position_control_i_gain_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_position_control_i_gain_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the position control p gain
-uint8_t primary_servo_read_position_control_p_gain_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_position_control_p_gain_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the pwm punch
-uint8_t primary_servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_pwm_punch_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the ccw deadband
-uint8_t primary_servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the cw deadband
-uint8_t primary_servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_cw_deadband_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the current shutdown time
-uint8_t primary_servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the max current limit
-uint8_t primary_servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_max_current_limit_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the max pwm limit
-uint8_t primary_servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the max voltage limit
-uint8_t primary_servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the min voltage limit
-uint8_t primary_servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the max temperature limit
-uint8_t primary_servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the max angle limit
-uint8_t primary_servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the min angle limit
-uint8_t primary_servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the return level
-uint8_t primary_servo_read_return_level_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_return_level_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the return delay time
-uint8_t primary_servo_read_return_delay_time_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_return_delay_time_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the baud rate
-uint8_t primary_servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_baud_rate_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the model information
 uint8_t primary_servo_read_model_information_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the firmware version
-uint8_t primary_servo_read_firmware_version_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_read_firmware_version_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 #endif
