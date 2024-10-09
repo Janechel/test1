@@ -253,7 +253,7 @@ int main(void)
 
     ret = primary_servo_read_present_position_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			  PRINTF("present position is %d",analysis_data);
+			  PRINTF("present position is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 		
@@ -271,7 +271,7 @@ int main(void)
 
     ret = primary_servo_read_present_current_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("present current is %d",analysis_data);
+			PRINTF("present current is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 		
@@ -307,7 +307,7 @@ int main(void)
 		
     ret = primary_servo_read_present_velocity_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present velocity is %d",analysis_data);
+      PRINTF("present velocity is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -326,7 +326,7 @@ int main(void)
 
     ret = primary_servo_read_present_profile_position_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present profile position is %d",analysis_data);
+      PRINTF("present profile position is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -345,7 +345,7 @@ int main(void)
 
     ret = primary_servo_read_present_profile_velocity_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present profile velocity is %d",analysis_data);
+      PRINTF("present profile velocity is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -364,7 +364,7 @@ int main(void)
 
     ret = primary_servo_read_present_pwm_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present pwm analysis is %d",analysis_data);
+      PRINTF("present pwm analysis is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -383,7 +383,7 @@ int main(void)
 
     ret = primary_servo_read_present_temperature_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present temperature is %d",analysis_data);
+      PRINTF("present temperature is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -402,7 +402,7 @@ int main(void)
 
     ret = primary_servo_read_present_voltage_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present voltage is %d",analysis_data);
+      PRINTF("present voltage is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -421,7 +421,7 @@ int main(void)
 
     ret = primary_servo_read_time_base_target_moving_time_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present time base target moving time is %d",analysis_data);
+      PRINTF("present time base target moving time is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -440,7 +440,7 @@ int main(void)
 
     ret = primary_servo_read_time_base_target_position_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present time base target position is %d",analysis_data);
+      PRINTF("present time base target position is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -458,7 +458,7 @@ int main(void)
 
     ret = primary_servo_read_time_base_target_acc_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present time base target acc is %d",analysis_data);
+      PRINTF("present time base target acc is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -518,7 +518,7 @@ int main(void)
 		
     ret = primary_servo_read_velocity_base_target_dec_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present velocity base target dec is %d",analysis_data);
+      PRINTF("present velocity base target dec is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -537,7 +537,7 @@ int main(void)
 
     ret = primary_servo_read_velocity_base_target_acc_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present velocity base target acc is %d",analysis_data);
+      PRINTF("present velocity base target acc is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -556,7 +556,7 @@ int main(void)
 
     ret = primary_servo_read_velocity_base_target_velocity_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present velocity base target velocity is %d",analysis_data);
+      PRINTF("present velocity base target velocity is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -575,7 +575,7 @@ int main(void)
 
     ret = primary_servo_read_velocity_base_target_position_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-      PRINTF("present velocity base target position is %d",analysis_data);
+      PRINTF("present velocity base target position is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -635,7 +635,7 @@ int main(void)
 
     ret = primary_servo_read_target_current_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("target current is %d",analysis_data);
+			PRINTF("target current is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -654,7 +654,7 @@ int main(void)
 
     ret = primary_servo_read_target_pwm_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("target pwm is %d",analysis_data);
+			PRINTF("target pwm is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -673,7 +673,7 @@ int main(void)
 
     ret = primary_servo_read_torque_switch_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("torque switch is %d",analysis_data);
+			PRINTF("torque switch is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -692,7 +692,7 @@ int main(void)
 
     ret = primary_servo_read_led_switch_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("led switch is %d",analysis_data);
+			PRINTF("led switch is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -710,7 +710,7 @@ int main(void)
 
     ret = primary_servo_read_flash_switch_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("flash switch is %d",analysis_data);
+			PRINTF("flash switch is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -729,7 +729,7 @@ int main(void)
 
     ret = primary_servo_read_calibration_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("calibration is %d",analysis_data);
+			PRINTF("calibration is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -748,7 +748,7 @@ int main(void)
 
     ret = primary_servo_read_control_mode_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("control mode is %d",analysis_data);
+			PRINTF("control mode is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -767,7 +767,7 @@ int main(void)
 
     ret = primary_servo_read_shutdown_condition_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("shutdown condition is %d",analysis_data);
+			PRINTF("shutdown condition is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -786,7 +786,7 @@ int main(void)
 
     ret = primary_servo_read_led_condition_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("led condition is %d",analysis_data);
+			PRINTF("led condition is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -805,7 +805,7 @@ int main(void)
 
     ret = primary_servo_read_position_control_d_gain_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("position control d gain is %d",analysis_data);
+			PRINTF("position control d gain is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -824,7 +824,7 @@ int main(void)
 
     ret = primary_servo_read_position_control_i_gain_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("position control i gain is %d",analysis_data);
+			PRINTF("position control i gain is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -843,7 +843,7 @@ int main(void)
 
     ret = primary_servo_read_position_control_p_gain_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("position control p gain is %d",analysis_data);
+			PRINTF("position control p gain is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -882,7 +882,7 @@ int main(void)
 
     ret = primary_servo_read_pwm_punch_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("pwm punch is %d",analysis_data);
+			PRINTF("pwm punch is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -901,7 +901,7 @@ int main(void)
 
     ret = primary_servo_read_ccw_deadband_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("ccw deadband is %d",analysis_data);
+			PRINTF("ccw deadband is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -920,7 +920,7 @@ int main(void)
 
     ret = primary_servo_read_cw_deadband_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("cw deadband is %d",analysis_data);
+			PRINTF("cw deadband is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -939,7 +939,7 @@ int main(void)
 
     ret = primary_servo_read_current_shutdown_time_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("current shutdown time is %d",analysis_data);
+			PRINTF("current shutdown time is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -958,7 +958,7 @@ int main(void)
 
     ret = primary_servo_read_max_current_limit_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("max current limit is %d",analysis_data);
+			PRINTF("max current limit is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -977,7 +977,7 @@ int main(void)
 
     ret = primary_servo_read_max_pwm_limit_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("max pwm limit is %d",analysis_data);
+			PRINTF("max pwm limit is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -996,7 +996,7 @@ int main(void)
 
     ret = primary_servo_read_max_voltage_limit_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("max voltage limit is %d",analysis_data);
+			PRINTF("max voltage limit is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -1015,7 +1015,7 @@ int main(void)
 
     ret = primary_servo_read_min_voltage_limit_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("min voltage limit is %d",analysis_data);
+			PRINTF("min voltage limit is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 		
@@ -1054,7 +1054,7 @@ int main(void)
 
     ret = primary_servo_read_max_temperature_limit_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("max temperature limit is %d",analysis_data);
+			PRINTF("max temperature limit is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -1073,7 +1073,7 @@ int main(void)
 
     ret = primary_servo_read_max_angle_limit_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("max angle limit is %d",analysis_data);
+			PRINTF("max angle limit is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -1092,7 +1092,7 @@ int main(void)
 
     ret = primary_servo_read_min_angle_limit_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("min angle limit is %d",analysis_data);
+			PRINTF("min angle limit is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -1131,7 +1131,7 @@ int main(void)
 
     ret = primary_servo_read_return_level_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("return level is %d",analysis_data);
+			PRINTF("return level is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -1150,7 +1150,7 @@ int main(void)
 
     ret = primary_servo_read_return_delay_time_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("return delay time is %d",analysis_data);
+			PRINTF("return delay time is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -1169,7 +1169,7 @@ int main(void)
 
     ret = primary_servo_read_baud_rate_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("baud rate is %d",analysis_data);
+			PRINTF("baud rate is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -1188,7 +1188,7 @@ int main(void)
 
     ret = primary_servo_read_model_information_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("model information is %d",analysis_data);
+			PRINTF("model information is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 
@@ -1207,7 +1207,7 @@ int main(void)
 
     ret = primary_servo_read_firmware_version_analysis(receive, &analysis_data);
     if(ret == SUCCESS)
-			PRINTF("firmware version is %d",analysis_data);
+			PRINTF("firmware version is %d\r\n",analysis_data);
 		HAL_Delay(1000);
 #endif
 		
@@ -1236,7 +1236,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//Change the velocity base target velocity of the servo ID1, ID2 to 360¡ã/s2 and 720¡ã/s2, respectively.
+		//Change the velocity base target velocity of the servo ID1, ID2 to 360ï¿½ï¿½/s2 and 720ï¿½ï¿½/s2, respectively.
     servo.velocity[0] = 3600;
     servo.velocity[1] = 7200;
 		
@@ -1248,7 +1248,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//Change the velocity base target ACC of servo ID1, ID2 to 500¡ã/s2 and 50¡ã/s2, respectively.
+		//Change the velocity base target ACC of servo ID1, ID2 to 500ï¿½ï¿½/s2 and 50ï¿½ï¿½/s2, respectively.
     servo.acc_velocity[0] = 10;          
     servo.acc_velocity[1] = 1;    
 		
@@ -1260,7 +1260,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//Change the velocity base target DEC of servo ID1, ID2 to 50¡ã/s2 and 500¡ã/s2, respectively.
+		//Change the velocity base target DEC of servo ID1, ID2 to 50ï¿½ï¿½/s2 and 500ï¿½ï¿½/s2, respectively.
     servo.dec_velocity[0] = 1;           
     servo.dec_velocity[1] = 10;    
 		
@@ -1272,7 +1272,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//Change the velocity base target velocity of the servo ID1, ID2 to 150¡ã midpoint and 0¡ã position, respectively.
+		//Change the velocity base target velocity of the servo ID1, ID2 to 150ï¿½ï¿½ midpoint and 0ï¿½ï¿½ position, respectively.
     servo.position[0] = 1500;
     servo.position[1] = 0;
 		
@@ -1298,7 +1298,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//SChange the velocity base target velocity of servo ID1 ,ID2 to 3600 and 3600, position to 0,0, acceleration to 500¡ã/s2, 500¡ã/s2, deceleration to 500¡ã/s2, 500¡ã/s2, respectively
+		//SChange the velocity base target velocity of servo ID1 ,ID2 to 3600 and 3600, position to 0,0, acceleration to 500ï¿½ï¿½/s2, 500ï¿½ï¿½/s2, deceleration to 500ï¿½ï¿½/s2, 500ï¿½ï¿½/s2, respectively
     servo.velocity[0] = 3600;
     servo.velocity[1] = 3600;
     servo.position[0] = 0;
@@ -1353,7 +1353,7 @@ int main(void)
 #endif
 
 #if SYNC_WRITE_TEST
-		//Change the time base target position and moving time of servo ID1 to 150¡ã midpoint and 1s, 0¡ã and 500ms respectively.
+		//Change the time base target position and moving time of servo ID1 to 150ï¿½ï¿½ midpoint and 1s, 0ï¿½ï¿½ and 500ms respectively.
     servo.position[0] = 1500;
     servo.position[1] = 0;
     servo.time[0] = 1000;
@@ -1425,7 +1425,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the min angle limit of servo ID1 to 0¡ã.
+    //Change the min angle limit of servo ID1 to 0ï¿½ï¿½.
     primary_servo_set_min_angle_limit(1, 0, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -1444,7 +1444,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the max angle limit of servo ID1 to 300¡ã.
+    //Change the max angle limit of servo ID1 to 300ï¿½ï¿½.
     primary_servo_set_max_angle_limit(1, 3000, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -1463,7 +1463,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the angle limit of servo ID1 to 0¡ã~300¡ã.
+    //Change the angle limit of servo ID1 to 0ï¿½ï¿½~300ï¿½ï¿½.
     write_buffer[0] = 0 & 0xff;;
     write_buffer[1] = (0 >> 8) & 0xff;
     write_buffer[2] = 3000 & 0xff;
@@ -1488,7 +1488,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the max temperature limit of servo ID1 to 65¡æ.
+    //Change the max temperature limit of servo ID1 to 65ï¿½ï¿½.
     primary_servo_set_max_temperature_limit(1, 65, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -1625,7 +1625,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the CW deadband of servo ID1 to 0.2¡ã.
+    //Change the CW deadband of servo ID1 to 0.2ï¿½ï¿½.
     primary_servo_set_cw_deadband(1, 2, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -1644,7 +1644,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the CCW deadband of servo ID1 to 0.2¡ã.
+    //Change the CCW deadband of servo ID1 to 0.2ï¿½ï¿½.
     primary_servo_set_ccw_deadband(1, 2, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -1663,7 +1663,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the CW and CCW deadband of servo ID1 to 0.2¡ã.
+    //Change the CW and CCW deadband of servo ID1 to 0.2ï¿½ï¿½.
     write_buffer[0] = 2 & 0xff;
     write_buffer[1] = 2 & 0xff;
 
@@ -2112,7 +2112,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the velocity base target velocity of servo ID1 to 360¡ã/s.
+    //Change the velocity base target velocity of servo ID1 to 360ï¿½ï¿½/s.
     primary_servo_set_velocity_base_target_velocity(1, 3600, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -2131,7 +2131,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the velocity base target ACC of servo ID1 to 500¡ã/s2.
+    //Change the velocity base target ACC of servo ID1 to 500ï¿½ï¿½/s2.
     primary_servo_set_velocity_base_target_acc(1, 10, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -2150,7 +2150,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the velocity base target DEC of servo ID1 to 50¡ã/s2.
+    //Change the velocity base target DEC of servo ID1 to 50ï¿½ï¿½/s2.
     primary_servo_set_velocity_base_target_dec(1, 1, order_buffer,&order_len);
 
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -2169,7 +2169,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the velocity base target position of servo ID1 to 150¡ã.
+    //Change the velocity base target position of servo ID1 to 150ï¿½ï¿½.
     primary_servo_set_velocity_base_target_position(1, 1500, order_buffer,&order_len);
    
     HAL_HalfDuplex_EnableTransmitter(&huart1);
@@ -2264,7 +2264,7 @@ int main(void)
 #endif
 
 #if WRITE_TEST
-    //Change the time base target position and moving time of servo ID1 to 300¡ã, 500ms respectively.
+    //Change the time base target position and moving time of servo ID1 to 300ï¿½ï¿½, 500ms respectively.
     primary_servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_len);
    
     HAL_HalfDuplex_EnableTransmitter(&huart1);
