@@ -1688,7 +1688,7 @@ uint8_t primary_servo_sync_write_time_base_target_position_and_moving_time(struc
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_ping_analysis(uint8_t* response_packet, uint16_t* analysis_data)
+uint8_t primary_servo_ping_analysis(uint8_t* response_packet, uint32_t* analysis_data)
 {
     uint8_t ret;
     uint8_t* data_buffer = NULL;

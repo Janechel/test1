@@ -390,7 +390,7 @@ uint8_t primary_servo_sync_write_time_base_target_acc(struct primary_servo_sync_
 uint8_t primary_servo_sync_write_time_base_target_position_and_moving_time(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len);
 
 //Parsing the servo response packet for the PING command
-uint8_t primary_servo_ping_analysis(uint8_t* response_packet, uint16_t* analysis_data);
+uint8_t primary_servo_ping_analysis(uint8_t* response_packet, uint32_t* analysis_data);
 
 //Parsing the servo response packet for the factory reset command
 uint8_t primary_servo_factory_reset_analysis(uint8_t* response_packet);
