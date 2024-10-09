@@ -652,26 +652,6 @@ int main()
     }
     Sleep(20);
 
-    //Read the current offset of servo ID1.
-    primary_servo_read_current_offset(1, order_buffer, &order_len);
-
-    serialPort.Write(order_buffer, order_len, &bytesWritten);
-    Sleep(1);
-
-    if (serialPort.Read(pack, &bytesRead))
-    {
-        ret = primary_servo_read_current_offset_analysis(pack, &analysis_data);
-        if (ret == PRIMARY_SUCCESS)
-        {
-            PRINTF("present current offset is: %d\r\n", analysis_data);
-        }
-    }
-    else
-    {
-        PRINTF("Failed to read data.\r\n");
-    }
-    Sleep(20);
-
     //Read the calibration of servo ID1.
     primary_servo_read_calibration(1, order_buffer, &order_len);
 
