@@ -1,75 +1,69 @@
 #include <Arduino.h>
-#include "servo.h"
+#include "PrimaryServo.h"
+
+#define ESP32_BOARD
+
+#if defined(ESP32_BOARD)
+#define SERVO_SERIAL Serial2
+void readFunction(uint8_t* pack, uint8_t pack_len) {
+    SERVO_SERIAL.read(pack, pack_len);
+}
+#else
+#define SERVO_SERIAL Serial
+void readFunction(uint8_t* pack, uint8_t pack_len) {
+    SERVO_SERIAL.readBytes(pack, pack_len);
+}
+#endif
 
 uint8_t ret;                              //Change Unknown Servo ID Test
 uint8_t order_buffer[40];                 //Store Generated Instructions
 uint8_t order_len;                        //Instruction Length
 uint8_t pack[40];                         //Store the received status packet
 uint8_t pack_len;                         //Response packet length.
-uint16_t analysis_data;                   //Data parsed from the status packet
 uint8_t write_buffer[20];                 //Write data to the memory table
 
-struct servo_sync_parameter servo;
-
-servo.id_counts = 2;            //Sync write two servos
-servo.id[0] = 1;                //Set the ID of the first servo to 1
-servo.id[1] = 2;                //Set the ID of the second servo to 2
+struct primary_servo_sync_parameter servo;
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial2.begin(1000000, SERIAL_8N1, 16, 17);  
+    // put your setup code here, to run once:
+    SERVO_SERIAL.begin(1000000, SERIAL_8N1, 16, 17);
 }
 
 void loop() {
+    servo.id_counts = 2;            //Sync write two servos
+    servo.id[0] = 1;                //Set the ID of the first servo to 1
+    servo.id[1] = 2;                //Set the ID of the second servo to 2
+
     //Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo.torque_switch[0] = 0;
     servo.torque_switch[1] = 0;
 
-    servo_sync_write_torque_switch(servo, order_buffer,&order_len);
-
-    if (order_len == Serial2.write(order_buffer, order_len))
-    {
-        PRINTF("Sync Write torque witch successfully.\r\n");
-    }
-    else
-    {
-        PRINTF("Failed to send data.\r\n");
-    }
+    primary_servo_sync_write_torque_switch(servo, order_buffer,&order_len);
+    SERVO_SERIAL.write(order_buffer, order_len);
+    PRINTF("sync write torque switch successful.\r\n");
     delay(1000);
 
     //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
     servo.control_mode[0] = 1;
     servo.control_mode[1] = 1;
-    servo_sync_write_control_mode(servo, order_buffer,&order_len);
+    primary_servo_sync_write_control_mode(servo, order_buffer,&order_len);
 
-    if (order_len == Serial2.write(order_buffer, order_len))
-    {
-        PRINTF("Sync Write control mode successfully.\r\n");
-    }
-    else
-    {
-        PRINTF("Failed to send data.\r\n");
-    }
+    SERVO_SERIAL.write(order_buffer, order_len);
+    PRINTF("sync write control mode successful.\r\n");
     delay(1);
 
     //Change the velocity base target position of servo ID1 to 150°.
-    servo_set_velocity_base_target_position(1, 1500, order_buffer,&order_len);
-    if (order_len == Serial2.write(order_buffer, order_len)) {
-        PRINTF("Write successfully.\r\n");
-    }
-    else
-    {
-        PRINTF("Failed to send data.\r\n");
-    }
+    primary_servo_set_velocity_base_target_position(1, 1500, order_buffer,&order_len);
+    SERVO_SERIAL.write(order_buffer, order_len);
     delay(1);
 
-    if (Serial2.available()>0)
+    if (SERVO_SERIAL.available()>0)
     {
-        pack_len = Serial2.available();
-        Serial2.read(pack, pack_len);
-        ret = servo_set_velocity_base_target_position_analysis(pack);
-        if(ret == SUCCESS)
-            PRINTF("servo set velocity base target position successfully.\r\n");
+        pack_len = SERVO_SERIAL.available();
+        SERVO_SERIAL.read(pack, pack_len);
+        ret = primary_servo_set_velocity_base_target_position_analysis(pack);
+        if(ret == PRIMARY_SUCCESS)
+            PRINTF("servo set velocity base target position successful.\r\n");
     }
     else
     {
@@ -83,25 +77,18 @@ void loop() {
     write_buffer[2] = 3600 & 0xff;
     write_buffer[3] = (3600 >> 8) & 0xff;
 
-    servo_write(1, 0x35, 4, write_buffer, order_buffer, &order_len);
-    if (order_len == Serial2.write(order_buffer, order_len))
-    {
-        PRINTF("Write successfully.\r\n");
-    }
-    else
-    {
-        PRINTF("Failed to send data.\r\n");
-    }
+    primary_servo_write(1, 0x35, 4, write_buffer, order_buffer, &order_len);
+    SERVO_SERIAL.write(order_buffer, order_len);
     delay(1);
 
-    if (Serial2.available()>0)
+    if (SERVO_SERIAL.available()>0)
     {
-        pack_len = Serial2.available();
-        Serial2.read(pack, pack_len);
+        pack_len = SERVO_SERIAL.available();
+        SERVO_SERIAL.read(pack, pack_len);
         PRINTF("servo pack is: ");
         for(uint8_t i = 0; i < pack_len; i++)
         {
-            PRINTF("0x%x ", pack[i]);
+            PRINTF("0x%02x ", pack[i]);
         }
         PRINTF("\r\n");
     }
@@ -120,25 +107,18 @@ void loop() {
     write_buffer[4] = 10 & 0xff;
     write_buffer[5] = 1 & 0xff;
 
-    servo_write(1, 0x35, 6, write_buffer, order_buffer, &order_len);
-    if (order_len == Serial2.write(order_buffer, order_len))
-    {
-        PRINTF("Write successfully.\r\n");
-    }
-    else
-    {
-        PRINTF("Failed to send data.\r\n");
-    }
+    primary_servo_write(1, 0x35, 6, write_buffer, order_buffer, &order_len);
+    SERVO_SERIAL.write(order_buffer, order_len);
     delay(1);
 
-    if (Serial2.available()>0)
+    if (SERVO_SERIAL.available()>0)
     {
-        pack_len = Serial2.available();
-        Serial2.read(pack, pack_len);
+        pack_len = SERVO_SERIAL.available();
+        SERVO_SERIAL.read(pack, pack_len);
         PRINTF("servo pack is: ");
         for(uint8_t i = 0; i < pack_len; i++)
         {
-            PRINTF("0x%x ", pack[i]);
+            PRINTF("0x%02x ", pack[i]);
         }
         PRINTF("\r\n");
     }
@@ -152,15 +132,9 @@ void loop() {
     servo.position[0] = 1500;
     servo.position[1] = 0;
 
-    servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
-    if (order_len == Serial2.write(order_buffer, order_len))
-    {
-        PRINTF("Sync Write velocity base target position successfully.\r\n");
-    }
-    else
-    {
-        PRINTF("Failed to send data.\r\n");
-    }
+    primary_servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
+    SERVO_SERIAL.write(order_buffer, order_len);
+    PRINTF("sync write velocity base target position successful.\r\n");
     delay(1000);
 
     //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s,
@@ -170,15 +144,9 @@ void loop() {
     servo.position[0] = 3000;
     servo.position[1] = 1500;
 
-    servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
-    if (order_len == Serial2.write(order_buffer, order_len))
-    {
-        PRINTF("Sync Write velocity base target position and velocity successfully.\r\n");
-    }
-    else
-    {
-        PRINTF("Failed to send data.\r\n");
-    }
+    primary_servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
+    SERVO_SERIAL.write(order_buffer, order_len);
+    PRINTF("sync write velocity base target position and velocity successful.\r\n");
     delay(1000);
 
     //let servo ID1 move to the 0° position at a velocity base target velocity of 720°/s, a velocity base target ACC of 500°/s², and a velocity base target DEC of 50°/s².
@@ -192,14 +160,8 @@ void loop() {
     servo.dec_velocity[0] = 1;
     servo.dec_velocity[1] = 10;
 
-    servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
-    if (order_len == Serial2.write(order_buffer, order_len))
-    {
-        PRINTF("Sync Write velocity base target acc,dec,velocity and position successfully.\r\n");
-    }
-    else
-    {
-        PRINTF("Failed to send data.\r\n");
-    }
+    primary_servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
+    SERVO_SERIAL.write(order_buffer, order_len);
+    PRINTF("sync write velocity base target acc,dec,velocity and position successful.\r\n");
     delay(1000);
 }
