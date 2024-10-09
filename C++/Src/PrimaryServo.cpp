@@ -9,7 +9,7 @@
  * @param length: Buffer Length.
  * @return Calculated Checksum.
  */
-uint8_t get_check(const uint8_t* buffer, uint8_t length)
+uint8_t primary_get_check(const uint8_t* buffer, uint8_t length)
 {
     uint8_t sum = 0;
     for (uint8_t i = 0; i < length; i++)
@@ -31,7 +31,7 @@ uint8_t get_check(const uint8_t* buffer, uint8_t length)
  * @param output_length: Buffer Length.
  * @return success or error flag.
  */
-uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byte_length, uint8_t* input_buffer,uint8_t* output_buffer, uint8_t* output_length)
+uint8_t primary_servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byte_length, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_length)
 {
     uint8_t i = 0;
 
@@ -41,17 +41,17 @@ uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byt
 
     switch (instruction)
     {
-    case PING:
+    case PRIMARY_PING:
         output_buffer[i++] = 0x02;
         output_buffer[i++] = instruction;
         break;
-    case READ_DATA:
+    case PRIMARY_READ_DATA:
         output_buffer[i++] = 4;
         output_buffer[i++] = instruction;
         output_buffer[i++] = address;
         output_buffer[i++] = byte_length;
         break;
-    case WRITE_DATA:
+    case PRIMARY_WRITE_DATA:
         output_buffer[i++] = byte_length + 3;
         output_buffer[i++] = instruction;
         output_buffer[i++] = address;
@@ -60,7 +60,7 @@ uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byt
             output_buffer[i++] = input_buffer[j];
         }
         break;
-    case SYNC_WRITE:
+    case PRIMARY_SYNC_WRITE:
         output_buffer[i++] = (input_buffer[1] + 1) * byte_length + 4;
         output_buffer[i++] = instruction;
         for (int j = 0; j < ((byte_length * input_buffer[1]) + 2 + byte_length); j++)
@@ -68,21 +68,21 @@ uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byt
             output_buffer[i++] = input_buffer[j];
         }
         break;
-    case FACTORY_RESET:
-    case PARAMETER_RESET:
-    case CALIBRATION:
-    case REBOOT:
+    case PRIMARY_FACTORY_RESET:
+    case PRIMARY_PARAMETER_RESET:
+    case PRIMARY_CALIBRATION:
+    case PRIMARY_REBOOT:
         output_buffer[i++] = 0x04;
         output_buffer[i++] = instruction;
         output_buffer[i++] = 0xdf;
         output_buffer[i++] = 0xdf;
         break;
     default:
-        return FAILURE;
+        return PRIMARY_FAILURE;
     }
-    output_buffer[i] = get_check(output_buffer + 2, i - 2);
+    output_buffer[i] = primary_get_check(output_buffer + 2, i - 2);
     *output_length = i + 1;
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -91,7 +91,7 @@ uint8_t servo_pack(uint8_t id, uint8_t instruction, uint8_t address, uint8_t byt
  * @param data_buffer: Data parsed from the status packet.
  * @return success or error flag.
  */
-uint8_t servo_unpack(uint8_t* response_packet, uint8_t** data_buffer)
+uint8_t primary_servo_unpack(uint8_t* response_packet, uint8_t** data_buffer)
 {
     uint8_t length;
     uint8_t status;
@@ -100,41 +100,41 @@ uint8_t servo_unpack(uint8_t* response_packet, uint8_t** data_buffer)
     length = response_packet[3];
     status = response_packet[4];
 
-    checksum = get_check(response_packet + 2, length + 1);
+    checksum = primary_get_check(response_packet + 2, length + 1);
 
     if (response_packet[0] != 0xff || response_packet[1] != 0xff || checksum != response_packet[length + 3])
     {
         std::cout << "This is not a complete response package!" << std::endl;
-        return UNPACK_ERROR;
+        return PRIMARY_UNPACK_ERROR;
     }
 
     if (status != 0x00)
     {
-        if ((status & VOLTAGE_ERROR) == VOLTAGE_ERROR)
+        if ((status & PRIMARY_VOLTAGE_ERROR) == PRIMARY_VOLTAGE_ERROR)
         {
             std::cout << "Voltage Error" << std::endl;
         }
-        if ((status & ANGLE_ERROR) == ANGLE_ERROR)
+        if ((status & PRIMARY_ANGLE_ERROR) == PRIMARY_ANGLE_ERROR)
         {
             std::cout << "Angle Error" << std::endl;
         }
-        if ((status & OVERHEATING_ERROR) == OVERHEATING_ERROR)
+        if ((status & PRIMARY_OVERHEATING_ERROR) == PRIMARY_OVERHEATING_ERROR)
         {
             std::cout << "Overheating Error" << std::endl;
         }
-        if ((status & RANGE_ERROR) == RANGE_ERROR)
+        if ((status & PRIMARY_RANGE_ERROR) == PRIMARY_RANGE_ERROR)
         {
             std::cout << "Range Error" << std::endl;
         }
-        if ((status & CHECKSUM_ERROR) == CHECKSUM_ERROR)
+        if ((status & PRIMARY_CHECKSUM_ERROR) == PRIMARY_CHECKSUM_ERROR)
         {
             std::cout << "CheckSum Error" << std::endl;
         }
-        if ((status & STALL_ERROR) == STALL_ERROR)
+        if ((status & PRIMARY_STALL_ERROR) == PRIMARY_STALL_ERROR)
         {
             std::cout << "Stall Error" << std::endl;
         }
-        if ((status & PARSING_ERROR) == PARSING_ERROR)
+        if ((status & PRIMARY_PARSING_ERROR) == PRIMARY_PARSING_ERROR)
         {
             std::cout << "Parsing Error" << std::endl;
         }
@@ -145,7 +145,7 @@ uint8_t servo_unpack(uint8_t* response_packet, uint8_t** data_buffer)
         *data_buffer = &response_packet[5];
     }
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -155,11 +155,11 @@ uint8_t servo_unpack(uint8_t* response_packet, uint8_t** data_buffer)
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_ping(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_ping(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_pack(id, PING, 0, 0, (uint8_t*)nullptr, output_buffer, output_buffer_len);
+    primary_servo_pack(id, PRIMARY_PING, 0, 0, (uint8_t*)nullptr, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -171,11 +171,11 @@ uint8_t servo_ping(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_le
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read(uint8_t id, uint8_t address, uint8_t read_data_len, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read(uint8_t id, uint8_t address, uint8_t read_data_len, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_pack(id, READ_DATA, address, read_data_len, (uint8_t *)nullptr, output_buffer, output_buffer_len);
+    primary_servo_pack(id, PRIMARY_READ_DATA, address, read_data_len, (uint8_t*)nullptr, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -188,11 +188,11 @@ uint8_t servo_read(uint8_t id, uint8_t address, uint8_t read_data_len, uint8_t* 
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_write(uint8_t id, uint8_t address, uint8_t write_data_len, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_write(uint8_t id, uint8_t address, uint8_t write_data_len, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_pack(id, WRITE_DATA, address, write_data_len, input_buffer, output_buffer, output_buffer_len);
+    primary_servo_pack(id, PRIMARY_WRITE_DATA, address, write_data_len, input_buffer, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -204,11 +204,11 @@ uint8_t servo_write(uint8_t id, uint8_t address, uint8_t write_data_len, uint8_t
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t sync_write_data(uint8_t address, uint8_t servo_counts, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_sync_write_data(uint8_t address, uint8_t servo_counts, uint8_t* input_buffer, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_pack(0xfe, SYNC_WRITE, address, servo_counts, input_buffer, output_buffer, output_buffer_len);
+    primary_servo_pack(0xfe, PRIMARY_SYNC_WRITE, address, servo_counts, input_buffer, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -218,11 +218,11 @@ uint8_t sync_write_data(uint8_t address, uint8_t servo_counts, uint8_t* input_bu
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_factory_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_factory_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_pack(id, FACTORY_RESET, 0, 0, (uint8_t*)nullptr, output_buffer, output_buffer_len);
+    primary_servo_pack(id, PRIMARY_FACTORY_RESET, 0, 0, (uint8_t*)nullptr, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -232,11 +232,11 @@ uint8_t servo_factory_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_parameter_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_parameter_reset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_pack(id, PARAMETER_RESET, 0, 0, (uint8_t*)nullptr, output_buffer, output_buffer_len);
+    primary_servo_pack(id, PRIMARY_PARAMETER_RESET, 0, 0, (uint8_t*)nullptr, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -246,11 +246,11 @@ uint8_t servo_parameter_reset(uint8_t id, uint8_t* output_buffer, uint8_t* outpu
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_pack(id, CALIBRATION, 0, 0, (uint8_t*)nullptr, output_buffer, output_buffer_len);
+    primary_servo_pack(id, PRIMARY_CALIBRATION, 0, 0, (uint8_t*)nullptr, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -260,11 +260,11 @@ uint8_t servo_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_bu
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_reboot(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_reboot(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_pack(id, REBOOT, 0, 0, (uint8_t*)nullptr, output_buffer, output_buffer_len);
+    primary_servo_pack(id, PRIMARY_REBOOT, 0, 0, (uint8_t*)nullptr, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -275,11 +275,11 @@ uint8_t servo_reboot(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_modify_known_id(uint8_t id, uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_modify_known_id(uint8_t id, uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, SERVO_ID, 1, &new_id, output_buffer, output_buffer_len);
+    primary_servo_write(id, PRIMARY_SERVO_ID, 1, &new_id, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -289,11 +289,11 @@ uint8_t servo_modify_known_id(uint8_t id, uint8_t new_id, uint8_t* output_buffer
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_modify_unknown_id(uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_modify_unknown_id(uint8_t new_id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(0xfe, SERVO_ID, 1, &new_id, output_buffer, output_buffer_len);
+    primary_servo_write(0xfe, PRIMARY_SERVO_ID, 1, &new_id, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -304,11 +304,11 @@ uint8_t servo_modify_unknown_id(uint8_t new_id, uint8_t* output_buffer, uint8_t*
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_return_delay_time(uint8_t id, uint8_t response_delay_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_return_delay_time(uint8_t id, uint8_t response_delay_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, RETURN_DELAY_TIME, 1, &response_delay_time, output_buffer, output_buffer_len);
+    primary_servo_write(id, PRIMARY_RETURN_DELAY_TIME, 1, &response_delay_time, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -319,11 +319,11 @@ uint8_t servo_set_return_delay_time(uint8_t id, uint8_t response_delay_time, uin
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_return_level(uint8_t id, uint8_t return_level, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_return_level(uint8_t id, uint8_t return_level, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, RETURN_LEVEL, 1, &return_level, output_buffer, output_buffer_len);
+    primary_servo_write(id, PRIMARY_RETURN_LEVEL, 1, &return_level, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -334,11 +334,11 @@ uint8_t servo_set_return_level(uint8_t id, uint8_t return_level, uint8_t* output
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_baud_rate(uint8_t id, uint8_t baud_rate_number, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_baud_rate(uint8_t id, uint8_t baud_rate_number, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, BAUD_RATE, 1, &baud_rate_number, output_buffer, output_buffer_len);
+    primary_servo_write(id, PRIMARY_BAUD_RATE, 1, &baud_rate_number, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -349,16 +349,16 @@ uint8_t servo_set_baud_rate(uint8_t id, uint8_t baud_rate_number, uint8_t* outpu
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_min_angle_limit(uint8_t id, uint16_t min_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_min_angle_limit(uint8_t id, uint16_t min_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = min_angle_limit & 0xff;
     buffer[1] = (min_angle_limit >> 8) & 0xff;
 
-    servo_write(id, MIN_ANGLE_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
+    primary_servo_write(id, PRIMARY_MIN_ANGLE_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -369,15 +369,15 @@ uint8_t servo_set_min_angle_limit(uint8_t id, uint16_t min_angle_limit, uint8_t*
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_max_angle_limit(uint8_t id, uint16_t max_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_max_angle_limit(uint8_t id, uint16_t max_angle_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = max_angle_limit & 0xff;
     buffer[1] = (max_angle_limit >> 8) & 0xff;
 
-    servo_write(id, MAX_ANGLE_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_MAX_ANGLE_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -388,10 +388,10 @@ uint8_t servo_set_max_angle_limit(uint8_t id, uint16_t max_angle_limit, uint8_t*
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_max_temperature_limit(uint8_t id, uint8_t max_temperature_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_max_temperature_limit(uint8_t id, uint8_t max_temperature_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, MAX_TEMPERATURE_LIMIT, 1, &max_temperature_limit, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_MAX_TEMPERATURE_LIMIT, 1, &max_temperature_limit, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -402,10 +402,10 @@ uint8_t servo_set_max_temperature_limit(uint8_t id, uint8_t max_temperature_limi
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_max_voltage_limit(uint8_t id, uint8_t max_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_max_voltage_limit(uint8_t id, uint8_t max_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, MAX_VOLTAGE_LIMIT, 1, &max_voltage_limit, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_MAX_VOLTAGE_LIMIT, 1, &max_voltage_limit, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -416,10 +416,10 @@ uint8_t servo_set_max_voltage_limit(uint8_t id, uint8_t max_voltage_limit, uint8
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_min_voltage_limit(uint8_t id, uint8_t min_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_min_voltage_limit(uint8_t id, uint8_t min_voltage_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, MIN_VOLTAGE_LIMIT, 1, &min_voltage_limit, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_MIN_VOLTAGE_LIMIT, 1, &min_voltage_limit, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -430,15 +430,15 @@ uint8_t servo_set_min_voltage_limit(uint8_t id, uint8_t min_voltage_limit, uint8
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_max_pwm_limit(uint8_t id, uint16_t max_pwm_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_max_pwm_limit(uint8_t id, uint16_t max_pwm_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = max_pwm_limit & 0xff;
     buffer[1] = (max_pwm_limit >> 8) & 0xff;
 
-    servo_write(id, MAX_PWM_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_MAX_PWM_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -449,15 +449,15 @@ uint8_t servo_set_max_pwm_limit(uint8_t id, uint16_t max_pwm_limit, uint8_t* out
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_max_current_limit(uint8_t id, uint16_t max_current_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_max_current_limit(uint8_t id, uint16_t max_current_limit, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = max_current_limit & 0xff;
     buffer[1] = (max_current_limit >> 8) & 0xff;
 
-    servo_write(id, MAX_CURRENT_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_MAX_CURRENT_LIMIT_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -468,15 +468,15 @@ uint8_t servo_set_max_current_limit(uint8_t id, uint16_t max_current_limit, uint
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_current_shutdown_time(uint8_t id, uint16_t current_shutdown_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_current_shutdown_time(uint8_t id, uint16_t current_shutdown_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = current_shutdown_time & 0xff;
     buffer[1] = (current_shutdown_time >> 8) & 0xff;
 
-    servo_write(id, CURRENT_TIME_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_CURRENT_TIME_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -487,10 +487,10 @@ uint8_t servo_set_current_shutdown_time(uint8_t id, uint16_t current_shutdown_ti
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_cw_deadband(uint8_t id, uint8_t cw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_cw_deadband(uint8_t id, uint8_t cw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, CW_DEADBAND, 1, &cw_deadband, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_CW_DEADBAND, 1, &cw_deadband, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -501,10 +501,10 @@ uint8_t servo_set_cw_deadband(uint8_t id, uint8_t cw_deadband, uint8_t* output_b
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_ccw_deadband(uint8_t id, uint8_t ccw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_ccw_deadband(uint8_t id, uint8_t ccw_deadband, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, CCW_DEADBAND, 1, &ccw_deadband, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_CCW_DEADBAND, 1, &ccw_deadband, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -515,10 +515,10 @@ uint8_t servo_set_ccw_deadband(uint8_t id, uint8_t ccw_deadband, uint8_t* output
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_pwm_punch(uint8_t id, uint8_t pwm_punch, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_pwm_punch(uint8_t id, uint8_t pwm_punch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, PWM_PUNCH, 1, &pwm_punch, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_PWM_PUNCH, 1, &pwm_punch, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -529,15 +529,15 @@ uint8_t servo_set_pwm_punch(uint8_t id, uint8_t pwm_punch, uint8_t* output_buffe
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_position_control_p_gain(uint8_t id, uint16_t position_control_P_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_position_control_p_gain(uint8_t id, uint16_t position_control_P_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = position_control_P_gain & 0xff;
     buffer[1] = (position_control_P_gain >> 8) & 0xff;
 
-    servo_write(id, POSITION_P_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_POSITION_P_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -548,15 +548,15 @@ uint8_t servo_set_position_control_p_gain(uint8_t id, uint16_t position_control_
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_position_control_i_gain(uint8_t id, uint16_t position_control_I_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_position_control_i_gain(uint8_t id, uint16_t position_control_I_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = position_control_I_gain & 0xff;
     buffer[1] = (position_control_I_gain >> 8) & 0xff;
 
-    servo_write(id, POSITION_I_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_POSITION_I_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -567,15 +567,15 @@ uint8_t servo_set_position_control_i_gain(uint8_t id, uint16_t position_control_
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_position_control_d_gain(uint8_t id, uint16_t position_control_D_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_position_control_d_gain(uint8_t id, uint16_t position_control_D_gain, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = position_control_D_gain & 0xff;
     buffer[1] = (position_control_D_gain >> 8) & 0xff;
 
-    servo_write(id, POSITION_D_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_POSITION_D_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -586,10 +586,10 @@ uint8_t servo_set_position_control_d_gain(uint8_t id, uint16_t position_control_
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_led_condition(uint8_t id, uint8_t led_condition, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_led_condition(uint8_t id, uint8_t led_condition, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, LED_CONDITION, 1, &led_condition, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_LED_CONDITION, 1, &led_condition, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -600,10 +600,10 @@ uint8_t servo_set_led_condition(uint8_t id, uint8_t led_condition, uint8_t* outp
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_shutdown_conditions(uint8_t id, uint8_t shutdown_conditions, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_shutdown_conditions(uint8_t id, uint8_t shutdown_conditions, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, SHUTDOWN_CONDITION, 1, &shutdown_conditions, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_SHUTDOWN_CONDITION, 1, &shutdown_conditions, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -614,10 +614,10 @@ uint8_t servo_set_shutdown_conditions(uint8_t id, uint8_t shutdown_conditions, u
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_control_mode(uint8_t id, uint8_t control_mode, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_control_mode(uint8_t id, uint8_t control_mode, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, CONTROL_MODE, 1, &control_mode, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_CONTROL_MODE, 1, &control_mode, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -628,10 +628,10 @@ uint8_t servo_set_control_mode(uint8_t id, uint8_t control_mode, uint8_t* output
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_flash_switch(uint8_t id, uint8_t flash_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_flash_switch(uint8_t id, uint8_t flash_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, FLASH_SW, 1, &flash_switch, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_FLASH_SW, 1, &flash_switch, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -642,10 +642,10 @@ uint8_t servo_set_flash_switch(uint8_t id, uint8_t flash_switch, uint8_t* output
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_led_switch(uint8_t id, uint8_t led_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_led_switch(uint8_t id, uint8_t led_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, LED_SW, 1, &led_switch, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_LED_SW, 1, &led_switch, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -656,10 +656,10 @@ uint8_t servo_set_led_switch(uint8_t id, uint8_t led_switch, uint8_t* output_buf
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_torque_switch(uint8_t id, uint8_t torque_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_torque_switch(uint8_t id, uint8_t torque_switch, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, TORQUE_SW, 1, &torque_switch, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_TORQUE_SW, 1, &torque_switch, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -670,15 +670,15 @@ uint8_t servo_set_torque_switch(uint8_t id, uint8_t torque_switch, uint8_t* outp
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_target_pwm(uint8_t id, int16_t target_pwm, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_target_pwm(uint8_t id, int16_t target_pwm, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = target_pwm & 0xff;
     buffer[1] = (target_pwm >> 8) & 0xff;
 
-    servo_write(id, TARGET_PWM_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_TARGET_PWM_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -689,15 +689,15 @@ uint8_t servo_set_target_pwm(uint8_t id, int16_t target_pwm, uint8_t* output_buf
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_target_current(uint8_t id, int16_t target_current, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_target_current(uint8_t id, int16_t target_current, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = target_current & 0xff;
     buffer[1] = (target_current >> 8) & 0xff;
 
-    servo_write(id, TARGET_CURRENT_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_TARGET_CURRENT_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -708,15 +708,15 @@ uint8_t servo_set_target_current(uint8_t id, int16_t target_current, uint8_t* ou
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_velocity_base_target_position(uint8_t id, uint16_t target_position, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_velocity_base_target_position(uint8_t id, uint16_t target_position, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = target_position & 0xff;
     buffer[1] = (target_position >> 8) & 0xff;
 
-    servo_write(id, VELOCITY_BASE_TARGET_POSITION_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_VELOCITY_BASE_TARGET_POSITION_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -727,15 +727,15 @@ uint8_t servo_set_velocity_base_target_position(uint8_t id, uint16_t target_posi
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_velocity_base_target_velocity(uint8_t id, uint16_t target_velocity, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_velocity_base_target_velocity(uint8_t id, uint16_t target_velocity, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[2] = { 0 };
 
     buffer[0] = target_velocity & 0xff;
     buffer[1] = (target_velocity >> 8) & 0xff;
 
-    servo_write(id, VELOCITY_BASE_TARGET_VELOCITY_L, 2, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_VELOCITY_BASE_TARGET_VELOCITY_L, 2, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -746,10 +746,10 @@ uint8_t servo_set_velocity_base_target_velocity(uint8_t id, uint16_t target_velo
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_velocity_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_velocity_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, VELOCITY_BASE_TARGET_ACC, 1, &target_acc, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_VELOCITY_BASE_TARGET_ACC, 1, &target_acc, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -760,10 +760,10 @@ uint8_t servo_set_velocity_base_target_acc(uint8_t id, uint8_t target_acc, uint8
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_velocity_base_target_dec(uint8_t id, uint8_t target_dec, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_velocity_base_target_dec(uint8_t id, uint8_t target_dec, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, VELOCITY_BASE_TARGET_DEC, 1, &target_dec, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_VELOCITY_BASE_TARGET_DEC, 1, &target_dec, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -774,10 +774,10 @@ uint8_t servo_set_velocity_base_target_dec(uint8_t id, uint8_t target_dec, uint8
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_write(id, TIME_BASE_TARGET_ACC, 1, &target_acc, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_TIME_BASE_TARGET_ACC, 1, &target_acc, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -789,7 +789,7 @@ uint8_t servo_set_time_base_target_acc(uint8_t id, uint8_t target_acc, uint8_t* 
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t target_position, uint16_t moving_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t target_position, uint16_t moving_time, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t buffer[4] = { 0 };
 
@@ -799,8 +799,8 @@ uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t
     buffer[3] = (moving_time >> 8) & 0xff;
 
 
-    servo_write(id, TIME_BASE_TARGET_POSITION_L, 4, buffer, output_buffer, output_buffer_len);
-    return SUCCESS;
+    primary_servo_write(id, PRIMARY_TIME_BASE_TARGET_POSITION_L, 4, buffer, output_buffer, output_buffer_len);
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -810,11 +810,11 @@ uint8_t servo_set_time_base_target_position_and_moving_time(uint8_t id, uint16_t
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_read(id, PRESENT_CURRENT_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_PRESENT_CURRENT_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -824,11 +824,11 @@ uint8_t servo_read_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* 
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_position_and_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_present_position_and_present_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_read(id, PRESENT_POSITION_L, 4, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_PRESENT_POSITION_L, 4, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -838,11 +838,11 @@ uint8_t servo_read_present_position_and_present_current(uint8_t id, uint8_t* out
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_present_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_read(id, PRESENT_POSITION_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_PRESENT_POSITION_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -852,11 +852,11 @@ uint8_t servo_read_present_position(uint8_t id, uint8_t* output_buffer, uint8_t*
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_present_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_read(id, PRESENT_VELOCITY_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_PRESENT_VELOCITY_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -866,11 +866,11 @@ uint8_t servo_read_present_velocity(uint8_t id, uint8_t* output_buffer, uint8_t*
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_profile_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_present_profile_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
-    servo_read(id, PRESENT_PROFILE_POSITION_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_PRESENT_PROFILE_POSITION_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -880,12 +880,12 @@ uint8_t servo_read_present_profile_position(uint8_t id, uint8_t* output_buffer, 
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_profile_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_present_profile_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, PRESENT_PROFILE_VELOCITY_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_PRESENT_PROFILE_VELOCITY_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -895,12 +895,12 @@ uint8_t servo_read_present_profile_velocity(uint8_t id, uint8_t* output_buffer, 
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_present_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, PRESENT_PWM_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_PRESENT_PWM_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -910,12 +910,12 @@ uint8_t servo_read_present_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* outp
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_temperature(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_present_temperature(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, PRESENT_TEMPERATURE, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_PRESENT_TEMPERATURE, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -925,12 +925,12 @@ uint8_t servo_read_present_temperature(uint8_t id, uint8_t* output_buffer, uint8
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_voltage(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_present_voltage(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, PRESENT_VOLTAGE, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_PRESENT_VOLTAGE, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -940,12 +940,12 @@ uint8_t servo_read_present_voltage(uint8_t id, uint8_t* output_buffer, uint8_t* 
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_time_base_target_moving_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_time_base_target_moving_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, TIME_BASE_TARGET_MOVINGTIME_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_TIME_BASE_TARGET_MOVINGTIME_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -955,12 +955,12 @@ uint8_t servo_read_time_base_target_moving_time(uint8_t id, uint8_t* output_buff
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_time_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_time_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, TIME_BASE_TARGET_POSITION_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_TIME_BASE_TARGET_POSITION_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -970,12 +970,12 @@ uint8_t servo_read_time_base_target_position(uint8_t id, uint8_t* output_buffer,
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_time_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_time_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, TIME_BASE_TARGET_ACC, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_TIME_BASE_TARGET_ACC, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -985,12 +985,12 @@ uint8_t servo_read_time_base_target_acc(uint8_t id, uint8_t* output_buffer, uint
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_velocity_base_target_dec(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_velocity_base_target_dec(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, VELOCITY_BASE_TARGET_DEC, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_VELOCITY_BASE_TARGET_DEC, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1000,12 +1000,12 @@ uint8_t servo_read_velocity_base_target_dec(uint8_t id, uint8_t* output_buffer, 
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_velocity_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_velocity_base_target_acc(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, VELOCITY_BASE_TARGET_ACC, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_VELOCITY_BASE_TARGET_ACC, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1015,12 +1015,12 @@ uint8_t servo_read_velocity_base_target_acc(uint8_t id, uint8_t* output_buffer, 
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_velocity_base_target_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_velocity_base_target_velocity(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, VELOCITY_BASE_TARGET_VELOCITY_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_VELOCITY_BASE_TARGET_VELOCITY_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1030,12 +1030,12 @@ uint8_t servo_read_velocity_base_target_velocity(uint8_t id, uint8_t* output_buf
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_velocity_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_velocity_base_target_position(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, VELOCITY_BASE_TARGET_POSITION_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_VELOCITY_BASE_TARGET_POSITION_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1045,12 +1045,12 @@ uint8_t servo_read_velocity_base_target_position(uint8_t id, uint8_t* output_buf
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_target_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_target_current(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, TARGET_CURRENT_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_TARGET_CURRENT_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1060,12 +1060,12 @@ uint8_t servo_read_target_current(uint8_t id, uint8_t* output_buffer, uint8_t* o
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_target_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_target_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, TARGET_PWM_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_TARGET_PWM_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1075,12 +1075,12 @@ uint8_t servo_read_target_pwm(uint8_t id, uint8_t* output_buffer, uint8_t* outpu
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_torque_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_torque_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, TORQUE_SW, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_TORQUE_SW, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1090,12 +1090,12 @@ uint8_t servo_read_torque_switch(uint8_t id, uint8_t* output_buffer, uint8_t* ou
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_led_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_led_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, LED_SW, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_LED_SW, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1105,12 +1105,12 @@ uint8_t servo_read_led_switch(uint8_t id, uint8_t* output_buffer, uint8_t* outpu
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_flash_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_flash_switch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, FLASH_SW, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_FLASH_SW, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1120,12 +1120,12 @@ uint8_t servo_read_flash_switch(uint8_t id, uint8_t* output_buffer, uint8_t* out
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_current_offset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_current_offset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, CURRENT_OFFSET, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_CURRENT_OFFSET, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1135,12 +1135,12 @@ uint8_t servo_read_current_offset(uint8_t id, uint8_t* output_buffer, uint8_t* o
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, CALIBRATION_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_CALIBRATION_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1150,12 +1150,12 @@ uint8_t servo_read_calibration(uint8_t id, uint8_t* output_buffer, uint8_t* outp
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_control_mode(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_control_mode(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, CONTROL_MODE, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_CONTROL_MODE, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1165,12 +1165,12 @@ uint8_t servo_read_control_mode(uint8_t id, uint8_t* output_buffer, uint8_t* out
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_shutdown_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_shutdown_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, SHUTDOWN_CONDITION, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_SHUTDOWN_CONDITION, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1180,12 +1180,12 @@ uint8_t servo_read_shutdown_condition(uint8_t id, uint8_t* output_buffer, uint8_
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_led_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_led_condition(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, LED_CONDITION, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_LED_CONDITION, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1195,12 +1195,12 @@ uint8_t servo_read_led_condition(uint8_t id, uint8_t* output_buffer, uint8_t* ou
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_position_control_d_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_position_control_d_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, POSITION_D_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_POSITION_D_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1210,12 +1210,12 @@ uint8_t servo_read_position_control_d_gain(uint8_t id, uint8_t* output_buffer, u
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_position_control_i_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_position_control_i_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, POSITION_I_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_POSITION_I_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1225,12 +1225,12 @@ uint8_t servo_read_position_control_i_gain(uint8_t id, uint8_t* output_buffer, u
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_position_control_p_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_position_control_p_gain(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, POSITION_P_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_POSITION_P_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1240,12 +1240,12 @@ uint8_t servo_read_position_control_p_gain(uint8_t id, uint8_t* output_buffer, u
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_pwm_punch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_pwm_punch(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, PWM_PUNCH, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_PWM_PUNCH, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1255,12 +1255,12 @@ uint8_t servo_read_pwm_punch(uint8_t id, uint8_t* output_buffer, uint8_t* output
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_ccw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_ccw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, CCW_DEADBAND, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_CCW_DEADBAND, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1270,12 +1270,12 @@ uint8_t servo_read_ccw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* out
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_cw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_cw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, CW_DEADBAND, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_CW_DEADBAND, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1285,12 +1285,12 @@ uint8_t servo_read_cw_deadband(uint8_t id, uint8_t* output_buffer, uint8_t* outp
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_current_shutdown_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_current_shutdown_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, CURRENT_TIME_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_CURRENT_TIME_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1300,12 +1300,12 @@ uint8_t servo_read_current_shutdown_time(uint8_t id, uint8_t* output_buffer, uin
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_max_current_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_max_current_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, MAX_CURRENT_LIMIT_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_MAX_CURRENT_LIMIT_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1315,12 +1315,12 @@ uint8_t servo_read_max_current_limit(uint8_t id, uint8_t* output_buffer, uint8_t
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_max_pwm_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_max_pwm_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, MAX_PWM_LIMIT_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_MAX_PWM_LIMIT_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1330,12 +1330,12 @@ uint8_t servo_read_max_pwm_limit(uint8_t id, uint8_t* output_buffer, uint8_t* ou
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_max_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_max_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, MAX_VOLTAGE_LIMIT, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_MAX_VOLTAGE_LIMIT, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1345,12 +1345,12 @@ uint8_t servo_read_max_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_min_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_min_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, MIN_VOLTAGE_LIMIT, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_MIN_VOLTAGE_LIMIT, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1360,12 +1360,12 @@ uint8_t servo_read_min_voltage_limit(uint8_t id, uint8_t* output_buffer, uint8_t
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_max_temperature_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_max_temperature_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, MAX_TEMPERATURE_LIMIT, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_MAX_TEMPERATURE_LIMIT, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1375,12 +1375,12 @@ uint8_t servo_read_max_temperature_limit(uint8_t id, uint8_t* output_buffer, uin
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_max_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_max_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, MAX_ANGLE_LIMIT_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_MAX_ANGLE_LIMIT_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1390,12 +1390,12 @@ uint8_t servo_read_max_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* 
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_min_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_min_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, MIN_ANGLE_LIMIT_L, 2, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_MIN_ANGLE_LIMIT_L, 2, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1405,12 +1405,12 @@ uint8_t servo_read_min_angle_limit(uint8_t id, uint8_t* output_buffer, uint8_t* 
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_return_level(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_return_level(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, RETURN_LEVEL, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_RETURN_LEVEL, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1420,12 +1420,12 @@ uint8_t servo_read_return_level(uint8_t id, uint8_t* output_buffer, uint8_t* out
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_return_delay_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_return_delay_time(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, RETURN_DELAY_TIME, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_RETURN_DELAY_TIME, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1435,12 +1435,12 @@ uint8_t servo_read_return_delay_time(uint8_t id, uint8_t* output_buffer, uint8_t
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_baud_rate(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_baud_rate(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, BAUD_RATE, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_BAUD_RATE, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1450,12 +1450,12 @@ uint8_t servo_read_baud_rate(uint8_t id, uint8_t* output_buffer, uint8_t* output
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_model_information(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_model_information(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, MODEL_INFORMATION, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_MODEL_INFORMATION, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1465,12 +1465,12 @@ uint8_t servo_read_model_information(uint8_t id, uint8_t* output_buffer, uint8_t
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_firmware_version(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_read_firmware_version(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    servo_read(id, FIRMWARE_VERSION, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_FIRMWARE_VERSION, 1, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1480,12 +1480,12 @@ uint8_t servo_read_firmware_version(uint8_t id, uint8_t* output_buffer, uint8_t*
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_sync_write_velocity_base_target_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_sync_write_velocity_base_target_position(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
     uint8_t* parameter = (uint8_t*)malloc((servo.id_counts * 2 + 2 + servo.id_counts) * sizeof(uint8_t));
 
-    parameter[0] = VELOCITY_BASE_TARGET_POSITION_L;
+    parameter[0] = PRIMARY_VELOCITY_BASE_TARGET_POSITION_L;
     parameter[1] = 2;
     for (int i = 0; i < servo.id_counts; i++)
     {
@@ -1495,11 +1495,11 @@ uint8_t servo_sync_write_velocity_base_target_position(struct servo_sync_paramet
     }
 
 
-    sync_write_data(VELOCITY_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
+    primary_sync_write_data(PRIMARY_VELOCITY_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     free(parameter);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1509,12 +1509,12 @@ uint8_t servo_sync_write_velocity_base_target_position(struct servo_sync_paramet
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_sync_write_velocity_base_target_position_and_velocity(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_sync_write_velocity_base_target_position_and_velocity(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
     uint8_t* parameter = (uint8_t*)malloc((servo.id_counts * 4 + 2 + servo.id_counts) * sizeof(uint8_t));
 
-    parameter[0] = VELOCITY_BASE_TARGET_POSITION_L;
+    parameter[0] = PRIMARY_VELOCITY_BASE_TARGET_POSITION_L;
     parameter[1] = 4;
     for (int i = 0; i < servo.id_counts; i++)
     {
@@ -1526,11 +1526,11 @@ uint8_t servo_sync_write_velocity_base_target_position_and_velocity(struct servo
     }
 
 
-    sync_write_data(VELOCITY_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
+    primary_sync_write_data(PRIMARY_VELOCITY_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     free(parameter);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1540,11 +1540,11 @@ uint8_t servo_sync_write_velocity_base_target_position_and_velocity(struct servo
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_sync_write_torque_switch(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_sync_write_torque_switch(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t* parameter = (uint8_t*)malloc((servo.id_counts * 1 + 2 + servo.id_counts) * sizeof(uint8_t));
 
-    parameter[0] = TORQUE_SW;
+    parameter[0] = PRIMARY_TORQUE_SW;
     parameter[1] = 1;
     for (int i = 0; i < servo.id_counts; i++)
     {
@@ -1552,9 +1552,9 @@ uint8_t servo_sync_write_torque_switch(struct servo_sync_parameter servo, uint8_
         parameter[3 + i * 2] = servo.torque_switch[i] & 0xff;
     }
 
-    sync_write_data(TORQUE_SW, servo.id_counts, parameter, output_buffer, output_buffer_len);
+    primary_sync_write_data(PRIMARY_TORQUE_SW, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1564,11 +1564,11 @@ uint8_t servo_sync_write_torque_switch(struct servo_sync_parameter servo, uint8_
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_sync_write_control_mode(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_sync_write_control_mode(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t* parameter = (uint8_t*)malloc((servo.id_counts * 1 + 2 + servo.id_counts) * sizeof(uint8_t));
 
-    parameter[0] = CONTROL_MODE;
+    parameter[0] = PRIMARY_CONTROL_MODE;
     parameter[1] = 1;
     for (int i = 0; i < servo.id_counts; i++)
     {
@@ -1576,9 +1576,9 @@ uint8_t servo_sync_write_control_mode(struct servo_sync_parameter servo, uint8_t
         parameter[3 + i * 2] = servo.control_mode[i] & 0xff;
     }
 
-    sync_write_data(CONTROL_MODE, servo.id_counts, parameter, output_buffer, output_buffer_len);
+    primary_sync_write_data(PRIMARY_CONTROL_MODE, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1588,11 +1588,11 @@ uint8_t servo_sync_write_control_mode(struct servo_sync_parameter servo, uint8_t
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t* parameter = (uint8_t*)malloc((servo.id_counts * 6 + 2 + servo.id_counts) * sizeof(uint8_t));
 
-    parameter[0] = VELOCITY_BASE_TARGET_POSITION_L;
+    parameter[0] = PRIMARY_VELOCITY_BASE_TARGET_POSITION_L;
     parameter[1] = 6;
     for (int i = 0; i < servo.id_counts; i++)
     {
@@ -1605,9 +1605,9 @@ uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(stru
         parameter[8 + i * 7] = servo.dec_velocity[i];
     }
 
-    sync_write_data(VELOCITY_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
+    primary_sync_write_data(PRIMARY_VELOCITY_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1617,13 +1617,13 @@ uint8_t servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(stru
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_sync_write_velocity_base_target_velocity(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_sync_write_velocity_base_target_velocity(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
     uint8_t* parameter = (uint8_t*)malloc((servo.id_counts * 2 + 2 + servo.id_counts) * sizeof(uint8_t));
 
 
-    parameter[0] = VELOCITY_BASE_TARGET_VELOCITY_L;
+    parameter[0] = PRIMARY_VELOCITY_BASE_TARGET_VELOCITY_L;
     parameter[1] = 2;
     for (int i = 0; i < servo.id_counts; i++)
     {
@@ -1632,11 +1632,11 @@ uint8_t servo_sync_write_velocity_base_target_velocity(struct servo_sync_paramet
         parameter[i + 4 + i * 2] = (servo.velocity[i] >> 8) & 0xff;
     }
 
-    sync_write_data(VELOCITY_BASE_TARGET_VELOCITY_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
+    primary_sync_write_data(PRIMARY_VELOCITY_BASE_TARGET_VELOCITY_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     free(parameter);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1646,13 +1646,13 @@ uint8_t servo_sync_write_velocity_base_target_velocity(struct servo_sync_paramet
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_sync_write_velocity_base_target_acc(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_sync_write_velocity_base_target_acc(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
     uint8_t* parameter = (uint8_t*)malloc((servo.id_counts + 2 + servo.id_counts) * sizeof(uint8_t));
 
 
-    parameter[0] = VELOCITY_BASE_TARGET_ACC;
+    parameter[0] = PRIMARY_VELOCITY_BASE_TARGET_ACC;
     parameter[1] = 1;
     for (int i = 0; i < servo.id_counts; i++)
     {
@@ -1660,11 +1660,11 @@ uint8_t servo_sync_write_velocity_base_target_acc(struct servo_sync_parameter se
         parameter[i * 2 + 3] = servo.acc_velocity[i];
     }
 
-    sync_write_data(VELOCITY_BASE_TARGET_ACC, servo.id_counts, parameter, output_buffer, output_buffer_len);
+    primary_sync_write_data(PRIMARY_VELOCITY_BASE_TARGET_ACC, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     free(parameter);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1674,13 +1674,13 @@ uint8_t servo_sync_write_velocity_base_target_acc(struct servo_sync_parameter se
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_sync_write_velocity_base_target_dec(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_sync_write_velocity_base_target_dec(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
     uint8_t* parameter = (uint8_t*)malloc((servo.id_counts + 2 + servo.id_counts) * sizeof(uint8_t));
 
 
-    parameter[0] = VELOCITY_BASE_TARGET_DEC;
+    parameter[0] = PRIMARY_VELOCITY_BASE_TARGET_DEC;
     parameter[1] = 1;
     for (int i = 0; i < servo.id_counts; i++)
     {
@@ -1688,11 +1688,11 @@ uint8_t servo_sync_write_velocity_base_target_dec(struct servo_sync_parameter se
         parameter[i * 2 + 3] = servo.dec_velocity[i];
     }
 
-    sync_write_data(VELOCITY_BASE_TARGET_DEC, servo.id_counts, parameter, output_buffer, output_buffer_len);
+    primary_sync_write_data(PRIMARY_VELOCITY_BASE_TARGET_DEC, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     free(parameter);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1702,11 +1702,11 @@ uint8_t servo_sync_write_velocity_base_target_dec(struct servo_sync_parameter se
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_sync_write_time_base_target_acc(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_sync_write_time_base_target_acc(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t* parameter = (uint8_t*)malloc((servo.id_counts + 2 + servo.id_counts) * sizeof(uint8_t));
 
-    parameter[0] = TIME_BASE_TARGET_ACC;
+    parameter[0] = PRIMARY_TIME_BASE_TARGET_ACC;
     parameter[1] = 1;
     for (int i = 0; i < servo.id_counts; i++)
     {
@@ -1714,11 +1714,11 @@ uint8_t servo_sync_write_time_base_target_acc(struct servo_sync_parameter servo,
         parameter[i * 2 + 3] = servo.acc_velocity_grade[i];
     }
 
-    sync_write_data(TIME_BASE_TARGET_ACC, servo.id_counts, parameter, output_buffer, output_buffer_len);
+    primary_sync_write_data(PRIMARY_TIME_BASE_TARGET_ACC, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     free(parameter);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1728,11 +1728,11 @@ uint8_t servo_sync_write_time_base_target_acc(struct servo_sync_parameter servo,
  * @param output_buffer_len: The length of the instruction packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_sync_write_time_base_target_position_and_moving_time(struct servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
+uint8_t primary_servo_sync_write_time_base_target_position_and_moving_time(struct primary_servo_sync_parameter servo, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
     uint8_t* parameter = (uint8_t*)malloc((servo.id_counts * 4 + 2 + servo.id_counts) * sizeof(uint8_t));
 
-    parameter[0] = TIME_BASE_TARGET_POSITION_L;
+    parameter[0] = PRIMARY_TIME_BASE_TARGET_POSITION_L;
     parameter[1] = 4;
     for (int i = 0; i < servo.id_counts; i++)
     {
@@ -1743,11 +1743,11 @@ uint8_t servo_sync_write_time_base_target_position_and_moving_time(struct servo_
         parameter[i + 6 + i * 4] = (servo.time[i] >> 8) & 0xff;
     }
 
-    sync_write_data(TIME_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
+    primary_sync_write_data(PRIMARY_TIME_BASE_TARGET_POSITION_L, servo.id_counts, parameter, output_buffer, output_buffer_len);
 
     free(parameter);
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -1756,14 +1756,14 @@ uint8_t servo_sync_write_time_base_target_position_and_moving_time(struct servo_
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_ping_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_ping_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -1771,7 +1771,7 @@ uint8_t servo_ping_analysis(uint8_t* response_packet, uint16_t* data)
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1780,18 +1780,18 @@ uint8_t servo_ping_analysis(uint8_t* response_packet, uint16_t* data)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_factory_reset_analysis(uint8_t* response_packet)
+uint8_t primary_servo_factory_reset_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1800,18 +1800,18 @@ uint8_t servo_factory_reset_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_parameter_reset_analysis(uint8_t* response_packet)
+uint8_t primary_servo_parameter_reset_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1820,18 +1820,18 @@ uint8_t servo_parameter_reset_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_calibration_analysis(uint8_t* response_packet)
+uint8_t primary_servo_calibration_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1840,18 +1840,18 @@ uint8_t servo_calibration_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_return_delay_time_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_return_delay_time_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1860,18 +1860,18 @@ uint8_t servo_set_return_delay_time_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_return_level_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_return_level_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1880,18 +1880,18 @@ uint8_t servo_set_return_level_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_baud_rate_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_baud_rate_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1900,18 +1900,18 @@ uint8_t servo_set_baud_rate_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_min_angle_limit_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_min_angle_limit_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1920,18 +1920,18 @@ uint8_t servo_set_min_angle_limit_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_max_angle_limit_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_max_angle_limit_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1940,18 +1940,18 @@ uint8_t servo_set_max_angle_limit_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_max_temperature_limit_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_max_temperature_limit_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1960,18 +1960,18 @@ uint8_t servo_set_max_temperature_limit_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_max_voltage_limit_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_max_voltage_limit_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -1980,18 +1980,18 @@ uint8_t servo_set_max_voltage_limit_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag
  */
-uint8_t servo_set_min_voltage_limit_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_min_voltage_limit_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2000,18 +2000,18 @@ uint8_t servo_set_min_voltage_limit_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_max_pwm_limit_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_max_pwm_limit_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2020,18 +2020,18 @@ uint8_t servo_set_max_pwm_limit_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_max_current_limit_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_max_current_limit_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2040,18 +2040,18 @@ uint8_t servo_set_max_current_limit_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_current_shutdown_time_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_current_shutdown_time_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2060,18 +2060,18 @@ uint8_t servo_set_current_shutdown_time_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_cw_deadband_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_cw_deadband_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2080,18 +2080,18 @@ uint8_t servo_set_cw_deadband_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_ccw_deadband_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_ccw_deadband_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2100,18 +2100,18 @@ uint8_t servo_set_ccw_deadband_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_pwm_punch_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_pwm_punch_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2120,18 +2120,18 @@ uint8_t servo_set_pwm_punch_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_position_control_p_gain_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_position_control_p_gain_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2140,18 +2140,18 @@ uint8_t servo_set_position_control_p_gain_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_position_control_i_gain_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_position_control_i_gain_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2160,18 +2160,18 @@ uint8_t servo_set_position_control_i_gain_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_position_control_d_gain_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_position_control_d_gain_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2180,18 +2180,18 @@ uint8_t servo_set_position_control_d_gain_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_led_condition_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_led_condition_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2200,18 +2200,18 @@ uint8_t servo_set_led_condition_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_shutdown_conditions_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_shutdown_conditions_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2220,18 +2220,18 @@ uint8_t servo_set_shutdown_conditions_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_control_mode_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_control_mode_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2240,18 +2240,18 @@ uint8_t servo_set_control_mode_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_flash_switch_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_flash_switch_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2260,18 +2260,18 @@ uint8_t servo_set_flash_switch_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_led_switch_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_led_switch_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2280,18 +2280,18 @@ uint8_t servo_set_led_switch_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_torque_switch_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_torque_switch_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2300,18 +2300,18 @@ uint8_t servo_set_torque_switch_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_target_pwm_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_target_pwm_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2320,18 +2320,18 @@ uint8_t servo_set_target_pwm_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_target_current_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_target_current_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2340,18 +2340,18 @@ uint8_t servo_set_target_current_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_velocity_base_target_position_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_velocity_base_target_position_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2360,18 +2360,18 @@ uint8_t servo_set_velocity_base_target_position_analysis(uint8_t* response_packe
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_velocity_base_target_velocity_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_velocity_base_target_velocity_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2380,18 +2380,18 @@ uint8_t servo_set_velocity_base_target_velocity_analysis(uint8_t* response_packe
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_velocity_base_target_acc_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_velocity_base_target_acc_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2400,18 +2400,18 @@ uint8_t servo_set_velocity_base_target_acc_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_velocity_base_target_dec_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_velocity_base_target_dec_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2420,18 +2420,18 @@ uint8_t servo_set_velocity_base_target_dec_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_time_base_target_acc_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_time_base_target_acc_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2440,18 +2440,18 @@ uint8_t servo_set_time_base_target_acc_analysis(uint8_t* response_packet)
  * @param response_packet: Servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_set_time_base_target_position_and_moving_time_analysis(uint8_t* response_packet)
+uint8_t primary_servo_set_time_base_target_position_and_moving_time_analysis(uint8_t* response_packet)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2461,14 +2461,14 @@ uint8_t servo_set_time_base_target_position_and_moving_time_analysis(uint8_t* re
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2476,7 +2476,7 @@ uint8_t servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* 
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2486,14 +2486,14 @@ uint8_t servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* 
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_position_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_position_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2501,7 +2501,7 @@ uint8_t servo_read_present_position_analysis(uint8_t* response_packet, uint16_t*
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2512,14 +2512,14 @@ uint8_t servo_read_present_position_analysis(uint8_t* response_packet, uint16_t*
  * @param current: present current.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_position_and_present_current_analysis(uint8_t* response_packet, uint16_t* position, uint16_t* current)
+uint8_t primary_servo_read_present_position_and_present_current_analysis(uint8_t* response_packet, uint16_t* position, uint16_t* current)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2530,7 +2530,7 @@ uint8_t servo_read_present_position_and_present_current_analysis(uint8_t* respon
         *current = *current << 8;
         *current = *current | data_buffer[2];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2540,14 +2540,14 @@ uint8_t servo_read_present_position_and_present_current_analysis(uint8_t* respon
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2555,7 +2555,7 @@ uint8_t servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t*
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2565,14 +2565,14 @@ uint8_t servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t*
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_profile_position_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_profile_position_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2580,7 +2580,7 @@ uint8_t servo_read_present_profile_position_analysis(uint8_t* response_packet, u
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2590,14 +2590,14 @@ uint8_t servo_read_present_profile_position_analysis(uint8_t* response_packet, u
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_profile_velocity_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_profile_velocity_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2605,7 +2605,7 @@ uint8_t servo_read_present_profile_velocity_analysis(uint8_t* response_packet, u
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2615,14 +2615,14 @@ uint8_t servo_read_present_profile_velocity_analysis(uint8_t* response_packet, u
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2630,7 +2630,7 @@ uint8_t servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* data
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2640,20 +2640,20 @@ uint8_t servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* data
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_temperature_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_temperature_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2663,20 +2663,20 @@ uint8_t servo_read_present_temperature_analysis(uint8_t* response_packet, uint16
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_present_voltage_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_voltage_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2686,14 +2686,14 @@ uint8_t servo_read_present_voltage_analysis(uint8_t* response_packet, uint16_t* 
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_time_base_target_moving_time_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_time_base_target_moving_time_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2701,7 +2701,7 @@ uint8_t servo_read_time_base_target_moving_time_analysis(uint8_t* response_packe
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2711,14 +2711,14 @@ uint8_t servo_read_time_base_target_moving_time_analysis(uint8_t* response_packe
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_time_base_target_position_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_time_base_target_position_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2726,7 +2726,7 @@ uint8_t servo_read_time_base_target_position_analysis(uint8_t* response_packet, 
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2736,21 +2736,21 @@ uint8_t servo_read_time_base_target_position_analysis(uint8_t* response_packet, 
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2760,20 +2760,20 @@ uint8_t servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint1
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2783,20 +2783,20 @@ uint8_t servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, u
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2806,14 +2806,14 @@ uint8_t servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, u
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_velocity_base_target_velocity_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_velocity_base_target_velocity_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2821,7 +2821,7 @@ uint8_t servo_read_velocity_base_target_velocity_analysis(uint8_t* response_pack
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2831,14 +2831,14 @@ uint8_t servo_read_velocity_base_target_velocity_analysis(uint8_t* response_pack
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_velocity_base_target_position_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_velocity_base_target_position_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2846,7 +2846,7 @@ uint8_t servo_read_velocity_base_target_position_analysis(uint8_t* response_pack
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2856,14 +2856,14 @@ uint8_t servo_read_velocity_base_target_position_analysis(uint8_t* response_pack
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2871,7 +2871,7 @@ uint8_t servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* d
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2881,14 +2881,14 @@ uint8_t servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* d
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -2896,7 +2896,7 @@ uint8_t servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* data)
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2906,20 +2906,20 @@ uint8_t servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* data)
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_torque_switch_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_torque_switch_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2929,20 +2929,20 @@ uint8_t servo_read_torque_switch_analysis(uint8_t* response_packet, uint16_t* da
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_led_switch_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_led_switch_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2952,20 +2952,20 @@ uint8_t servo_read_led_switch_analysis(uint8_t* response_packet, uint16_t* data)
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_flash_switch_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_flash_switch_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2975,20 +2975,20 @@ uint8_t servo_read_flash_switch_analysis(uint8_t* response_packet, uint16_t* dat
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_current_offset_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_current_offset_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -2998,14 +2998,14 @@ uint8_t servo_read_current_offset_analysis(uint8_t* response_packet, uint16_t* d
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -3013,7 +3013,7 @@ uint8_t servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* data
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3023,20 +3023,20 @@ uint8_t servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* data
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_control_mode_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_control_mode_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3046,21 +3046,21 @@ uint8_t servo_read_control_mode_analysis(uint8_t* response_packet, uint16_t* dat
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
     }
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -3069,21 +3069,21 @@ uint8_t servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint16_
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_led_condition_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_led_condition_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
     }
 
-    return SUCCESS;
+    return PRIMARY_SUCCESS;
 }
 
 /**
@@ -3092,14 +3092,14 @@ uint8_t servo_read_led_condition_analysis(uint8_t* response_packet, uint16_t* da
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_position_control_d_gain_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_position_control_d_gain_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -3107,7 +3107,7 @@ uint8_t servo_read_position_control_d_gain_analysis(uint8_t* response_packet, ui
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3117,14 +3117,14 @@ uint8_t servo_read_position_control_d_gain_analysis(uint8_t* response_packet, ui
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_position_control_i_gain_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_position_control_i_gain_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -3132,7 +3132,7 @@ uint8_t servo_read_position_control_i_gain_analysis(uint8_t* response_packet, ui
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3142,14 +3142,14 @@ uint8_t servo_read_position_control_i_gain_analysis(uint8_t* response_packet, ui
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_position_control_p_gain_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_position_control_p_gain_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -3157,7 +3157,7 @@ uint8_t servo_read_position_control_p_gain_analysis(uint8_t* response_packet, ui
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3167,20 +3167,20 @@ uint8_t servo_read_position_control_p_gain_analysis(uint8_t* response_packet, ui
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3190,20 +3190,20 @@ uint8_t servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t* data)
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3213,20 +3213,20 @@ uint8_t servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint16_t* dat
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3236,14 +3236,14 @@ uint8_t servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16_t* data
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -3251,7 +3251,7 @@ uint8_t servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3261,14 +3261,14 @@ uint8_t servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -3276,7 +3276,7 @@ uint8_t servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3286,14 +3286,14 @@ uint8_t servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -3301,7 +3301,7 @@ uint8_t servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* da
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3311,20 +3311,20 @@ uint8_t servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* da
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3334,20 +3334,20 @@ uint8_t servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint16_t
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3357,20 +3357,20 @@ uint8_t servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint16_t
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3380,14 +3380,14 @@ uint8_t servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -3395,7 +3395,7 @@ uint8_t servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* 
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3405,14 +3405,14 @@ uint8_t servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* 
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
@@ -3420,7 +3420,7 @@ uint8_t servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* 
         *data = *data << 8;
         *data = *data | data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3430,20 +3430,20 @@ uint8_t servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* 
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_return_level_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_return_level_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3453,20 +3453,20 @@ uint8_t servo_read_return_level_analysis(uint8_t* response_packet, uint16_t* dat
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_return_delay_time_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_return_delay_time_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3476,20 +3476,20 @@ uint8_t servo_read_return_delay_time_analysis(uint8_t* response_packet, uint16_t
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3499,20 +3499,20 @@ uint8_t servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t* data)
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_model_information_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_model_information_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
 
@@ -3522,19 +3522,19 @@ uint8_t servo_read_model_information_analysis(uint8_t* response_packet, uint16_t
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t servo_read_firmware_version_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_firmware_version_analysis(uint8_t* response_packet, uint16_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
 
-    ret = servo_unpack(response_packet, &data_buffer);
+    ret = primary_servo_unpack(response_packet, &data_buffer);
 
-    if (ret != SUCCESS) {
+    if (ret != PRIMARY_SUCCESS) {
         return ret;
     }
     else {
         *data = data_buffer[0];
 
-        return SUCCESS;
+        return PRIMARY_SUCCESS;
     }
 }
