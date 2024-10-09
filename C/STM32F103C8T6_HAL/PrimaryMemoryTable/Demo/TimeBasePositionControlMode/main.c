@@ -62,7 +62,6 @@ uint8_t order_buffer[20];								//Store Generated Instructions
 uint8_t order_len;										//Instruction Length
 uint8_t receive[20];									//Store the received status packet
 uint8_t receive_len;									//packet Length
-uint16_t analysis_data;									//Data parsed from the status packet
 uint8_t ret;											//Status Flag
 uint8_t write_buffer[20] = {0};                         //Write data to the memory table
 
@@ -72,8 +71,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 
 int fputc(int ch, FILE *f)
 {
-  HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 0xffff);
-  return ch;
+    HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 0xffff);
+    return ch;
 }
 
 
@@ -86,136 +85,137 @@ int fputc(int ch, FILE *f)
 int main(void)
 {
 
-  /* USER CODE BEGIN 1 */
+    /* USER CODE BEGIN 1 */
 
-  /* USER CODE END 1 */
+    /* USER CODE END 1 */
 
-  /* MCU Configuration--------------------------------------------------------*/
+    /* MCU Configuration--------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    HAL_Init();
 
-  /* USER CODE BEGIN Init */
+    /* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+    /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+    /* Configure the system clock */
+    SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+    /* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
+    /* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_USART1_UART_Init();
-  MX_USART2_UART_Init();
-  /* USER CODE BEGIN 2 */
-	
-	struct servo_sync_parameter servo;
+    /* Initialize all configured peripherals */
+    MX_GPIO_Init();
+    MX_USART1_UART_Init();
+    MX_USART2_UART_Init();
+    /* USER CODE BEGIN 2 */
+
+    struct primary_servo_sync_parameter servo;
 
     servo.id_counts = 2;            //Sync write two servos
     servo.id[0] = 1;                //Set the ID of the first servo to 1
     servo.id[1] = 2;                //Set the ID of the second servo to 2
-	
-  /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
+    /* USER CODE END 2 */
 
-    /* USER CODE BEGIN 3 */
-    //Change the torque switch of the servo ID1, ID2 to OFF respectively.
-    servo.torque_switch[0] = 0;
-    servo.torque_switch[1] = 0;
-    servo_sync_write_torque_switch(servo, order_buffer, &order_len);
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
+    while (1)
+    {
+        /* USER CODE END WHILE */
 
-    HAL_HalfDuplex_EnableTransmitter(&huart1);
-    HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
-		PRINTF("Sync Write torque witch successfully.\r\n");
-		HAL_Delay(1000);
-		
-		//Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
-    servo.control_mode[0] = 0;
-    servo.control_mode[1] = 0;
-    servo_sync_write_control_mode(servo, order_buffer, &order_len);
+        /* USER CODE BEGIN 3 */
+        //Change the torque switch of the servo ID1, ID2 to OFF respectively.
+        servo.torque_switch[0] = 0;
+        servo.torque_switch[1] = 0;
+        primary_servo_sync_write_torque_switch(servo, order_buffer, &order_len);
 
-    HAL_HalfDuplex_EnableTransmitter(&huart1);
-    HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
-		PRINTF("Sync Write control mode successfully.\r\n");
-		HAL_Delay(1000);
-		
-		//Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
-    servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_len);
-   
-    HAL_HalfDuplex_EnableTransmitter(&huart1);
-    HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
+        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
+        PRINTF("sync write torque witch successful.\r\n");
+        HAL_Delay(1000);
 
-    HAL_HalfDuplex_EnableReceiver(&huart1);
-		HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
-		
-		HAL_Delay(10);
+        //Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
+        servo.control_mode[0] = 0;
+        servo.control_mode[1] = 0;
+        primary_servo_sync_write_control_mode(servo, order_buffer, &order_len);
 
-    servo_set_time_base_target_position_and_moving_time_analysis(receive);
+        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
+        PRINTF("sync write control mode successful.\r\n");
+        HAL_Delay(1000);
 
-		HAL_Delay(1000);
+        //Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
+        primary_servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_len);
 
-      //Change the time base target ACC, position, and moving time of servo ID1 to 0°, 300°, and 1s, respectively.
-      write_buffer[0] = 0;
-      write_buffer[1] = 3000 & 0xff;
-      write_buffer[2] = (3000 >> 8) & 0xff;
-      write_buffer[3] = 1000 & 0xff;
-      write_buffer[4] = (1000 >> 8) & 0xff;
+        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 
-      servo_write(1, 0x3B, 5, write_buffer, order_buffer, &order_len);
+        HAL_HalfDuplex_EnableReceiver(&huart1);
+        HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
 
-      HAL_HalfDuplex_EnableTransmitter(&huart1);
-      HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
+        HAL_Delay(10);
 
-      HAL_HalfDuplex_EnableReceiver(&huart1);
-      HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
+        ret = primary_servo_set_time_base_target_position_and_moving_time_analysis(receive);
+        if (ret == SUCCESS)
+            PRINTF("set time base target position and moving time successful.\r\n");
+        HAL_Delay(1000);
 
-      PRINTF("the pack is: ");
-      for (uint8_t i = 0; i < receive_len; i++)
-      {
-          PRINTF("0x%x ", receive[i]);
-      }
-      PRINTF("\r\n");
+        //Change the time base target ACC, position, and moving time of servo ID1 to 0°, 300°, and 1s, respectively.
+        write_buffer[0] = 0;
+        write_buffer[1] = 3000 & 0xff;
+        write_buffer[2] = (3000 >> 8) & 0xff;
+        write_buffer[3] = 1000 & 0xff;
+        write_buffer[4] = (1000 >> 8) & 0xff;
 
-      HAL_Delay(1000);
+        primary_servo_write(1, 0x3B, 5, write_buffer, order_buffer, &order_len);
+
+        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
+
+        HAL_HalfDuplex_EnableReceiver(&huart1);
+        HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
+
+        PRINTF("the pack is: ");
+        for (uint8_t i = 0; i < receive_len; i++)
+        {
+            PRINTF("0x%02x ", receive[i]);
+        }
+        PRINTF("\r\n");
+
+        HAL_Delay(1000);
 
 
-		//In time base position control mode, let servo ID1 move to the 150° position at a velocity of 500ms,
+        //In time base position control mode, let servo ID1 move to the 150° position at a velocity of 500ms,
         //and let servo ID2 move to the 0° position at a constant velocity of 1s.
-    servo.position[0] = 1500;
-    servo.position[1] = 0;
-    servo.time[0] = 500;
-    servo.time[1] = 1000;
-		
-    servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
-   
-    HAL_HalfDuplex_EnableTransmitter(&huart1);
-    HAL_UART_Transmit(&huart1, order_buffer, order_len, 20);
+        servo.position[0] = 1500;
+        servo.position[1] = 0;
+        servo.time[0] = 500;
+        servo.time[1] = 1000;
 
-		HAL_Delay(1000);
-		
-		//In time base position control mode, let servo ID1 move to the 0° position at a velocity of 1s,
+        primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
+
+        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_UART_Transmit(&huart1, order_buffer, order_len, 20);
+        PRINTF("sync write time base target position and moving time successful.\r\n");
+        HAL_Delay(1000);
+
+        //In time base position control mode, let servo ID1 move to the 0° position at a velocity of 1s,
         //and let servo ID2 move to the 3000° position at a constant velocity of 500ms.
-    servo.position[0] = 0;
-    servo.position[1] = 3000;
-    servo.time[0] = 1000;
-    servo.time[1] = 500;
-		
-    servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
-   
-    HAL_HalfDuplex_EnableTransmitter(&huart1);
-    HAL_UART_Transmit(&huart1, order_buffer, order_len, 20);
+        servo.position[0] = 0;
+        servo.position[1] = 3000;
+        servo.time[0] = 1000;
+        servo.time[1] = 500;
 
-		HAL_Delay(1000);
-	}
-  /* USER CODE END 3 */
+        primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
+
+        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_UART_Transmit(&huart1, order_buffer, order_len, 20);
+        PRINTF("sync write time base target position and moving time successful.\r\n");
+        HAL_Delay(1000);
+    }
+    /* USER CODE END 3 */
 }
 
 /**
@@ -224,48 +224,48 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    /** Initializes the RCC Oscillators according to the specified parameters
+    * in the RCC_OscInitTypeDef structure.
+    */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+    RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+        Error_Handler();
+    }
 
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+    /** Initializes the CPU, AHB and APB buses clocks
+    */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                                  |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+    {
+        Error_Handler();
+    }
 }
 
 /* USER CODE BEGIN 4 */
 
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-	if(huart->Instance==USART1)
-	{
+    if(huart->Instance==USART1)
+    {
         receive_len = Size;
-		HAL_UARTEx_ReceiveToIdle_IT(&huart1,receive,50);
-	}
+        HAL_UARTEx_ReceiveToIdle_IT(&huart1,receive,50);
+    }
 }
 
 /* USER CODE END 4 */
@@ -276,13 +276,13 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
   */
 void Error_Handler(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
-  /* USER CODE END Error_Handler_Debug */
+    /* USER CODE BEGIN Error_Handler_Debug */
+    /* User can add his own implementation to report the HAL error return state */
+    __disable_irq();
+    while (1)
+    {
+    }
+    /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
