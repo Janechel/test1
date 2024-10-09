@@ -1,4 +1,4 @@
-class Instruction:
+class Primary_Instruction:
     """
     This class stores the servo command types.
     """
@@ -28,7 +28,7 @@ class Instruction:
     REBOOT = 0x64
 
 
-class State:
+class Primary_State:
     """
     This class stores the servo error statuses.
     """
@@ -60,7 +60,7 @@ class State:
     # This is not a complete response package
     UNPACK_ERROR = 0x80
 
-class Servo_Sync_Parameter:
+class Primary_Servo_Sync_Parameter:
     """
     This class stores the parameters for the sync write commands.
     """
@@ -78,9 +78,9 @@ class Servo_Sync_Parameter:
         self.acc_velocity_grade = [0] * 20    # Time Base Target ACC
 
 
-class Address:
+class Primary_Address:
     """
-    This class stores the memory table addresses of the servo.
+    This class stores the primary memory table addresses of the servo.
     """
 
     # S/N Code
@@ -158,9 +158,6 @@ class Address:
     # Offset Value for midpoint Calibration of Servo.This bit is triggered by the Calibration instruction, and the value cannot be directly written.
     CALIBRATION_L = 0x24
 
-    # Offset Value for motor current sampling.
-    CURRENT_OFFSET = 0x26
-
     # Flash area write switch: 0 for write disabled, 1 for write enabled.
     FLASH_SW = 0x2E
 
@@ -222,7 +219,7 @@ class Address:
     PRESENT_CURRENT_L = 0x4C
 
 
-class Servo:
+class Primary_Servo:
     """
     This class contains all the methods for operating the servo.
     """
@@ -265,12 +262,12 @@ class Servo:
         output_buffer[i] = servo_id
         i += 1
 
-        if instruction == Instruction.PING:
+        if instruction == Primary_Instruction.PING:
             output_buffer[i] = 0x02
             i += 1
             output_buffer[i] = instruction
             i += 1
-        elif instruction == Instruction.READ_DATA:
+        elif instruction == Primary_Instruction.READ_DATA:
             output_buffer[i] = 0x04
             i += 1
             output_buffer[i] = instruction
@@ -279,7 +276,7 @@ class Servo:
             i += 1
             output_buffer[i] = byte_length
             i += 1
-        elif instruction == Instruction.WRITE_DATA:
+        elif instruction == Primary_Instruction.WRITE_DATA:
             output_buffer[i] = byte_length + 3
             i += 1
             output_buffer[i] = instruction
@@ -289,7 +286,7 @@ class Servo:
             for j in range(byte_length):
                 output_buffer[i] = input_buffer[j]
                 i += 1
-        elif instruction == Instruction.SYNC_WRITE:
+        elif instruction == Primary_Instruction.SYNC_WRITE:
             output_buffer[i] = (input_buffer[1] + 1) * byte_length + 4
             i += 1
             output_buffer[i] = instruction
@@ -297,8 +294,8 @@ class Servo:
             for j in range((byte_length * input_buffer[1]) + 2 + byte_length):
                 output_buffer[i] = input_buffer[j]
                 i += 1
-        elif instruction in [Instruction.FACTORY_RESET, Instruction.PARAMETER_RESET, Instruction.CALIBRATION,
-                             Instruction.REBOOT]:
+        elif instruction in [Primary_Instruction.FACTORY_RESET, Primary_Instruction.PARAMETER_RESET, Primary_Instruction.CALIBRATION,
+                             Primary_Instruction.REBOOT]:
             output_buffer[i] = 0x04
             i += 1
             output_buffer[i] = instruction
@@ -308,9 +305,9 @@ class Servo:
             output_buffer[i] = 0xdf
             i += 1
 
-        output_buffer[i] = Servo.get_check(output_buffer[2:], i - 2) & 0xff
+        output_buffer[i] = Primary_Servo.get_check(output_buffer[2:], i - 2) & 0xff
         output_length[0] = i + 1
-        return State.SUCCESS
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_unpack(response_packet: list, data_buffer: list) -> int:
@@ -324,26 +321,26 @@ class Servo:
         length = response_packet[3]
         status = response_packet[4]
 
-        checksum = Servo.get_check(response_packet[2:], length + 1)
+        checksum = Primary_Servo.get_check(response_packet[2:], length + 1)
 
         if response_packet[0] != 0xff or response_packet[1] != 0xff or checksum != response_packet[length + 3]:
             print("This is not a complete response package!")
-            return State.UNPACK_ERROR
+            return Primary_State.UNPACK_ERROR
 
         if status != 0x00:
-            if status & State.VOLTAGE_ERROR == State.VOLTAGE_ERROR:
+            if status & Primary_State.VOLTAGE_ERROR == Primary_State.VOLTAGE_ERROR:
                 print("Voltage Error")
-            if status & State.ANGLE_ERROR == State.ANGLE_ERROR:
+            if status & Primary_State.ANGLE_ERROR == Primary_State.ANGLE_ERROR:
                 print("Angle Error")
-            if status & State.OVERHEATING_ERROR == State.OVERHEATING_ERROR:
+            if status & Primary_State.OVERHEATING_ERROR == Primary_State.OVERHEATING_ERROR:
                 print("Overheating Error")
-            if status & State.RANGE_ERROR == State.RANGE_ERROR:
+            if status & Primary_State.RANGE_ERROR == Primary_State.RANGE_ERROR:
                 print("Range Error")
-            if status & State.CHECKSUM_ERROR == State.CHECKSUM_ERROR:
+            if status & Primary_State.CHECKSUM_ERROR == Primary_State.CHECKSUM_ERROR:
                 print("CheckSum Error")
-            if status & State.STALL_ERROR == State.STALL_ERROR:
+            if status & Primary_State.STALL_ERROR == Primary_State.STALL_ERROR:
                 print("Stall Error")
-            if status & State.PARSING_ERROR == State.PARSING_ERROR:
+            if status & Primary_State.PARSING_ERROR == Primary_State.PARSING_ERROR:
                 print("Parsing Error")
             return status
 
@@ -351,7 +348,7 @@ class Servo:
             data_buffer[0] = response_packet[5]
             data_buffer[1] = response_packet[6]
 
-        return State.SUCCESS
+        return Primary_State.SUCCESS
 
     @staticmethod
     def sync_write_data(address: int, servo_counts: int, input_buffer: list, output_buffer: list,
@@ -366,9 +363,9 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_pack(0xfe, Instruction.SYNC_WRITE, address, servo_counts, input_buffer, output_buffer,
+        Primary_Servo.servo_pack(0xfe, Primary_Instruction.SYNC_WRITE, address, servo_counts, input_buffer, output_buffer,
                          output_buffer_len)
-        return State.SUCCESS
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_write(servo_id: int, address: int, write_data_len: int, input_buffer: list, output_buffer: list,
@@ -384,9 +381,9 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_pack(servo_id, Instruction.WRITE_DATA, address, write_data_len, input_buffer, output_buffer,
+        Primary_Servo.servo_pack(servo_id, Primary_Instruction.WRITE_DATA, address, write_data_len, input_buffer, output_buffer,
                          output_buffer_len)
-        return State.SUCCESS
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read(servo_id: int, address: int, read_data_len: int, output_buffer: list,
@@ -401,9 +398,9 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_pack(servo_id, Instruction.READ_DATA, address, read_data_len, None, output_buffer,
+        Primary_Servo.servo_pack(servo_id, Primary_Instruction.READ_DATA, address, read_data_len, None, output_buffer,
                          output_buffer_len)
-        return State.SUCCESS
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_ping(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -415,8 +412,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_pack(servo_id, Instruction.PING, 0, 0, None, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_pack(servo_id, Primary_Instruction.PING, 0, 0, None, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_factory_reset(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -428,8 +425,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_pack(servo_id, Instruction.FACTORY_RESET, 0, 0, None, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_pack(servo_id, Primary_Instruction.FACTORY_RESET, 0, 0, None, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_parameter_reset(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -441,8 +438,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_pack(servo_id, Instruction.PARAMETER_RESET, 0, 0, None, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_pack(servo_id, Primary_Instruction.PARAMETER_RESET, 0, 0, None, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_calibration(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -454,8 +451,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_pack(servo_id, Instruction.CALIBRATION, 0, 0, None, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_pack(servo_id, Primary_Instruction.CALIBRATION, 0, 0, None, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_reboot(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -467,8 +464,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_pack(servo_id, Instruction.REBOOT, 0, 0, None, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_pack(servo_id, Primary_Instruction.REBOOT, 0, 0, None, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_position_and_present_current(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -480,8 +477,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_read(servo_id, Address.PRESENT_POSITION_L, 4, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.PRESENT_POSITION_L, 4, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_current(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -493,8 +490,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_read(servo_id, Address.PRESENT_CURRENT_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.PRESENT_CURRENT_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_position(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -506,8 +503,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_read(servo_id, Address.PRESENT_POSITION_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.PRESENT_POSITION_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_velocity(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -519,8 +516,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_read(servo_id, Address.PRESENT_VELOCITY_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.PRESENT_VELOCITY_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_profile_position(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -532,8 +529,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_read(servo_id, Address.PRESENT_PROFILE_POSITION_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.PRESENT_PROFILE_POSITION_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_profile_velocity(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -545,8 +542,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_read(servo_id, Address.PRESENT_PROFILE_VELOCITY_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.PRESENT_PROFILE_VELOCITY_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_pwm(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -558,8 +555,8 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
 
-        Servo.servo_read(servo_id, Address.PRESENT_PWM_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.PRESENT_PWM_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_temperature(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -570,8 +567,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.PRESENT_TEMPERATURE, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.PRESENT_TEMPERATURE, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_voltage(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -582,8 +579,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.PRESENT_VOLTAGE, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.PRESENT_VOLTAGE, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_time_base_target_moving_time(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -594,8 +591,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.TIME_BASE_TARGET_MOVINGTIME_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.TIME_BASE_TARGET_MOVINGTIME_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_time_base_target_position(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -606,8 +603,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.TIME_BASE_TARGET_POSITION_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.TIME_BASE_TARGET_POSITION_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_time_base_target_acc(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -618,8 +615,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.TIME_BASE_TARGET_ACC, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.TIME_BASE_TARGET_ACC, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_velocity_base_target_dec(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -630,8 +627,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.VELOCITY_BASE_TARGET_DEC, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.VELOCITY_BASE_TARGET_DEC, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_velocity_base_target_acc(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -642,8 +639,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.VELOCITY_BASE_TARGET_ACC, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.VELOCITY_BASE_TARGET_ACC, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_velocity_base_target_velocity(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -654,8 +651,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.VELOCITY_BASE_TARGET_VELOCITY_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.VELOCITY_BASE_TARGET_VELOCITY_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_velocity_base_target_position(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -666,8 +663,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.VELOCITY_BASE_TARGET_POSITION_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.VELOCITY_BASE_TARGET_POSITION_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_target_current(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -678,8 +675,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.TARGET_CURRENT_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.TARGET_CURRENT_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_target_pwm(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -690,8 +687,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.TARGET_PWM_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.TARGET_PWM_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_torque_switch(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -702,8 +699,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.TORQUE_SW, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.TORQUE_SW, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_led_switch(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -714,8 +711,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.LED_SW, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.LED_SW, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_flash_switch(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -726,20 +723,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.FLASH_SW, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
-
-    @staticmethod
-    def servo_read_current_offset(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
-        """
-        Read the current offset of servo.
-        :param servo_id: ServoID.
-        :param output_buffer: Pointer for the output buffer that is used to store instruction packets.
-        :param output_buffer_len: The length of the instruction packet.
-        :return: Function execution result, success or error flag.
-        """
-        Servo.servo_read(servo_id, Address.CURRENT_OFFSET, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.FLASH_SW, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_calibration(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -750,8 +735,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.CALIBRATION_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.CALIBRATION_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_control_mode(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -762,8 +747,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.CONTROL_MODE, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.CONTROL_MODE, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_shutdown_condition(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -774,8 +759,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.SHUTDOWN_CONDITION, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.SHUTDOWN_CONDITION, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_led_condition(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -786,8 +771,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.LED_CONDITION, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.LED_CONDITION, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_position_control_d_gain(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -798,8 +783,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.POSITION_D_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.POSITION_D_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_position_control_i_gain(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -810,8 +795,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.POSITION_I_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.POSITION_I_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_position_control_p_gain(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -822,8 +807,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.POSITION_P_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.POSITION_P_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_pwm_punch(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -834,8 +819,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.PWM_PUNCH, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.PWM_PUNCH, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_ccw_deadband(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -846,8 +831,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.CCW_DEADBAND, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.CCW_DEADBAND, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_cw_deadband(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -858,8 +843,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.CW_DEADBAND, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.CW_DEADBAND, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_current_shutdown_time(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -870,8 +855,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.CURRENT_TIME_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.CURRENT_TIME_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_max_current_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -882,8 +867,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.MAX_CURRENT_LIMIT_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.MAX_CURRENT_LIMIT_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_max_pwm_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -894,8 +879,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.MAX_PWM_LIMIT_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.MAX_PWM_LIMIT_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_max_voltage_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -906,8 +891,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.MAX_VOLTAGE_LIMIT, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.MAX_VOLTAGE_LIMIT, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_min_voltage_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -918,8 +903,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.MIN_VOLTAGE_LIMIT, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.MIN_VOLTAGE_LIMIT, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_max_temperature_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -930,8 +915,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.MAX_TEMPERATURE_LIMIT, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.MAX_TEMPERATURE_LIMIT, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_max_angle_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -942,8 +927,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.MAX_ANGLE_LIMIT_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.MAX_ANGLE_LIMIT_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_min_angle_limit(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -954,8 +939,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.MIN_ANGLE_LIMIT_L, 2, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.MIN_ANGLE_LIMIT_L, 2, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_return_level(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -966,8 +951,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.RETURN_LEVEL, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.RETURN_LEVEL, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_return_delay_time(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -978,8 +963,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.RETURN_DELAY_TIME, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.RETURN_DELAY_TIME, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_baud_rate(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -990,8 +975,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.BAUD_RATE, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.BAUD_RATE, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_model_information(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -1002,8 +987,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.MODEL_INFORMATION, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.MODEL_INFORMATION, 4, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_firmware_version(servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -1014,8 +999,8 @@ class Servo:
         :param output_buffer_len: The length of the instruction packet.
         :return: Function execution result, success or error flag.
         """
-        Servo.servo_read(servo_id, Address.FIRMWARE_VERSION, 1, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_read(servo_id, Primary_Address.FIRMWARE_VERSION, 1, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_ping_analysis(response_packet, analysis_data) -> int:
@@ -1027,12 +1012,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_factory_reset_analysis(response_packet: list) -> int:
@@ -1042,11 +1027,11 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
         data_buffer = None
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_parameter_reset_analysis(response_packet) -> int:
@@ -1056,11 +1041,11 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
         data_buffer = None
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_calibration_analysis(response_packet) -> int:
@@ -1070,11 +1055,11 @@ class Servo:
         :return: Function execution result, success or error flag.
         """
         data_buffer = None
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_position_and_present_current_analysis(response_packet, position, current) -> int:
@@ -1086,13 +1071,13 @@ class Servo:
         """
         data_buffer = [0] * 4
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             position[0] = (data_buffer[1] << 8) | data_buffer[0]
             current[0] = (data_buffer[3] << 8) | data_buffer[2]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_current_analysis(response_packet, analysis_data) -> int:
@@ -1104,12 +1089,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_position_analysis(response_packet, analysis_data) -> int:
@@ -1121,12 +1106,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_velocity_analysis(response_packet, analysis_data) -> int:
@@ -1138,12 +1123,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_profile_position_analysis(response_packet, analysis_data) -> int:
@@ -1155,12 +1140,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_profile_velocity_analysis(response_packet, analysis_data) -> int:
@@ -1172,12 +1157,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_pwm_analysis(response_packet, analysis_data) -> int:
@@ -1189,13 +1174,13 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
 
-        if ret != State.SUCCESS:
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_temperature_analysis(response_packet, analysis_data) -> int:
@@ -1207,12 +1192,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_present_voltage_analysis(response_packet, analysis_data) -> int:
@@ -1224,12 +1209,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_time_base_target_moving_time_analysis(response_packet, analysis_data) -> int:
@@ -1241,12 +1226,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_time_base_target_position_analysis(response_packet, analysis_data) -> int:
@@ -1258,12 +1243,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_time_base_target_acc_analysis(response_packet, analysis_data) -> int:
@@ -1275,12 +1260,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_velocity_base_target_dec_analysis(response_packet, analysis_data) -> int:
@@ -1292,12 +1277,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_velocity_base_target_acc_analysis(response_packet, analysis_data) -> int:
@@ -1309,12 +1294,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_velocity_base_target_velocity_analysis(response_packet, analysis_data) -> int:
@@ -1326,12 +1311,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_velocity_base_target_position_analysis(response_packet, analysis_data) -> int:
@@ -1343,12 +1328,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_target_current_analysis(response_packet, analysis_data) -> int:
@@ -1360,12 +1345,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_target_pwm_analysis(response_packet, analysis_data) -> int:
@@ -1377,12 +1362,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_torque_switch_analysis(response_packet, analysis_data) -> int:
@@ -1394,12 +1379,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_led_switch_analysis(response_packet, analysis_data) -> int:
@@ -1411,12 +1396,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_flash_switch_analysis(response_packet, analysis_data) -> int:
@@ -1428,12 +1413,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_current_offset_analysis(response_packet, analysis_data) -> int:
@@ -1445,12 +1430,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_calibration_analysis(response_packet, analysis_data) -> int:
@@ -1462,13 +1447,13 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
 
-        if ret != State.SUCCESS:
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_control_mode_analysis(response_packet, analysis_data) -> int:
@@ -1480,12 +1465,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_shutdown_condition_analysis(response_packet, analysis_data) -> int:
@@ -1497,12 +1482,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_led_condition_analysis(response_packet, analysis_data) -> int:
@@ -1514,12 +1499,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_position_control_d_gain_analysis(response_packet, analysis_data) -> int:
@@ -1531,12 +1516,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_position_control_i_gain_analysis(response_packet, analysis_data) -> int:
@@ -1548,12 +1533,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_position_control_p_gain_analysis(response_packet, analysis_data) -> int:
@@ -1565,12 +1550,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_pwm_punch_analysis(response_packet, analysis_data) -> int:
@@ -1582,12 +1567,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_ccw_deadband_analysis(response_packet, analysis_data) -> int:
@@ -1599,12 +1584,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_cw_deadband_analysis(response_packet, analysis_data) -> int:
@@ -1616,12 +1601,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_current_shutdown_time_analysis(response_packet, analysis_data) -> int:
@@ -1633,12 +1618,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_max_current_limit_analysis(response_packet, analysis_data) -> int:
@@ -1650,12 +1635,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_max_pwm_limit_analysis(response_packet, analysis_data) -> int:
@@ -1667,12 +1652,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_max_voltage_limit_analysis(response_packet, analysis_data) -> int:
@@ -1684,12 +1669,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_min_voltage_limit_analysis(response_packet, analysis_data) -> int:
@@ -1701,12 +1686,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_max_temperature_limit_analysis(response_packet, analysis_data) -> int:
@@ -1718,12 +1703,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_max_angle_limit_analysis(response_packet, analysis_data) -> int:
@@ -1735,12 +1720,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_min_angle_limit_analysis(response_packet, analysis_data) -> int:
@@ -1752,13 +1737,13 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
 
-        if ret != State.SUCCESS:
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_return_level_analysis(response_packet, analysis_data) -> int:
@@ -1770,12 +1755,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_return_delay_time_analysis(response_packet, analysis_data) -> int:
@@ -1787,12 +1772,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_baud_rate_analysis(response_packet, analysis_data) -> int:
@@ -1804,12 +1789,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_model_information_analysis(response_packet, analysis_data) -> int:
@@ -1819,14 +1804,14 @@ class Servo:
         :param analysis_data: The data parsed from the servo response packet.
         :return: Function execution result, success or error flag.
         """
-        data_buffer = [0] * 2
+        data_buffer = [0] * 4
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            analysis_data[0] = (data_buffer[3] << 24) | (data_buffer[2] << 16) | (data_buffer[1] << 8) | data_buffer[0]
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_read_firmware_version_analysis(response_packet, analysis_data) -> int:
@@ -1838,12 +1823,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
             analysis_data[0] = data_buffer[0]
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_modify_known_id(servo_id: int, new_servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -1857,8 +1842,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = new_servo_id
-        Servo.servo_write(servo_id, Address.SERVO_ID, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.SERVO_ID, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_modify_unknown_id(new_servo_id: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -1871,8 +1856,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = new_servo_id
-        Servo.servo_write(0xfe, Address.SERVO_ID, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(0xfe, Primary_Address.SERVO_ID, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_return_delay_time(servo_id: int, response_delay_time: int, output_buffer: list,
@@ -1887,8 +1872,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = response_delay_time
-        Servo.servo_write(servo_id, Address.RETURN_DELAY_TIME, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.RETURN_DELAY_TIME, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_return_level(servo_id: int, return_level: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -1902,8 +1887,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = return_level
-        Servo.servo_write(servo_id, Address.RETURN_LEVEL, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.RETURN_LEVEL, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_baud_rate(servo_id: int, baud_rate_number: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -1917,8 +1902,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = baud_rate_number
-        Servo.servo_write(servo_id, Address.BAUD_RATE, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.BAUD_RATE, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_min_angle_limit(servo_id: int, min_angle_limit: int, output_buffer: list,
@@ -1936,8 +1921,8 @@ class Servo:
         buffer[0] = min_angle_limit & 0xff
         buffer[1] = (min_angle_limit >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.MIN_ANGLE_LIMIT_L, 2, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.MIN_ANGLE_LIMIT_L, 2, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_max_angle_limit(servo_id: int, max_angle_limit: int, output_buffer: list,
@@ -1955,8 +1940,8 @@ class Servo:
         buffer[0] = max_angle_limit & 0xff
         buffer[1] = (max_angle_limit >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.MAX_ANGLE_LIMIT_L, 2, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.MAX_ANGLE_LIMIT_L, 2, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_max_temperature_limit(servo_id: int, max_temperature_limit: int, output_buffer: list,
@@ -1971,8 +1956,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = max_temperature_limit
-        Servo.servo_write(servo_id, Address.MAX_TEMPERATURE_LIMIT, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.MAX_TEMPERATURE_LIMIT, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_max_voltage_limit(servo_id: int, max_voltage_limit: int, output_buffer: list,
@@ -1987,8 +1972,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = max_voltage_limit
-        Servo.servo_write(servo_id, Address.MAX_VOLTAGE_LIMIT, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.MAX_VOLTAGE_LIMIT, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_min_voltage_limit(servo_id: int, min_voltage_limit: int, output_buffer: list,
@@ -2003,8 +1988,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = min_voltage_limit
-        Servo.servo_write(servo_id, Address.MIN_VOLTAGE_LIMIT, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.MIN_VOLTAGE_LIMIT, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_max_pwm_limit(servo_id: int, max_pwm_limit: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -2021,8 +2006,8 @@ class Servo:
         buffer[0] = max_pwm_limit & 0xff
         buffer[1] = (max_pwm_limit >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.MAX_PWM_LIMIT_L, 2, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.MAX_PWM_LIMIT_L, 2, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_max_current_limit(servo_id: int, max_current_limit: int, output_buffer: list,
@@ -2040,8 +2025,8 @@ class Servo:
         buffer[0] = max_current_limit & 0xff
         buffer[1] = (max_current_limit >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.MAX_CURRENT_LIMIT_L, 2, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.MAX_CURRENT_LIMIT_L, 2, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_current_shutdown_time(servo_id: int, current_shutdown_time: int, output_buffer: list,
@@ -2059,8 +2044,8 @@ class Servo:
         buffer[0] = current_shutdown_time & 0xff
         buffer[1] = (current_shutdown_time >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.CURRENT_TIME_L, 2, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.CURRENT_TIME_L, 2, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_cw_deadband(servo_id: int, cw_deadband: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -2074,8 +2059,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = cw_deadband
-        Servo.servo_write(servo_id, Address.CW_DEADBAND, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.CW_DEADBAND, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_ccw_deadband(servo_id: int, ccw_deadband: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -2089,8 +2074,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = ccw_deadband
-        Servo.servo_write(servo_id, Address.CCW_DEADBAND, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.CCW_DEADBAND, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_pwm_punch(servo_id: int, pwm_punch: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -2104,8 +2089,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = pwm_punch
-        Servo.servo_write(servo_id, Address.PWM_PUNCH, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.PWM_PUNCH, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_position_control_p_gain(servo_id: int, position_control_p_gain: int, output_buffer: list,
@@ -2123,8 +2108,8 @@ class Servo:
         buffer[0] = position_control_p_gain & 0xff
         buffer[1] = (position_control_p_gain >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.POSITION_P_L, 2, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.POSITION_P_L, 2, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_position_control_i_gain(servo_id: int, position_control_i_gain: int, output_buffer: list,
@@ -2142,8 +2127,8 @@ class Servo:
         buffer[0] = position_control_i_gain & 0xff
         buffer[1] = (position_control_i_gain >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.POSITION_I_L, 2, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.POSITION_I_L, 2, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_position_control_d_gain(servo_id: int, position_control_d_gain: int, output_buffer: list,
@@ -2161,8 +2146,8 @@ class Servo:
         buffer[0] = position_control_d_gain & 0xff
         buffer[1] = (position_control_d_gain >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.POSITION_D_L, 2, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.POSITION_D_L, 2, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_led_condition(servo_id: int, led_condition: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -2176,8 +2161,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = led_condition
-        Servo.servo_write(servo_id, Address.LED_CONDITION, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.LED_CONDITION, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_shutdown_conditions(servo_id: int, shutdown_conditions: int, output_buffer: list,
@@ -2192,8 +2177,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = shutdown_conditions
-        Servo.servo_write(servo_id, Address.SHUTDOWN_CONDITION, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.SHUTDOWN_CONDITION, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_control_mode(servo_id: int, control_mode: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -2207,8 +2192,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = control_mode
-        Servo.servo_write(servo_id, Address.CONTROL_MODE, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.CONTROL_MODE, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_flash_switch(servo_id: int, flash_switch: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -2222,8 +2207,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = flash_switch
-        Servo.servo_write(servo_id, Address.FLASH_SW, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.FLASH_SW, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_led_switch(servo_id: int, led_switch: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -2237,8 +2222,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = led_switch
-        Servo.servo_write(servo_id, Address.LED_SW, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.LED_SW, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_torque_switch(servo_id: int, torque_switch: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -2252,8 +2237,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = torque_switch
-        Servo.servo_write(servo_id, Address.TORQUE_SW, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.TORQUE_SW, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_target_pwm(servo_id: int, target_pwm: int, output_buffer: list, output_buffer_len: list) -> int:
@@ -2270,8 +2255,8 @@ class Servo:
         buffer[0] = target_pwm & 0xff
         buffer[1] = (target_pwm >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.TARGET_PWM_L, 2, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.TARGET_PWM_L, 2, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_target_current(servo_id: int, target_current: int, output_buffer: list,
@@ -2289,8 +2274,8 @@ class Servo:
         buffer[0] = target_current & 0xff
         buffer[1] = (target_current >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.TARGET_CURRENT_L, 2, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.TARGET_CURRENT_L, 2, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_velocity_base_target_position(servo_id: int, target_position: int, output_buffer: list,
@@ -2308,9 +2293,9 @@ class Servo:
         buffer[0] = target_position & 0xff
         buffer[1] = (target_position >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.VELOCITY_BASE_TARGET_POSITION_L, 2, buffer, output_buffer,
+        Primary_Servo.servo_write(servo_id, Primary_Address.VELOCITY_BASE_TARGET_POSITION_L, 2, buffer, output_buffer,
                           output_buffer_len)
-        return State.SUCCESS
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_velocity_base_target_velocity(servo_id: int, target_velocity: int, output_buffer: list,
@@ -2328,9 +2313,9 @@ class Servo:
         buffer[0] = target_velocity & 0xff
         buffer[1] = (target_velocity >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.VELOCITY_BASE_TARGET_VELOCITY_L, 2, buffer, output_buffer,
+        Primary_Servo.servo_write(servo_id, Primary_Address.VELOCITY_BASE_TARGET_VELOCITY_L, 2, buffer, output_buffer,
                           output_buffer_len)
-        return State.SUCCESS
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_velocity_base_target_acc(servo_id: int, target_acc: int, output_buffer: list,
@@ -2345,8 +2330,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = target_acc
-        Servo.servo_write(servo_id, Address.VELOCITY_BASE_TARGET_ACC, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.VELOCITY_BASE_TARGET_ACC, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_velocity_base_target_dec(servo_id: int, target_dec: int, output_buffer: list,
@@ -2361,8 +2346,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = target_dec
-        Servo.servo_write(servo_id, Address.VELOCITY_BASE_TARGET_DEC, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.VELOCITY_BASE_TARGET_DEC, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_time_base_target_acc(servo_id: int, target_acc: int, output_buffer: list,
@@ -2377,8 +2362,8 @@ class Servo:
         """
         input_buffer = [0]
         input_buffer[0] = target_acc
-        Servo.servo_write(servo_id, Address.TIME_BASE_TARGET_ACC, 1, input_buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.TIME_BASE_TARGET_ACC, 1, input_buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_time_base_target_position_and_moving_time(servo_id: int, target_position: int, moving_time: int,
@@ -2399,8 +2384,8 @@ class Servo:
         buffer[2] = moving_time & 0xff
         buffer[3] = (moving_time >> 8) & 0xff
 
-        Servo.servo_write(servo_id, Address.TIME_BASE_TARGET_POSITION_L, 4, buffer, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.servo_write(servo_id, Primary_Address.TIME_BASE_TARGET_POSITION_L, 4, buffer, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_return_delay_time_analysis(response_packet: list) -> int:
@@ -2411,12 +2396,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
 
-        if ret != State.SUCCESS:
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_return_level_analysis(response_packet: list) -> int:
@@ -2427,12 +2412,12 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
 
-        if ret != State.SUCCESS:
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_baud_rate_analysis(response_packet: list) -> int:
@@ -2443,11 +2428,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_min_angle_limit_analysis(response_packet: list) -> int:
@@ -2458,11 +2443,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_max_angle_limit_analysis(response_packet: list) -> int:
@@ -2473,11 +2458,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_max_temperature_limit_analysis(response_packet: list) -> int:
@@ -2488,11 +2473,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_max_voltage_limit_analysis(response_packet: list) -> int:
@@ -2503,11 +2488,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_min_voltage_limit_analysis(response_packet: list) -> int:
@@ -2518,11 +2503,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_max_pwm_limit_analysis(response_packet: list) -> int:
@@ -2533,11 +2518,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_max_current_limit_analysis(response_packet: list) -> int:
@@ -2548,11 +2533,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_current_shutdown_time_analysis(response_packet: list) -> int:
@@ -2563,11 +2548,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_cw_deadband_analysis(response_packet: list) -> int:
@@ -2578,11 +2563,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_ccw_deadband_analysis(response_packet: list) -> int:
@@ -2593,11 +2578,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_pwm_punch_analysis(response_packet: list) -> int:
@@ -2608,11 +2593,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_position_control_p_gain_analysis(response_packet: list) -> int:
@@ -2623,11 +2608,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_position_control_i_gain_analysis(response_packet: list) -> int:
@@ -2638,11 +2623,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_position_control_d_gain_analysis(response_packet: list) -> int:
@@ -2653,11 +2638,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_led_condition_analysis(response_packet: list) -> int:
@@ -2668,11 +2653,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_shutdown_conditions_analysis(response_packet: list) -> int:
@@ -2683,11 +2668,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_control_mode_analysis(response_packet: list) -> int:
@@ -2698,11 +2683,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_flash_switch_analysis(response_packet: list) -> int:
@@ -2713,11 +2698,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_led_switch_analysis(response_packet: list) -> int:
@@ -2728,11 +2713,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_torque_switch_analysis(response_packet: list) -> int:
@@ -2743,11 +2728,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_target_pwm_analysis(response_packet: list) -> int:
@@ -2758,11 +2743,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_target_current_analysis(response_packet: list) -> int:
@@ -2773,11 +2758,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_velocity_base_target_position_analysis(response_packet: list) -> int:
@@ -2788,11 +2773,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_velocity_base_target_velocity_analysis(response_packet: list) -> int:
@@ -2803,11 +2788,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_velocity_base_target_acc_analysis(response_packet: list) -> int:
@@ -2818,11 +2803,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_velocity_base_target_dec_analysis(response_packet: list) -> int:
@@ -2833,11 +2818,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_time_base_target_acc_analysis(response_packet: list) -> int:
@@ -2848,11 +2833,11 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
     def servo_set_time_base_target_position_and_moving_time_analysis(response_packet: list) -> int:
@@ -2863,14 +2848,14 @@ class Servo:
         """
         data_buffer = [0] * 2
 
-        ret = Servo.servo_unpack(response_packet, data_buffer)
-        if ret != State.SUCCESS:
+        ret = Primary_Servo.servo_unpack(response_packet, data_buffer)
+        if ret != Primary_State.SUCCESS:
             return ret
         else:
-            return State.SUCCESS
+            return Primary_State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_torque_switch(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_torque_switch(servo_sync_parameter: Primary_Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         Set torque switches for multiple servos.
         :param servo_sync_parameter: Servo sync write modification class.
@@ -2880,18 +2865,18 @@ class Servo:
         """
         parameter = [0] * (servo_sync_parameter.id_counts * 1 + 2 + servo_sync_parameter.id_counts)
 
-        parameter[0] = Address.TORQUE_SW
+        parameter[0] = Primary_Address.TORQUE_SW
         parameter[1] = 1
 
         for i in range(servo_sync_parameter.id_counts):
             parameter[i + 2 + i * 1] = servo_sync_parameter.id[i]
             parameter[i + 3 + i * 1] = servo_sync_parameter.torque_switch[i] & 0xff
 
-        Servo.sync_write_data(Address.TORQUE_SW, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.sync_write_data(Primary_Address.TORQUE_SW, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_control_mode(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_control_mode(servo_sync_parameter: Primary_Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         Set the control mode for multiple servos.
         :param servo_sync_parameter: Servo sync write modification class.
@@ -2901,18 +2886,18 @@ class Servo:
         """
         parameter = [0] * (servo_sync_parameter.id_counts * 1 + 2 + servo_sync_parameter.id_counts)
 
-        parameter[0] = Address.CONTROL_MODE
+        parameter[0] = Primary_Address.CONTROL_MODE
         parameter[1] = 1
 
         for i in range(servo_sync_parameter.id_counts):
             parameter[i + 2 + i * 1] = servo_sync_parameter.id[i]
             parameter[i + 3 + i * 1] = servo_sync_parameter.control_mode[i] & 0xff
 
-        Servo.sync_write_data(Address.CONTROL_MODE, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.sync_write_data(Primary_Address.CONTROL_MODE, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_position(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_position(servo_sync_parameter: Primary_Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         Set the velocity base target position for multiple servos
         :param servo_sync_parameter: Servo sync write modification class.
@@ -2922,7 +2907,7 @@ class Servo:
         """
         parameter = [0] * (servo_sync_parameter.id_counts * 2 + 2 + servo_sync_parameter.id_counts)
 
-        parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
+        parameter[0] = Primary_Address.VELOCITY_BASE_TARGET_POSITION_L
         parameter[1] = 2
 
         for i in range(servo_sync_parameter.id_counts):
@@ -2930,11 +2915,11 @@ class Servo:
             parameter[i + 3 + i * 2] = servo_sync_parameter.position[i] & 0xff
             parameter[i + 4 + i * 2] = (servo_sync_parameter.position[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.sync_write_data(Primary_Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_position_and_velocity(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_position_and_velocity(servo_sync_parameter: Primary_Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         Set the target position and speed for multiple servos.
         :param servo_sync_parameter: Servo sync write modification class.
@@ -2944,7 +2929,7 @@ class Servo:
         """
         parameter = [0] * (servo_sync_parameter.id_counts * 4 + 2 + servo_sync_parameter.id_counts)
 
-        parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
+        parameter[0] = Primary_Address.VELOCITY_BASE_TARGET_POSITION_L
         parameter[1] = 4
 
         for i in range(servo_sync_parameter.id_counts):
@@ -2954,11 +2939,11 @@ class Servo:
             parameter[i + 5 + i * 4] = servo_sync_parameter.velocity[i] & 0xff
             parameter[i + 6 + i * 4] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.sync_write_data(Primary_Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter: Primary_Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         Set the target acceleration, deceleration, speed, and position for multiple servos.
         :param servo_sync_parameter: Servo sync write modification class.
@@ -2968,7 +2953,7 @@ class Servo:
         """
         parameter = [0] * (servo_sync_parameter.id_counts * 6 + 2 + servo_sync_parameter.id_counts)
 
-        parameter[0] = Address.VELOCITY_BASE_TARGET_POSITION_L
+        parameter[0] = Primary_Address.VELOCITY_BASE_TARGET_POSITION_L
         parameter[1] = 6
 
         for i in range(servo_sync_parameter.id_counts):
@@ -2980,11 +2965,11 @@ class Servo:
             parameter[7 + i * 7] = servo_sync_parameter.acc_velocity[i] & 0xff
             parameter[8 + i * 7] = servo_sync_parameter.dec_velocity[i] & 0xff
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.sync_write_data(Primary_Address.VELOCITY_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_velocity(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_velocity(servo_sync_parameter: Primary_Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         Set the velocity base target velocity for multiple servos.
         :param servo_sync_parameter: Servo sync write modification class.
@@ -2994,7 +2979,7 @@ class Servo:
         """
         parameter = [0] * (servo_sync_parameter.id_counts * 2 + 2 + servo_sync_parameter.id_counts)
 
-        parameter[0] = Address.VELOCITY_BASE_TARGET_VELOCITY_L
+        parameter[0] = Primary_Address.VELOCITY_BASE_TARGET_VELOCITY_L
         parameter[1] = 2
 
         for i in range(servo_sync_parameter.id_counts):
@@ -3002,11 +2987,11 @@ class Servo:
             parameter[i + 3 + i * 2] = servo_sync_parameter.velocity[i] & 0xff
             parameter[i + 4 + i * 2] = (servo_sync_parameter.velocity[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_VELOCITY_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.sync_write_data(Primary_Address.VELOCITY_BASE_TARGET_VELOCITY_L, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_acc(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_acc(servo_sync_parameter: Primary_Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         Set the target acceleration for multiple servos.
         :param servo_sync_parameter: Servo sync write modification class.
@@ -3016,18 +3001,18 @@ class Servo:
         """
         parameter = [0] * (servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
-        parameter[0] = Address.VELOCITY_BASE_TARGET_ACC
+        parameter[0] = Primary_Address.VELOCITY_BASE_TARGET_ACC
         parameter[1] = 1
 
         for i in range(servo_sync_parameter.id_counts):
             parameter[i * 2 + 2] = servo_sync_parameter.id[i]
             parameter[i * 2 + 3] = servo_sync_parameter.acc_velocity[i]
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_ACC, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.sync_write_data(Primary_Address.VELOCITY_BASE_TARGET_ACC, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_velocity_base_target_dec(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_velocity_base_target_dec(servo_sync_parameter: Primary_Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         Set the target deceleration for multiple servos.
         :param servo_sync_parameter: Servo sync write modification class.
@@ -3037,18 +3022,18 @@ class Servo:
         """
         parameter = [0] * (servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
-        parameter[0] = Address.VELOCITY_BASE_TARGET_DEC
+        parameter[0] = Primary_Address.VELOCITY_BASE_TARGET_DEC
         parameter[1] = 1
 
         for i in range(servo_sync_parameter.id_counts):
             parameter[i * 2 + 2] = servo_sync_parameter.id[i]
             parameter[i * 2 + 3] = servo_sync_parameter.dec_velocity[i]
 
-        Servo.sync_write_data(Address.VELOCITY_BASE_TARGET_DEC, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.sync_write_data(Primary_Address.VELOCITY_BASE_TARGET_DEC, servo_sync_parameter.id_counts, parameter, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_time_base_target_acc(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_time_base_target_acc(servo_sync_parameter: Primary_Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         Change the time base target ACC for multiple servos.
         :param servo_sync_parameter: Servo sync write modification class.
@@ -3058,18 +3043,18 @@ class Servo:
         """
         parameter = [0] * (servo_sync_parameter.id_counts + 2 + servo_sync_parameter.id_counts)
 
-        parameter[0] = Address.TIME_BASE_TARGET_ACC
+        parameter[0] = Primary_Address.TIME_BASE_TARGET_ACC
         parameter[1] = 1
 
         for i in range(servo_sync_parameter.id_counts):
             parameter[i * 2 + 2] = servo_sync_parameter.id[i]
             parameter[i * 2 + 3] = servo_sync_parameter.acc_velocity_grade[i]
 
-        Servo.sync_write_data(Address.TIME_BASE_TARGET_ACC, servo_sync_parameter.id_counts , parameter, output_buffer, output_buffer_len)
-        return State.SUCCESS
+        Primary_Servo.sync_write_data(Primary_Address.TIME_BASE_TARGET_ACC, servo_sync_parameter.id_counts , parameter, output_buffer, output_buffer_len)
+        return Primary_State.SUCCESS
 
     @staticmethod
-    def servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter: Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
+    def servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter: Primary_Servo_Sync_Parameter, output_buffer: list, output_buffer_len: list) -> int:
         """
         Change the time base target position and moving time for multiple servos.
         :param servo_sync_parameter: Servo sync write modification class.
@@ -3079,7 +3064,7 @@ class Servo:
         """
         parameter = [0] * (servo_sync_parameter.id_counts * 4 + 2 + servo_sync_parameter.id_counts)
 
-        parameter[0] = Address.TIME_BASE_TARGET_POSITION_L
+        parameter[0] = Primary_Address.TIME_BASE_TARGET_POSITION_L
         parameter[1] = 4
 
         for i in range(servo_sync_parameter.id_counts):
@@ -3089,6 +3074,6 @@ class Servo:
             parameter[i + 5 + i * 4] = servo_sync_parameter.time[i] & 0xff
             parameter[i + 6 + i * 4] = (servo_sync_parameter.time[i] >> 8) & 0xff
 
-        Servo.sync_write_data(Address.TIME_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer,
+        Primary_Servo.sync_write_data(Primary_Address.TIME_BASE_TARGET_POSITION_L, servo_sync_parameter.id_counts, parameter, output_buffer,
                               output_buffer_len)
-        return State.SUCCESS
+        return Primary_State.SUCCESS
