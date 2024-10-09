@@ -1114,21 +1114,6 @@ uint8_t primary_servo_read_flash_switch(uint8_t id, uint8_t* output_buffer, uint
 }
 
 /**
- * @brief Read the current offset of servo.
- * @param id: ServoID.
- * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
- * @param output_buffer_len: The length of the instruction packet.
- * @return Function execution result, success or error flag.
- */
-uint8_t primary_servo_read_current_offset(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
-{
-
-    primary_servo_read(id, PRIMARY_CURRENT_OFFSET, 1, output_buffer, output_buffer_len);
-
-    return PRIMARY_SUCCESS;
-}
-
-/**
  * @brief Read the calibration of servo.
  * @param id: ServoID.
  * @param output_buffer: Pointer for the output buffer that is used to store instruction packets.
@@ -1453,7 +1438,7 @@ uint8_t primary_servo_read_baud_rate(uint8_t id, uint8_t* output_buffer, uint8_t
 uint8_t primary_servo_read_model_information(uint8_t id, uint8_t* output_buffer, uint8_t* output_buffer_len)
 {
 
-    primary_servo_read(id, PRIMARY_MODEL_INFORMATION, 1, output_buffer, output_buffer_len);
+    primary_servo_read(id, PRIMARY_MODEL_INFORMATION, 4, output_buffer, output_buffer_len);
 
     return PRIMARY_SUCCESS;
 }
@@ -1756,7 +1741,7 @@ uint8_t primary_servo_sync_write_time_base_target_position_and_moving_time(struc
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_ping_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_ping_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2461,7 +2446,7 @@ uint8_t primary_servo_set_time_base_target_position_and_moving_time_analysis(uin
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_present_current_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_current_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2486,7 +2471,7 @@ uint8_t primary_servo_read_present_current_analysis(uint8_t* response_packet, ui
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_present_position_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_position_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2540,7 +2525,7 @@ uint8_t primary_servo_read_present_position_and_present_current_analysis(uint8_t
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_present_velocity_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_velocity_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2565,7 +2550,7 @@ uint8_t primary_servo_read_present_velocity_analysis(uint8_t* response_packet, u
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_present_profile_position_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_profile_position_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2590,7 +2575,7 @@ uint8_t primary_servo_read_present_profile_position_analysis(uint8_t* response_p
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_present_profile_velocity_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_profile_velocity_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2615,7 +2600,7 @@ uint8_t primary_servo_read_present_profile_velocity_analysis(uint8_t* response_p
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_present_pwm_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_pwm_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2640,7 +2625,7 @@ uint8_t primary_servo_read_present_pwm_analysis(uint8_t* response_packet, uint16
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_present_temperature_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_temperature_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2663,7 +2648,7 @@ uint8_t primary_servo_read_present_temperature_analysis(uint8_t* response_packet
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_present_voltage_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_present_voltage_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2686,7 +2671,7 @@ uint8_t primary_servo_read_present_voltage_analysis(uint8_t* response_packet, ui
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_time_base_target_moving_time_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_time_base_target_moving_time_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2711,7 +2696,7 @@ uint8_t primary_servo_read_time_base_target_moving_time_analysis(uint8_t* respon
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_time_base_target_position_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_time_base_target_position_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2736,7 +2721,7 @@ uint8_t primary_servo_read_time_base_target_position_analysis(uint8_t* response_
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_time_base_target_acc_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2760,7 +2745,7 @@ uint8_t primary_servo_read_time_base_target_acc_analysis(uint8_t* response_packe
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_velocity_base_target_dec_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2783,7 +2768,7 @@ uint8_t primary_servo_read_velocity_base_target_dec_analysis(uint8_t* response_p
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_velocity_base_target_acc_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2806,7 +2791,7 @@ uint8_t primary_servo_read_velocity_base_target_acc_analysis(uint8_t* response_p
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_velocity_base_target_velocity_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_velocity_base_target_velocity_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2831,7 +2816,7 @@ uint8_t primary_servo_read_velocity_base_target_velocity_analysis(uint8_t* respo
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_velocity_base_target_position_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_velocity_base_target_position_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2856,7 +2841,7 @@ uint8_t primary_servo_read_velocity_base_target_position_analysis(uint8_t* respo
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_target_current_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_target_current_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2881,7 +2866,7 @@ uint8_t primary_servo_read_target_current_analysis(uint8_t* response_packet, uin
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_target_pwm_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2906,7 +2891,7 @@ uint8_t primary_servo_read_target_pwm_analysis(uint8_t* response_packet, uint16_
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_torque_switch_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_torque_switch_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2929,7 +2914,7 @@ uint8_t primary_servo_read_torque_switch_analysis(uint8_t* response_packet, uint
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_led_switch_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_led_switch_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2952,7 +2937,7 @@ uint8_t primary_servo_read_led_switch_analysis(uint8_t* response_packet, uint16_
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_flash_switch_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_flash_switch_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2975,7 +2960,7 @@ uint8_t primary_servo_read_flash_switch_analysis(uint8_t* response_packet, uint1
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_current_offset_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_current_offset_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -2998,7 +2983,7 @@ uint8_t primary_servo_read_current_offset_analysis(uint8_t* response_packet, uin
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_calibration_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_calibration_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3023,7 +3008,7 @@ uint8_t primary_servo_read_calibration_analysis(uint8_t* response_packet, uint16
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_control_mode_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_control_mode_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3046,7 +3031,7 @@ uint8_t primary_servo_read_control_mode_analysis(uint8_t* response_packet, uint1
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_shutdown_condition_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3069,7 +3054,7 @@ uint8_t primary_servo_read_shutdown_condition_analysis(uint8_t* response_packet,
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_led_condition_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_led_condition_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3092,7 +3077,7 @@ uint8_t primary_servo_read_led_condition_analysis(uint8_t* response_packet, uint
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_position_control_d_gain_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_position_control_d_gain_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3117,7 +3102,7 @@ uint8_t primary_servo_read_position_control_d_gain_analysis(uint8_t* response_pa
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_position_control_i_gain_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_position_control_i_gain_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3142,7 +3127,7 @@ uint8_t primary_servo_read_position_control_i_gain_analysis(uint8_t* response_pa
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_position_control_p_gain_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_position_control_p_gain_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3167,7 +3152,7 @@ uint8_t primary_servo_read_position_control_p_gain_analysis(uint8_t* response_pa
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_pwm_punch_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3190,7 +3175,7 @@ uint8_t primary_servo_read_pwm_punch_analysis(uint8_t* response_packet, uint16_t
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3213,7 +3198,7 @@ uint8_t primary_servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint1
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_cw_deadband_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3236,7 +3221,7 @@ uint8_t primary_servo_read_cw_deadband_analysis(uint8_t* response_packet, uint16
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_current_shutdown_time_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3261,7 +3246,7 @@ uint8_t primary_servo_read_current_shutdown_time_analysis(uint8_t* response_pack
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_max_current_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_max_current_limit_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3286,7 +3271,7 @@ uint8_t primary_servo_read_max_current_limit_analysis(uint8_t* response_packet, 
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3311,7 +3296,7 @@ uint8_t primary_servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_max_voltage_limit_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3334,7 +3319,7 @@ uint8_t primary_servo_read_max_voltage_limit_analysis(uint8_t* response_packet, 
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_min_voltage_limit_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3357,7 +3342,7 @@ uint8_t primary_servo_read_min_voltage_limit_analysis(uint8_t* response_packet, 
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_max_temperature_limit_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3380,7 +3365,7 @@ uint8_t primary_servo_read_max_temperature_limit_analysis(uint8_t* response_pack
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_max_angle_limit_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3405,7 +3390,7 @@ uint8_t primary_servo_read_max_angle_limit_analysis(uint8_t* response_packet, ui
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_min_angle_limit_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3430,7 +3415,7 @@ uint8_t primary_servo_read_min_angle_limit_analysis(uint8_t* response_packet, ui
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_return_level_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_return_level_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3453,7 +3438,7 @@ uint8_t primary_servo_read_return_level_analysis(uint8_t* response_packet, uint1
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_return_delay_time_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_return_delay_time_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3476,7 +3461,7 @@ uint8_t primary_servo_read_return_delay_time_analysis(uint8_t* response_packet, 
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_baud_rate_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3499,7 +3484,7 @@ uint8_t primary_servo_read_baud_rate_analysis(uint8_t* response_packet, uint16_t
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_model_information_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_model_information_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
@@ -3510,8 +3495,13 @@ uint8_t primary_servo_read_model_information_analysis(uint8_t* response_packet, 
         return ret;
     }
     else {
-        *data = data_buffer[0];
-
+        *data = data_buffer[3];
+        *data = *data << 8;
+        *data = *data | data_buffer[2];
+        *data = *data << 8;
+        *data = *data | data_buffer[1];
+        *data = *data << 8;
+        *data = *data | data_buffer[0];
         return PRIMARY_SUCCESS;
     }
 }
@@ -3522,7 +3512,7 @@ uint8_t primary_servo_read_model_information_analysis(uint8_t* response_packet, 
  * @param analysis_data: The data parsed from the servo response packet.
  * @return Function execution result, success or error flag.
  */
-uint8_t primary_servo_read_firmware_version_analysis(uint8_t* response_packet, uint16_t* data)
+uint8_t primary_servo_read_firmware_version_analysis(uint8_t* response_packet, uint32_t* data)
 {
     uint8_t ret;
     uint8_t* data_buffer = nullptr;
