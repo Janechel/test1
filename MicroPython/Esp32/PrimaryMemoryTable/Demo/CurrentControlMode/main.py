@@ -1,7 +1,7 @@
 import micropython
 from machine import Pin, UART
 import time
-from servo import *
+from PrimaryServo import *
 
 ret = 0   # Status Flag
 output_buffer = bytearray(40)  # Store Generated Instructions
@@ -15,42 +15,43 @@ uart2 = UART(2, baudrate=1000000, tx=17, rx=16)
 
 while True:
     # Change the torque switch of servo ID1 to OFF.
-    Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
+    Primary_Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
-    ret = Servo.servo_set_torque_switch_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_torque_switch is successful")
+    ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
+    if ret == Primary_State.SUCCESS:
+        print("set torque switch successful")
     time.sleep(1)
 
     # Change the control mode of servo ID1 to the current control mode.
-    Servo.servo_set_control_mode(1, 2, output_buffer, output_buffer_len)
+    Primary_Servo.servo_set_control_mode(1, 2, output_buffer, output_buffer_len)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
-    ret = Servo.servo_set_control_mode_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_control_mode is successful")
+    ret = Primary_Servo.servo_set_control_mode_analysis(receive_data)
+    if ret == Primary_State.SUCCESS:
+        print("set control mode successful")
     time.sleep(1)
 
     # Change the torque switch of servo ID1 to ON.
-    Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
+    Primary_Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
-    ret = Servo.servo_set_torque_switch_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_torque_switch is successful")
+    ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
+    if ret == Primary_State.SUCCESS:
+        print("set torque switch successful")
     time.sleep(1)
-    
+
     # Change the target PWM of servo ID1 to 100mA.
-    Servo.servo_set_target_current(1, 100, output_buffer, output_buffer_len)
+    Primary_Servo.servo_set_target_current(1, 100, output_buffer, output_buffer_len)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
-    ret = Servo.servo_set_velocity_base_target_position_analysis(receive_data)
-    if ret == State.SUCCESS:
-        print("servo_set_target_current is successful")
+    ret = Primary_Servo.servo_set_velocity_base_target_position_analysis(receive_data)
+    if ret == Primary_State.SUCCESS:
+        print("set target current successful")
     time.sleep(3)
+
 
