@@ -1786,7 +1786,7 @@ uint8_t primary_servo_set_return_delay_time_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -1807,7 +1807,7 @@ uint8_t primary_servo_set_return_level_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -1828,7 +1828,7 @@ uint8_t primary_servo_set_baud_rate_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -1849,7 +1849,7 @@ uint8_t primary_servo_set_min_angle_limit_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -1870,7 +1870,7 @@ uint8_t primary_servo_set_max_angle_limit_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -1891,7 +1891,7 @@ uint8_t primary_servo_set_max_temperature_limit_analysis(uint8_t* response_packe
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -1912,7 +1912,7 @@ uint8_t primary_servo_set_max_voltage_limit_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -1933,7 +1933,7 @@ uint8_t primary_servo_set_min_voltage_limit_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -1954,7 +1954,7 @@ uint8_t primary_servo_set_max_pwm_limit_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -1975,7 +1975,7 @@ uint8_t primary_servo_set_max_current_limit_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -1996,7 +1996,7 @@ uint8_t primary_servo_set_current_shutdown_time_analysis(uint8_t* response_packe
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2017,7 +2017,7 @@ uint8_t primary_servo_set_cw_deadband_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2038,7 +2038,7 @@ uint8_t primary_servo_set_ccw_deadband_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2059,7 +2059,7 @@ uint8_t primary_servo_set_pwm_punch_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2080,7 +2080,7 @@ uint8_t primary_servo_set_position_control_p_gain_analysis(uint8_t* response_pac
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2101,7 +2101,7 @@ uint8_t primary_servo_set_position_control_i_gain_analysis(uint8_t* response_pac
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2122,7 +2122,7 @@ uint8_t primary_servo_set_position_control_d_gain_analysis(uint8_t* response_pac
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2143,7 +2143,7 @@ uint8_t primary_servo_set_led_condition_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2164,7 +2164,7 @@ uint8_t primary_servo_set_shutdown_conditions_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2185,7 +2185,7 @@ uint8_t primary_servo_set_control_mode_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2206,7 +2206,7 @@ uint8_t primary_servo_set_flash_switch_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2227,7 +2227,7 @@ uint8_t primary_servo_set_led_switch_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2248,7 +2248,7 @@ uint8_t primary_servo_set_torque_switch_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2269,7 +2269,7 @@ uint8_t primary_servo_set_target_pwm_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2290,7 +2290,7 @@ uint8_t primary_servo_set_target_current_analysis(uint8_t* response_packet)
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2311,7 +2311,7 @@ uint8_t primary_servo_set_velocity_base_target_position_analysis(uint8_t* respon
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2332,7 +2332,7 @@ uint8_t primary_servo_set_velocity_base_target_velocity_analysis(uint8_t* respon
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2353,7 +2353,7 @@ uint8_t primary_servo_set_velocity_base_target_acc_analysis(uint8_t* response_pa
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2374,7 +2374,7 @@ uint8_t primary_servo_set_velocity_base_target_dec_analysis(uint8_t* response_pa
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2395,7 +2395,7 @@ uint8_t primary_servo_set_time_base_target_acc_analysis(uint8_t* response_packet
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2416,7 +2416,7 @@ uint8_t primary_servo_set_time_base_target_position_and_moving_time_analysis(uin
         return ret;
     }
     else {
-        PRINTF("Write successful!\r\n");
+        PRINTF("Write Successful!\r\n");
         return PRIMARY_SUCCESS;
     }
 }
@@ -2438,7 +2438,7 @@ uint8_t primary_servo_read_present_current_analysis(uint8_t* response_packet, ui
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2463,7 +2463,7 @@ uint8_t primary_servo_read_present_position_analysis(uint8_t* response_packet, u
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2489,7 +2489,7 @@ uint8_t primary_servo_read_present_position_and_present_current_analysis(uint8_t
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *position = data_buffer[1];
         *position = *position << 8;
         *position = *position | data_buffer[0];
@@ -2517,7 +2517,7 @@ uint8_t primary_servo_read_present_velocity_analysis(uint8_t* response_packet, u
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2542,7 +2542,7 @@ uint8_t primary_servo_read_present_profile_position_analysis(uint8_t* response_p
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2567,7 +2567,7 @@ uint8_t primary_servo_read_present_profile_velocity_analysis(uint8_t* response_p
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2592,7 +2592,7 @@ uint8_t primary_servo_read_present_pwm_analysis(uint8_t* response_packet, uint32
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2617,7 +2617,7 @@ uint8_t primary_servo_read_present_temperature_analysis(uint8_t* response_packet
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -2640,7 +2640,7 @@ uint8_t primary_servo_read_present_voltage_analysis(uint8_t* response_packet, ui
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -2663,7 +2663,7 @@ uint8_t primary_servo_read_time_base_target_moving_time_analysis(uint8_t* respon
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2688,7 +2688,7 @@ uint8_t primary_servo_read_time_base_target_position_analysis(uint8_t* response_
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2714,7 +2714,7 @@ uint8_t primary_servo_read_time_base_target_acc_analysis(uint8_t* response_packe
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -2737,7 +2737,7 @@ uint8_t primary_servo_read_velocity_base_target_dec_analysis(uint8_t* response_p
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -2760,7 +2760,7 @@ uint8_t primary_servo_read_velocity_base_target_acc_analysis(uint8_t* response_p
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -2783,7 +2783,7 @@ uint8_t primary_servo_read_velocity_base_target_velocity_analysis(uint8_t* respo
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2808,7 +2808,7 @@ uint8_t primary_servo_read_velocity_base_target_position_analysis(uint8_t* respo
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2833,7 +2833,7 @@ uint8_t primary_servo_read_target_current_analysis(uint8_t* response_packet, uin
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2858,7 +2858,7 @@ uint8_t primary_servo_read_target_pwm_analysis(uint8_t* response_packet, uint32_
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -2883,7 +2883,7 @@ uint8_t primary_servo_read_torque_switch_analysis(uint8_t* response_packet, uint
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -2906,7 +2906,7 @@ uint8_t primary_servo_read_led_switch_analysis(uint8_t* response_packet, uint32_
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -2929,7 +2929,7 @@ uint8_t primary_servo_read_flash_switch_analysis(uint8_t* response_packet, uint3
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -2952,7 +2952,7 @@ uint8_t primary_servo_read_current_offset_analysis(uint8_t* response_packet, uin
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -2975,7 +2975,7 @@ uint8_t primary_servo_read_calibration_analysis(uint8_t* response_packet, uint32
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -3000,7 +3000,7 @@ uint8_t primary_servo_read_control_mode_analysis(uint8_t* response_packet, uint3
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -3023,7 +3023,7 @@ uint8_t primary_servo_read_shutdown_condition_analysis(uint8_t* response_packet,
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
     }
 
@@ -3047,7 +3047,7 @@ uint8_t primary_servo_read_led_condition_analysis(uint8_t* response_packet, uint
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
     }
 
@@ -3071,7 +3071,7 @@ uint8_t primary_servo_read_position_control_d_gain_analysis(uint8_t* response_pa
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -3096,7 +3096,7 @@ uint8_t primary_servo_read_position_control_i_gain_analysis(uint8_t* response_pa
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -3121,7 +3121,7 @@ uint8_t primary_servo_read_position_control_p_gain_analysis(uint8_t* response_pa
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -3146,7 +3146,7 @@ uint8_t primary_servo_read_pwm_punch_analysis(uint8_t* response_packet, uint32_t
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -3169,7 +3169,7 @@ uint8_t primary_servo_read_ccw_deadband_analysis(uint8_t* response_packet, uint3
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -3192,7 +3192,7 @@ uint8_t primary_servo_read_cw_deadband_analysis(uint8_t* response_packet, uint32
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -3215,7 +3215,7 @@ uint8_t primary_servo_read_current_shutdown_time_analysis(uint8_t* response_pack
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -3240,7 +3240,7 @@ uint8_t primary_servo_read_max_current_limit_analysis(uint8_t* response_packet, 
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -3265,7 +3265,7 @@ uint8_t primary_servo_read_max_pwm_limit_analysis(uint8_t* response_packet, uint
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -3290,7 +3290,7 @@ uint8_t primary_servo_read_max_voltage_limit_analysis(uint8_t* response_packet, 
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -3313,7 +3313,7 @@ uint8_t primary_servo_read_min_voltage_limit_analysis(uint8_t* response_packet, 
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -3336,7 +3336,7 @@ uint8_t primary_servo_read_max_temperature_limit_analysis(uint8_t* response_pack
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -3359,7 +3359,7 @@ uint8_t primary_servo_read_max_angle_limit_analysis(uint8_t* response_packet, ui
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -3384,7 +3384,7 @@ uint8_t primary_servo_read_min_angle_limit_analysis(uint8_t* response_packet, ui
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[1];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[0];
@@ -3409,7 +3409,7 @@ uint8_t primary_servo_read_return_level_analysis(uint8_t* response_packet, uint3
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -3432,7 +3432,7 @@ uint8_t primary_servo_read_return_delay_time_analysis(uint8_t* response_packet, 
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -3455,7 +3455,7 @@ uint8_t primary_servo_read_baud_rate_analysis(uint8_t* response_packet, uint32_t
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
@@ -3478,7 +3478,7 @@ uint8_t primary_servo_read_model_information_analysis(uint8_t* response_packet, 
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[3];
         *analysis_data = *analysis_data << 8;
         *analysis_data = *analysis_data | data_buffer[2];
@@ -3507,7 +3507,7 @@ uint8_t primary_servo_read_firmware_version_analysis(uint8_t* response_packet, u
         return ret;
     }
     else {
-        PRINTF("Read successful!\r\n");
+        PRINTF("Read Successful!\r\n");
         *analysis_data = data_buffer[0];
         return PRIMARY_SUCCESS;
     }
