@@ -52,8 +52,8 @@ int main(void)
     USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
     ret = primary_servo_set_torque_switch_analysis(receive_data);
-    if(ret == SUCCESS)
-        PRINTF("servo set torque switch success");
+    if(ret == PRIMARY_SUCCESS)
+        PRINTF("write torque switch complete\r\n");
     Delay(1000);
 
     //Change the control mode of servo ID1 to the current control mode.
@@ -66,8 +66,8 @@ int main(void)
     USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
     ret = primary_servo_set_control_mode_analysis(receive_data);
-    if(ret == SUCCESS)
-        PRINTF("servo set control mode success");
+    if(ret == PRIMARY_SUCCESS)
+        PRINTF("write control mode complete\r\n");
     Delay(1000);
 
     //Change the torque switch of servo ID1 to ON.
@@ -80,8 +80,8 @@ int main(void)
     USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
     ret = primary_servo_set_torque_switch_analysis(receive_data);
-    if(ret == SUCCESS)
-        PRINTF("servo set torque switch success");
+    if(ret == PRIMARY_SUCCESS)
+        PRINTF("write torque switch complete\r\n");
     Delay(1000);
 
     //Change the target PWM of servo ID1 to 100mA.
@@ -94,8 +94,8 @@ int main(void)
     USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
     ret = primary_servo_set_target_pwm_analysis(receive_data);
-    if(ret == SUCCESS)
-        PRINTF("servo set target pwm success");
+    if(ret == PRIMARY_SUCCESS)
+        PRINTF("write target current complete\r\n");
     Delay(3000);
 }
 

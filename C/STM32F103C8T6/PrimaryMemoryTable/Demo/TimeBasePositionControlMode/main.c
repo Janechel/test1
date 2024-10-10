@@ -54,7 +54,7 @@ int main(void)
     servo.torque_switch[1] = 0;
     primary_servo_sync_write_torque_switch(servo, order_buffer, &order_len);
     USART1_Send(order_buffer, order_len);
-    PRINTF("sync write torque switch!");
+    PRINTF("sync write torque switch complete\r\n");
     Delay(1000);
 
 
@@ -63,7 +63,7 @@ int main(void)
     servo.control_mode[1] = 0;
     primary_servo_sync_write_control_mode(servo, order_buffer, &order_len);
     USART1_Send(order_buffer, order_len);
-    PRINTF("sync write control mode!");
+    PRINTF("sync write control mode complete\r\n");
     Delay(1000);
 
     while(1)
@@ -78,8 +78,8 @@ int main(void)
         USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
         ret = primary_servo_set_time_base_target_position_and_moving_time_analysis(receive_data);
-        if(ret == SUCCESS)
-            PRINTF("servo set time base target position and moving time success");
+        if(ret == PRIMARY_SUCCESS)
+            PRINTF("write time base target position and moving time complete\r\n");
         Delay(1000);
 
         //Change the time base target ACC, position, and moving time of servo ID1 to 0°, 300°, and 1s, respectively.
@@ -97,7 +97,7 @@ int main(void)
         Delay(10);
         USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
-        PRINTF("servo pack is: ");
+        PRINTF("write time base target ACC, position and moving time status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
         {
             PRINTF("0x%x ", receive_data[i]);
@@ -114,7 +114,7 @@ int main(void)
 
         primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
         USART1_Send(order_buffer, order_len);
-        PRINTF("sync write time base target position and moving time!");
+        PRINTF("sync write time base target position and moving time complete\r\n");
         Delay(1000);
 
         //let servo ID1 move to the 0° position at a velocity of 1s,
@@ -126,7 +126,7 @@ int main(void)
 
         primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
         USART1_Send(order_buffer, order_len);
-        PRINTF("sync write time base target position and moving time!");
+        PRINTF("sync write time base target position and moving time complete\r\n");
         Delay(1000);
     }
 }

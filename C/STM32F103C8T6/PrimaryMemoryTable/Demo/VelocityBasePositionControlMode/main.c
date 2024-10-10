@@ -54,7 +54,7 @@ int main(void)
     servo.torque_switch[1] = 0;
     primary_servo_sync_write_torque_switch(servo, order_buffer, &order_len);
     USART1_Send(order_buffer, order_len);
-    PRINTF("sync write torque switch!");
+    PRINTF("sync write torque switch complete\r\n");
     Delay(1000);
 
     //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
@@ -62,7 +62,7 @@ int main(void)
     servo.control_mode[1] = 1;
     primary_servo_sync_write_control_mode(servo, order_buffer, &order_len);
     USART1_Send(order_buffer, order_len);
-    PRINTF("sync write control mode!");
+    PRINTF("sync write control mode complete\r\n");
     Delay(1000);
 
     while(1)
@@ -77,10 +77,10 @@ int main(void)
         USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
         ret = primary_servo_set_velocity_base_target_position_analysis(receive_data);
-        if(ret == SUCCESS)
-            PRINTF("servo set velocity base target position success");
+        if(ret == PRIMARY_SUCCESS)
+            PRINTF("write velocity base target position complete\r\n");
         Delay(1000);
-
+1
         //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s.
         write_buffer[0] = 3000 & 0xff;
         write_buffer[1] = (3000 >> 8) & 0xff;
@@ -95,7 +95,7 @@ int main(void)
         receive_len = 0x00;
         Delay(10);
         USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
-        PRINTF("the pack is: ");
+        PRINTF("write velocity base target position and velocity status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
         {
             PRINTF("0x%x ", receive_data[i]);
@@ -120,7 +120,7 @@ int main(void)
         receive_len = 0x00;
         Delay(10);
         USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
-        PRINTF("the pack is: ");
+        PRINTF("write velocity base target acc, dec, velocity and position status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
         {
             PRINTF("0x%x ", receive_data[i]);
@@ -136,7 +136,7 @@ int main(void)
 
         USART1_Send(order_buffer, order_len);
 
-        PRINTF("sync write velocity base target position!");
+        PRINTF("sync write velocity base target position complete\r\n");
         Delay(1000);
 
         //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s,
@@ -148,7 +148,7 @@ int main(void)
 
         primary_servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
         USART1_Send(order_buffer, order_len);
-        PRINTF("sync write velocity base target position and velocity!");
+        PRINTF("sync write velocity base target position and velocity complete\r\n");
         Delay(1000);
 
         //In velocity base position control mode, let servo ID1 move to the 0° position at a velocity base target velocity of 720°/s, a velocity base target ACC of 500°/s², and a velocity base target DEC of 50°/s².
@@ -164,7 +164,7 @@ int main(void)
 
         primary_servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
         USART1_Send(order_buffer, order_len);
-        PRINTF("sync write velocity base target acc dec velocity and position!");
+        PRINTF("sync write velocity base target acc, dec, velocity and position complete\r\n");
         Delay(1000);
     }
 }
