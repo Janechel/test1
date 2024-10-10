@@ -135,7 +135,7 @@ int main(void)
 
         HAL_HalfDuplex_EnableTransmitter(&huart1);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
-        PRINTF("sync write torque witch successfully.\r\n");
+        PRINTF("sync write torque witch complete\r\n");
         HAL_Delay(1000);
 
         //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
@@ -145,7 +145,7 @@ int main(void)
 
         HAL_HalfDuplex_EnableTransmitter(&huart1);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
-        PRINTF("sync write control mode successfully.\r\n");
+        PRINTF("sync write control mode complete\r\n");
         HAL_Delay(1000);
 
         //Change the velocity base target position of servo ID1 to 150°.
@@ -160,8 +160,8 @@ int main(void)
         HAL_Delay(10);
 
         ret = primary_servo_set_velocity_base_target_position_analysis(receive);
-        if (ret == SUCCESS)
-            PRINTF("set velocity base target position successful.\r\n");
+        if (ret == PRIMARY_SUCCESS)
+            PRINTF("write velocity base target position complete\r\n");
         HAL_Delay(1000);
 
         //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s.
@@ -178,7 +178,7 @@ int main(void)
         HAL_HalfDuplex_EnableReceiver(&huart1);
         HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
         HAL_Delay(10);
-        PRINTF("servo pack is: ");
+        PRINTF("write velocity base target position and velocity status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
         {
             PRINTF("0x%02x ", receive[i]);
@@ -203,7 +203,7 @@ int main(void)
         HAL_HalfDuplex_EnableReceiver(&huart1);
         HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
         HAL_Delay(10);
-        PRINTF("servo pack is: ");
+        PRINTF("write velocity base target acc, dec, velocity and position status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
         {
             PRINTF("0x%02x ", receive[i]);
@@ -220,7 +220,7 @@ int main(void)
 
         HAL_HalfDuplex_EnableTransmitter(&huart1);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
-        PRINTF("sync write velocity base target position successful.\r\n");
+        PRINTF("sync write velocity base target position complete\r\n");
         HAL_Delay(1000);
 
         //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s,
@@ -234,7 +234,7 @@ int main(void)
 
         HAL_HalfDuplex_EnableTransmitter(&huart1);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
-        PRINTF("sync write velocity base target position and velocity successful.\r\n");
+        PRINTF("sync write velocity base target position and velocity complete\r\n");
         HAL_Delay(1000);
 
         //In velocity base position control mode, let servo ID1 move to the 0° position at a velocity base target velocity of 720°/s, a velocity base target ACC of 500°/s2, and a velocity base target DEC of 50°/s2.
@@ -252,7 +252,7 @@ int main(void)
 
         HAL_HalfDuplex_EnableTransmitter(&huart1);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
-        PRINTF("sync write velocity base target acc,dec,velocity and position successful.\r\n");
+        PRINTF("sync write velocity base target acc, dec, velocity and position complete\r\n");
         HAL_Delay(1000);
 
     }

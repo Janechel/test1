@@ -133,7 +133,7 @@ int main(void)
 
         HAL_HalfDuplex_EnableTransmitter(&huart1);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
-        PRINTF("sync write torque witch successful.\r\n");
+        PRINTF("sync write torque witch complete\r\n");
         HAL_Delay(1000);
 
         //Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
@@ -143,7 +143,7 @@ int main(void)
 
         HAL_HalfDuplex_EnableTransmitter(&huart1);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
-        PRINTF("sync write control mode successful.\r\n");
+        PRINTF("sync write control mode complete\r\n");
         HAL_Delay(1000);
 
         //Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
@@ -158,8 +158,8 @@ int main(void)
         HAL_Delay(10);
 
         ret = primary_servo_set_time_base_target_position_and_moving_time_analysis(receive);
-        if (ret == SUCCESS)
-            PRINTF("set time base target position and moving time successful.\r\n");
+        if (ret == PRIMARY_SUCCESS)
+            PRINTF("write time base target position and moving time complete\r\n");
         HAL_Delay(1000);
 
         //Change the time base target ACC, position, and moving time of servo ID1 to 0°, 300°, and 1s, respectively.
@@ -177,7 +177,7 @@ int main(void)
         HAL_HalfDuplex_EnableReceiver(&huart1);
         HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
 
-        PRINTF("the pack is: ");
+        PRINTF("write time base target acc, position and moving time status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
         {
             PRINTF("0x%02x ", receive[i]);
@@ -198,7 +198,7 @@ int main(void)
 
         HAL_HalfDuplex_EnableTransmitter(&huart1);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 20);
-        PRINTF("sync write time base target position and moving time successful.\r\n");
+        PRINTF("sync write time base target position and moving time complete\r\n");
         HAL_Delay(1000);
 
         //In time base position control mode, let servo ID1 move to the 0° position at a velocity of 1s,
@@ -212,7 +212,7 @@ int main(void)
 
         HAL_HalfDuplex_EnableTransmitter(&huart1);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 20);
-        PRINTF("sync write time base target position and moving time successful.\r\n");
+        PRINTF("sync write time base target position and moving time complete\r\n");
         HAL_Delay(1000);
     }
     /* USER CODE END 3 */

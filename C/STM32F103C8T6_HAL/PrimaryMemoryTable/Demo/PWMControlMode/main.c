@@ -131,8 +131,8 @@ int main(void)
         HAL_Delay(10);
 
         ret = primary_servo_set_torque_switch_analysis(receive);
-        if (ret == SUCCESS)
-            PRINTF("set torque switch successful.\r\n");
+        if (ret == PRIMARY_SUCCESS)
+            PRINTF("write torque switch complete\r\n");
         HAL_Delay(1000);
 
         //Change the control mode of servo ID1 to the PWM control mode.
@@ -147,8 +147,8 @@ int main(void)
         HAL_Delay(10);
 
         ret = primary_servo_set_control_mode_analysis(receive);
-        if (ret == SUCCESS)
-            PRINTF("set control mode successful.\r\n");
+        if (ret == PRIMARY_SUCCESS)
+            PRINTF("write control mode complete\r\n");
         HAL_Delay(1000);
 
         //Change the torque switch of servo ID1 to ON.
@@ -163,8 +163,8 @@ int main(void)
         HAL_Delay(10);
 
         ret = primary_servo_set_torque_switch_analysis(receive);
-        if (ret == SUCCESS)
-            PRINTF("set torque switch successful.\r\n");
+        if (ret == PRIMARY_SUCCESS)
+            PRINTF("write torque switch complete\r\n");
         HAL_Delay(1000);
 
         //Change the target PWM of servo ID1 to -50%.
@@ -179,8 +179,8 @@ int main(void)
         HAL_Delay(10);
 
         ret = primary_servo_set_target_current_analysis(receive);
-        if (ret == SUCCESS)
-            PRINTF("set target current successful.\r\n");
+        if (ret == PRIMARY_SUCCESS)
+            PRINTF("write target current complete\r\n");
         HAL_Delay(3000);
     }
     /* USER CODE END 3 */
