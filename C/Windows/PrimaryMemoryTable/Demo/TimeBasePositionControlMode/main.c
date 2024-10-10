@@ -7,7 +7,7 @@ uint8_t uart_init(HANDLE hSerial)
 {
     if (hSerial == INVALID_HANDLE_VALUE)
     {
-        PRINTF("Failed to open serial port\n");
+        PRINTF("failed to open serial port\n");
         return FALSE;
     }
 
@@ -16,7 +16,7 @@ uint8_t uart_init(HANDLE hSerial)
 
     if (!GetCommState(hSerial, &dcbSerialParams))
     {
-        PRINTF("Failed to get serial port parameters\n");
+        PRINTF("failed to get serial port parameters\n");
         CloseHandle(hSerial);
         return FALSE;
     }
@@ -28,7 +28,7 @@ uint8_t uart_init(HANDLE hSerial)
 
     if (!SetCommState(hSerial, &dcbSerialParams))
     {
-        PRINTF("Failed to set serial port parameters\n");
+        PRINTF("failed to set serial port parameters\n");
         CloseHandle(hSerial);
         return FALSE;
     }
@@ -81,7 +81,7 @@ uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
         }
         else
         {
-            PRINTF("\r\nNo response packet data!\r\n");
+            PRINTF("No response packet data!\r\n");
             return TRUE;
         }
     }
@@ -127,7 +127,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write torque witch successfully.\r\n");
+        PRINTF("sync write torque witch complete\r\n");
     }
     Sleep(80);
 
@@ -142,7 +142,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write control mode successfully.\r\n");
+        PRINTF("sync write control mode complete\r\n");
     }
     Sleep(80);
 
@@ -164,7 +164,10 @@ int main() {
     }
     Sleep(1000);
 
-    primary_servo_set_time_base_target_position_and_moving_time_analysis(pack);
+    ret = primary_servo_set_time_base_target_position_and_moving_time_analysis(pack);
+    if (ret == PRIMARY_SUCCESS)
+        PRINTF("write time base target position and moving time complete\r\n");
+
 
     //Change the time base target ACC, position, and moving time of servo ID1 to 0°, 300°, and 1s, respectively.
     write_buffer[0] = 0;
@@ -187,7 +190,7 @@ int main() {
     {
         return FALSE;
     }
-    PRINTF("servo pack is: ");
+    PRINTF("write time base target ACC, position, and moving time status packet: ");
     for (uint8_t i = 0; i < ret; i++)
     {
         PRINTF("0x%02x ", pack[i]);
@@ -209,7 +212,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write time base target position and moving time successfully.\r\n");
+        PRINTF("sync write time base target position and moving time complete\r\n");
     }
     Sleep(1000);
 
@@ -227,7 +230,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write time base target position and moving time successfully.\r\n");
+        PRINTF("sync write time base target position and moving time complete\r\n");
     }
     Sleep(1000);
 

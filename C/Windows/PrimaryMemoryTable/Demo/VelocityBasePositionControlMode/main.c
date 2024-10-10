@@ -7,7 +7,7 @@ uint8_t uart_init(HANDLE hSerial)
 {
     if (hSerial == INVALID_HANDLE_VALUE)
     {
-        PRINTF("Failed to open serial port\n");
+        PRINTF("failed to open serial port\n");
         return FALSE;
     }
 
@@ -16,7 +16,7 @@ uint8_t uart_init(HANDLE hSerial)
 
     if (!GetCommState(hSerial, &dcbSerialParams))
     {
-        PRINTF("Failed to get serial port parameters\n");
+        PRINTF("failed to get serial port parameters\n");
         CloseHandle(hSerial);
         return FALSE;
     }
@@ -81,7 +81,7 @@ uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
         }
         else
         {
-            PRINTF("\r\nNo response packet data!\r\n");
+            PRINTF("no response packet data!\r\n");
             return TRUE;
         }
     }
@@ -128,7 +128,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write torque witch successfully.\r\n");
+        PRINTF("sync write torque witch complete\r\n");
     }
     Sleep(80);
 
@@ -143,7 +143,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write control mode successfully.\r\n");
+        PRINTF("sync write control mode complete\r\n");
     }
     Sleep(80);
 
@@ -166,7 +166,7 @@ int main() {
 
     ret = primary_servo_set_velocity_base_target_position_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set velocity base target position successfully.\r\n");
+        PRINTF("write velocity base target position complete\r\n");
 
     //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s.
     write_buffer[0] = 3000 & 0xff;
@@ -188,7 +188,7 @@ int main() {
     {
         return FALSE;
     }
-    PRINTF("servo pack is: ");
+    PRINTF("write velocity base target position and velocity status packet: ");
     for (uint8_t i = 0; i < ret; i++)
     {
         PRINTF("0x%02x ", pack[i]);
@@ -218,7 +218,7 @@ int main() {
     {
         return FALSE;
     }
-    PRINTF("servo pack is: ");
+    PRINTF("write velocity base target acc, dec, velocity and position status packet: ");
     for (uint8_t i = 0; i < ret; i++)
     {
         PRINTF("0x%02x ", pack[i]);
@@ -238,7 +238,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write velocity base target position successfully.\r\n");
+        PRINTF("sync write velocity base target position complete\r\n");
     }
     Sleep(1000);
 
@@ -258,7 +258,7 @@ int main() {
     }
     else
     {
-        PRINTF("sync write velocity base target position and velocity successfully.\r\n");
+        PRINTF("sync write velocity base target position and velocity complete\r\n");
     }
     Sleep(1000);
 
@@ -282,7 +282,7 @@ int main() {
     }
     else
     {
-        PRINTF("Sync Write velocity base target acc,dec,velocity and position successfully.\r\n");
+        PRINTF("Sync Write velocity base target acc, dec, velocity and position complete\r\n");
     }
     Sleep(1000);
 

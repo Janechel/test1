@@ -7,7 +7,7 @@ uint8_t uart_init(HANDLE hSerial)
 {
     if (hSerial == INVALID_HANDLE_VALUE)
     {
-        PRINTF("Failed to open serial port\n");
+        PRINTF("failed to open serial port\n");
         return FALSE;
     }
 
@@ -16,7 +16,7 @@ uint8_t uart_init(HANDLE hSerial)
 
     if (!GetCommState(hSerial, &dcbSerialParams))
     {
-        PRINTF("Failed to get serial port parameters\n");
+        PRINTF("failed to get serial port parameters\n");
         CloseHandle(hSerial);
         return FALSE;
     }
@@ -28,7 +28,7 @@ uint8_t uart_init(HANDLE hSerial)
 
     if (!SetCommState(hSerial, &dcbSerialParams))
     {
-        PRINTF("Failed to set serial port parameters\n");
+        PRINTF("failed to set serial port parameters\n");
         CloseHandle(hSerial);
         return FALSE;
     }
@@ -81,7 +81,7 @@ uint8_t order_receive(HANDLE hSerial, uint8_t pack[])
         }
         else
         {
-            PRINTF("\r\nNo response packet data!\r\n");
+            PRINTF("no response packet data!\r\n");
             return TRUE;
         }
     }
@@ -128,7 +128,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set torque switch successfully.\r\n");
+        PRINTF("write torque switch complete\r\n");
 
     //Change the control mode of servo ID1 to the PWM control mode.
     primary_servo_set_control_mode(1, 3, order_buffer,&order_len);
@@ -148,7 +148,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_control_mode_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set control mode successfully.\r\n");
+        PRINTF("write control mode complete\r\n");
 
     //Change the torque switch of servo ID1 to ON.
     primary_servo_set_torque_switch(1, 1, order_buffer,&order_len);
@@ -168,7 +168,7 @@ int main() {
     Sleep(80);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set torque switch successfully.\r\n");
+        PRINTF("write torque switch complete\r\n");
 
     //Change the target PWM of servo ID1 to -50%.
     primary_servo_set_target_pwm(1, -500, order_buffer,&order_len);
@@ -189,7 +189,7 @@ int main() {
 
     ret = primary_servo_set_target_pwm_analysis(pack);
     if (ret == PRIMARY_SUCCESS)
-        PRINTF("set target pwm successfully.\r\n");
+        PRINTF("write target pwm complete\r\n");
 
     //Close Serial
     CloseHandle(hSerial);
