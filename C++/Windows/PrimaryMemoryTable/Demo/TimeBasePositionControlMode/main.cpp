@@ -23,11 +23,11 @@ int main()
 
     if (serialPort.Open(18, 1000000))
     {
-        PRINTF("Open Serial successful.\r\n");
+        PRINTF("open serial complete\r\n");
     }
     else
     {
-        PRINTF("Failed to open serial port.\r\n");
+        PRINTF("failed to open serial port\r\n");
         return -1;
     }
 
@@ -37,7 +37,7 @@ int main()
     primary_servo_sync_write_torque_switch(servo, order_buffer, &order_len);
 
     serialPort.Write(order_buffer, order_len, &bytesWritten);
-    PRINTF("sync write torque witch successful.\r\n");
+    PRINTF("sync write torque witch complete\r\n");
     Sleep(20);
 
     //Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
@@ -46,7 +46,7 @@ int main()
     primary_servo_sync_write_control_mode(servo, order_buffer, &order_len);
 
     serialPort.Write(order_buffer, order_len, &bytesWritten);
-    PRINTF("sync write control mode successful.\r\n");
+    PRINTF("sync write control mode complete\r\n");
     Sleep(20);
 
     //Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
@@ -58,11 +58,11 @@ int main()
     {
         ret = primary_servo_set_time_base_target_position_and_moving_time_analysis(pack);
         if (ret == PRIMARY_SUCCESS)
-            PRINTF("set time base target position and moving time successful.\r\n");
+            PRINTF("write time base target position and moving time complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     Sleep(1000);
 
@@ -79,7 +79,7 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        PRINTF("servo pack is: ");
+        PRINTF("write time base target acc, position and moving time status packet: ");
         for (uint8_t i = 0; i < bytesRead; i++)
         {
             PRINTF("0x%02x ", pack[i]);
@@ -88,7 +88,7 @@ int main()
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     Sleep(1000);
 
@@ -101,7 +101,7 @@ int main()
 
     primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
     serialPort.Write(order_buffer, order_len, &bytesWritten);
-    PRINTF("sync write time base target position and moving time successful.\r\n");
+    PRINTF("sync write time base target position and moving time complete\r\n");
     Sleep(1000);
 
     //In time base position control mode, let servo ID1 move to the 0° position at a velocity of 1s,
@@ -113,7 +113,7 @@ int main()
 
     primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
     serialPort.Write(order_buffer, order_len, &bytesWritten);
-    PRINTF("sync write time base target position and moving time successful.\r\n");
+    PRINTF("sync write time base target position and moving time complete\r\n");
     Sleep(1000);
 
     serialPort.Close();

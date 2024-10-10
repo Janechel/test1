@@ -16,11 +16,11 @@ int main()
 
     if (serialPort.Open(18, 1000000))
     {
-        PRINTF("Open Serial successfully.\r\n");
+        PRINTF("open serial complete\r\n");
     }
     else
     {
-        PRINTF("Failed to open serial port.\r\n");
+        PRINTF("failed to open serial port\r\n");
         return -1;
     }
 
@@ -34,11 +34,11 @@ int main()
     {
         ret = primary_servo_set_torque_switch_analysis(pack);
         if (ret == PRIMARY_SUCCESS)
-            PRINTF("set torque switch successful.\r\n");
+            PRINTF("write torque switch complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     Sleep(20);
 
@@ -52,11 +52,11 @@ int main()
     {
         ret = primary_servo_set_control_mode_analysis(pack);
         if (ret == PRIMARY_SUCCESS)
-            PRINTF("set control mode successful.\r\n");
+            PRINTF("write control mode complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     Sleep(20);
 
@@ -70,11 +70,11 @@ int main()
     {
         ret = primary_servo_set_torque_switch_analysis(pack);
         if (ret == PRIMARY_SUCCESS)
-            PRINTF("set torque switch successful.\r\n");
+            PRINTF("write torque switch complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     Sleep(20);
 
@@ -88,11 +88,11 @@ int main()
     {
         ret = primary_servo_set_target_current_analysis(pack);
         if (ret == PRIMARY_SUCCESS)
-            PRINTF("set target current successful.\r\n");
+            PRINTF("write target current complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     Sleep(3000);
 

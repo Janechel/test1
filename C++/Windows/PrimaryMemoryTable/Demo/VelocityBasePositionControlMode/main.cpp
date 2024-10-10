@@ -23,11 +23,11 @@ int main()
 
     if (serialPort.Open(18, 1000000))
     {
-        PRINTF("Open Serial successfully.\r\n");
+        PRINTF("open serial complete\r\n");
     }
     else
     {
-        PRINTF("Failed to open serial port.\r\n");
+        PRINTF("failed to open serial port\r\n");
         return -1;
     }
 
@@ -37,7 +37,7 @@ int main()
     primary_servo_sync_write_torque_switch(servo, order_buffer, &order_len);
 
     serialPort.Write(order_buffer, order_len, &bytesWritten);
-    PRINTF("sync write torque witch successful.\r\n");
+    PRINTF("sync write torque witch complete\r\n");
     Sleep(20);
 
     //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
@@ -46,7 +46,7 @@ int main()
     primary_servo_sync_write_control_mode(servo, order_buffer, &order_len);
 
     serialPort.Write(order_buffer, order_len, &bytesWritten);
-    PRINTF("sync write control mode successful.\r\n");
+    PRINTF("sync write control mode complete\r\n");
     Sleep(20);
 
     //Change the velocity base target position of servo ID1 to 150°.
@@ -58,11 +58,11 @@ int main()
     {
         ret = primary_servo_set_velocity_base_target_position_analysis(pack);
         if (ret == PRIMARY_SUCCESS)
-            PRINTF("set velocity base target position successful.\r\n");
+            PRINTF("write velocity base target position complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     Sleep(1000);
 
@@ -79,7 +79,7 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        PRINTF("servo pack is: ");
+        PRINTF("write velocity base target position and velocity status packet: ");
         for (uint8_t i = 0; i < bytesRead; i++)
         {
             PRINTF("0x%02x ", pack[i]);
@@ -88,7 +88,7 @@ int main()
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     Sleep(1000);
 
@@ -108,7 +108,7 @@ int main()
 
     if (serialPort.Read(pack, &bytesRead))
     {
-        PRINTF("servo pack is: ");
+        PRINTF("write velocity base target acc, dec, velocity and position status packet: ");
         for (uint8_t i = 0; i < bytesRead; i++)
         {
             PRINTF("0x%02x ", pack[i]);
@@ -117,7 +117,7 @@ int main()
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     Sleep(1000);
 
@@ -127,7 +127,7 @@ int main()
 
     primary_servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
     serialPort.Write(order_buffer, order_len, &bytesWritten);
-    PRINTF("sync write velocity base target position successful.\r\n");
+    PRINTF("sync write velocity base target position complete\r\n");
     Sleep(1000);
 
     //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s,
@@ -139,7 +139,7 @@ int main()
 
     primary_servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
     serialPort.Write(order_buffer, order_len, &bytesWritten);
-    PRINTF("sync write velocity base target position and velocity successful.\r\n");
+    PRINTF("sync write velocity base target position and velocity complete\r\n");
     Sleep(1000);
 
     //let servo ID1 move to the 0° position at a velocity base target velocity of 720°/s, a velocity base target ACC of 500°/s², and a velocity base target DEC of 50°/s².
@@ -155,7 +155,7 @@ int main()
 
     primary_servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
     serialPort.Write(order_buffer, order_len, &bytesWritten);
-    PRINTF("sync write velocity base target acc,dec,velocity and position successful.\r\n");
+    PRINTF("sync write velocity base target acc, dec, velocity and position complete\r\n");
     Sleep(1000);
 
     serialPort.Close();
