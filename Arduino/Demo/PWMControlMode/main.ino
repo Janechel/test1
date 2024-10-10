@@ -40,11 +40,11 @@ void loop() {
         readFunction(pack, pack_len);
         ret = primary_servo_set_torque_switch_analysis(pack);
         if(ret == PRIMARY_SUCCESS)
-            PRINTF("set torque switch successful.\r\n");
+            PRINTF("write torque switch complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     delay(1000);
 
@@ -60,11 +60,11 @@ void loop() {
         readFunction(pack, pack_len);
         ret = primary_servo_set_control_mode_analysis(pack);
         if(ret == PRIMARY_SUCCESS)
-            PRINTF("set control mode successful.\r\n");
+            PRINTF("write control mode complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     delay(1000);
 
@@ -80,11 +80,11 @@ void loop() {
         readFunction(pack, pack_len);
         ret = primary_servo_set_torque_switch_analysis(pack);
         if(ret == PRIMARY_SUCCESS)
-            PRINTF("set torque switch successful.\r\n");
+            PRINTF("write torque switch complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     delay(1000);
 
@@ -100,11 +100,11 @@ void loop() {
         readFunction(pack, pack_len);
         ret = primary_servo_set_target_pwm_analysis(pack);
         if(ret == PRIMARY_SUCCESS)
-            PRINTF("set target pwm successful.\r\n");
+            PRINTF("write target pwm complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     delay(3000);
 }

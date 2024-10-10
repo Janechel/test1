@@ -40,7 +40,7 @@ void loop() {
 
     primary_servo_sync_write_torque_switch(servo, order_buffer,&order_len);
     SERVO_SERIAL.write(order_buffer, order_len);
-    PRINTF("sync write torque switch successful.\r\n");
+    PRINTF("sync write torque switch complete\r\n");
     delay(1000);
 
     //Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
@@ -48,7 +48,7 @@ void loop() {
     servo.control_mode[1] = 0;
     primary_servo_sync_write_control_mode(servo, order_buffer,&order_len);
     SERVO_SERIAL.write(order_buffer, order_len);
-    PRINTF("sync write control mode successful.\r\n");
+    PRINTF("sync write control mode complete\r\n");
     delay(1);
 
     //Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
@@ -62,11 +62,11 @@ void loop() {
         SERVO_SERIAL.read(pack, pack_len);
         ret = primary_servo_set_time_base_target_position_and_moving_time_analysis(pack);
         if(ret == PRIMARY_SUCCESS)
-            PRINTF("set time base target position and moving time successful.\r\n");
+            PRINTF("write time base target position and moving time complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     delay(1000);
 
@@ -85,7 +85,7 @@ void loop() {
     {
         pack_len = SERVO_SERIAL.available();
         readFunction(pack, pack_len);
-        PRINTF("servo pack is: ");
+        PRINTF("write time base target acee, position and moving time status packet: ");
         for(uint8_t i = 0; i < pack_len; i++)
         {
             PRINTF("0x%02x ", pack[i]);
@@ -107,7 +107,7 @@ void loop() {
 
     primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
     SERVO_SERIAL.write(order_buffer, order_len);
-    PRINTF("sync write time base target position and moving time successful.\r\n");
+    PRINTF("sync write time base target position and moving time complete\r\n");
     delay(1000);
 
     //In time base position control mode, let servo ID1 move to the 0° position at a velocity of 1s,
@@ -119,6 +119,6 @@ void loop() {
 
     primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer, &order_len);
     SERVO_SERIAL.write(order_buffer, order_len);
-    PRINTF("sync write time base target position and moving time successful.\r\n");
+    PRINTF("sync write time base target position and moving time complete\r\n");
     delay(1000);
 }

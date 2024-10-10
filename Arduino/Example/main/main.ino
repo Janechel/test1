@@ -56,12 +56,12 @@ void loop() {
     ret = primary_servo_ping_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS) 
     {
-      PRINTF("model_number is %d\r\n", analysis_data);
+      PRINTF("model number: %d\r\n", analysis_data);
     }
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 #endif
@@ -79,12 +79,12 @@ void loop() {
     ret = primary_servo_calibration_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("servo calibration successful!\r\n");
+      PRINTF("calibration complete\r\n");
     }
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 #endif
@@ -102,12 +102,12 @@ void loop() {
     ret = primary_servo_factory_reset_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("servo factory reset successful!\r\n");
+      PRINTF("factory reset complete\r\n");
     }
   } 
   else 
   {
-  PRINTF("Failed to read data.\r\n");
+  PRINTF("failed to read data\r\n");
   }
   delay(1000);
 #endif
@@ -125,12 +125,12 @@ void loop() {
     ret = primary_servo_parameter_reset_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("servo parameter reset successful!\r\n");
+      PRINTF("parameter reset complete\r\n");
     }
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 #endif
@@ -157,12 +157,12 @@ void loop() {
     ret = primary_servo_read_firmware_version_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present firmware version is %d\r\n", analysis_data);
+      PRINTF("firmware version: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -179,12 +179,12 @@ void loop() {
     ret = primary_servo_read_model_information_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present model information is %d\r\n", analysis_data);
+      PRINTF("model information: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -201,12 +201,12 @@ void loop() {
     ret = primary_servo_read_baud_rate_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present baud rate is %d\r\n", analysis_data);
+      PRINTF("baud rate: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -223,12 +223,12 @@ void loop() {
     ret = primary_servo_read_return_delay_time_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present return delay time is %d\r\n", analysis_data);
+      PRINTF("return delay time: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -245,12 +245,12 @@ void loop() {
     ret = primary_servo_read_return_level_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present return level is %d\r\n", analysis_data);
+      PRINTF("return level: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -267,12 +267,12 @@ void loop() {
     ret = primary_servo_read_min_angle_limit_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present min angle limit is %d\r\n", analysis_data);
+      PRINTF("min angle limit: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -289,12 +289,12 @@ void loop() {
     ret = primary_servo_read_max_angle_limit_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present max angle limit is %d\r\n", analysis_data);
+      PRINTF("max angle limit: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -308,7 +308,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("the angle limit pack is: ");
+    PRINTF("read angle limit status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -317,10 +317,9 @@ void loop() {
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
-
 
   //Read the max temperature limit of servo ID1.
   primary_servo_read_max_temperature_limit(1, order_buffer,&order_len);
@@ -335,12 +334,12 @@ void loop() {
     ret = primary_servo_read_max_temperature_limit_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present max temperature limit is %d\r\n", analysis_data);
+      PRINTF("max temperature limit: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -357,12 +356,12 @@ void loop() {
     ret = primary_servo_read_max_voltage_limit_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present max voltage limit is %d\r\n", analysis_data);
+      PRINTF("max voltage limit: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -379,12 +378,12 @@ void loop() {
     ret = primary_servo_read_min_voltage_limit_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present min voltage limit is %d\r\n", analysis_data);
+      PRINTF("min voltage limit: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -398,7 +397,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("the voltage limit pack is: ");
+    PRINTF("read voltage limit status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -407,7 +406,7 @@ void loop() {
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -424,12 +423,12 @@ void loop() {
     ret = primary_servo_read_max_pwm_limit_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present max pwm limit is %d\r\n", analysis_data);
+      PRINTF("max pwm limit: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -446,12 +445,12 @@ void loop() {
     ret = primary_servo_read_max_current_limit_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present max current limit is %d\r\n", analysis_data);
+      PRINTF("max current limit: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -468,12 +467,12 @@ void loop() {
     ret = primary_servo_read_current_shutdown_time_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present current shutdown time is %d\r\n", analysis_data);
+      PRINTF("current shutdown time: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -490,12 +489,12 @@ void loop() {
     ret = primary_servo_read_ccw_deadband_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present ccw deadband is %d\r\n", analysis_data);
+      PRINTF("ccw deadband: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -512,12 +511,12 @@ void loop() {
     ret = primary_servo_read_cw_deadband_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present cw deadband is %d\r\n", analysis_data);
+      PRINTF("cw deadband: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -534,12 +533,12 @@ void loop() {
     ret = primary_servo_read_pwm_punch_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present pwm punch is %d\r\n", analysis_data);
+      PRINTF("pwm punch: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -556,12 +555,12 @@ void loop() {
     ret = primary_servo_read_position_control_p_gain_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present position control p gain is %d\r\n", analysis_data);
+      PRINTF("position control p gain: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -578,12 +577,12 @@ void loop() {
     ret = primary_servo_read_position_control_i_gain_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present position control i gain is %d\r\n", analysis_data);
+      PRINTF("position control i gain: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -600,12 +599,12 @@ void loop() {
     ret = primary_servo_read_position_control_d_gain_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present position control d gain is %d\r\n", analysis_data);
+      PRINTF("position control d gain: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -619,7 +618,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("position control pid gain pack is: ");
+    PRINTF("read position control pid gain status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -628,7 +627,7 @@ void loop() {
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -645,12 +644,12 @@ void loop() {
     ret = primary_servo_read_led_condition_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present led condition is %d\r\n", analysis_data);
+      PRINTF("led condition: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -667,12 +666,12 @@ void loop() {
     ret = primary_servo_read_shutdown_condition_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present shutdown condition is %d\r\n", analysis_data);
+      PRINTF("shutdown condition: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -689,12 +688,12 @@ void loop() {
     ret = primary_servo_read_control_mode_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present control mode is %d\r\n", analysis_data);
+      PRINTF("control mode: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -711,12 +710,12 @@ void loop() {
     ret = primary_servo_read_calibration_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present calibration is %d\r\n", analysis_data);
+      PRINTF("calibration: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -733,12 +732,12 @@ void loop() {
     ret = primary_servo_read_flash_switch_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present flash switch is %d\r\n", analysis_data);
+      PRINTF("flash switch: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -755,12 +754,12 @@ void loop() {
     ret = primary_servo_read_led_switch_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present led switch is %d\r\n", analysis_data);
+      PRINTF("led switch: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -777,12 +776,12 @@ void loop() {
     ret = primary_servo_read_torque_switch_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present torque switch is %d\r\n", analysis_data);
+      PRINTF("torque switch: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -799,12 +798,12 @@ void loop() {
     ret = primary_servo_read_target_pwm_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present target pwm is %d\r\n", analysis_data);
+      PRINTF("target pwm: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -821,12 +820,12 @@ void loop() {
     ret = primary_servo_read_target_current_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present target current is %d\r\n", analysis_data);
+      PRINTF("target current: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -843,12 +842,12 @@ void loop() {
     ret = primary_servo_read_velocity_base_target_position_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present velocity base target position is %d\r\n", analysis_data);
+      PRINTF("velocity base target position: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -865,12 +864,12 @@ void loop() {
     ret = primary_servo_read_velocity_base_target_velocity_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present velocity base target velocity is %d\r\n", analysis_data);
+      PRINTF("velocity base target velocity: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -887,12 +886,12 @@ void loop() {
     ret = primary_servo_read_velocity_base_target_acc_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present velocity base target acc is %d\r\n", analysis_data);
+      PRINTF("velocity base target acc: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -909,12 +908,12 @@ void loop() {
     ret = primary_servo_read_velocity_base_target_dec_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present velocity base target dec is %d\r\n", analysis_data);
+      PRINTF("velocity base target dec: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -928,7 +927,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("the velocity base target position and velocity pack is: ");
+    PRINTF("read velocity base target position and velocity status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -937,7 +936,7 @@ void loop() {
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -951,7 +950,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("the velocity base target position,velocity,acc and dec pack is: ");
+    PRINTF("read velocity base target position, velocity, acc and dec status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -960,7 +959,7 @@ void loop() {
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -977,12 +976,12 @@ void loop() {
     ret = primary_servo_read_time_base_target_acc_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present time base target acc is %d\r\n", analysis_data);
+      PRINTF("time base target acc: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -999,12 +998,12 @@ void loop() {
     ret = primary_servo_read_time_base_target_position_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present time base target position is %d\r\n", analysis_data);
+      PRINTF("time base target position: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -1021,12 +1020,12 @@ void loop() {
     ret = primary_servo_read_time_base_target_moving_time_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present time base target moving time is %d\r\n", analysis_data);
+      PRINTF("time base target moving time: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -1040,7 +1039,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("the time base target position and moving time pack is: ");
+    PRINTF("read time base target position and moving time status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -1049,7 +1048,7 @@ void loop() {
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1063,7 +1062,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("the time base target acc, position and moving time pack is: ");
+    PRINTF("read time base target acc, position and moving time status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -1072,7 +1071,7 @@ void loop() {
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1089,12 +1088,12 @@ void loop() {
     ret = primary_servo_read_present_voltage_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present voltage is %d\r\n", analysis_data);
+      PRINTF("present voltage: %d\r\n", analysis_data);
     }
   } 
   else 
   { 
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -1111,12 +1110,12 @@ void loop() {
     ret = primary_servo_read_present_temperature_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present temperature is %d\r\n", analysis_data);
+      PRINTF("present temperature: %d\r\n", analysis_data);
     }
   }
   else
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -1133,12 +1132,12 @@ void loop() {
     ret = primary_servo_read_present_pwm_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present pwm is %d\r\n", analysis_data);
+      PRINTF("present pwm: %d\r\n", analysis_data);
     }
   }
   else
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000); 
 
@@ -1155,12 +1154,12 @@ void loop() {
     ret = primary_servo_read_present_profile_velocity_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-    PRINTF("present profile velocity is %d\r\n", analysis_data);
+    PRINTF("present profile velocity: %d\r\n", analysis_data);
     }
   }
   else
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1177,12 +1176,12 @@ void loop() {
     ret = primary_servo_read_present_profile_position_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present profile position is %d\r\n", analysis_data);
+      PRINTF("present profile position: %d\r\n", analysis_data);
     }
   }
   else
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1199,12 +1198,12 @@ void loop() {
     ret = primary_servo_read_present_velocity_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present velocity is %d\r\n", analysis_data);
+      PRINTF("present velocity: %d\r\n", analysis_data);
     }
   }
   else
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1221,12 +1220,12 @@ void loop() {
     ret = primary_servo_read_present_position_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present position is %d\r\n", analysis_data);
+      PRINTF("present position: %d\r\n", analysis_data);
     }
   }
   else
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1243,12 +1242,12 @@ void loop() {
     ret = primary_servo_read_present_current_analysis(pack, &analysis_data);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present current is %d\r\n", analysis_data);
+      PRINTF("present current: %d\r\n", analysis_data);
     }
   }
   else
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1265,12 +1264,12 @@ void loop() {
     ret = primary_servo_read_present_position_and_present_current_analysis(pack, &position, &current);
     if(ret == PRIMARY_SUCCESS)
     {
-      PRINTF("present position is %d, present current is %d\r\n", position, current);
+      PRINTF("present position: %d, present current: %d\r\n", position, current);
     }
   }
   else
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 #endif
@@ -1288,11 +1287,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_return_delay_time_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set return delay time successful.\r\n");
+        PRINTF("write return delay time complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1308,11 +1307,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_return_level_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set return level successful.\r\n");
+        PRINTF("write return level complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1328,11 +1327,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_baud_rate_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set baud rate successful.\r\n");
+        PRINTF("write baud rate complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1348,11 +1347,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_min_angle_limit_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set min angle limit successful.\r\n");
+        PRINTF("write min angle limit complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1368,11 +1367,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_max_angle_limit_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set max angle limit successful.\r\n");
+        PRINTF("write max angle limit complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1391,7 +1390,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("set angle limit pack is: ");
+    PRINTF("write angle limit status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -1400,7 +1399,7 @@ void loop() {
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1416,11 +1415,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_max_temperature_limit_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set max temperature limit successful.\r\n");
+        PRINTF("write max temperature limit complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1436,11 +1435,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_max_voltage_limit_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set max voltage limit successful.\r\n");
+        PRINTF("write max voltage limit complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1456,11 +1455,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_min_voltage_limit_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set min voltage limit successful.\r\n");
+        PRINTF("write min voltage limit complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1477,7 +1476,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("the voltage limit pack is: ");
+    PRINTF("write voltage limit status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -1486,7 +1485,7 @@ void loop() {
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1502,11 +1501,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_max_pwm_limit_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set max pwm limit successful.\r\n");
+        PRINTF("write max pwm limit complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1522,11 +1521,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_max_current_limit_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set max current limit successful.\r\n");
+        PRINTF("write max current limit complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1542,11 +1541,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_current_shutdown_time_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set current shutdown time successful.\r\n");
+        PRINTF("write current shutdown time complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1562,11 +1561,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_cw_deadband_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set cw deadband successful.\r\n");
+        PRINTF("write cw deadband complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1582,11 +1581,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_ccw_deadband_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set ccw deadband successful.\r\n");
+        PRINTF("write ccw deadband complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1603,7 +1602,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("set cw deadband and ccw deadband pack is: ");
+    PRINTF("write cw deadband and ccw deadband status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -1612,7 +1611,7 @@ void loop() {
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1628,11 +1627,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_pwm_punch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set pwm punch successful.\r\n");
+        PRINTF("write pwm punch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1648,11 +1647,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_position_control_p_gain_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set position control p gain successful.\r\n");
+        PRINTF("write position control p gain complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1668,11 +1667,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_position_control_d_gain_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set position control d gain successful.\r\n");
+        PRINTF("write position control d gain complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1688,11 +1687,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_position_control_i_gain_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set position control i gain successful.\r\n");
+        PRINTF("write position control i gain complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1713,7 +1712,7 @@ void loop() {
   {
     pack_len = SERVO_SERIAL.available();
     readFunction(pack, pack_len);
-    PRINTF("set position control pid gain pack is: ");
+    PRINTF("write position control pid gain status packet: ");
     for(uint8_t i = 0; i < pack_len; i++)
     {
       PRINTF("0x%02x ", pack[i]);
@@ -1722,7 +1721,7 @@ void loop() {
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1738,11 +1737,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_led_condition_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set led condition successful.\r\n");
+        PRINTF("write led condition complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1758,11 +1757,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_shutdown_conditions_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set shutdown conditions successful.\r\n");
+        PRINTF("write shutdown condition complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1778,11 +1777,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_flash_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set flash switch successful.\r\n");
+        PRINTF("write flash switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1798,11 +1797,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_flash_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set flash switch successful.\r\n");
+        PRINTF("write flash switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1818,11 +1817,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_led_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set led switch successful.\r\n");
+        PRINTF("write led switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1838,11 +1837,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_led_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set led switch successful.\r\n");
+        PRINTF("write led switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1858,11 +1857,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set torque switch successful.\r\n");
+      PRINTF("write torque switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1878,11 +1877,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_control_mode_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set control mode successful.\r\n");
+      PRINTF("write control mode complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1898,11 +1897,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set torque switch successful.\r\n");
+      PRINTF("write torque switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1918,11 +1917,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_target_pwm_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set target pwm successful.\r\n");
+        PRINTF("write target pwm complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(3000);
 
@@ -1938,11 +1937,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set torque switch successful.\r\n");
+      PRINTF("write torque switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1958,11 +1957,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_control_mode_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set control mode successful.\r\n");
+      PRINTF("write control mode complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1978,11 +1977,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set torque switch successful.\r\n");
+      PRINTF("write torque switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -1998,11 +1997,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_target_current_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set target current successful.\r\n");
+      PRINTF("write target current complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(3000);
 
@@ -2018,11 +2017,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set torque switch successful.\r\n");
+      PRINTF("write torque switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2038,11 +2037,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_control_mode_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set control mode successful.\r\n");
+      PRINTF("write control mode complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2058,11 +2057,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set torque switch successful.\r\n");
+      PRINTF("write torque switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2078,11 +2077,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_velocity_base_target_velocity_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set velocity base target velocity successful.\r\n");
+      PRINTF("write velocity base target velocity complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2098,11 +2097,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_velocity_base_target_acc_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set velocity base target acc successful.\r\n");
+      PRINTF("write velocity base target acc complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2118,11 +2117,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_velocity_base_target_dec_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set velocity base target dec successful.\r\n");
+      PRINTF("write velocity base target dec complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2137,11 +2136,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_velocity_base_target_position_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set velocity base target position successful.\r\n");
+      PRINTF("write velocity base target position complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2157,11 +2156,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set torque switch successful.\r\n");
+      PRINTF("write torque switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2177,11 +2176,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_control_mode_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set control mode successful.\r\n");
+      PRINTF("write control mode complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2197,11 +2196,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_torque_switch_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set torque switch successful.\r\n");
+      PRINTF("write torque switch complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2217,11 +2216,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_time_base_target_acc_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-        PRINTF("set time base target acc successful.\r\n");
+        PRINTF("write time base target acc complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 
@@ -2236,11 +2235,11 @@ void loop() {
     readFunction(pack, pack_len);
     ret = primary_servo_set_time_base_target_position_and_moving_time_analysis(pack);
     if(ret == PRIMARY_SUCCESS)
-      PRINTF("set time base target position and moving time successful.\r\n");
+      PRINTF("write time base target position and moving time complete\r\n");
   } 
   else 
   {
-    PRINTF("Failed to read data.\r\n");
+    PRINTF("failed to read data\r\n");
   }
   delay(1000);
 #endif
@@ -2257,6 +2256,7 @@ void loop() {
   primary_servo_sync_write_torque_switch(servo, order_buffer,&order_len);
 
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write torque witch complete\r\n");
   delay(1000);
 
   //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
@@ -2265,6 +2265,7 @@ void loop() {
   primary_servo_sync_write_control_mode(servo, order_buffer,&order_len);
 
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write control mode complete\r\n");
   delay(1);
 
   //Change the velocity base target velocity of the servo ID1, ID2 to 360°/s² and 720°/s², respectively.
@@ -2273,6 +2274,7 @@ void loop() {
 
   primary_servo_sync_write_velocity_base_target_velocity(servo, order_buffer,&order_len);
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write velocity base target velocity complete\r\n");
   delay(1000);
 
   //Change the velocity base target ACC of servo ID1, ID2 to 500°/s² and 50°/s², respectively.
@@ -2281,6 +2283,7 @@ void loop() {
 
   primary_servo_sync_write_velocity_base_target_acc(servo, order_buffer,&order_len);
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write velocity base target acc complete\r\n");
   delay(1000);
 
   //Change the velocity base target DEC of servo ID1, ID2 to 50°/s² and 500°/s², respectively.
@@ -2289,6 +2292,7 @@ void loop() {
 
   primary_servo_sync_write_velocity_base_target_dec(servo, order_buffer,&order_len);
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write velocity base target dec complete\r\n");
   delay(1000);
 
   //Change the velocity base target velocity of the servo ID1, ID2 to 150° midpoint and 0° position, respectively.
@@ -2297,6 +2301,7 @@ void loop() {
 
   primary_servo_sync_write_velocity_base_target_position(servo, order_buffer,&order_len);
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write velocity base target position complete\r\n");
   delay(1000);
 
   //Change the velocity base target velocity of servo ID1 ,ID2 to 1800 and 3600, and the position to 3000 and 3000, respectively
@@ -2307,6 +2312,7 @@ void loop() {
 
   primary_servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer,&order_len);
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write velocity base target position and velocity complete\r\n");
   delay(1000);
 
   //SChange the velocity base target velocity of servo ID1 ,ID2 to 3600 and 3600, position to 0,0, acceleration to 500°/s², 500°/s², deceleration to 500°/s², 500°/s², respectively
@@ -2321,6 +2327,7 @@ void loop() {
 
   primary_servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer,&order_len);
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write velocity base target acc, dec, velocity and position complete\r\n");
   delay(1000);
 
   //Change the torque switch of the servo ID1, ID2 to OFF respectively.
@@ -2330,6 +2337,7 @@ void loop() {
   primary_servo_sync_write_torque_switch(servo, order_buffer,&order_len);
 
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write torque witch complete\r\n");
   delay(1000);
 
   //Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
@@ -2338,6 +2346,7 @@ void loop() {
   primary_servo_sync_write_control_mode(servo, order_buffer,&order_len);
 
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write control mode complete\r\n");
   delay(1);
 
   //Change the time base target ACC of servo ID1 to 1 and 5 respectively.
@@ -2346,6 +2355,7 @@ void loop() {
 
   primary_servo_sync_write_time_base_target_acc(servo, order_buffer,&order_len);
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write time base target acc complete\r\n");
   delay(1000);
 
   //Change the time base target position and moving time of servo ID1 to 150° midpoint and 1s, 0° and 500ms respectively.
@@ -2356,6 +2366,7 @@ void loop() {
 
   primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
   SERVO_SERIAL.write(order_buffer, order_len);
+  PRINTF("sync write time base target position and moving time complete\r\n");
   delay(1000);
 #endif
 

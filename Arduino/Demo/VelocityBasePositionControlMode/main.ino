@@ -40,7 +40,7 @@ void loop() {
 
     primary_servo_sync_write_torque_switch(servo, order_buffer,&order_len);
     SERVO_SERIAL.write(order_buffer, order_len);
-    PRINTF("sync write torque switch successful.\r\n");
+    PRINTF("sync write torque switch complete\r\n");
     delay(1000);
 
     //Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
@@ -49,7 +49,7 @@ void loop() {
     primary_servo_sync_write_control_mode(servo, order_buffer,&order_len);
 
     SERVO_SERIAL.write(order_buffer, order_len);
-    PRINTF("sync write control mode successful.\r\n");
+    PRINTF("sync write control mode complete\r\n");
     delay(1);
 
     //Change the velocity base target position of servo ID1 to 150°.
@@ -63,11 +63,11 @@ void loop() {
         SERVO_SERIAL.read(pack, pack_len);
         ret = primary_servo_set_velocity_base_target_position_analysis(pack);
         if(ret == PRIMARY_SUCCESS)
-            PRINTF("servo set velocity base target position successful.\r\n");
+            PRINTF("write velocity base target position complete\r\n");
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     delay(1000);
 
@@ -85,7 +85,7 @@ void loop() {
     {
         pack_len = SERVO_SERIAL.available();
         SERVO_SERIAL.read(pack, pack_len);
-        PRINTF("servo pack is: ");
+        PRINTF("write velocity base target position and velocity status packet: ");
         for(uint8_t i = 0; i < pack_len; i++)
         {
             PRINTF("0x%02x ", pack[i]);
@@ -94,7 +94,7 @@ void loop() {
     }
     else
     {
-        PRINTF("Failed to read data.\r\n");
+        PRINTF("failed to read data\r\n");
     }
     delay(1000);
 
@@ -115,7 +115,7 @@ void loop() {
     {
         pack_len = SERVO_SERIAL.available();
         SERVO_SERIAL.read(pack, pack_len);
-        PRINTF("servo pack is: ");
+        PRINTF("write velocity base target acc, dec, velocity and position status packet: ");
         for(uint8_t i = 0; i < pack_len; i++)
         {
             PRINTF("0x%02x ", pack[i]);
@@ -134,7 +134,7 @@ void loop() {
 
     primary_servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
     SERVO_SERIAL.write(order_buffer, order_len);
-    PRINTF("sync write velocity base target position successful.\r\n");
+    PRINTF("sync write velocity base target position complete\r\n");
     delay(1000);
 
     //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s,
@@ -146,7 +146,7 @@ void loop() {
 
     primary_servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
     SERVO_SERIAL.write(order_buffer, order_len);
-    PRINTF("sync write velocity base target position and velocity successful.\r\n");
+    PRINTF("sync write velocity base target position and velocity complete\r\n");
     delay(1000);
 
     //let servo ID1 move to the 0° position at a velocity base target velocity of 720°/s, a velocity base target ACC of 500°/s², and a velocity base target DEC of 50°/s².
@@ -162,6 +162,6 @@ void loop() {
 
     primary_servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
     SERVO_SERIAL.write(order_buffer, order_len);
-    PRINTF("sync write velocity base target acc,dec,velocity and position successful.\r\n");
+    PRINTF("sync write velocity base target acc, dec, velocity and position complete\r\n");
     delay(1000);
 }
