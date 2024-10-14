@@ -35,7 +35,7 @@ servo_sync_parameter.torque_switch[1] = 0
 Primary_Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
 serial.write(bytes(output_buffer[:output_buffer_len[0]]))
 receive_data = serial.read(MAX_RECEIVE_LEN)
-print("sync write torque witch successful.")
+print("sync write torque witch complete")
 time.sleep(1)
 
 # Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
@@ -44,7 +44,7 @@ servo_sync_parameter.control_mode[1] = 0
 Primary_Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
 serial.write(bytes(output_buffer[:output_buffer_len[0]]))
 receive_data = serial.read(MAX_RECEIVE_LEN)
-print("sync write control mode successful.")
+print("sync write control mode complete")
 time.sleep(1)
 
 
@@ -54,7 +54,7 @@ serial.write(bytes(output_buffer[:output_buffer_len[0]]))
 receive_data = serial.read(MAX_RECEIVE_LEN)
 ret = Primary_Servo.servo_set_time_base_target_position_and_moving_time_analysis(receive_data)
 if ret == Primary_State.SUCCESS:
-    print("set time base target position and moving time successful")
+    print("write time base target position and moving time complete")
 time.sleep(1)
 
 # Change the time base target ACC, position, and moving time of servo ID1 to 0°, 300°, and 1s, respectively.
@@ -67,7 +67,7 @@ write_buffer[4] = (1000 >> 8) & 0xff
 Primary_Servo.servo_write(1, 0x3B, 5, write_buffer, output_buffer, output_buffer_len)
 serial.write(bytes(output_buffer[:output_buffer_len[0]]))
 receive_data = serial.read(MAX_RECEIVE_LEN)
-print("set angle limit pack is:", end=' ')
+print("write angle limit status packet:", end=' ')
 for i in range(len(receive_data)):
     print(f"0x{receive_data[i]:02x}", end=' ')
 print("\r")
@@ -83,7 +83,7 @@ servo_sync_parameter.time[1] = 1000
 
 Primary_Servo.servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter, output_buffer, output_buffer_len)
 serial.write(bytes(output_buffer[:output_buffer_len[0]]))
-print("sync write time base target position and moving time successful.")
+print("sync write time base target position and moving time complete")
 time.sleep(1)
 
 # In time base position control mode, let servo ID1 move to the 0° position at a velocity of 1s,
@@ -95,7 +95,7 @@ servo_sync_parameter.time[1] = 500
 
 Primary_Servo.servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter, output_buffer, output_buffer_len)
 serial.write(bytes(output_buffer[:output_buffer_len[0]]))
-print("sync write time base target position and moving time successful.")
+print("sync write time base target position and moving time complete")
 time.sleep(1)
 
 serial.close()
