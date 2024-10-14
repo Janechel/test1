@@ -31,7 +31,7 @@ while True:
     servo_sync_parameter.torque_switch[1] = 0
     Primary_Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-    print("sync write torque witch successful.")
+    print("sync write torque witch complete")
     time.sleep(1)
 
     # Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
@@ -39,7 +39,7 @@ while True:
     servo_sync_parameter.control_mode[1] = 1
     Primary_Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-    print("sync write control mode successful.")
+    print("sync write control mode complete")
     time.sleep(1)
 
     # Change the velocity base target position of servo ID1 to 150°.
@@ -49,7 +49,7 @@ while True:
     receive_data_len = uart2.readinto(receive_data)
     ret = Primary_Servo.servo_set_velocity_base_target_position_analysis(receive_data)
     if ret == Primary_State.SUCCESS:
-        print("servo set velocity base target position successful")
+        print("write velocity base target position complete")
     time.sleep(1)
 
     # In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s.
@@ -62,7 +62,7 @@ while True:
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
-    print("servo pack is:", end=' ')
+    print("write velocity base position and velocity status packet:", end=' ')
     for i in range(receive_data_len):
         print(f"0x{receive_data[i]:02x}", end=' ')
     print("\r")
@@ -81,7 +81,7 @@ while True:
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
-    print("servo set angle limit pack is:", end=' ')
+    print("write velocity base target acc, dec, velocity and position status packet:", end=' ')
     for i in range(receive_data_len):
         print(f"0x{receive_data[i]:02x}", end=' ')
     print("\r")
@@ -93,7 +93,7 @@ while True:
 
     Primary_Servo.servo_sync_write_velocity_base_target_position(servo_sync_parameter, output_buffer, output_buffer_len)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-    print("sync write velocity base target position successful.")
+    print("sync write velocity base target position complete")
     time.sleep(1)
 
     # In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s,
@@ -105,7 +105,7 @@ while True:
 
     Primary_Servo.servo_sync_write_velocity_base_target_position_and_velocity(servo_sync_parameter, output_buffer, output_buffer_len)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-    print("sync write velocity base target position and velocity successful.")
+    print("sync write velocity base target position and velocity complete")
     time.sleep(1)
 
     # In velocity base position control mode, let servo ID1 move to the 0° position at a velocity base target velocity of 720°/s, a velocity base target ACC of 500°/s², and a velocity base target DEC of 50°/s².
@@ -121,7 +121,7 @@ while True:
 
     Primary_Servo.servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter, output_buffer, output_buffer_len)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-    print("sync write velocity base target acc,dec,velocity and position successful.")
+    print("sync write velocity base target acc, dec, velocity and position complete")
     time.sleep(1)
 
 

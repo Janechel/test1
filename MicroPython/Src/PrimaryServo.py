@@ -1016,6 +1016,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Ping Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1031,6 +1032,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Factory Reset Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -1045,6 +1047,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Parameter Reset Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -1059,6 +1062,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Calibration Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -1075,6 +1079,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             position[0] = (data_buffer[1] << 8) | data_buffer[0]
             current[0] = (data_buffer[3] << 8) | data_buffer[2]
             return Primary_State.SUCCESS
@@ -1093,6 +1098,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1110,6 +1116,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1127,6 +1134,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1144,6 +1152,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1161,6 +1170,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1179,6 +1189,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1196,6 +1207,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1213,6 +1225,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1230,6 +1243,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1247,6 +1261,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1264,6 +1279,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1281,6 +1297,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1298,6 +1315,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1315,6 +1333,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1332,6 +1351,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1349,6 +1369,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1366,6 +1387,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1383,6 +1405,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1400,6 +1423,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1417,6 +1441,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1434,6 +1459,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1452,6 +1478,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1469,6 +1496,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1486,6 +1514,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1503,6 +1532,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1520,6 +1550,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1537,6 +1568,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1554,6 +1586,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1571,6 +1604,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1588,6 +1622,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1605,6 +1640,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1622,6 +1658,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1639,6 +1676,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1656,6 +1694,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1673,6 +1712,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1690,6 +1730,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1707,6 +1748,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1724,6 +1766,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1742,6 +1785,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1759,6 +1803,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1776,6 +1821,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1793,6 +1839,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1810,6 +1857,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = (data_buffer[3] << 24) | (data_buffer[2] << 16) | (data_buffer[1] << 8) | data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -1827,6 +1875,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Read Successful!")
             analysis_data[0] = data_buffer[0]
             return Primary_State.SUCCESS
 
@@ -2401,6 +2450,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2417,6 +2467,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2432,6 +2483,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2447,6 +2499,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2462,6 +2515,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2477,6 +2531,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2492,6 +2547,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2507,6 +2563,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2522,6 +2579,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2537,6 +2595,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2552,6 +2611,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2567,6 +2627,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2582,6 +2643,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2597,6 +2659,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2612,6 +2675,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2627,6 +2691,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2642,6 +2707,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2657,6 +2723,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2672,6 +2739,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2687,6 +2755,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2702,6 +2771,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2717,6 +2787,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2732,6 +2803,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2747,6 +2819,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2762,6 +2835,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2777,6 +2851,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2792,6 +2867,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2807,6 +2883,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2822,6 +2899,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2837,6 +2915,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod
@@ -2852,6 +2931,7 @@ class Primary_Servo:
         if ret != Primary_State.SUCCESS:
             return ret
         else:
+            print("Write  Successful!")
             return Primary_State.SUCCESS
 
     @staticmethod

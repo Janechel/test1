@@ -38,7 +38,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_factory_reset_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("factory reset successful!")
+            print("factory reset complete")
         time.sleep(1)
 
     # Reset the parameter settings of the servo.
@@ -49,7 +49,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_parameter_reset_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("parameter reset successful!")
+            print("parameter reset complete")
         time.sleep(1)
 
     # Calibrate the midpoint of the servo.
@@ -60,7 +60,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_calibration_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("calibration successful!")
+            print("calibration complete")
         time.sleep(1)
 
     # Reboot the servo.
@@ -92,7 +92,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_ping_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("model number is", analysis_data[0])
+            print("model number:", analysis_data[0])
         time.sleep(1)
     
     # Read the servo data.
@@ -104,7 +104,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_current_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present current is", analysis_data[0])
+            print("present current:", analysis_data[0])
         time.sleep(1)
 
         # Read the present position of servo ID1.
@@ -114,7 +114,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_position_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present position is", analysis_data[0])
+            print("present position:", analysis_data[0])
         time.sleep(1)
         
         # Read the present position and present current of servo ID1.
@@ -124,7 +124,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_position_and_present_current_analysis(receive_data, position, current)
         if ret == Primary_State.SUCCESS:
-            print(f"present position is {position[0]}, present current is {current[0]}")
+            print(f"present position: {position[0]}, present current: {current[0]}")
         time.sleep(1)
 
         # Read the present velocity of servo ID1.
@@ -134,7 +134,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_velocity_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present velocity is", analysis_data[0])
+            print("present velocity:", analysis_data[0])
         time.sleep(1)
 
         # Read the present profile position of servo ID1.
@@ -144,7 +144,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_profile_position_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present profile position is", analysis_data[0])
+            print("present profile position:", analysis_data[0])
         time.sleep(1)
 
         # Read the present profile velocity of servo ID1.
@@ -154,7 +154,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_profile_velocity_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present profile velocity is", analysis_data[0])
+            print("present profile velocity:", analysis_data[0])
         time.sleep(1)
 
         # Read the present PWM of servo ID1.
@@ -164,7 +164,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_pwm_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present pwm is", analysis_data[0])
+            print("present pwm:", analysis_data[0])
         time.sleep(1)
 
         # Read the present temperature of servo ID1.
@@ -174,7 +174,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_temperature_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present temperature is", analysis_data[0])
+            print("present temperature:", analysis_data[0])
         time.sleep(1)
 
         # Read the present voltage of servo ID1.
@@ -184,7 +184,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_voltage_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present voltage is", analysis_data[0])
+            print("present voltage:", analysis_data[0])
         time.sleep(1)
 
         # Read the time base target moving time of servo ID1.
@@ -194,7 +194,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_time_base_target_moving_time_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present time base target moving time is", analysis_data[0])
+            print("time base target moving time:", analysis_data[0])
         time.sleep(1)
 
         # Read the time base target position of servo ID1.
@@ -204,7 +204,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_time_base_target_position_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present time base target position is", analysis_data[0])
+            print("time base target position:", analysis_data[0])
         time.sleep(1)
 
         # Read the time base target ACC of servo ID1.
@@ -214,7 +214,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_time_base_target_acc_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present time base target acc is", analysis_data[0])
+            print("time base target acc:", analysis_data[0])
         time.sleep(1)
         
         # Read the time base target position and moving time of servo ID1.
@@ -222,7 +222,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("time base target position and moving time pack is:", end=' ')
+        print("read time base target position and moving time status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -233,7 +233,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("time base target acc, position and moving time pack is:", end=' ')
+        print("read time base target acc, position and moving time status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -246,7 +246,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_velocity_base_target_dec_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present velocity base target dec is", analysis_data[0])
+            print("velocity base target dec:", analysis_data[0])
         time.sleep(1)
 
         # Read the velocity base target ACC of servo ID1.
@@ -256,7 +256,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_velocity_base_target_acc_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present velocity base target acc is", analysis_data[0])
+            print("velocity base target acc:", analysis_data[0])
         time.sleep(1)
 
         # Read the velocity base target velocity of servo ID1.
@@ -266,7 +266,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_velocity_base_target_velocity_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present velocity base target velocity is", analysis_data[0])
+            print("velocity base target velocity:", analysis_data[0])
         time.sleep(1)
 
         # Read the velocity base target position of servo ID1.
@@ -276,7 +276,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_velocity_base_target_position_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present velocity base target position is", analysis_data[0])
+            print("velocity base target position:", analysis_data[0])
         time.sleep(1)
         
         # Read the velocity base target position and velocity of servo ID1.
@@ -284,7 +284,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("velocity base target position and velocity pack is:", end=' ')
+        print("read velocity base target position and velocity status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -295,7 +295,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("velocity base target position,velocity,acc and dec pack is:", end=' ')
+        print("read velocity base target position, velocity, acc and dec status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -308,7 +308,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_target_current_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present target current is", analysis_data[0])
+            print("target current:", analysis_data[0])
         time.sleep(1)
 
         # Read the target PWM of servo ID1.
@@ -318,7 +318,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_target_pwm_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present target pwm is", analysis_data[0])
+            print("target pwm:", analysis_data[0])
         time.sleep(1)
 
         # Read the torque switch of servo ID1.
@@ -328,7 +328,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_torque_switch_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present torque switch is", analysis_data[0])
+            print("torque switch:", analysis_data[0])
         time.sleep(1)
 
         # Read the LED switch of servo ID1.
@@ -338,7 +338,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_led_switch_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present led switch is", analysis_data[0])
+            print("led switch:", analysis_data[0])
         time.sleep(1)
 
         # Read the Flash switch of servo ID1.
@@ -348,7 +348,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_flash_switch_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present flash switch is", analysis_data[0])
+            print("flash switch:", analysis_data[0])
         time.sleep(1)
 
         # Read the calibration of servo ID1.
@@ -358,7 +358,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_calibration_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present calibration is", analysis_data[0])
+            print("calibration:", analysis_data[0])
         time.sleep(1)
 
         # Read the control mode of servo ID1.
@@ -368,7 +368,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_control_mode_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present control mode is", analysis_data[0])
+            print("control mode:", analysis_data[0])
         time.sleep(1)
 
         # Read the shutdown condition of servo ID1.
@@ -378,7 +378,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_shutdown_condition_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present shutdown condition is", analysis_data[0])
+            print("shutdown condition:", analysis_data[0])
         time.sleep(1)
 
         # Read the LED condition of servo ID1.
@@ -388,7 +388,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_led_condition_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present led condition is", analysis_data[0])
+            print("led condition:", analysis_data[0])
         time.sleep(1)
 
         # Read the position control D gain of servo ID1.
@@ -398,7 +398,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_position_control_d_gain_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present position control d gain is", analysis_data[0])
+            print("position control d gain:", analysis_data[0])
         time.sleep(1)
 
         # Read the position control I gain of servo ID1.
@@ -408,7 +408,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_position_control_i_gain_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present position control I gain is", analysis_data[0])
+            print("position control i gain:", analysis_data[0])
         time.sleep(1)
 
         # Read the position control P gain of servo ID1.
@@ -418,7 +418,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_position_control_p_gain_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present position control P gain is", analysis_data[0])
+            print("position control p gain:", analysis_data[0])
         time.sleep(1)
         
          # Read the position control PID gain of servo ID1.
@@ -426,7 +426,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("position control pid gain pack is:", end=' ')
+        print("read position control pid gain status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -439,7 +439,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_pwm_punch_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present pwm punch is", analysis_data[0])
+            print("pwm punch:", analysis_data[0])
         time.sleep(1)
 
         # Read the ccw deadband of servo ID1.
@@ -449,7 +449,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_ccw_deadband_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present ccw deadband is", analysis_data[0])
+            print("ccw deadband:", analysis_data[0])
         time.sleep(1)
 
         # Read the cw deadband of servo ID1.
@@ -459,7 +459,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_cw_deadband_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present cw deadband is", analysis_data[0])
+            print("cw deadband:", analysis_data[0])
         time.sleep(1)
 
         # Read the current shutdown time of servo ID1.
@@ -469,7 +469,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_current_shutdown_time_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present current shutdown time is", analysis_data[0])
+            print("current shutdown time:", analysis_data[0])
         time.sleep(1)
 
         # Read the max current limit of servo ID1.
@@ -479,7 +479,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_max_current_limit_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present max current limit is", analysis_data[0])
+            print("max current limit:", analysis_data[0])
         time.sleep(1)
 
         # Read the max PWM limit of servo ID1.
@@ -489,7 +489,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_max_pwm_limit_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present max pwm limit is", analysis_data[0])
+            print("max pwm limit:", analysis_data[0])
         time.sleep(1)
 
         # Read the max voltage limit of servo ID1.
@@ -499,7 +499,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_max_voltage_limit_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present max voltage limit is", analysis_data[0])
+            print("max voltage limit:", analysis_data[0])
         time.sleep(1)
 
         # Read the min voltage limit of servo ID1.
@@ -509,7 +509,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_min_voltage_limit_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present min voltage limit is", analysis_data[0])
+            print("min voltage limit:", analysis_data[0])
         time.sleep(1)
         
         # Read the voltage limit of servo ID1.
@@ -517,7 +517,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("voltage limit pack is:", end=' ')
+        print("read voltage limit status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -530,7 +530,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_max_temperature_limit_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present max temperature limit is", analysis_data[0])
+            print("max temperature limit:", analysis_data[0])
         time.sleep(1)
 
         # Read the max angle limit of servo ID1.
@@ -540,7 +540,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_max_angle_limit_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present max angle limit is", analysis_data[0])
+            print("max angle limit:", analysis_data[0])
         time.sleep(1)
 
         # Read the min angle limit of servo ID1.
@@ -550,7 +550,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_min_angle_limit_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present min angle limit is", analysis_data[0])
+            print("min angle limit:", analysis_data[0])
         time.sleep(1)
         
         # Read the angle limit of servo ID1.
@@ -558,7 +558,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("angle limit pack is:", end=' ')
+        print("read angle limit status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -571,7 +571,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_return_level_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present return level is", analysis_data[0])
+            print("return level:", analysis_data[0])
         time.sleep(1)
 
         # Read the return delay time of servo ID1.
@@ -581,7 +581,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_return_delay_time_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present return delay time is", analysis_data[0])
+            print("return delay time:", analysis_data[0])
         time.sleep(1)
 
         # Read the baud rate of servo ID1.
@@ -591,7 +591,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_baud_rate_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present baud rate is", analysis_data[0])
+            print("baud rate:", analysis_data[0])
         time.sleep(1)
 
         # Read the model information of servo ID1.
@@ -601,7 +601,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_model_information_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present model information is", analysis_data[0])
+            print("model information:", analysis_data[0])
         time.sleep(1)
 
         # Read the firmware version of servo ID1.
@@ -611,7 +611,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_firmware_version_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
-            print("present firmware version is", analysis_data[0])
+            print("firmware version:", analysis_data[0])
         time.sleep(1)
 
     # Write the servo data.
@@ -623,7 +623,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_return_delay_time_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set return delay time successful")
+            print("write return delay time complete")
         time.sleep(1)
 
         # Change the return level of servo ID1 to respond to all instruction.
@@ -633,7 +633,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_return_level_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set return level successful")
+            print("write return level complete")
         time.sleep(1)
 
         # Change the baud rate of servo ID1 to 1000000.
@@ -643,7 +643,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_baud_rate_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set baud rate successful")
+            print("write baud rate complete")
         time.sleep(1)
 
         # Change the min angle limit of servo ID1 to 0°.
@@ -653,7 +653,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_min_angle_limit_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set min angle limit successful")
+            print("write min angle limit complete")
         time.sleep(1)
 
         # Change the max angle limit of servo ID1 to 300°.°
@@ -663,7 +663,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_max_angle_limit_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set max angle limit successful")
+            print("write max angle limit complete")
         time.sleep(1)
         
         # Change the angle limit of servo ID1 to 0°~300°.
@@ -676,7 +676,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("set angle limit pack is:", end=' ')
+        print("write angle limit status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -689,7 +689,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_max_temperature_limit_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set max temperature limit successful")
+            print("write max temperature limit complete")
         time.sleep(1)
 
         # Change the max voltage limit of servo ID1 to 8.4V.
@@ -699,7 +699,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_max_voltage_limit_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set max voltage limit successful")
+            print("write max voltage limit complete")
         time.sleep(1)
 
         # Change the min voltage limit of servo ID1 to 3.5V.
@@ -709,7 +709,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_min_voltage_limit_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set min voltage limit successful")
+            print("write min voltage limit complete")
         time.sleep(1)
         
         # Change the voltage limit of servo ID1 to 3.5~8.4V.
@@ -720,7 +720,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("voltage limit pack is:", end=' ')
+        print("write voltage limit status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -733,7 +733,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_max_pwm_limit_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set max pwm limit successful")
+            print("write max pwm limit complete")
         time.sleep(1)
 
         # Change the max current limit of servo ID1 to 900mA.
@@ -743,7 +743,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_max_current_limit_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set max current limit successful")
+            print("write max current limit complete")
         time.sleep(1)
 
         # Change the current shutdown time of servo ID1 to 500ms.
@@ -753,7 +753,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_current_shutdown_time_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set current shutdown time successful")
+            print("write current shutdown time complete")
         time.sleep(1)
 
         # Change the CW deadband of servo ID1 to 0.2°.
@@ -763,7 +763,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_cw_deadband_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set cw deadband successful")
+            print("write cw deadband complete")
         time.sleep(1)
 
         # Change the CCW deadband of servo ID1 to 0.2°.
@@ -773,7 +773,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_ccw_deadband_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set ccw deadband successful")
+            print("write ccw deadband complete")
         time.sleep(1)
         
         # Change the CW and CCW deadband of servo ID1 to 0.2°.
@@ -784,7 +784,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("set cw deadband and ccw deadband pack is:", end=' ')
+        print("write cw deadband and ccw deadband status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -796,7 +796,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_pwm_punch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set pwm punch successful")
+            print("write pwm punch complete")
         time.sleep(1)
 
         # Change the position control P gain of servo ID1 to 5995.
@@ -806,7 +806,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_position_control_p_gain_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set position control p gain successful")
+            print("write position control p gain complete")
         time.sleep(1)
 
         # Change the position control D gain of servo ID1 to 5.
@@ -816,7 +816,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_position_control_i_gain_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set position control i gain successful")
+            print("write position control i gain complete")
         time.sleep(1)
 
         # Change the position control D gain of servo ID1 to 145.
@@ -826,7 +826,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_position_control_d_gain_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set position control d gain successful")
+            print("write position control d gain complete")
         time.sleep(1)
         
         # Change the position control PID gain of servo ID1 to 5995, 5, and 145 respectively.
@@ -841,7 +841,7 @@ while True:
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
-        print("set position control pid gain pack is:", end=' ')
+        print("write position control pid gain status packet:", end=' ')
         for i in range(receive_data_len):
             print(f"0x{receive_data[i]:02x}", end=' ')
         print("\r")
@@ -854,7 +854,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_led_condition_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set led condition successful")
+            print("write led condition complete")
         time.sleep(1)
 
         # Change the shutdown condition of servo ID1 to turn on stall error, overheating error, voltage error, and angle error.
@@ -864,7 +864,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_shutdown_conditions_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set shutdown conditions successful")
+            print("write shutdown conditions complete")
         time.sleep(1)
 
         # Change the Flash switch of servo ID1 to ON.
@@ -874,7 +874,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_flash_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set flash switch successful")
+            print("write flash switch complete")
         time.sleep(1)
         
          # Change the Flash switch of servo ID1 to OFF.
@@ -884,7 +884,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_flash_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set flash switch successful")
+            print("write flash switch complete")
         time.sleep(1)
 
         # Change the LED switch of servo ID1 to ON.
@@ -894,7 +894,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_led_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set led switch successful")
+            print("write led switch complete")
         time.sleep(1)
         
         # Change the LED switch of servo ID1 to OFF.
@@ -904,7 +904,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_led_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set led switch successful")
+            print("write led switch complete")
         time.sleep(1)
         
         # Change the torque switch of servo ID1 to OFF.
@@ -914,7 +914,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set torque switch successful")
+            print("write torque switch complete")
         time.sleep(1)
 
         # Change the control mode of servo ID1 to the PWM control mode.
@@ -924,7 +924,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_control_mode_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set control mode successful")
+            print("write control mode complete")
         time.sleep(1)
 
         # Change the torque switch of servo ID1 to ON.
@@ -934,7 +934,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set torque switch successful")
+            print("write torque switch complete")
         time.sleep(1)
 
         # Change the target PWM of servo ID1 to -50%.
@@ -944,7 +944,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_target_pwm_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set target pwm successful")
+            print("write target pwm complete")
         time.sleep(3)
         
         # Change the torque switch of servo ID1 to OFF.
@@ -954,7 +954,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set torque switch successful")
+            print("write torque switch complete")
         time.sleep(1)
 
         # Change the control mode of servo ID1 to the current control mode.
@@ -964,7 +964,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_control_mode_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set control mode successful")
+            print("write control mode complete")
         time.sleep(1)
 
         # Change the torque switch of servo ID1 to ON.
@@ -974,7 +974,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set torque switch successful")
+            print("write torque switch complete")
         time.sleep(1)
 
         # Change the target current of servo ID1 to -400mA.
@@ -984,7 +984,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_target_current_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set target current successful")
+            print("write target current complete")
         time.sleep(3)
         
         # Change the torque switch of servo ID1 to OFF.
@@ -994,7 +994,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set torque switch successful")
+            print("write torque switch complete")
         time.sleep(1)
 
         # Change the control mode of servo ID1 to the velocity base position control mode.
@@ -1004,7 +1004,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_control_mode_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set control mode successful")
+            print("write control mode complete")
         time.sleep(1)
 
         # Change the torque switch of servo ID1 to ON.
@@ -1014,7 +1014,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set torque switch successful")
+            print("write torque switch complete")
         time.sleep(1)
 
         # Change the velocity base target velocity of servo ID1 to 360°/s.
@@ -1024,7 +1024,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_velocity_base_target_velocity_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set velocity base target velocity successful")
+            print("write velocity base target velocity complete")
         time.sleep(1)
 
         # Change the velocity base target ACC of servo ID1 to 500°/s².
@@ -1034,7 +1034,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_velocity_base_target_acc_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set velocity base target acc successful")
+            print("write velocity base target acc complete")
         time.sleep(1)
 
         # Change the velocity base target DEC of servo ID1 to 50°/s².
@@ -1044,7 +1044,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_velocity_base_target_dec_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set elocity base target dec successful")
+            print("write elocity base target dec complete")
         time.sleep(1)
 
         # Change the velocity base target position of servo ID1 to 150°.
@@ -1054,7 +1054,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_velocity_base_target_position_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set velocity base target position successful")
+            print("write velocity base target position complete")
         time.sleep(1)
         
         # Change the torque switch of servo ID1 to OFF.
@@ -1064,7 +1064,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set torque switch successful")
+            print("write torque switch complete")
         time.sleep(1)
 
         # Change the control mode of servo ID1 to the time base position control mode.
@@ -1074,7 +1074,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_control_mode_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set control mode successful")
+            print("write control mode complete")
         time.sleep(1)
 
         # Change the torque switch of servo ID1 to ON.
@@ -1084,7 +1084,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set torque switch successful")
+            print("write torque switch complete")
         time.sleep(1)
 
         # Change the time base target ACC of servo ID1 to 5.
@@ -1094,7 +1094,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_time_base_target_acc_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set time base target acc successful")
+            print("write time base target acc complete")
         time.sleep(1)
 
         # Change the time base target position and moving time of servo ID1 to 300°, 500ms respectively.
@@ -1104,7 +1104,7 @@ while True:
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_time_base_target_position_and_moving_time_analysis(receive_data)
         if ret == Primary_State.SUCCESS:
-            print("set time base target position and moving time successful")
+            print("write time base target position and moving time complete")
         time.sleep(1)
 
     # Sync Write Test
@@ -1123,7 +1123,7 @@ while True:
         servo_sync_parameter.torque_switch[1] = 0
         Primary_Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write torque witch successful.")
+        print("sync write torque witch complete")
         time.sleep(1)
 
         # Change the control mode of the servo ID1, ID2 to velocity base position control mode respectively.
@@ -1131,7 +1131,7 @@ while True:
         servo_sync_parameter.control_mode[1] = 1
         Primary_Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write control mode successful.")
+        print("sync write control mode complete")
         time.sleep(1)
 
         # Change the velocity base target ACC of servo ID1, ID2 to 500°/s² and 50°/s², respectively.
@@ -1140,7 +1140,7 @@ while True:
     
         Primary_Servo.servo_sync_write_velocity_base_target_acc(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write velocity base target acc successful.")
+        print("sync write velocity base target acc complete")
         time.sleep(1)
 
         # Change the velocity base target DEC of servo ID1, ID2 to 50°/s² and 500°/s², respectively.
@@ -1149,7 +1149,7 @@ while True:
     
         Primary_Servo.servo_sync_write_velocity_base_target_dec(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write velocity base target dec successful.")
+        print("sync write velocity base target dec complete")
         time.sleep(1)
 
         # Change the velocity base target velocity of the servo ID1, ID2 to 360°/s² and 720°/s², respectively.
@@ -1158,7 +1158,7 @@ while True:
     
         Primary_Servo.servo_sync_write_velocity_base_target_velocity(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write velocity base target velocity successful.")
+        print("sync write velocity base target velocity complete")
         time.sleep(1)
 
         # Change the velocity base target velocity of the servo ID1, ID2 to 150° midpoint and 0° position, respectively.
@@ -1167,7 +1167,7 @@ while True:
     
         Primary_Servo.servo_sync_write_velocity_base_target_position(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write velocity base target position successful.")
+        print("sync write velocity base target position complete")
         time.sleep(1)
 
         # Change the velocity base target velocity of servo ID1 ,ID2 to 1800 and 3600, and the position to 3000 and 3000, respectively
@@ -1178,7 +1178,7 @@ while True:
     
         Primary_Servo.servo_sync_write_velocity_base_target_position_and_velocity(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write velocity base target position and velocity successful.")
+        print("sync write velocity base target position and velocity complete")
         time.sleep(1)
         
         # Change the velocity base target velocity of servo ID1 ,ID2 to 3600 and 3600, position to 0,0, acceleration to 500°/s², 500°/s², deceleration to 500°/s², 500°/s², respectively
@@ -1193,7 +1193,7 @@ while True:
         
         Primary_Servo.servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write velocity base target acc,dec,velocity and position successful.")
+        print("sync write velocity base target acc, dec, velocity and position complete")
         time.sleep(1)
 
         # Change the torque switch of the servo ID1, ID2 to OFF respectively.
@@ -1201,7 +1201,7 @@ while True:
         servo_sync_parameter.torque_switch[1] = 0
         Primary_Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write torque witch successful.")
+        print("sync write torque witch complete")
         time.sleep(1)
 
         # Change the control mode of the servo ID1, ID2 to time base position control mode respectively.
@@ -1209,7 +1209,7 @@ while True:
         servo_sync_parameter.control_mode[1] = 0
         Primary_Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write control mode successful.")
+        print("sync write control mode complete")
         time.sleep(1)
 
         # Change the time base target ACC of servo ID1 to 1 and 5 respectively.
@@ -1218,7 +1218,7 @@ while True:
     
         Primary_Servo.servo_sync_write_time_base_target_acc(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write time base target acc successful.")
+        print("sync write time base target acc complete")
         time.sleep(1)
 
         # Change the time base target position and moving time of servo ID1 to 150° midpoint and 1s, 0° and 500ms respectively.
@@ -1229,6 +1229,6 @@ while True:
     
         Primary_Servo.servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter, output_buffer, output_buffer_len)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
-        print("Sync Write time base target position and moving time successful.")
+        print("sync write time base target position and moving time complete")
         time.sleep(1)
 

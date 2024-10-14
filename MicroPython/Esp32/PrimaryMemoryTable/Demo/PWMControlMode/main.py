@@ -21,7 +21,7 @@ while True:
     receive_data_len = uart2.readinto(receive_data)
     ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
     if ret == Primary_State.SUCCESS:
-        print("set torque switch successful")
+        print("write torque switch complete")
     time.sleep(1)
 
     # Change the control mode of servo ID1 to the PWM control mode.
@@ -31,7 +31,7 @@ while True:
     receive_data_len = uart2.readinto(receive_data)
     ret = Primary_Servo.servo_set_control_mode_analysis(receive_data)
     if ret == Primary_State.SUCCESS:
-        print("set control mode successful")
+        print("write control mode complete")
     time.sleep(1)
 
     # Change the torque switch of servo ID1 to ON.
@@ -41,7 +41,7 @@ while True:
     receive_data_len = uart2.readinto(receive_data)
     ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
     if ret == Primary_State.SUCCESS:
-        print("set torque switch successful")
+        print("write torque switch complete")
     time.sleep(1)
 
     # Change the target PWM of servo ID1 to -50%.
@@ -51,7 +51,7 @@ while True:
     receive_data_len = uart2.readinto(receive_data)
     ret = Primary_Servo.servo_set_target_pwm_analysis(receive_data)
     if ret == Primary_State.SUCCESS:
-        print("set target pwm successful")
+        print("write target pwm complete")
     time.sleep(3)
 
 
