@@ -21,7 +21,7 @@ int main()
     uint8_t order_buffer[40];                                       //Store Generated Instructions
     uint8_t order_len = 0;                                          //Instruction Length
     uint8_t pack[40];                                               //Store the received status packet
-    uint16_t analysis_data = 0;                                     //Data parsed from the status packet
+    uint32_t analysis_data = 0;                                     //Data parsed from the status packet
     uint16_t position = 0;                                          //Present position of the servo
     uint16_t current = 0;                                           //Present current of the servo
     uint8_t write_buffer[20] = { 0 };                               //Write data to the memory table                                                                      
@@ -32,7 +32,7 @@ int main()
     DWORD bytesWritten;                                             //The actual number of bytes written to the serial port.
 
 
-    if (serialPort.Open(18, 1000000))
+    if (serialPort.Open(20, 1000000))
     {
         PRINTF("open serial complete\r\n");
     }
