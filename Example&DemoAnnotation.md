@@ -385,7 +385,8 @@
 
 
 ## 3.4 Current Control Mode
-### Let the servo ID1 rotate clockwise with a target current of 100mA.
+### Let the servo ID1 rotate clockwise with a target current of 100mA. (Take the primary memory table as an example)
+
 **Operation Steps:**
 1. Write "0" to the torque switch, turning off the torque.
 2. Write "2" to set the control mode, switching to the current control mode.
@@ -397,3 +398,6 @@
 2. Change the control mode of servo ID1 to the current control mode.
 3. Change the target PWM of servo ID1 to 100mA.
 4. Change the torque switch of servo ID1 to ON.
+
+
+### Intermediate/advanced memory tables: under continuous development, explained in the future
