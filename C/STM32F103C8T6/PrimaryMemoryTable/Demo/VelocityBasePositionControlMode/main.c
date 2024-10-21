@@ -53,6 +53,7 @@ int main(void)
     servo.torque_switch[0] = 0;
     servo.torque_switch[1] = 0;
     primary_servo_sync_write_torque_switch(servo, order_buffer, &order_len);
+    GPIO_SetBits(GPIOA, GPIO_Pin_11);
     USART1_Send(order_buffer, order_len);
     PRINTF("sync write torque switch complete\r\n");
     Delay(1000);
@@ -61,6 +62,7 @@ int main(void)
     servo.control_mode[0] = 1;
     servo.control_mode[1] = 1;
     primary_servo_sync_write_control_mode(servo, order_buffer, &order_len);
+    GPIO_SetBits(GPIOA, GPIO_Pin_11);
     USART1_Send(order_buffer, order_len);
     PRINTF("sync write control mode complete\r\n");
     Delay(1000);
@@ -69,18 +71,18 @@ int main(void)
     {
         //Change the velocity base target position of servo ID1 to 150°.
         primary_servo_set_velocity_base_target_position(1, 1500, order_buffer,&order_len);
+        GPIO_SetBits(GPIOA, GPIO_Pin_11);
         USART1_Send(order_buffer, order_len);
 
-        USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+        GPIO_ResetBits(GPIOA, GPIO_Pin_11);
         receive_len = 0x00;
         Delay(10);
-        USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
         ret = primary_servo_set_velocity_base_target_position_analysis(receive_data);
         if(ret == PRIMARY_SUCCESS)
             PRINTF("write velocity base target position complete\r\n");
         Delay(1000);
-1
+
         //In velocity base position control mode, let servo ID1 move to the 300° position at a velocity base target velocity of 360°/s.
         write_buffer[0] = 3000 & 0xff;
         write_buffer[1] = (3000 >> 8) & 0xff;
@@ -88,13 +90,13 @@ int main(void)
         write_buffer[3] = (3600 >> 8) & 0xff;
 
         primary_servo_write(1, 0x35, 4, write_buffer, order_buffer, &order_len);
-
+        GPIO_SetBits(GPIOA, GPIO_Pin_11);
         USART1_Send(order_buffer, order_len);
 
-        USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+        GPIO_ResetBits(GPIOA, GPIO_Pin_11);
         receive_len = 0x00;
         Delay(10);
-        USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
+
         PRINTF("write velocity base target position and velocity status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
         {
@@ -113,13 +115,13 @@ int main(void)
         write_buffer[5] = 1 & 0xff;
 
         primary_servo_write(1, 0x35, 6, write_buffer, order_buffer, &order_len);
-
+        GPIO_SetBits(GPIOA, GPIO_Pin_11);
         USART1_Send(order_buffer, order_len);
 
-        USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+        GPIO_ResetBits(GPIOA, GPIO_Pin_11);
         receive_len = 0x00;
         Delay(10);
-        USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
+
         PRINTF("write velocity base target acc, dec, velocity and position status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
         {
@@ -133,7 +135,7 @@ int main(void)
         servo.position[1] = 0;
 
         primary_servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
-
+        GPIO_SetBits(GPIOA, GPIO_Pin_11);
         USART1_Send(order_buffer, order_len);
 
         PRINTF("sync write velocity base target position complete\r\n");
@@ -147,6 +149,7 @@ int main(void)
         servo.position[1] = 1500;
 
         primary_servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
+        GPIO_SetBits(GPIOA, GPIO_Pin_11);
         USART1_Send(order_buffer, order_len);
         PRINTF("sync write velocity base target position and velocity complete\r\n");
         Delay(1000);
@@ -163,6 +166,7 @@ int main(void)
         servo.dec_velocity[1] = 10;
 
         primary_servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
+        GPIO_SetBits(GPIOA, GPIO_Pin_11);
         USART1_Send(order_buffer, order_len);
         PRINTF("sync write velocity base target acc, dec, velocity and position complete\r\n");
         Delay(1000);
@@ -183,7 +187,18 @@ void GPIO_Configuration(void)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
 
+    //USART1   PA.10
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    //USART1 DIR PA.11
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     //USART2_TX   PA.2
@@ -213,15 +228,12 @@ void USART1_Init()
     USART_Init(USART1, &USART_InitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
-
-    //Enable USART1 half-duplex mode
-    USART_HalfDuplexCmd(USART1, ENABLE);
+    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 
     //Enable USART1
     USART_Cmd(USART1, ENABLE);

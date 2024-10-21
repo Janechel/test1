@@ -44,12 +44,12 @@ int main(void)
 
     //Change the torque switch of servo ID1 to OFF.
     primary_servo_set_torque_switch(1, 0, order_buffer,&order_len);
+    GPIO_SetBits(GPIOA, GPIO_Pin_11);
     USART1_Send(order_buffer, order_len);
 
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    GPIO_ResetBits(GPIOA, GPIO_Pin_11);
     receive_len = 0x00;
     Delay(10);
-    USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
     ret = primary_servo_set_torque_switch_analysis(receive_data);
     if(ret == PRIMARY_SUCCESS)
@@ -58,12 +58,12 @@ int main(void)
 
     //Change the control mode of servo ID1 to the PWM control mode.
     primary_servo_set_control_mode(1, 3, order_buffer,&order_len);
+    GPIO_SetBits(GPIOA, GPIO_Pin_11);
     USART1_Send(order_buffer, order_len);
 
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    GPIO_ResetBits(GPIOA, GPIO_Pin_11);
     receive_len = 0x00;
     Delay(10);
-    USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
     ret = primary_servo_set_control_mode_analysis(receive_data);
     if(ret == PRIMARY_SUCCESS)
@@ -72,12 +72,12 @@ int main(void)
 
     //Change the torque switch of servo ID1 to ON.
     primary_servo_set_torque_switch(1, 1, order_buffer,&order_len);
+    GPIO_SetBits(GPIOA, GPIO_Pin_11);
     USART1_Send(order_buffer, order_len);
 
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    GPIO_ResetBits(GPIOA, GPIO_Pin_11);
     receive_len = 0x00;
     Delay(10);
-    USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
     ret = primary_servo_set_torque_switch_analysis(receive_data);
     if(ret == PRIMARY_SUCCESS)
@@ -86,12 +86,12 @@ int main(void)
 
     //Change the target PWM of servo ID1 to -50%.
     primary_servo_set_target_pwm(1, -500, order_buffer,&order_len);
+    GPIO_SetBits(GPIOA, GPIO_Pin_11);
     USART1_Send(order_buffer, order_len);
 
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    GPIO_ResetBits(GPIOA, GPIO_Pin_11);
     receive_len = 0x00;
     Delay(10);
-    USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
     ret = primary_servo_set_target_pwm_analysis(receive_data);
     if(ret == PRIMARY_SUCCESS)
@@ -113,7 +113,18 @@ void GPIO_Configuration(void)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
 
+    //USART1   PA.10
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    //USART1 DIR PA.11
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     //USART2_TX   PA.2
@@ -143,15 +154,12 @@ void USART1_Init()
     USART_Init(USART1, &USART_InitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
-
-    //Enable USART1 half-duplex mode
-    USART_HalfDuplexCmd(USART1, ENABLE);
+    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 
     //Enable USART1
     USART_Cmd(USART1, ENABLE);

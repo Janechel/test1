@@ -53,6 +53,7 @@ int main(void)
     servo.torque_switch[0] = 0;
     servo.torque_switch[1] = 0;
     primary_servo_sync_write_torque_switch(servo, order_buffer, &order_len);
+    GPIO_SetBits(GPIOA, GPIO_Pin_11);
     USART1_Send(order_buffer, order_len);
     PRINTF("sync write torque switch complete\r\n");
     Delay(1000);
@@ -62,6 +63,7 @@ int main(void)
     servo.control_mode[0] = 0;
     servo.control_mode[1] = 0;
     primary_servo_sync_write_control_mode(servo, order_buffer, &order_len);
+    GPIO_SetBits(GPIOA, GPIO_Pin_11);
     USART1_Send(order_buffer, order_len);
     PRINTF("sync write control mode complete\r\n");
     Delay(1000);
@@ -70,12 +72,12 @@ int main(void)
     {
         //Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
         primary_servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_len);
+        GPIO_SetBits(GPIOA, GPIO_Pin_11);
         USART1_Send(order_buffer, order_len);
 
-        USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+        GPIO_ResetBits(GPIOA, GPIO_Pin_11);
         receive_len = 0x00;
         Delay(10);
-        USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
         ret = primary_servo_set_time_base_target_position_and_moving_time_analysis(receive_data);
         if(ret == PRIMARY_SUCCESS)
@@ -90,12 +92,12 @@ int main(void)
         write_buffer[4] = (1000 >> 8) & 0xff;
 
         primary_servo_write(1, 0x3B, 5, write_buffer, order_buffer, &order_len);
+        GPIO_SetBits(GPIOA, GPIO_Pin_11);
         USART1_Send(order_buffer, order_len);
 
-        USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+        GPIO_ResetBits(GPIOA, GPIO_Pin_11);
         receive_len = 0x00;
         Delay(10);
-        USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
 
         PRINTF("write time base target ACC, position and moving time status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
@@ -113,6 +115,7 @@ int main(void)
         servo.time[1] = 1000;
 
         primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
+        GPIO_SetBits(GPIOA, GPIO_Pin_11);
         USART1_Send(order_buffer, order_len);
         PRINTF("sync write time base target position and moving time complete\r\n");
         Delay(1000);
@@ -125,6 +128,7 @@ int main(void)
         servo.time[1] = 500;
 
         primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_len);
+        GPIO_SetBits(GPIOA, GPIO_Pin_11);
         USART1_Send(order_buffer, order_len);
         PRINTF("sync write time base target position and moving time complete\r\n");
         Delay(1000);
@@ -145,7 +149,18 @@ void GPIO_Configuration(void)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
 
+    //USART1   PA.10
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    //USART1 DIR PA.11
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     //USART2_TX   PA.2
@@ -175,15 +190,12 @@ void USART1_Init()
     USART_Init(USART1, &USART_InitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
-
-    //Enable USART1 half-duplex mode
-    USART_HalfDuplexCmd(USART1, ENABLE);
+    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 
     //Enable USART1
     USART_Cmd(USART1, ENABLE);
