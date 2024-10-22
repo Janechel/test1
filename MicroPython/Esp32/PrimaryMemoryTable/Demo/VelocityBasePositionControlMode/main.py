@@ -25,11 +25,14 @@ servo_sync_parameter.id[1] = 2
 # Configure serial port 2 (UART2).
 uart2 = UART(2, baudrate=1000000, tx=17, rx=16)
 
+dir = Pin(4, Pin.OUT)    # It is used to control the uart transmission direction
+
 while True:
     # Change the torque switch of the servo ID1, ID2 to OFF respectively.
     servo_sync_parameter.torque_switch[0] = 0
     servo_sync_parameter.torque_switch[1] = 0
     Primary_Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("sync write torque witch complete")
     time.sleep(1)
@@ -38,13 +41,17 @@ while True:
     servo_sync_parameter.control_mode[0] = 1
     servo_sync_parameter.control_mode[1] = 1
     Primary_Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("sync write control mode complete")
     time.sleep(1)
 
     # Change the velocity base target position of servo ID1 to 150°.
     Primary_Servo.servo_set_velocity_base_target_position(1, 1500, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+    uart2.flush()
+    dir.value(0)
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
     ret = Primary_Servo.servo_set_velocity_base_target_position_analysis(receive_data)
@@ -59,7 +66,10 @@ while True:
     write_buffer[3] = (3600 >> 8) & 0xff
 
     Primary_Servo.servo_write(1, 0x35, 4, write_buffer, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+    uart2.flush()
+    dir.value(0)
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
     print("write velocity base position and velocity status packet:", end=' ')
@@ -78,7 +88,10 @@ while True:
     write_buffer[5] = 1 & 0xff
 
     Primary_Servo.servo_write(1, 0x35, 6, write_buffer, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+    uart2.flush()
+    dir.value(0)
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
     print("write velocity base target acc, dec, velocity and position status packet:", end=' ')
@@ -92,6 +105,7 @@ while True:
     servo_sync_parameter.position[1] = 0
 
     Primary_Servo.servo_sync_write_velocity_base_target_position(servo_sync_parameter, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("sync write velocity base target position complete")
     time.sleep(1)
@@ -104,6 +118,7 @@ while True:
     servo_sync_parameter.position[1] = 1500
 
     Primary_Servo.servo_sync_write_velocity_base_target_position_and_velocity(servo_sync_parameter, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("sync write velocity base target position and velocity complete")
     time.sleep(1)
@@ -120,6 +135,7 @@ while True:
     servo_sync_parameter.dec_velocity[1] = 10
 
     Primary_Servo.servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("sync write velocity base target acc, dec, velocity and position complete")
     time.sleep(1)

@@ -14,6 +14,8 @@ write_buffer = bytearray(20)    # Write data to the memory table
 # Configure serial port 2 (UART2).
 uart2 = UART(2, baudrate=1000000, tx=17, rx=16)
 
+dir = Pin(4, Pin.OUT)    # It is used to control the uart transmission direction
+
 servo_sync_parameter = Primary_Servo_Sync_Parameter()  # Create sync write memory table class.
 
 while True:
@@ -30,6 +32,7 @@ while True:
     servo_sync_parameter.torque_switch[0] = 0
     servo_sync_parameter.torque_switch[1] = 0
     Primary_Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("sync write torque witch complete")
     time.sleep(1)
@@ -38,6 +41,7 @@ while True:
     servo_sync_parameter.control_mode[0] = 0
     servo_sync_parameter.control_mode[1] = 0
     Primary_Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("sync write control mode complete")
     time.sleep(1)
@@ -45,7 +49,10 @@ while True:
 
     # Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
     Primary_Servo.servo_set_time_base_target_position_and_moving_time(1, 3000, 500, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+    uart2.flush()
+    dir.value(0)
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
     ret = Primary_Servo.servo_set_time_base_target_position_and_moving_time_analysis(receive_data)
@@ -61,7 +68,10 @@ while True:
     write_buffer[4] = (1000 >> 8) & 0xff
 
     Primary_Servo.servo_write(1, 0x3B, 5, write_buffer, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+    uart2.flush()
+    dir.value(0)
     time.sleep_ms(1)
     receive_data_len = uart2.readinto(receive_data)
     print("write time base target acc, position and moving time status packet:", end=' ')
@@ -78,7 +88,10 @@ while True:
     servo_sync_parameter.time[1] = 1000
 
     Primary_Servo.servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+    uart2.flush()
+    dir.value(0)
     print("sync write time base target position and moving time complete")
     time.sleep(1)
 
@@ -90,6 +103,7 @@ while True:
     servo_sync_parameter.time[1] = 500
 
     Primary_Servo.servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter, output_buffer, output_buffer_len)
+    dir.value(1)
     uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
     print("sync write time base target position and moving time complete")
     time.sleep(1)

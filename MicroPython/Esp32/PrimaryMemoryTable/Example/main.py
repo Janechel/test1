@@ -29,11 +29,16 @@ servo_sync_parameter = Primary_Servo_Sync_Parameter()  # Create sync write memor
 # Configure serial port 2 (UART2).
 uart2 = UART(2, baudrate=1000000, tx=17, rx=16)
 
+dir = Pin(4, Pin.OUT)    # It is used to control the uart transmission direction
+
 while True:
     # Reset the servo to the factory default values.
     if FACTORY_RESET_TEST:
         Primary_Servo.servo_factory_reset(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_factory_reset_analysis(receive_data)
@@ -44,7 +49,10 @@ while True:
     # Reset the parameter settings of the servo.
     if PARAMETER_RESET_TEST:
         Primary_Servo.servo_parameter_reset(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_parameter_reset_analysis(receive_data)
@@ -55,7 +63,10 @@ while True:
     # Calibrate the midpoint of the servo.
     if CALIBRATION_TEST:
         Primary_Servo.servo_calibration(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_calibration_analysis(receive_data)
@@ -66,6 +77,7 @@ while True:
     # Reboot the servo.
     if REBOOT_TEST:
         Primary_Servo.servo_reboot(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         time.sleep(1)
@@ -73,6 +85,7 @@ while True:
     # Change the servo ID of servo ID1 to 2.
     if MODIFY_ID:
         Primary_Servo.servo_modify_known_id(1, 2, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         time.sleep(1)
@@ -80,6 +93,7 @@ while True:
     # Change the servo ID of the servo with an unknown ID to 1.
     if MODIFY_ID:
         Primary_Servo.servo_modify_unknown_id(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         time.sleep_ms(1)
         time.sleep(1)
@@ -87,7 +101,10 @@ while True:
     # Query the model number of servo ID1.
     if PING_TEST:
         Primary_Servo.servo_ping(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_ping_analysis(receive_data, analysis_data)
@@ -99,7 +116,10 @@ while True:
     if READ_TEST:
         # Read the present current of servo ID1.
         Primary_Servo.servo_read_present_current(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_current_analysis(receive_data, analysis_data)
@@ -109,7 +129,10 @@ while True:
 
         # Read the present position of servo ID1.
         Primary_Servo.servo_read_present_position(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_position_analysis(receive_data, analysis_data)
@@ -119,7 +142,10 @@ while True:
         
         # Read the present position and present current of servo ID1.
         Primary_Servo.servo_read_present_position(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_position_and_present_current_analysis(receive_data, position, current)
@@ -129,7 +155,10 @@ while True:
 
         # Read the present velocity of servo ID1.
         Primary_Servo.servo_read_present_velocity(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_velocity_analysis(receive_data, analysis_data)
@@ -139,7 +168,10 @@ while True:
 
         # Read the present profile position of servo ID1.
         Primary_Servo.servo_read_present_profile_position(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_profile_position_analysis(receive_data, analysis_data)
@@ -149,7 +181,10 @@ while True:
 
         # Read the present profile velocity of servo ID1.
         Primary_Servo.servo_read_present_profile_velocity(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_profile_velocity_analysis(receive_data, analysis_data)
@@ -159,7 +194,10 @@ while True:
 
         # Read the present PWM of servo ID1.
         Primary_Servo.servo_read_present_pwm(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_pwm_analysis(receive_data, analysis_data)
@@ -169,7 +207,10 @@ while True:
 
         # Read the present temperature of servo ID1.
         Primary_Servo.servo_read_present_temperature(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_temperature_analysis(receive_data, analysis_data)
@@ -179,7 +220,10 @@ while True:
 
         # Read the present voltage of servo ID1.
         Primary_Servo.servo_read_present_voltage(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_present_voltage_analysis(receive_data, analysis_data)
@@ -189,7 +233,10 @@ while True:
 
         # Read the time base target moving time of servo ID1.
         Primary_Servo.servo_read_time_base_target_moving_time(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_time_base_target_moving_time_analysis(receive_data, analysis_data)
@@ -199,7 +246,10 @@ while True:
 
         # Read the time base target position of servo ID1.
         Primary_Servo.servo_read_time_base_target_position(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_time_base_target_position_analysis(receive_data, analysis_data)
@@ -209,7 +259,10 @@ while True:
 
         # Read the time base target ACC of servo ID1.
         Primary_Servo.servo_read_time_base_target_acc(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_time_base_target_acc_analysis(receive_data, analysis_data)
@@ -219,7 +272,10 @@ while True:
         
         # Read the time base target position and moving time of servo ID1.
         Primary_Servo.servo_read(1, 0x3C, 4, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("read time base target position and moving time status packet:", end=' ')
@@ -230,7 +286,10 @@ while True:
         
         # Read the time base target ACC, position and moving time of servo ID1.
         Primary_Servo.servo_read(1, 0x3B, 5, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("read time base target acc, position and moving time status packet:", end=' ')
@@ -241,27 +300,38 @@ while True:
 
         # Read the velocity base target DEC of servo ID1.
         Primary_Servo.servo_read_velocity_base_target_dec(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_velocity_base_target_dec_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
             print("velocity base target dec:", analysis_data[0])
+        uart2.flush()
         time.sleep(1)
 
         # Read the velocity base target ACC of servo ID1.
         Primary_Servo.servo_read_velocity_base_target_acc(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_velocity_base_target_acc_analysis(receive_data, analysis_data)
         if ret == Primary_State.SUCCESS:
             print("velocity base target acc:", analysis_data[0])
+        uart2.flush()
         time.sleep(1)
 
         # Read the velocity base target velocity of servo ID1.
         Primary_Servo.servo_read_velocity_base_target_velocity(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_velocity_base_target_velocity_analysis(receive_data, analysis_data)
@@ -271,7 +341,10 @@ while True:
 
         # Read the velocity base target position of servo ID1.
         Primary_Servo.servo_read_velocity_base_target_position(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_velocity_base_target_position_analysis(receive_data, analysis_data)
@@ -281,7 +354,10 @@ while True:
         
         # Read the velocity base target position and velocity of servo ID1.
         Primary_Servo.servo_read(1, 0x35, 4, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("read velocity base target position and velocity status packet:", end=' ')
@@ -292,7 +368,10 @@ while True:
         
         # Read the velocity base target position, velocity, ACC, and DEC of servo ID1.
         Primary_Servo.servo_read(1, 0x35, 6, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("read velocity base target position, velocity, acc and dec status packet:", end=' ')
@@ -303,7 +382,10 @@ while True:
 
         # Read the target current of servo ID1.
         Primary_Servo.servo_read_target_current(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_target_current_analysis(receive_data, analysis_data)
@@ -313,7 +395,10 @@ while True:
 
         # Read the target PWM of servo ID1.
         Primary_Servo.servo_read_target_pwm(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_target_pwm_analysis(receive_data, analysis_data)
@@ -323,7 +408,10 @@ while True:
 
         # Read the torque switch of servo ID1.
         Primary_Servo.servo_read_torque_switch(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_torque_switch_analysis(receive_data, analysis_data)
@@ -333,7 +421,10 @@ while True:
 
         # Read the LED switch of servo ID1.
         Primary_Servo.servo_read_led_switch(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_led_switch_analysis(receive_data, analysis_data)
@@ -343,7 +434,10 @@ while True:
 
         # Read the Flash switch of servo ID1.
         Primary_Servo.servo_read_flash_switch(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_flash_switch_analysis(receive_data, analysis_data)
@@ -353,7 +447,10 @@ while True:
 
         # Read the calibration of servo ID1.
         Primary_Servo.servo_read_calibration(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_calibration_analysis(receive_data, analysis_data)
@@ -363,7 +460,10 @@ while True:
 
         # Read the control mode of servo ID1.
         Primary_Servo.servo_read_control_mode(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_control_mode_analysis(receive_data, analysis_data)
@@ -373,7 +473,10 @@ while True:
 
         # Read the shutdown condition of servo ID1.
         Primary_Servo.servo_read_shutdown_condition(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_shutdown_condition_analysis(receive_data, analysis_data)
@@ -383,7 +486,10 @@ while True:
 
         # Read the LED condition of servo ID1.
         Primary_Servo.servo_read_led_condition(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_led_condition_analysis(receive_data, analysis_data)
@@ -393,7 +499,10 @@ while True:
 
         # Read the position control D gain of servo ID1.
         Primary_Servo.servo_read_position_control_d_gain(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_position_control_d_gain_analysis(receive_data, analysis_data)
@@ -403,7 +512,10 @@ while True:
 
         # Read the position control I gain of servo ID1.
         Primary_Servo.servo_read_position_control_i_gain(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_position_control_i_gain_analysis(receive_data, analysis_data)
@@ -413,7 +525,10 @@ while True:
 
         # Read the position control P gain of servo ID1.
         Primary_Servo.servo_read_position_control_p_gain(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_position_control_p_gain_analysis(receive_data, analysis_data)
@@ -423,7 +538,10 @@ while True:
         
          # Read the position control PID gain of servo ID1.
         Primary_Servo.servo_read(1, 0x1B, 6, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("read position control pid gain status packet:", end=' ')
@@ -434,7 +552,10 @@ while True:
 
         # Read the PWM punch of servo ID1.
         Primary_Servo.servo_read_pwm_punch(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_pwm_punch_analysis(receive_data, analysis_data)
@@ -444,7 +565,10 @@ while True:
 
         # Read the ccw deadband of servo ID1.
         Primary_Servo.servo_read_ccw_deadband(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_ccw_deadband_analysis(receive_data, analysis_data)
@@ -454,7 +578,10 @@ while True:
 
         # Read the cw deadband of servo ID1.
         Primary_Servo.servo_read_cw_deadband(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_cw_deadband_analysis(receive_data, analysis_data)
@@ -464,7 +591,10 @@ while True:
 
         # Read the current shutdown time of servo ID1.
         Primary_Servo.servo_read_current_shutdown_time(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_current_shutdown_time_analysis(receive_data, analysis_data)
@@ -474,7 +604,10 @@ while True:
 
         # Read the max current limit of servo ID1.
         Primary_Servo.servo_read_max_current_limit(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_max_current_limit_analysis(receive_data, analysis_data)
@@ -484,7 +617,10 @@ while True:
 
         # Read the max PWM limit of servo ID1.
         Primary_Servo.servo_read_max_pwm_limit(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_max_pwm_limit_analysis(receive_data, analysis_data)
@@ -494,7 +630,10 @@ while True:
 
         # Read the max voltage limit of servo ID1.
         Primary_Servo.servo_read_max_voltage_limit(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_max_voltage_limit_analysis(receive_data, analysis_data)
@@ -504,7 +643,10 @@ while True:
 
         # Read the min voltage limit of servo ID1.
         Primary_Servo.servo_read_min_voltage_limit(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_min_voltage_limit_analysis(receive_data, analysis_data)
@@ -514,7 +656,10 @@ while True:
         
         # Read the voltage limit of servo ID1.
         Primary_Servo.servo_read(1, 0x10, 2, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("read voltage limit status packet:", end=' ')
@@ -525,7 +670,10 @@ while True:
 
         # Read the max temperature limit of servo ID1.
         Primary_Servo.servo_read_max_temperature_limit(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_max_temperature_limit_analysis(receive_data, analysis_data)
@@ -535,7 +683,10 @@ while True:
 
         # Read the max angle limit of servo ID1.
         Primary_Servo.servo_read_max_angle_limit(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_max_angle_limit_analysis(receive_data, analysis_data)
@@ -545,7 +696,10 @@ while True:
 
         # Read the min angle limit of servo ID1.
         Primary_Servo.servo_read_min_angle_limit(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_min_angle_limit_analysis(receive_data, analysis_data)
@@ -555,7 +709,10 @@ while True:
         
         # Read the angle limit of servo ID1.
         Primary_Servo.servo_read(1, 0x0B, 4, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("read angle limit status packet:", end=' ')
@@ -566,7 +723,10 @@ while True:
 
         # Read the return level of servo ID1.
         Primary_Servo.servo_read_return_level(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_return_level_analysis(receive_data, analysis_data)
@@ -576,7 +736,10 @@ while True:
 
         # Read the return delay time of servo ID1.
         Primary_Servo.servo_read_return_delay_time(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_return_delay_time_analysis(receive_data, analysis_data)
@@ -586,7 +749,10 @@ while True:
 
         # Read the baud rate of servo ID1.
         Primary_Servo.servo_read_baud_rate(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_baud_rate_analysis(receive_data, analysis_data)
@@ -596,7 +762,10 @@ while True:
 
         # Read the model information of servo ID1.
         Primary_Servo.servo_read_model_information(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_model_information_analysis(receive_data, analysis_data)
@@ -606,7 +775,10 @@ while True:
 
         # Read the firmware version of servo ID1.
         Primary_Servo.servo_read_firmware_version(1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_read_firmware_version_analysis(receive_data, analysis_data)
@@ -618,7 +790,10 @@ while True:
     if WRITE_TEST:
         # Change the return delay time of servo ID1 to 500us.
         Primary_Servo.servo_set_return_delay_time(1, 250, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_return_delay_time_analysis(receive_data)
@@ -628,7 +803,10 @@ while True:
 
         # Change the return level of servo ID1 to respond to all instruction.
         Primary_Servo.servo_set_return_level(1, 2, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_return_level_analysis(receive_data)
@@ -638,7 +816,10 @@ while True:
 
         # Change the baud rate of servo ID1 to 1000000.
         Primary_Servo.servo_set_baud_rate(1, 7, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_baud_rate_analysis(receive_data)
@@ -648,7 +829,10 @@ while True:
 
         # Change the min angle limit of servo ID1 to 0°.
         Primary_Servo.servo_set_min_angle_limit(1, 0, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_min_angle_limit_analysis(receive_data)
@@ -658,7 +842,10 @@ while True:
 
         # Change the max angle limit of servo ID1 to 300°.°
         Primary_Servo.servo_set_max_angle_limit(1, 3000, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_max_angle_limit_analysis(receive_data)
@@ -673,7 +860,10 @@ while True:
         write_buffer[3] = (3000 >> 8) & 0xff
         
         Primary_Servo.servo_write(1, 0x0B, 4, write_buffer, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("write angle limit status packet:", end=' ')
@@ -684,7 +874,10 @@ while True:
         
         # Change the max temperature limit of servo ID1 to 65℃.
         Primary_Servo.servo_set_max_temperature_limit(1, 65, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_max_temperature_limit_analysis(receive_data)
@@ -694,7 +887,10 @@ while True:
 
         # Change the max voltage limit of servo ID1 to 8.4V.
         Primary_Servo.servo_set_max_voltage_limit(1, 84, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_max_voltage_limit_analysis(receive_data)
@@ -704,7 +900,10 @@ while True:
 
         # Change the min voltage limit of servo ID1 to 3.5V.
         Primary_Servo.servo_set_min_voltage_limit(1, 35, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_min_voltage_limit_analysis(receive_data)
@@ -717,7 +916,10 @@ while True:
         write_buffer[1] = 35 & 0xff
 
         Primary_Servo.servo_write(1, 0x10, 2, write_buffer, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("write voltage limit status packet:", end=' ')
@@ -728,7 +930,10 @@ while True:
 
         # Change the max PWM limit of servo ID1 to 90%.
         Primary_Servo.servo_set_max_pwm_limit(1, 900, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_max_pwm_limit_analysis(receive_data)
@@ -738,7 +943,10 @@ while True:
 
         # Change the max current limit of servo ID1 to 900mA.
         Primary_Servo.servo_set_max_current_limit(1, 900, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_max_current_limit_analysis(receive_data)
@@ -748,7 +956,10 @@ while True:
 
         # Change the current shutdown time of servo ID1 to 500ms.
         Primary_Servo.servo_set_current_shutdown_time(1, 500, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_current_shutdown_time_analysis(receive_data)
@@ -758,7 +969,10 @@ while True:
 
         # Change the CW deadband of servo ID1 to 0.2°.
         Primary_Servo.servo_set_cw_deadband(1, 2, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_cw_deadband_analysis(receive_data)
@@ -768,7 +982,10 @@ while True:
 
         # Change the CCW deadband of servo ID1 to 0.2°.
         Primary_Servo.servo_set_ccw_deadband(1, 2, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_ccw_deadband_analysis(receive_data)
@@ -781,7 +998,10 @@ while True:
         write_buffer[1] = 2 & 0xff
 
         Primary_Servo.servo_write(1, 0x18, 2, write_buffer, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("write cw deadband and ccw deadband status packet:", end=' ')
@@ -791,7 +1011,10 @@ while True:
 
         # Change the PWM punch of servo ID1 to 1%.
         Primary_Servo.servo_set_pwm_punch(1, 10, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_pwm_punch_analysis(receive_data)
@@ -801,7 +1024,10 @@ while True:
 
         # Change the position control P gain of servo ID1 to 5995.
         Primary_Servo.servo_set_position_control_p_gain(1, 5995, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_position_control_p_gain_analysis(receive_data)
@@ -811,7 +1037,10 @@ while True:
 
         # Change the position control D gain of servo ID1 to 5.
         Primary_Servo.servo_set_position_control_i_gain(1, 5, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_position_control_i_gain_analysis(receive_data)
@@ -821,7 +1050,10 @@ while True:
 
         # Change the position control D gain of servo ID1 to 145.
         Primary_Servo.servo_set_position_control_d_gain(1, 145, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_position_control_d_gain_analysis(receive_data)
@@ -838,7 +1070,10 @@ while True:
         write_buffer[5] = (145 >> 8) & 0xff
 
         Primary_Servo.servo_write(1, 0x1B, 6, write_buffer, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         print("write position control pid gain status packet:", end=' ')
@@ -849,7 +1084,10 @@ while True:
 
         # Change the LED condition of servo ID1 to turn on stall error, overheating error, and angle error.
         Primary_Servo.servo_set_led_condition(1, 38, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_led_condition_analysis(receive_data)
@@ -859,7 +1097,10 @@ while True:
 
         # Change the shutdown condition of servo ID1 to turn on stall error, overheating error, voltage error, and angle error.
         Primary_Servo.servo_set_shutdown_conditions(1, 39, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_shutdown_conditions_analysis(receive_data)
@@ -869,7 +1110,10 @@ while True:
 
         # Change the Flash switch of servo ID1 to ON.
         Primary_Servo.servo_set_flash_switch(1, 1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_flash_switch_analysis(receive_data)
@@ -879,7 +1123,10 @@ while True:
         
          # Change the Flash switch of servo ID1 to OFF.
         Primary_Servo.servo_set_flash_switch(1, 0, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_flash_switch_analysis(receive_data)
@@ -889,7 +1136,10 @@ while True:
 
         # Change the LED switch of servo ID1 to ON.
         Primary_Servo.servo_set_led_switch(1, 1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_led_switch_analysis(receive_data)
@@ -899,7 +1149,10 @@ while True:
         
         # Change the LED switch of servo ID1 to OFF.
         Primary_Servo.servo_set_led_switch(1, 0, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_led_switch_analysis(receive_data)
@@ -909,7 +1162,10 @@ while True:
         
         # Change the torque switch of servo ID1 to OFF.
         Primary_Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
@@ -919,7 +1175,10 @@ while True:
 
         # Change the control mode of servo ID1 to the PWM control mode.
         Primary_Servo.servo_set_control_mode(1, 3, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_control_mode_analysis(receive_data)
@@ -929,7 +1188,10 @@ while True:
 
         # Change the torque switch of servo ID1 to ON.
         Primary_Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
@@ -939,7 +1201,10 @@ while True:
 
         # Change the target PWM of servo ID1 to -50%.
         Primary_Servo.servo_set_target_pwm(1, -500, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_target_pwm_analysis(receive_data)
@@ -949,7 +1214,10 @@ while True:
         
         # Change the torque switch of servo ID1 to OFF.
         Primary_Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
@@ -959,7 +1227,10 @@ while True:
 
         # Change the control mode of servo ID1 to the current control mode.
         Primary_Servo.servo_set_control_mode(1, 2, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_control_mode_analysis(receive_data)
@@ -969,7 +1240,10 @@ while True:
 
         # Change the torque switch of servo ID1 to ON.
         Primary_Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
@@ -979,7 +1253,10 @@ while True:
 
         # Change the target current of servo ID1 to -400mA.
         Primary_Servo.servo_set_target_current(1, -400, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_target_current_analysis(receive_data)
@@ -989,7 +1266,10 @@ while True:
         
         # Change the torque switch of servo ID1 to OFF.
         Primary_Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
@@ -999,7 +1279,10 @@ while True:
 
         # Change the control mode of servo ID1 to the velocity base position control mode.
         Primary_Servo.servo_set_control_mode(1, 1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_control_mode_analysis(receive_data)
@@ -1009,7 +1292,10 @@ while True:
 
         # Change the torque switch of servo ID1 to ON.
         Primary_Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
@@ -1019,7 +1305,10 @@ while True:
 
         # Change the velocity base target velocity of servo ID1 to 360°/s.
         Primary_Servo.servo_set_velocity_base_target_velocity(1, 3600, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_velocity_base_target_velocity_analysis(receive_data)
@@ -1029,7 +1318,10 @@ while True:
 
         # Change the velocity base target ACC of servo ID1 to 500°/s².
         Primary_Servo.servo_set_velocity_base_target_acc(1, 10, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_velocity_base_target_acc_analysis(receive_data)
@@ -1039,7 +1331,10 @@ while True:
 
         # Change the velocity base target DEC of servo ID1 to 50°/s².
         Primary_Servo.servo_set_velocity_base_target_dec(1, 1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_velocity_base_target_dec_analysis(receive_data)
@@ -1049,7 +1344,10 @@ while True:
 
         # Change the velocity base target position of servo ID1 to 150°.
         Primary_Servo.servo_set_velocity_base_target_position(1, 1500, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_velocity_base_target_position_analysis(receive_data)
@@ -1059,7 +1357,10 @@ while True:
         
         # Change the torque switch of servo ID1 to OFF.
         Primary_Servo.servo_set_torque_switch(1, 0, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
@@ -1069,7 +1370,10 @@ while True:
 
         # Change the control mode of servo ID1 to the time base position control mode.
         Primary_Servo.servo_set_control_mode(1, 0, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_control_mode_analysis(receive_data)
@@ -1079,7 +1383,10 @@ while True:
 
         # Change the torque switch of servo ID1 to ON.
         Primary_Servo.servo_set_torque_switch(1, 1, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_torque_switch_analysis(receive_data)
@@ -1089,7 +1396,10 @@ while True:
 
         # Change the time base target ACC of servo ID1 to 5.
         Primary_Servo.servo_set_time_base_target_acc(1, 5, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_time_base_target_acc_analysis(receive_data)
@@ -1099,7 +1409,10 @@ while True:
 
         # Change the time base target position and moving time of servo ID1 to 300°, 500ms respectively.
         Primary_Servo.servo_set_time_base_target_position_and_moving_time(1, 3000, 500, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
+        uart2.flush()
+        dir.value(0)
         time.sleep_ms(1)
         receive_data_len = uart2.readinto(receive_data)
         ret = Primary_Servo.servo_set_time_base_target_position_and_moving_time_analysis(receive_data)
@@ -1122,6 +1435,7 @@ while True:
         servo_sync_parameter.torque_switch[0] = 0
         servo_sync_parameter.torque_switch[1] = 0
         Primary_Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write torque witch complete")
         time.sleep(1)
@@ -1130,6 +1444,7 @@ while True:
         servo_sync_parameter.control_mode[0] = 1
         servo_sync_parameter.control_mode[1] = 1
         Primary_Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write control mode complete")
         time.sleep(1)
@@ -1139,6 +1454,7 @@ while True:
         servo_sync_parameter.acc_velocity[1] = 1
     
         Primary_Servo.servo_sync_write_velocity_base_target_acc(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write velocity base target acc complete")
         time.sleep(1)
@@ -1148,6 +1464,7 @@ while True:
         servo_sync_parameter.dec_velocity[1] = 10
     
         Primary_Servo.servo_sync_write_velocity_base_target_dec(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write velocity base target dec complete")
         time.sleep(1)
@@ -1157,6 +1474,7 @@ while True:
         servo_sync_parameter.velocity[1] = 1800
     
         Primary_Servo.servo_sync_write_velocity_base_target_velocity(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write velocity base target velocity complete")
         time.sleep(1)
@@ -1166,6 +1484,7 @@ while True:
         servo_sync_parameter.position[1] = 0
     
         Primary_Servo.servo_sync_write_velocity_base_target_position(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write velocity base target position complete")
         time.sleep(1)
@@ -1177,6 +1496,7 @@ while True:
         servo_sync_parameter.position[1] = 3000
     
         Primary_Servo.servo_sync_write_velocity_base_target_position_and_velocity(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write velocity base target position and velocity complete")
         time.sleep(1)
@@ -1192,6 +1512,7 @@ while True:
         servo_sync_parameter.dec_velocity[1] = 10
         
         Primary_Servo.servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write velocity base target acc, dec, velocity and position complete")
         time.sleep(1)
@@ -1200,6 +1521,7 @@ while True:
         servo_sync_parameter.torque_switch[0] = 0
         servo_sync_parameter.torque_switch[1] = 0
         Primary_Servo.servo_sync_write_torque_switch(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write torque witch complete")
         time.sleep(1)
@@ -1208,6 +1530,7 @@ while True:
         servo_sync_parameter.control_mode[0] = 0
         servo_sync_parameter.control_mode[1] = 0
         Primary_Servo.servo_sync_write_control_mode(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write control mode complete")
         time.sleep(1)
@@ -1217,6 +1540,7 @@ while True:
         servo_sync_parameter.acc_velocity_grade[1] = 5
     
         Primary_Servo.servo_sync_write_time_base_target_acc(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write time base target acc complete")
         time.sleep(1)
@@ -1228,7 +1552,10 @@ while True:
         servo_sync_parameter.time[1] = 500
     
         Primary_Servo.servo_sync_write_time_base_target_position_and_moving_time(servo_sync_parameter, output_buffer, output_buffer_len)
+        dir.value(1)
         uart2.write(bytes(output_buffer[:output_buffer_len[0]]))
         print("sync write time base target position and moving time complete")
         time.sleep(1)
+
+
 
