@@ -17,7 +17,7 @@
 - Instruction Packet: Use ID, Ping instruction for a direct query.
 - Status Packet: The parameters queried as 0x4E 0x4F (0x4F4E), indicating that the model number of the servo ID1 is 20302.
 
-
+---
 ### 2.2 Read Data
 #### Read the firmware version of servo ID1. 
 *Take the primary memory table as an example.*
@@ -134,7 +134,7 @@
 #### Intermediate/advanced memory tables: under continuous development, explained in the future
 
 
-
+---
 ### 2.3 Write Data
 #### Change the servo ID of servo ID1 to 2. 
 *Take the primary memory table as an example.*
@@ -276,7 +276,7 @@
 #### Intermediate/advanced memory tables: under continuous development, explained in the future
 
 
-
+---
 ### 2.4 Sync Write
 #### Change the velocity base target position of the servo ID1, ID2 to 150° midpoint and 0° position, respectively. 
 *Take the primary memory table as an example.*
@@ -297,7 +297,7 @@
 #### Intermediate/advanced memory tables: under continuous development, explained in the future
 
 
-
+---
 ### 2.5 Factory Reset
 #### Reset the servo to the factory default values.
 - Note: This operation will reset all parameters, including baud rate, servo ID, offset value, and others.
@@ -305,7 +305,7 @@
 - Status Packet: Servo will reboot after this operation is performed. Ping instruction or Read Data instruction can be used to verify whether all data has been restored.
 
 
-
+---
 ### 2.6 Parameter Reset
 #### Reset the servo to the factory default values.
 - Note: This operation will reset all parameters, including baud rate, servo ID, offset value, and others.
@@ -313,7 +313,7 @@
 - Status Packet: Servo will reboot after this operation is performed. Ping instruction or Read Data instruction can be used to verify whether all data has been restored.
 
 
-
+---
 ### 2.7 Calibration
 #### Calibrate the midpoint of the servo.
 - Warning: Generally, calibration is done at the factory condition. If this function is not operated according to the specified steps or is performed multiple times consecutively, it may result in excessive deviation of the servo's target position, causing it to enter the dead band and operate abnormally. Please use it with caution. If this situation occurs, it can be fixed by performing a Factory Reset Instruction.
@@ -322,12 +322,11 @@
 - Status Packet: Reading if the servo's present position is close to 150° can be used to verify if the change was successful.
 
 
-
+---
 ### 2.8 Reboot
 ### Reboot the servo.
 - Instruction Packet: Use ID1 to send the reboot instruction, with parameters 0xDF 0xDF to unlock this function.
 - Status Packet: Since the servo will immediately reboot upon receiving the instruction, no status packet will be returned. Observing if the servo's LED light flashes once can be used to verify if the reboot was successful.
-
 
 
 ## 3. Demo Analysis
@@ -370,7 +369,7 @@
 #### Intermediate/advanced memory tables: under continuous development, explained in the future
 
 
-
+---
 ### 3.2 Time Base Position Control Mode
 #### Let servo ID1 move to the 300° position at a velocity of 500ms.  
 *Take the primary memory table as an example.*
@@ -404,7 +403,7 @@
 #### Intermediate/advanced memory tables: under continuous development, explained in the future
 
 
-
+---
 ### 3.3 PWM Control Mode
 #### Let the servo ID1 rotate counterclockwise with a 50% PWM output.  
 *Take the primary memory table as an example.*
@@ -434,7 +433,7 @@
 #### Intermediate/advanced memory tables: under continuous development, explained in the future
 
 
-
+---
 ### 3.4 Current Control Mode
 #### Let the servo ID1 rotate clockwise with a target current of 100mA. 
 *Take the primary memory table as an example.*
