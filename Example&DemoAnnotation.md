@@ -1,3 +1,6 @@
+# Example & Demo Annotation
+
+
 # 1. Preliminary Notes
 - In the memory table, some parameters use the value ranges for high bytes and low bytes, with addresses as **the lower byte first and the higher byte next**. Negative values are expressed as the complement of the original code.
 - Instruction Packet: If before the change of the data in the Flash area **Flash switch is not turned on, it will not be saved when the power is turned off.**
