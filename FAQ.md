@@ -1,7 +1,9 @@
-# Q1: How to control multiple servos simultaneously?
+# FAQ
+
+## Q1: How to control multiple servos simultaneously?
 By using the Sync Write Instruction, you can write data to the memory tables of multiple servos at once. The length of the data and the starting address for the data written on multiple servos must be the same, but the data itself can differ.
 
-# Q2: Under the time base position control mode, if a new instruction is sent while the servo is in motion, will the new instruction be executed?
+## Q2: Under the time base position control mode, if a new instruction is sent while the servo is in motion, will the new instruction be executed?
 This depends on the situation:
 - If the new instruction does not affect its motion,e.g., reading position or temperature, the servo will continue its current motion.
 - If the new instruction affects its motion,e.g., a motion instruction.:
