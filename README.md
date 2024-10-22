@@ -34,7 +34,7 @@ To change the servo parameters, please use ServoStudio or ServoCommand. Refer to
 
 - Servo and MCU Communication
   -To enable communication between the Energize Lab Servo and the MCU, a UART to TTL module is needed; if the MCU operates at 5V, a level shifting module is also necessary, as illustrated in the diagram below:  
-![Schematic Diagram of Servo Connection to MCU](images/Schematic Diagram of Servo Connection to MCU.png)
+![Schematic Diagram of Servo Connection to MCU](images/Schematic Diagram of Servo Connection to MCU.png) 
 ![Circuit Diagram for Connection with 3.3V Level MCU](images/Circuit Diagram for Connection with 3.3V Level MCU.png)
 ![Circuit Diagram for Connection with 5V Level MCU](images/Circuit Diagram for Connection with 5V Level MCU.png)
 

@@ -13,4 +13,3 @@ Below is a list of plans for this open-source project—stay tuned! If you are i
 # Servo Application Example
 ---
 - More servo gameplay demos will be added in the future. (e.g., integrating 3D-printed parts, precise control of servo movements, etc.).
-
