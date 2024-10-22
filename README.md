@@ -30,7 +30,7 @@ To change the servo parameters, please use ServoStudio or ServoCommand. Refer to
 ## Communication Circuits
 - Servo and PC Communication
   -To enable communication between the Energize Lab Servo and a PC, a UART to TTL module and a USB to UART module is required, as illustrated in the diagram below:  
-![Schematic Diagram of Servo Connection to PC](images/Schematic Diagram of Servo Connection to PC.png)
+   - ![Schematic Diagram of Servo Connection to PC](images/Schematic Diagram of Servo Connection to PC.png)
 
 - Servo and MCU Communication
   -To enable communication between the Energize Lab Servo and the MCU, a UART to TTL module is needed; if the MCU operates at 5V, a level shifting module is also necessary, as illustrated in the diagram below:  
