@@ -1,5 +1,6 @@
-# Version 1.0.0（2024.10.25）
-**Please fill this template for more accurate and prompt support.**
+# Issues Template
+## Version 1.0.0（2024.10.25）
+### Please fill this template for more accurate and prompt support.
 1. Which memory table protocol are you using? (e.g., primary, intermediate, advanced.)
 2. Which EnergizeLab Servo model are you working with? (e.g., EM-2030, EM-2100, EH-3030, etc.)
 3. What programming language or development toolset are you employing? ( e.g., C, C++, Python, Arduino, MicroPython, etc.)
