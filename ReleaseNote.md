@@ -1,35 +1,16 @@
-# Version 1.0.1（2024.8.6）
----
-**feature**
-- Added ...
-
-**bugfix**
-- Fixed ...
-
-**Contributors**
-- ... ( @... )
-
-
-
-# Version 1.0.0（2024.7.24）
----
+# Version 1.0.0（2024.10.25）
 **Initial Release**
-- Uploaded PrimaryMemoryTable/C/Src
-- Uploaded PrimaryMemoryTable/C/Windows/Example,Demo
-- Uploaded PrimaryMemoryTable/C/STC89C52/Example,Demo
-- Uploaded PrimaryMemoryTable/C/STM32F103C8T6/Example,Demo
-- Uploaded PrimaryMemoryTable/C/STM32F103C8T6_HAL/Example,Demo
-- Uploaded PrimaryMemoryTable/C++/Src
-- Uploaded PrimaryMemoryTable/C++/Windows/Example,Demo
-- Uploaded PrimaryMemoryTable/MicroPython/Src
-- Uploaded PrimaryMemoryTable/MicroPython/ESP32/Example,Demo
-- Uploaded PrimaryMemoryTable/Python/Src
-- Uploaded PrimaryMemoryTable/Python/Windows/Example,Demo
-- Uploaded PrimaryMemoryTable/Arduino/Src
-- Uploaded PrimaryMemoryTable/Arduino/ESP32/Example,Demo
-- PrimaryMemoryTable/Arduino/ArduinoUno/Demo
-
-**Contributors**
-- Elecrazy Wang ( @王文龙 )
-- Shynerain Du ( @Shaynerain )
-- Janechel Lin ( @Janechel )
+- Uploaded Arduino/src
+- Uploaded Arduino/examples/PrimaryMemoryTable/Example,Demo
+- Uploaded Arduino/library.properties
+- Uploaded C/Scr
+- Uploaded C/Windows/PrimaryMemoryTable/Example,Demo
+- Uploaded C/STC89C52/PrimaryMemoryTable/Example,Demo
+- Uploaded C/STM32F103C8T6/PrimaryMemoryTable/Example,Demo
+- Uploaded C/STM32F103C8T6_HAL/PrimaryMemoryTable/Example,Demo
+- Uploaded C++/Scr
+- Uploaded C++/Windows/PrimaryMemoryTable/Example,Demo
+- Uploaded MicroPython/Scr
+- Uploaded MicroPython/ESP32/PrimaryMemoryTable/Example,Demo
+- Uploaded Python/Scr
+- Uploaded Python/Windows/PrimaryMemoryTable/Example,Demo
