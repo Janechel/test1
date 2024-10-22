@@ -17,7 +17,7 @@ Welcome to ServoSDK, an open-source software development kit designed specifical
 
 ## Repository
 - File Structure: 
-  - <img src="images/Repository File Structure.png?raw=true" alt="Repository File Structure" width="80%">
+  - <img src="images/Repository File Structure.png?raw=true" alt="Repository File Structure" width="100%">
 - File Description: 
   - Src: Source code that includes instruction generation and parsing for the entire memory table of servo.
   - Example: Demonstrate the use of Ping instruction, read data instruction, write data instruction, sync write instruction, parameter reset instruction, factory reset instruction, and reboot instruction.
@@ -33,11 +33,11 @@ Welcome to ServoSDK, an open-source software development kit designed specifical
 ## Communication Circuits
 - Servo and PC Communication
   - To enable communication between the Energize Lab Servo and a PC, a UART to TTL module and a USB to UART module is required, as illustrated in the diagram below:  
-   - <img src="images/Schematic Diagram of Servo Connection to PC.png?raw=true" alt="Schematic Diagram of Servo Connection to PC" width="40%">
+   - <img src="images/Schematic Diagram of Servo Connection to PC.png?raw=true" alt="Schematic Diagram of Servo Connection to PC" width="50%">
 
 - Servo and MCU Communication
   - To enable communication between the Energize Lab Servo and the MCU, a UART to TTL module is needed; if the MCU operates at 5V, a level shifting module is also necessary, as illustrated in the diagram below:
-   - <img src="images/Schematic Diagram of Servo Connection to MCU.png?raw=true" alt="Schematic Diagram of Servo Connection to MCU" width="80%">
-   - <img src="images/Circuit Diagram for Connection with 3.3V Level MCU.png?raw=true" alt="Circuit Diagram for Connection with 3.3V Level MCU" width="80%">
-   - <img src="images/Circuit Diagram for Connection with 5V Level MCU.png?raw=true" alt="Circuit Diagram for Connection with 5V Level MCU" width="80%">   
+   - <img src="images/Schematic Diagram of Servo Connection to MCU.png?raw=true" alt="Schematic Diagram of Servo Connection to MCU" width="100%">
+   - <img src="images/Circuit Diagram for Connection with 3.3V Level MCU.png?raw=true" alt="Circuit Diagram for Connection with 3.3V Level MCU" width="100%">
+   - <img src="images/Circuit Diagram for Connection with 5V Level MCU.png?raw=true" alt="Circuit Diagram for Connection with 5V Level MCU" width="100%">   
 
