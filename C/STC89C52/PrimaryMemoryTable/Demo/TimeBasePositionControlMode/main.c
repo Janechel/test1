@@ -3,6 +3,8 @@
 
 uint16_t ms_count;
 
+sbit dir=P3^2;	//It is used to control the uart transmission direction
+
 xdata uint8_t receive_data[20] = {0};       //Store the received status packet
 xdata uint8_t receive_len = 0;              //Length of received packet
 xdata uint8_t write_buffer[10] = {0};     //Write data to the memory table
@@ -19,7 +21,7 @@ void timer0_init()
 
 void delay_ms(uint16_t ms)
 {
-    ms_count =  2 * ms;         ////Since double speed 6T is enabled, the delay time here needs to be multiplied by 2.
+    ms_count =  2 * ms;         //Since double speed 6T is enabled, the delay time here needs to be multiplied by 2.
     while (ms_count);
 }
 
@@ -34,25 +36,13 @@ void timer0_isr() interrupt 1 using 1
 void uart_init()
 {
     TMOD|=0X20;	   //8-bit automatic reload timer
-    SCON=0X40;	   //8-bit UART with variable baud rate
+    SCON=0X50;	   //8-bit UART with variable baud rate
     PCON=0X80;	   //Baud rate doubling
     TH1=0xff;	   //The baud rate is set to 115200
     TL1=0xff;
-    ES=0;		   //Turn off receive interrupt
+    ES=1;		   //Turn off receive interrupt
     EA=1;		   //CPU interrupts
     TR1=1;		   //Timer1 starts counting
-}
-
-void uart_init_recv()
-{
-    TMOD |= 0x20;  //8-bit automatic reload timer
-    SCON = 0x50;   //8-bit UART with variable baud rate and serial reception enabled
-    PCON = 0x80;   //Baud rate doubling
-    TH1 = 0xff;    //The baud rate is set to 115200
-    TL1 = 0xff;
-    ES = 1;        //Turn on receive interrupt
-    EA = 1;        //CPU interrupts
-    TR1 = 1;       //Timer1 starts counting
 }
 
 void uart_send(uint8_t order_data)
@@ -79,6 +69,7 @@ void main()
     xdata uint16_t analysis_data = 0;						//Data parsed from the status packet
 
     timer0_init();
+    uart_init();
 
     while(1)
     {
@@ -90,7 +81,8 @@ void main()
         servo.torque_switch[0] = 0;
         servo.torque_switch[1] = 0;
         primary_servo_sync_write_torque_switch(servo, order_buffer, &order_buffer_len);
-        uart_init();
+
+        dir = 1;
         uart_send_buffer(order_buffer, order_buffer_len);
         delay_ms(1000);
 
@@ -99,18 +91,18 @@ void main()
         servo.control_mode[1] = 0;
         primary_servo_sync_write_control_mode(servo, order_buffer, &order_buffer_len);
 
-        uart_init();
+        dir = 1;
         uart_send_buffer(order_buffer, order_buffer_len);
         delay_ms(1000);
 
-
         //Change the time base target position, and moving time of servo ID1 to 300°, and 500ms, respectively.
-        uart_init();
         primary_servo_set_time_base_target_position_and_moving_time(1, 3000, 500, order_buffer,&order_buffer_len);
 
+        dir = 1;
         uart_send_buffer(order_buffer, order_buffer_len);
 
-        uart_init_recv();
+        dir = 0;
+        receive_len = 0;
         delay_ms(10);
 
         primary_servo_set_time_base_target_position_and_moving_time_analysis(receive_data);
@@ -124,8 +116,12 @@ void main()
         write_buffer[4] = (1000 >> 8) & 0xff;
 
         primary_servo_write(1, 0x3B, 5, write_buffer, order_buffer, &order_buffer_len);
+
+        dir = 1;
         uart_send_buffer(order_buffer, order_buffer_len);
-        uart_init_recv();
+
+        dir = 0;
+        receive_len = 0;
         delay_ms(1000);
 
         //In time base position control mode, let servo ID1 move to the 150° position at a velocity of 500ms, and let servo ID2 move to the 0° position at a constant velocity of 1s.
@@ -134,7 +130,7 @@ void main()
         servo.time[0] = 500;
         servo.time[1] = 1000;
 
-        uart_init();
+        dir = 1;
         primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_buffer_len);
         uart_send_buffer(order_buffer, order_buffer_len);
         delay_ms(1000);
@@ -145,7 +141,7 @@ void main()
         servo.time[0] = 1000;
         servo.time[1] = 500;
 
-        uart_init();
+        dir = 1;
         primary_servo_sync_write_time_base_target_position_and_moving_time(servo, order_buffer,&order_buffer_len);
         uart_send_buffer(order_buffer, order_buffer_len);
         delay_ms(1000);
@@ -154,10 +150,10 @@ void main()
 
 void uart() interrupt 4
 {
-if(RI)
-{
-RI = 0;
-receive_data[receive_len++] = SBUF;
-}
+    if(RI)
+    {
+        RI = 0;
+        receive_data[receive_len++] = SBUF;
+    }
 }
 

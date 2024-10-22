@@ -3,6 +3,8 @@
 
 uint16_t ms_count;
 
+sbit dir=P3^2;	//It is used to control the uart transmission direction
+
 xdata uint8_t receive_data[20] = {0};       //Store the received status packet
 xdata uint8_t receive_len = 0;              //Length of received packet
 xdata uint8_t write_buffer[10] = {0};     //Write data to the memory table
@@ -19,7 +21,7 @@ void timer0_init()
 
 void delay_ms(uint16_t ms)
 {
-    ms_count =  2 * ms;   ////Since double speed 6T is enabled, the delay time here needs to be multiplied by 2.
+    ms_count =  2 * ms;     //Since double speed 6T is enabled, the delay time here needs to be multiplied by 2.
     while (ms_count);
 }
 
@@ -34,25 +36,13 @@ void timer0_isr() interrupt 1 using 1
 void uart_init()
 {
 	TMOD|=0X20;	   //8-bit automatic reload timer
-	SCON=0X40;	   //8-bit UART with variable baud rate
+	SCON=0X50;	   //8-bit UART with variable baud rate
 	PCON=0X80;	   //Baud rate doubling
 	TH1=0xff;	   //The baud rate is set to 115200
 	TL1=0xff;
-	ES=0;		   //Turn off receive interrupt
+	ES=1;		   //Turn off receive interrupt
 	EA=1;		   //CPU interrupts
 	TR1=1;		   //Timer1 starts counting
-}
-
-void uart_init_recv()
-{
-	TMOD |= 0x20;  //8-bit automatic reload timer
-	SCON = 0x50;   //8-bit UART with variable baud rate and serial reception enabled
-	PCON = 0x80;   //Baud rate doubling
-	TH1 = 0xff;    //The baud rate is set to 115200
-	TL1 = 0xff;
-	ES = 1;        //Turn on receive interrupt
-	EA = 1;        //CPU interrupts
-	TR1 = 1;       //Timer1 starts counting
 }
 
 void uart_send(uint8_t order_data)
@@ -66,7 +56,7 @@ void uart_send_buffer(uint8_t *buffer, uint16_t length)
 {
 	uint16_t i;
 	for (i = 0; i < length; i++) {
-			uart_send(buffer[i]);
+        uart_send(buffer[i]);
 	}
 }
 
@@ -79,6 +69,7 @@ void main()
     xdata uint16_t analysis_data = 0;						//Data parsed from the status packet
 
 	timer0_init();
+    uart_init();
 	
 	while(1)
 	{
@@ -91,7 +82,7 @@ void main()
         servo.torque_switch[1] = 0;
         primary_servo_sync_write_torque_switch(servo, order_buffer, &order_buffer_len);
 		
-		uart_init();
+		dir = 1;
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 		
@@ -100,18 +91,20 @@ void main()
 		servo.control_mode[1] = 1;
         primary_servo_sync_write_control_mode(servo, order_buffer, &order_buffer_len);
 
-		uart_init();
+		dir = 1;
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
 
 		//Change the velocity base target position of servo ID1 to 150°.
-		uart_init();
         primary_servo_set_velocity_base_target_position(1, 1500, order_buffer,&order_buffer_len);
 
+        dir = 1;
 		uart_send_buffer(order_buffer, order_buffer_len);
 
-		uart_init_recv();
+        dir = 0;
+        receive_len = 0;
 		delay_ms(10);
+
         primary_servo_set_velocity_base_target_position_analysis(receive_data);
 		delay_ms(1000);
 		
@@ -123,8 +116,11 @@ void main()
 
         primary_servo_write(1, 0x35, 4, write_buffer, order_buffer, &order_buffer_len);
 
+        dir = 1;
 		uart_send_buffer(order_buffer, order_buffer_len);
-		uart_init_recv();
+
+        dir = 0;
+        receive_len = 0;
 		delay_ms(1000);
 		
 		//Change the velocity base target position, velocity base target velocity, velocity base target ACC, and velocity base target DEC of servo ID1 to 0° position, 360°/s, 500°/s², and 50°/s², respectively.
@@ -137,15 +133,18 @@ void main()
 
         primary_servo_write(1, 0x35, 6, write_buffer, order_buffer, &order_buffer_len);
 
+        dir = 1;
 		uart_send_buffer(order_buffer, order_buffer_len);
-		uart_init_recv();
+
+        dir = 0;
+        receive_len = 0;
 		delay_ms(1000);
 		
         //In velocity base position control mode, let servo ID1 move to the 150° midpoint and let servo ID2 move to the 0° position.
 		servo.position[0] = 1500;
 		servo.position[1] = 0;
 
-		uart_init();
+        dir = 1;
         primary_servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
@@ -157,7 +156,7 @@ void main()
 		servo.position[0] = 3000;
 		servo.position[1] = 1500;
 
-		uart_init();
+        dir = 1;
         primary_servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
@@ -173,7 +172,7 @@ void main()
 		servo.dec_velocity[0] = 1;
 		servo.dec_velocity[1] = 10;
 
-		uart_init();
+        dir = 1;
         primary_servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_buffer_len);
 		uart_send_buffer(order_buffer, order_buffer_len);
 		delay_ms(1000);
