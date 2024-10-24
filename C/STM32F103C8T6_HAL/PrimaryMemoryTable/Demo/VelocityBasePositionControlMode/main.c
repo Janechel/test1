@@ -112,6 +112,8 @@ int main(void)
     MX_USART2_UART_Init();
     /* USER CODE BEGIN 2 */
 
+    HAL_UART_Receive_IT(&huart1, receive, 1);
+
     struct primary_servo_sync_parameter servo;
 
     servo.id_counts = 2;            //Sync write two servos
@@ -133,7 +135,7 @@ int main(void)
         servo.torque_switch[1] = 0;
         primary_servo_sync_write_torque_switch(servo, order_buffer, &order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
         PRINTF("sync write torque witch complete\r\n");
         HAL_Delay(1000);
@@ -143,7 +145,7 @@ int main(void)
         servo.control_mode[1] = 1;
         primary_servo_sync_write_control_mode(servo, order_buffer, &order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
         PRINTF("sync write control mode complete\r\n");
         HAL_Delay(1000);
@@ -151,11 +153,11 @@ int main(void)
         //Change the velocity base target position of servo ID1 to 150°.
         primary_servo_set_velocity_base_target_position(1, 1500, order_buffer,&order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 
-        HAL_HalfDuplex_EnableReceiver(&huart1);
-        HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
+        receive_len = 0;
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);
 
         HAL_Delay(10);
 
@@ -172,11 +174,12 @@ int main(void)
 
         primary_servo_write(1, 0x35, 4, write_buffer, order_buffer, &order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 
-        HAL_HalfDuplex_EnableReceiver(&huart1);
-        HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
+        receive_len = 0;
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);
+
         HAL_Delay(10);
         PRINTF("write velocity base target position and velocity status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
@@ -197,11 +200,12 @@ int main(void)
 
         primary_servo_write(1, 0x35, 6, write_buffer, order_buffer, &order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 
-        HAL_HalfDuplex_EnableReceiver(&huart1);
-        HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
+        receive_len = 0;
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);
+
         HAL_Delay(10);
         PRINTF("write velocity base target acc, dec, velocity and position status packet: ");
         for (uint8_t i = 0; i < receive_len; i++)
@@ -218,8 +222,8 @@ int main(void)
 
         primary_servo_sync_write_velocity_base_target_position(servo, order_buffer, &order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
-        HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
+        HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
         PRINTF("sync write velocity base target position complete\r\n");
         HAL_Delay(1000);
 
@@ -232,8 +236,8 @@ int main(void)
 
         primary_servo_sync_write_velocity_base_target_position_and_velocity(servo, order_buffer, &order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
-        HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
+        HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
         PRINTF("sync write velocity base target position and velocity complete\r\n");
         HAL_Delay(1000);
 
@@ -250,8 +254,8 @@ int main(void)
 
         primary_servo_sync_write_velocity_base_target_acc_dec_velocity_and_position(servo, order_buffer, &order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
-        HAL_UART_Transmit(&huart1, order_buffer, order_len, 100);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
+        HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
         PRINTF("sync write velocity base target acc, dec, velocity and position complete\r\n");
         HAL_Delay(1000);
 
@@ -300,13 +304,15 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    if(huart->Instance==USART1)
-    {
-        receive_len = Size;
-        HAL_UARTEx_ReceiveToIdle_IT(&huart1,receive,50);
-    }
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(huart);
+    /* NOTE: This function Should not be modified, when the callback is needed,
+             the HAL_UART_TxCpltCallback could be implemented in the user file
+    */
+    receive_len++;
+    HAL_UART_Receive_IT(&huart1, receive + receive_len, 1);
 }
 
 /* USER CODE END 4 */

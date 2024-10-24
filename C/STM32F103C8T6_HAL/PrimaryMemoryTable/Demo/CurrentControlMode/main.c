@@ -61,6 +61,7 @@ void SystemClock_Config(void);
 uint8_t order_buffer[20];								//Store Generated Instructions
 uint8_t order_len;											//Instruction Length
 uint8_t receive[20];										//Store the received status packet
+uint8_t receive_len;										//packet Length
 uint8_t ret;														//Status Flag
 
 void initTransmitMode(UART_HandleTypeDef *huart);
@@ -109,6 +110,8 @@ int main(void)
     MX_USART2_UART_Init();
     /* USER CODE BEGIN 2 */
 
+    HAL_UART_Receive_IT(&huart1, receive, 1);
+
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -122,11 +125,11 @@ int main(void)
         //Change the torque switch of servo ID1 to OFF.
         primary_servo_set_torque_switch(1, 0, order_buffer,&order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 
-        HAL_HalfDuplex_EnableReceiver(&huart1);
-        HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
+        receive_len = 0;
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);
 
         HAL_Delay(10);
 
@@ -139,11 +142,11 @@ int main(void)
         //Change the control mode of servo ID1 to the current control mode.
         primary_servo_set_control_mode(1, 2, order_buffer,&order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 
-        HAL_HalfDuplex_EnableReceiver(&huart1);
-        HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
+        receive_len = 0;
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);
 
         HAL_Delay(10);
 
@@ -155,11 +158,11 @@ int main(void)
         //Change the torque switch of servo ID1 to ON.
         primary_servo_set_torque_switch(1, 1, order_buffer,&order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 
-        HAL_HalfDuplex_EnableReceiver(&huart1);
-        HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
+        receive_len = 0;
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);
 
         HAL_Delay(10);
 
@@ -171,11 +174,11 @@ int main(void)
         //Change the target PWM of servo ID1 to 100mA.
         primary_servo_set_target_current(1, 100, order_buffer,&order_len);
 
-        HAL_HalfDuplex_EnableTransmitter(&huart1);
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
         HAL_UART_Transmit(&huart1, order_buffer, order_len, 10);
 
-        HAL_HalfDuplex_EnableReceiver(&huart1);
-        HAL_UARTEx_ReceiveToIdle_IT(&huart1, receive, 50);
+        receive_len = 0;
+        HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);
 
         HAL_Delay(10);
 
@@ -228,12 +231,15 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    if(huart->Instance==USART1)
-    {
-        HAL_UARTEx_ReceiveToIdle_IT(&huart1,receive,50);
-    }
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(huart);
+    /* NOTE: This function Should not be modified, when the callback is needed,
+             the HAL_UART_TxCpltCallback could be implemented in the user file
+    */
+    receive_len++;
+    HAL_UART_Receive_IT(&huart1, receive + receive_len, 1);
 }
 
 /* USER CODE END 4 */
