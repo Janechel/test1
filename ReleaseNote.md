@@ -1,5 +1,5 @@
 # Release Note
-## Version 1.0.0（2024.10.25）
+## Version 1.0.0（2024.10.24）
 ### Initial Release
 - Uploaded Arduino/src
 - Uploaded Arduino/examples/PrimaryMemoryTable/Example,Demo
